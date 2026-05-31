@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Semilla Redes — Transformá tu arte en un negocio digital</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cline x1='22' y1='22' x2='4' y2='22' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='40' y2='22' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='22' y2='4' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='22' y2='40' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='8' y2='8' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='36' y2='36' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='36' y2='8' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='8' y2='36' stroke='%23C97080' stroke-width='1.5'/%3E%3Cpath d='M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z' fill='%237A8A42'/%3E%3Cline x1='22' y1='11' x2='22' y2='33' stroke='white' stroke-width='0.8' opacity='0.6'/%3E%3Cline x1='22' y1='16' x2='18' y2='19' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Cline x1='22' y1='16' x2='26' y2='19' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Cline x1='22' y1='22' x2='17' y2='23' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Cline x1='22' y1='22' x2='27' y2='23' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Cline x1='22' y1='27' x2='18' y2='29' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Cline x1='22' y1='27' x2='26' y2='29' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Ccircle cx='4' cy='22' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='40' cy='22' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='22' cy='4' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='22' cy='40' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='8' cy='8' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='36' cy='36' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='36' cy='8' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='8' cy='36' r='2.5' fill='%23C97080'/%3E%3C/svg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --cream: #F2EDE4;
+      --cream-dark: #E8E0D4;
+      --navy: #1A2456;
+      --wine: #7A1F3A;
+      --rose: #C97080;
+      --olive: #7A8A42;
+      --text: #2A2A2A;
+      --white: #FDFAF6;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--cream);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 48px;
+      position: sticky;
+      top: 0;
+      background: var(--cream);
+      z-index: 100;
+      border-bottom: 1px solid rgba(26,36,86,0.08);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+    }
+
+    .logo-text {
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--navy);
+      line-height: 1.15;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .nav-cta {
+      background: var(--navy);
+      color: var(--white);
+      padding: 10px 22px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .nav-cta:hover { background: var(--wine); }
+
+    /* HERO */
+    .hero {
+      padding: 80px 48px 100px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--wine);
+      margin-bottom: 28px;
+    }
+
+    .hero h1 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: clamp(42px, 7vw, 80px);
+      line-height: 1.05;
+      color: var(--navy);
+      margin-bottom: 0;
+    }
+
+    .hero h1 .italic-line {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: 700;
+      color: var(--wine);
+      display: block;
+    }
+
+    .hero-divider {
+      width: 48px;
+      height: 3px;
+      background: var(--wine);
+      margin: 36px 0;
+    }
+
+    .hero-sub {
+      font-size: 19px;
+      line-height: 1.65;
+      color: var(--navy);
+      max-width: 580px;
+      opacity: 0.85;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      margin-top: 48px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--navy);
+      color: var(--white);
+      padding: 16px 32px;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-primary:hover { background: var(--wine); transform: translateY(-1px); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      color: var(--navy);
+      padding: 16px 32px;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 2px solid var(--navy);
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover { background: var(--navy); color: var(--white); }
+
+    /* PARA QUIEN */
+    .para-quien {
+      background: var(--navy);
+      color: var(--white);
+      padding: 80px 48px;
+    }
+
+    .section-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 20px;
+    }
+
+    .para-quien h2 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.15;
+      color: var(--white);
+      margin-bottom: 52px;
+    }
+
+    .checks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 28px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+    }
+
+    .check-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--rose);
+      border-radius: 50%;
+      margin-top: 8px;
+      flex-shrink: 0;
+    }
+
+    .check-item p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.88);
+    }
+
+    /* SERVICIOS */
+    .servicios {
+      padding: 100px 48px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .servicios > .section-label { color: var(--wine); }
+
+    .servicios h2 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: clamp(28px, 4vw, 44px);
+      color: var(--navy);
+      margin-bottom: 60px;
+      line-height: 1.15;
+    }
+
+    .servicios-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    /* CARD FORMACIÓN — destacada */
+    .card-formacion {
+      background: var(--navy);
+      color: var(--white);
+      border-radius: 12px;
+      padding: 44px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-formacion::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 200px;
+      height: 200px;
+      background: rgba(201,112,128,0.15);
+      border-radius: 50%;
+    }
+
+    .card-badge {
+      display: inline-block;
+      background: var(--wine);
+      color: var(--white);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+
+    .card-formacion h3 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: 32px;
+      line-height: 1.1;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+
+    .card-formacion .card-sub {
+      font-size: 15px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .formacion-items {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .formacion-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .fi-icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(201,112,128,0.25);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 15px;
+    }
+
+    .fi-text strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 2px;
+    }
+
+    .fi-text span {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .card-formacion .btn-card {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--rose);
+      color: var(--white);
+      padding: 14px 28px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .card-formacion .btn-card:hover { background: var(--wine); }
+
+    /* CARD INDIVIDUALES */
+    .card-individuales {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 44px;
+      border: 1px solid rgba(26,36,86,0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-individuales h3 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: 28px;
+      color: var(--navy);
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .card-individuales .card-sub {
+      font-size: 15px;
+      color: rgba(26,36,86,0.6);
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .individual-items {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+      margin-bottom: 32px;
+    }
+
+    .ind-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: var(--cream);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .ind-item:hover { background: var(--cream-dark); }
+
+    .ind-num {
+      width: 28px;
+      height: 28px;
+      background: var(--navy);
+      color: var(--white);
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .ind-item span {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+      flex: 1;
+    }
+
+    .ind-arrow {
+      font-size: 16px;
+      color: var(--wine);
+      transition: transform 0.25s;
+      line-height: 1;
+    }
+
+    .ind-item.open .ind-arrow { transform: rotate(180deg); }
+
+    .ind-detail {
+      display: none;
+      padding: 14px 20px 16px;
+      background: var(--cream-dark);
+      border-radius: 0 0 8px 8px;
+      margin-top: -6px;
+    }
+
+    .ind-detail p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: rgba(26,36,86,0.75);
+      margin-bottom: 10px;
+    }
+
+    .ind-detail strong {
+      font-size: 14px;
+      color: var(--navy);
+    }
+
+    .ind-detail strong a {
+      color: var(--wine);
+      text-decoration: underline;
+    }
+
+    .ind-detail.open { display: block; }
+
+    .formacion-price {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--white);
+      margin-bottom: 20px;
+    }
+
+    .formacion-price span {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .card-individuales .btn-card {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--navy);
+      color: var(--white);
+      padding: 14px 28px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .card-individuales .btn-card:hover { background: var(--wine); }
+
+    /* VIDEO */
+    .video-section {
+      background: var(--cream-dark);
+      padding: 100px 48px;
+    }
+
+    .video-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .video-text .section-label { color: var(--wine); }
+
+    .video-text h2 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: clamp(26px, 3.5vw, 40px);
+      color: var(--navy);
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .video-text p {
+      font-size: 16px;
+      line-height: 1.7;
+      color: rgba(26,36,86,0.75);
+    }
+
+    .video-placeholder {
+      background: var(--navy);
+      border-radius: 12px;
+      aspect-ratio: 16/9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+    }
+
+    .video-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(122,31,58,0.3), rgba(26,36,86,0.9));
+    }
+
+    .play-btn {
+      width: 64px;
+      height: 64px;
+      background: var(--rose);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.2s;
+    }
+
+    .video-placeholder:hover .play-btn { transform: scale(1.08); }
+
+    .play-btn svg { margin-left: 4px; }
+
+    .video-label {
+      position: relative;
+      z-index: 1;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 0.05em;
+    }
+
+    /* TESTIMONIOS */
+    .testimonios {
+      padding: 100px 48px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .testimonios .section-label { color: var(--wine); }
+
+    .testimonios h2 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: clamp(26px, 3.5vw, 40px);
+      color: var(--navy);
+      margin-bottom: 52px;
+    }
+
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .testi-card {
+      background: var(--white);
+      border-radius: 10px;
+      padding: 32px;
+      border: 1px solid rgba(26,36,86,0.08);
+    }
+
+    .stars {
+      color: var(--rose);
+      font-size: 16px;
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+
+    .testi-card blockquote {
+      font-size: 15px;
+      line-height: 1.7;
+      color: rgba(26,36,86,0.8);
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .testi-author {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .testi-loc {
+      font-size: 12px;
+      color: var(--rose);
+      margin-top: 2px;
+    }
+
+    /* CLIENTES */
+    .clientes {
+      background: var(--navy);
+      padding: 80px 48px;
+    }
+
+    .clientes .section-label { color: var(--rose); }
+
+    .clientes h2 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: clamp(26px, 3.5vw, 40px);
+      color: var(--white);
+      margin-bottom: 40px;
+    }
+
+    .clientes-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .cliente-item {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.85);
+      padding: 10px 20px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    a.cliente-item:hover {
+      background: var(--wine);
+      color: var(--white);
+      border-color: var(--wine);
+    }
+
+    .cliente-more {
+      color: var(--rose);
+      border-color: rgba(201,112,128,0.3);
+    }
+
+    /* CTA FINAL */
+    .cta-final {
+      background: var(--navy);
+      padding: 100px 48px;
+      text-align: center;
+    }
+
+    .cta-final .section-label { color: var(--rose); }
+
+    .cta-final h2 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: clamp(32px, 5vw, 60px);
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .cta-final h2 em {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: var(--rose);
+    }
+
+    .cta-final p {
+      font-size: 17px;
+      color: rgba(255,255,255,0.65);
+      max-width: 480px;
+      margin: 0 auto 48px;
+      line-height: 1.6;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-wsp {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #25D366;
+      color: white;
+      padding: 18px 36px;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .btn-wsp:hover { opacity: 0.9; transform: translateY(-2px); }
+
+    .btn-auditoria {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      color: var(--white);
+      padding: 18px 36px;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      border: 2px solid rgba(255,255,255,0.4);
+      transition: all 0.2s;
+    }
+
+    .btn-auditoria:hover {
+      border-color: var(--rose);
+      color: var(--rose);
+    }
+
+    /* FOOTER */
+    footer {
+      background: #111827;
+      padding: 40px 48px;
+      text-align: center;
+    }
+
+    footer p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+    }
+
+    footer a {
+      color: var(--rose);
+      text-decoration: none;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+      .hero { padding: 60px 24px 80px; }
+      .para-quien { padding: 60px 24px; }
+      .servicios { padding: 60px 24px; }
+      .servicios-grid { grid-template-columns: 1fr; }
+      .video-section { padding: 60px 24px; }
+      .video-inner { grid-template-columns: 1fr; gap: 40px; }
+      .testimonios { padding: 60px 24px; }
+      .clientes { padding: 60px 24px; }
+      .cta-final { padding: 80px 24px; }
+      footer { padding: 32px 24px; }
+      .hero-ctas { flex-direction: column; }
+      .btn-primary, .btn-secondary { justify-content: center; }
+      .cta-buttons { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="logo">
+      <svg class="logo-icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="22" y1="22" x2="4" y2="22" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="40" y2="22" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="22" y2="4" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="22" y2="40" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="8" y2="8" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="36" y2="36" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="36" y2="8" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="8" y2="36" stroke="#C97080" stroke-width="1.5"/>
+        <path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/>
+        <line x1="22" y1="11" x2="22" y2="33" stroke="white" stroke-width="0.8" opacity="0.6"/>
+        <line x1="22" y1="16" x2="18" y2="19" stroke="white" stroke-width="0.5" opacity="0.5"/>
+        <line x1="22" y1="16" x2="26" y2="19" stroke="white" stroke-width="0.5" opacity="0.5"/>
+        <line x1="22" y1="22" x2="17" y2="23" stroke="white" stroke-width="0.5" opacity="0.5"/>
+        <line x1="22" y1="22" x2="27" y2="23" stroke="white" stroke-width="0.5" opacity="0.5"/>
+        <line x1="22" y1="27" x2="18" y2="29" stroke="white" stroke-width="0.5" opacity="0.5"/>
+        <line x1="22" y1="27" x2="26" y2="29" stroke="white" stroke-width="0.5" opacity="0.5"/>
+        <circle cx="4" cy="22" r="2.5" fill="#C97080"/>
+        <circle cx="40" cy="22" r="2.5" fill="#C97080"/>
+        <circle cx="22" cy="4" r="2.5" fill="#C97080"/>
+        <circle cx="22" cy="40" r="2.5" fill="#C97080"/>
+        <circle cx="8" cy="8" r="2.5" fill="#C97080"/>
+        <circle cx="36" cy="36" r="2.5" fill="#C97080"/>
+        <circle cx="36" cy="8" r="2.5" fill="#C97080"/>
+        <circle cx="8" cy="36" r="2.5" fill="#C97080"/>
+      </svg>
+      <span class="logo-text">SEMILLA<br><span style="font-weight:400;letter-spacing:0.2em;">REDES</span></span>
+    </a>
+    <a href="https://wa.me/5492665242011" target="_blank" class="nav-cta">Hablemos</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-eyebrow">Semilla Redes — Por Agus Calcagno</p>
+    <h1>
+      Los artistas<br>
+      no hacen contenido.
+      <span class="italic-line">Hacen arte.</span>
+    </h1>
+    <div class="hero-divider"></div>
+    <p class="hero-sub">
+      Semilla Redes te ayuda a construir el modelo de negocio, la comunicación y la publicidad que tu proyecto artístico necesita para crecer en serio.
+    </p>
+    <div class="hero-ctas">
+      <a href="https://wa.me/5492665242011" target="_blank" class="btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="currentColor"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.128.557 4.127 1.529 5.862L.057 23.486a.5.5 0 00.609.61l5.624-1.472A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.956 9.956 0 01-5.079-1.39l-.364-.214-3.774.988.988-3.774-.214-.364A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" fill="currentColor"/></svg>
+        Hablemos por WhatsApp
+      </a>
+      <a href="https://aguscalcagno.com" target="_blank" class="btn-secondary">
+        Agendá tu Auditoría gratuita →
+      </a>
+    </div>
+  </section>
+
+  <!-- PARA QUIÉN -->
+  <section class="para-quien">
+    <div class="section-inner">
+      <p class="section-label">¿Es para mí?</p>
+      <h2>Esto es para vos si…</h2>
+      <div class="checks-grid">
+        <div class="check-item">
+          <div class="check-dot"></div>
+          <p>Sos artista, músico o creador y no sabés cómo traducir tu trabajo en ingresos digitales consistentes.</p>
+        </div>
+        <div class="check-item">
+          <div class="check-dot"></div>
+          <p>Posteás pero no convertís — tenés presencia en redes pero no tenés claridad sobre qué vendés ni a quién.</p>
+        </div>
+        <div class="check-item">
+          <div class="check-dot"></div>
+          <p>Querés hacer publicidad pero sin boostear publicaciones al azar — con estrategia real y criterio.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICIOS -->
+  <section class="servicios">
+    <p class="section-label">Lo que hacemos</p>
+    <h2>Dos caminos,<br>un mismo método.</h2>
+    <div class="servicios-grid">
+
+      <!-- FORMACIÓN -->
+      <div class="card-formacion">
+        <span class="card-badge">Programa Grupal</span>
+        <h3>Formación<br>Semilla</h3>
+        <p class="card-sub">El programa grupal para artistas que quieren aprender a gestionar, crecer y profesionalizar su proyecto online.</p>
+        <div class="formacion-items">
+          <div class="formacion-item">
+            <div class="fi-icon">📚</div>
+            <div class="fi-text">
+              <strong>Clase teórica semanal</strong>
+              <span>Temas concretos y probados: campañas, lanzamientos, modelo de negocio y más</span>
+            </div>
+          </div>
+          <div class="formacion-item">
+            <div class="fi-icon">🌱</div>
+            <div class="fi-text">
+              <strong>2hs de Grupo Semilla con Agus</strong>
+              <span>Consultas en vivo, feedback directo sobre tu proyecto</span>
+            </div>
+          </div>
+          <div class="formacion-item">
+            <div class="fi-icon">🎬</div>
+            <div class="fi-text">
+              <strong>Curso de anuncios avanzados en Meta + materiales</strong>
+              <span>Plantillas, planner, briefing y más para implementar desde el día uno</span>
+            </div>
+          </div>
+        </div>
+        <div class="formacion-price">$90.000 <span>ARS / mes</span></div>
+        <a href="/formacion" class="btn-card">
+          Ver programa completo →
+        </a>
+      </div>
+
+      <!-- INDIVIDUALES -->
+      <div class="card-individuales">
+        <h3>Servicios<br>Individuales</h3>
+        <p class="card-sub">Para proyectos que necesitan trabajo específico y acompañamiento personalizado con Agus.</p>
+        <div class="individual-items">
+
+          <div class="ind-item" onclick="toggleAcordeon(this)">
+            <div class="ind-num">01</div>
+            <span>Mentoría Individual</span>
+            <div class="ind-arrow">▾</div>
+          </div>
+          <div class="ind-detail">
+            <p>Encuentros online 1:1 con Agus para evaluar y gestionar temas puntuales de tu proyecto: estrategia, contenidos, campañas publicitarias.</p>
+            <strong>$180.000 ARS <em>/ mes (4 encuentros)</em></strong>
+          </div>
+
+          <div class="ind-item" onclick="toggleAcordeon(this)">
+            <div class="ind-num">02</div>
+            <span>Setup Inicial</span>
+            <div class="ind-arrow">▾</div>
+          </div>
+          <div class="ind-detail">
+            <p>Proceso integral de 6 meses para llevar tu proyecto de 0 a 100. Incluye identidad visual, web, contenidos de redes, pauta publicitaria y planificación estratégica.</p>
+            <strong>$250.000 ARS / mes <em>(proceso de 6 meses)</em></strong>
+          </div>
+
+          <div class="ind-item" onclick="toggleAcordeon(this)">
+            <div class="ind-num">03</div>
+            <span>Anuncios Avanzados</span>
+            <div class="ind-arrow">▾</div>
+          </div>
+          <div class="ind-detail">
+            <p>Para proyectos con marca desarrollada que quieren escalar: más seguidores, venta de tickets, oyentes en Spotify o views en YouTube. Diseñamos, gestionamos y escalamos campañas en Meta Ads, YouTube Ads y Spotify Ads.</p>
+            <strong>USD 300 / mes — <a href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20quiero%20saber%20m%C3%A1s%20sobre%20Anuncios%20Avanzados" target="_blank">Hablemos</a></strong>
+          </div>
+
+        </div>
+        <a href="https://aguscalcagno.com/s/auditoria-inicial-con-agus" target="_blank" class="btn-card">
+          Agendá tu Auditoría →
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- VIDEO -->
+  <section class="video-section">
+    <div class="video-inner">
+      <div class="video-text">
+        <p class="section-label">Hola, soy Agus</p>
+        <h2>El árbol ya está en la semilla.</h2>
+        <p>El potencial de tu proyecto artístico ya existe. Hay que ordenarlo, estructurarlo y hacerlo crecer. En este video te cuento cómo lo hacemos en Semilla Redes.</p>
+      </div>
+      <!-- Reemplazá el href con tu link de YouTube cuando tengas el video -->
+      <a href="https://www.youtube.com/@semillaredes" target="_blank" class="video-placeholder">
+        <div class="play-btn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <span class="video-label">Ver el video de Agus</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- TESTIMONIOS -->
+  <section class="testimonios">
+    <p class="section-label">150+ artistas felices</p>
+    <h2>Lo que dicen quienes<br>ya dieron el paso.</h2>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <blockquote>"Logramos aumentar la presencia en el mundo digital pero lo más interesante es que es una presencia con la que me siento cómoda. Por primera vez el mundo digital no es un pendiente que detesto."</blockquote>
+        <p class="testi-author">Lara Fichera</p>
+        <p class="testi-loc">La Plata, Argentina</p>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <blockquote>"Semilla se transformó en uno más en mi equipo de trabajo. Los conocimientos y seriedad en el trabajo dan mucha confiabilidad. Los resultados se ven en el día a día."</blockquote>
+        <p class="testi-author">Maria Marta Crespo</p>
+        <p class="testi-loc">San Isidro, Argentina</p>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <blockquote>"Con su acompañamiento, no solo empecé a ver mejores resultados, sino que aprendí a promocionar mi obra por mi cuenta, conectando y vendiendo al público adecuado."</blockquote>
+        <p class="testi-author">Manu Durañona</p>
+        <p class="testi-loc">Pilar, Argentina</p>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <blockquote>"Las mentorías me brindaron herramientas valiosas para desarrollar mi negocio artístico y conectar con mi audiencia. Lanzamos varios sencillos con gran alcance y éxito en CDMX y Latinoamérica."</blockquote>
+        <p class="testi-author">Luis Gamarra</p>
+        <p class="testi-loc">Ciudad de México</p>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <blockquote>"Desde que trabajamos juntos pude empezar a vender obras con mucha frecuencia. Junto a Agus lanzamos varios proyectos y cada uno con resultados concretos."</blockquote>
+        <p class="testi-author">Iván Espeche Gil</p>
+        <p class="testi-loc">Argentina</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRABAJAMOS CON -->
+  <section class="clientes">
+    <div class="section-inner">
+      <p class="section-label">Más de 150 artistas felices</p>
+      <h2>Trabajamos con</h2>
+      <div class="clientes-grid">
+        <a href="https://www.instagram.com/alansuttonylascriaturitas/" target="_blank" class="cliente-item">Alan Sutton y las Criaturitas</a>
+        <a href="https://www.instagram.com/federico.andahazi/" target="_blank" class="cliente-item">Federico Andahazi</a>
+        <a href="https://www.instagram.com/larafichera/" target="_blank" class="cliente-item">Lara Fichera</a>
+        <a href="https://www.instagram.com/luisgamarramusic/" target="_blank" class="cliente-item">Luis Gamarra</a>
+        <a href="https://www.instagram.com/mariamartacrespo.art/" target="_blank" class="cliente-item">María Marta Crespo</a>
+        <a href="https://www.instagram.com/manuduranona.art/" target="_blank" class="cliente-item">Manu Durañona</a>
+        <span class="cliente-item">Sin Fronteras Duo</span>
+        <span class="cliente-item">Los Soplafortune</span>
+        <span class="cliente-item cliente-more">Y muchos, muchos más →</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="cta-final">
+    <p class="section-label">El primer paso</p>
+    <h2>Transformá tu arte<br>en un <em>negocio digital.</em></h2>
+    <p>Elegí cómo querés arrancar. Podemos hablar por WhatsApp o agendás una auditoría gratuita con Agus.</p>
+    <div class="cta-buttons">
+      <a href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20quiero%20saber%20m%C3%A1s%20sobre%20Semilla%20Redes" target="_blank" class="btn-wsp">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="currentColor"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.128.557 4.127 1.529 5.862L.057 23.486a.5.5 0 00.609.61l5.624-1.472A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.956 9.956 0 01-5.079-1.39l-.364-.214-3.774.988.988-3.774-.214-.364A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" fill="currentColor"/></svg>
+        Hablemos por WhatsApp
+      </a>
+      <a href="https://aguscalcagno.com/s/auditoria-inicial-con-agus" target="_blank" class="btn-auditoria">
+        Agendá tu Auditoría gratuita →
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 Semilla Redes — <a href="mailto:contacto@semillaredes.com">contacto@semillaredes.com</a> — <a href="https://instagram.com/semillaredes" target="_blank">@semillaredes</a></p>
+  </footer>
+
+  <script>
+    function toggleAcordeon(item) {
+      const detail = item.nextElementSibling;
+      const isOpen = item.classList.contains('open');
+      // cerrar todos
+      document.querySelectorAll('.ind-item').forEach(i => i.classList.remove('open'));
+      document.querySelectorAll('.ind-detail').forEach(d => d.classList.remove('open'));
+      // abrir el clickeado si estaba cerrado
+      if (!isOpen) {
+        item.classList.add('open');
+        detail.classList.add('open');
+      }
+    }
+  </script>
+</body>
+</html>
