@@ -523,52 +523,16 @@
       color: rgba(26,36,86,0.75);
     }
 
-    .video-placeholder {
-      background: var(--navy);
+    .video-embed {
       border-radius: 12px;
-      aspect-ratio: 16/9;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      cursor: pointer;
-      position: relative;
       overflow: hidden;
-      text-decoration: none;
+      aspect-ratio: 16/9;
     }
 
-    .video-placeholder::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(122,31,58,0.3), rgba(26,36,86,0.9));
-    }
-
-    .play-btn {
-      width: 64px;
-      height: 64px;
-      background: var(--rose);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      z-index: 1;
-      transition: transform 0.2s;
-    }
-
-    .video-placeholder:hover .play-btn { transform: scale(1.08); }
-
-    .play-btn svg { margin-left: 4px; }
-
-    .video-label {
-      position: relative;
-      z-index: 1;
-      font-size: 13px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.6);
-      letter-spacing: 0.05em;
+    .video-embed iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
     /* TESTIMONIOS */
@@ -958,13 +922,9 @@
         <h2>El árbol ya está en la semilla.</h2>
         <p>El potencial de tu proyecto artístico ya existe. Hay que ordenarlo, estructurarlo y hacerlo crecer. En este video te cuento cómo lo hacemos en Semilla Redes.</p>
       </div>
-      <!-- Reemplazá el href con tu link de YouTube cuando tengas el video -->
-      <a href="https://www.youtube.com/@semillaredes" target="_blank" class="video-placeholder">
-        <div class="play-btn">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-        </div>
-        <span class="video-label">Ver el video de Agus</span>
-      </a>
+      <div class="video-embed">
+        <iframe src="https://www.youtube.com/embed/Kvkkzss40Ws" title="Video Agus Calcagno - Semilla Redes" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
     </div>
   </section>
 
