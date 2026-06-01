@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Formación Semilla — Para Community Managers y SMM del sector cultural</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cline x1='22' y1='22' x2='4' y2='22' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='40' y2='22' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='22' y2='4' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='22' y2='40' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='8' y2='8' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='36' y2='36' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='36' y2='8' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='8' y2='36' stroke='%23C97080' stroke-width='1.5'/%3E%3Cpath d='M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z' fill='%237A8A42'/%3E%3Ccircle cx='4' cy='22' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='40' cy='22' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='22' cy='4' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='22' cy='40' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='8' cy='8' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='36' cy='36' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='36' cy='8' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='8' cy='36' r='2.5' fill='%23C97080'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --cream: #F2EDE4;
+      --cream-dark: #E8E0D4;
+      --navy: #1A2456;
+      --wine: #7A1F3A;
+      --rose: #C97080;
+      --olive: #7A8A42;
+      --text: #2A2A2A;
+      --white: #FDFAF6;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--cream);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 48px;
+      position: sticky;
+      top: 0;
+      background: var(--cream);
+      z-index: 100;
+      border-bottom: 1px solid rgba(26,36,86,0.08);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-icon { width: 44px; height: 44px; }
+
+    .logo-text {
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--navy);
+      line-height: 1.15;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .nav-cta {
+      background: var(--navy);
+      color: var(--white);
+      padding: 10px 22px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--wine); }
+
+    /* HERO */
+    .hero {
+      padding: 80px 48px 100px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--olive);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 2px;
+      margin-bottom: 32px;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(42px, 6vw, 72px);
+      font-weight: 900;
+      color: var(--navy);
+      line-height: 1.05;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 .italic-line {
+      font-style: italic;
+      font-weight: 700;
+      color: var(--rose);
+      display: block;
+    }
+
+    .hero-divider {
+      width: 48px;
+      height: 3px;
+      background: var(--olive);
+      margin: 32px 0;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--text);
+      max-width: 620px;
+      margin-bottom: 40px;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+
+    .hero-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .hero-meta-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--olive);
+    }
+
+    .hero-meta-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--navy);
+      color: var(--white);
+      padding: 16px 32px;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: var(--wine); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--navy);
+      padding: 16px 24px;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1.5px solid var(--navy);
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: var(--navy); color: var(--white); }
+
+    /* QUÉ ES */
+    .que-es {
+      background: var(--navy);
+      color: var(--white);
+      padding: 80px 48px;
+    }
+
+    .que-es-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 16px;
+    }
+
+    .que-es h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: 24px;
+      max-width: 700px;
+    }
+
+    .que-es p {
+      font-size: 17px;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.8);
+      max-width: 660px;
+      margin-bottom: 16px;
+    }
+
+    /* PILARES */
+    .pilares {
+      padding: 80px 48px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .pilares h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 48px;
+      line-height: 1.2;
+    }
+
+    .pilares-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .pilar-card {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 36px 28px;
+      border-top: 4px solid var(--olive);
+    }
+
+    .pilar-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 16px;
+    }
+
+    .pilar-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+
+    .pilar-card p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #555;
+    }
+
+    /* PARA QUIÉN */
+    .para-quien {
+      background: var(--cream-dark);
+      padding: 80px 48px;
+    }
+
+    .para-quien-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .para-quien h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 40px;
+      line-height: 1.2;
+    }
+
+    .checks-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .check-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .check-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--olive);
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    .check-item p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    /* CÓMO FUNCIONA */
+    .como-funciona {
+      padding: 80px 48px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .como-funciona h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 48px;
+    }
+
+    .pasos {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .paso {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .paso-num {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--cream-dark);
+      line-height: 1;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .paso h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: 0.02em;
+    }
+
+    .paso p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #666;
+    }
+
+    /* MINI BIO */
+    .mini-bio {
+      padding: 80px 48px;
+      background: var(--cream-dark);
+    }
+
+    .mini-bio-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .mini-bio-avatar {
+      width: 200px;
+      height: 200px;
+      border-radius: 16px;
+      flex-shrink: 0;
+      border: 4px solid var(--rose);
+      background-image: url('https://bu-cdn.tiendup.com/business/34906/products/pbGQ63_687bf3a6160cd_medium.png');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+    }
+
+    .mini-bio-text .section-label {
+      color: var(--olive);
+      letter-spacing: 0.15em;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .mini-bio-text h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+
+    .mini-bio-text p {
+      font-size: 16px;
+      line-height: 1.75;
+      color: #555;
+    }
+
+    @media (max-width: 768px) {
+      .mini-bio { padding: 60px 24px; }
+      .mini-bio-inner { flex-direction: column; gap: 24px; }
+      .mini-bio-avatar { width: 120px; height: 120px; }
+    }
+
+    /* SEPARADOR QUOTE */
+    .quote-sep {
+      background: var(--olive);
+      padding: 64px 48px;
+      text-align: center;
+    }
+
+    .quote-sep blockquote {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .quote-sep .quote-main {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(24px, 3.5vw, 38px);
+      font-weight: 700;
+      font-style: italic;
+      color: var(--white);
+      line-height: 1.3;
+      margin-bottom: 20px;
+    }
+
+    .quote-sep .quote-sub {
+      font-size: 16px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.8);
+    }
+
+    @media (max-width: 768px) {
+      .quote-sep { padding: 48px 24px; }
+    }
+
+    /* TEMARIO */
+    .temario {
+      padding: 80px 48px;
+      background: var(--navy);
+    }
+
+    .temario-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .temario-inner > .section-label {
+      color: var(--rose);
+      letter-spacing: 0.15em;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .temario-inner > h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 56px;
+      line-height: 1.2;
+    }
+
+    .modulos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .modulo {
+      border-top: 2px solid var(--rose);
+      padding-top: 24px;
+    }
+
+    .modulo-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 20px;
+    }
+
+    .clase {
+      margin-bottom: 20px;
+    }
+
+    .clase-num {
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+
+    .clase p {
+      font-size: 13px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.75);
+    }
+
+    @media (max-width: 768px) {
+      .temario { padding: 60px 24px; }
+      .modulos-grid { grid-template-columns: 1fr; gap: 40px; }
+    }
+
+    /* PRECIO */
+    .precio {
+      background: var(--navy);
+      padding: 80px 48px;
+    }
+
+    .precio-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .precio-left .section-label { color: var(--rose); }
+
+    .precio-left h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .precio-left p {
+      font-size: 16px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 32px;
+    }
+
+    .precio-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 40px 36px;
+    }
+
+    .precio-amount {
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .precio-period {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 28px;
+    }
+
+    .precio-includes {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+
+    .precio-includes li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .precio-includes li::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--olive);
+      flex-shrink: 0;
+    }
+
+    .btn-white {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--white);
+      color: var(--navy);
+      padding: 16px 28px;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s;
+      width: 100%;
+      justify-content: center;
+    }
+    .btn-white:hover { background: var(--cream); }
+
+    /* VIDEO SECTION */
+    .video-section-form {
+      padding: 80px 48px;
+      background: var(--cream-dark);
+    }
+
+    .video-form-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .video-form-inner .section-label { color: var(--olive); }
+
+    .video-form-inner h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(24px, 3.5vw, 40px);
+      color: var(--navy);
+      margin-bottom: 32px;
+    }
+
+    .video-embed-form {
+      border-radius: 12px;
+      overflow: hidden;
+      aspect-ratio: 16/9;
+    }
+
+    .video-embed-form iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .video-section-form { padding: 60px 24px; }
+    }
+
+    /* CTA FINAL */
+    .cta-final {
+      padding: 100px 48px;
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .cta-final h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 900;
+      color: var(--navy);
+      margin-bottom: 20px;
+      line-height: 1.1;
+    }
+
+    .cta-final h2 em {
+      font-style: italic;
+      color: var(--rose);
+    }
+
+    .cta-final p {
+      font-size: 17px;
+      line-height: 1.7;
+      color: #555;
+      margin-bottom: 40px;
+    }
+
+    .cta-final .hero-ctas { justify-content: center; }
+
+    /* FOOTER */
+    footer {
+      background: var(--navy);
+      padding: 40px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-brand {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: rgba(255,255,255,0.8); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .hero { padding: 48px 24px 64px; }
+      .pilares { padding: 60px 24px; }
+      .pilares-grid { grid-template-columns: 1fr; }
+      .para-quien { padding: 60px 24px; }
+      .checks-grid { grid-template-columns: 1fr; }
+      .como-funciona { padding: 60px 24px; }
+      .pasos { grid-template-columns: 1fr 1fr; }
+      .precio { padding: 60px 24px; }
+      .precio-inner { grid-template-columns: 1fr; gap: 40px; }
+      .cta-final { padding: 60px 24px; }
+      .que-es { padding: 60px 24px; }
+      footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="https://landing.semillaredes.com" class="logo">
+      <svg class="logo-icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="22" y1="22" x2="4" y2="22" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="40" y2="22" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="22" y2="4" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="22" y2="40" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="8" y2="8" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="36" y2="36" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="36" y2="8" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="8" y2="36" stroke="#C97080" stroke-width="1.5"/>
+        <path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/>
+        <line x1="22" y1="11" x2="22" y2="33" stroke="white" stroke-width="0.8" opacity="0.6"/>
+        <line x1="22" y1="16" x2="18" y2="19" stroke="white" stroke-width="0.5" opacity="0.5"/>
+        <line x1="22" y1="16" x2="26" y2="19" stroke="white" stroke-width="0.5" opacity="0.5"/>
+        <line x1="22" y1="22" x2="17" y2="23" stroke="white" stroke-width="0.5" opacity="0.5"/>
+        <line x1="22" y1="22" x2="27" y2="23" stroke="white" stroke-width="0.5" opacity="0.5"/>
+        <line x1="22" y1="27" x2="18" y2="29" stroke="white" stroke-width="0.5" opacity="0.5"/>
+        <line x1="22" y1="27" x2="26" y2="29" stroke="white" stroke-width="0.5" opacity="0.5"/>
+        <circle cx="4" cy="22" r="2.5" fill="#C97080"/>
+        <circle cx="40" cy="22" r="2.5" fill="#C97080"/>
+        <circle cx="22" cy="4" r="2.5" fill="#C97080"/>
+        <circle cx="22" cy="40" r="2.5" fill="#C97080"/>
+        <circle cx="8" cy="8" r="2.5" fill="#C97080"/>
+        <circle cx="36" cy="36" r="2.5" fill="#C97080"/>
+        <circle cx="36" cy="8" r="2.5" fill="#C97080"/>
+        <circle cx="8" cy="36" r="2.5" fill="#C97080"/>
+      </svg>
+      <span class="logo-text">SEMILLA<br><span style="font-weight:400;letter-spacing:0.2em;">REDES</span></span>
+    </a>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfnRfQPOINqMUXiZwB4znF5WTkIcc-sl5cQRHuUGT61CSei6w/viewform?usp=header" target="_blank" class="nav-cta">Quiero especializarme</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="badge">Formación Especializada · CM y SMM · Cupos Limitados</div>
+    <h1>
+      Especializate en el sector cultural.
+      <span class="italic-line">El nicho que te cambia la carrera.</span>
+    </h1>
+    <div class="hero-divider"></div>
+    <p class="hero-sub">
+      Si sos Community Manager o Social Media Manager y querés trabajar con músicos, artistas y proyectos culturales — este programa es tu formación especializada. Aprendés el lenguaje, la lógica y la estrategia del sector cultural con acompañamiento semanal de Agus Calcagno.
+    </p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Frecuencia</span>
+        <span class="hero-meta-value">Semanal · Online</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Inversión</span>
+        <span class="hero-meta-value">$90.000 ARS / mes</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Formato</span>
+        <span class="hero-meta-value">Online · En vivo</span>
+      </div>
+    </div>
+    <div class="hero-ctas">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSfnRfQPOINqMUXiZwB4znF5WTkIcc-sl5cQRHuUGT61CSei6w/viewform?usp=header" target="_blank" class="btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Quiero especializarme
+      </a>
+      <a href="#que-es" class="btn-secondary">Conocer el programa →</a>
+      <a href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20quiero%20saber%20m%C3%A1s%20sobre%20la%20formaci%C3%B3n%20para%20CMs%20del%20sector%20cultural" target="_blank" class="btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="currentColor"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.128.557 4.127 1.529 5.862L.057 23.486a.5.5 0 00.609.61l5.624-1.472A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.956 9.956 0 01-5.079-1.39l-.364-.214-3.774.988.988-3.774-.214-.364A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" fill="currentColor"/></svg>
+        Consultar por WhatsApp
+      </a>
+    </div>
+  </section>
+
+  <!-- QUÉ ES -->
+  <section class="que-es" id="que-es">
+    <div class="que-es-inner">
+      <p class="section-label">El programa</p>
+      <h2>No es un curso de redes. Es una especialización en el sector cultural.</h2>
+      <p>
+        Sabés manejar redes. Sabés hacer contenido. Lo que te falta es entender cómo funciona el mundo de los artistas, los músicos y los proyectos culturales — su lógica de negocio, sus tiempos, su lenguaje y sus plataformas específicas.
+      </p>
+      <p>
+        Cada semana trabajamos un tema concreto y tenés 2 horas de grupo Semilla en vivo con Agus para consultar sobre tus clientes, tus campañas y tu posicionamiento como especialista cultural.
+      </p>
+    </div>
+  </section>
+
+  <!-- SEPARADOR QUOTE -->
+  <section class="quote-sep">
+    <blockquote>
+      <p class="quote-main">La especialización no es un límite. Es tu diferencial más valioso.</p>
+      <p class="quote-sub">Hay miles de CMs genéricos. Hay muy pocos que entienden de verdad cómo funciona un proyecto artístico. Ese es el lugar que podés ocupar.</p>
+    </blockquote>
+  </section>
+
+  <!-- PILARES -->
+  <section class="pilares">
+    <p class="section-label" style="color:var(--olive);letter-spacing:0.15em;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:16px;">Lo que aprendés</p>
+    <h2>Tres áreas. Una especialización real.</h2>
+    <div class="pilares-grid">
+      <div class="pilar-card">
+        <div class="pilar-num">01 · Negocio cultural</div>
+        <h3>Cómo funciona el negocio</h3>
+        <p>Entendés los modelos de ingreso del sector cultural: shows, cursos, licencias, streaming, ventas de obra. Aprendés a hablarle al artista sobre dinero, estrategia y crecimiento.</p>
+      </div>
+      <div class="pilar-card">
+        <div class="pilar-num">02 · Comunicación cultural</div>
+        <h3>Contenido para artistas</h3>
+        <p>Aprendés a construir identidad de marca, planear contenidos y trabajar con artistas que no quieren "ser influencers". Estrategia que conecta sin forzar.</p>
+      </div>
+      <div class="pilar-card">
+        <div class="pilar-num">03 · Publicidad especializada</div>
+        <h3>Anuncios para cultura</h3>
+        <p>Meta Ads, Spotify Ads y YouTube Ads aplicados al sector cultural. Públicos para músicos, campañas para lanzamientos, seguidores calificados para artistas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARA QUIÉN -->
+  <section class="para-quien">
+    <div class="para-quien-inner">
+      <p class="section-label" style="color:var(--rose);letter-spacing:0.15em;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:16px;">¿Es para mí?</p>
+      <h2>Esto es para vos si…</h2>
+      <div class="checks-grid">
+        <div class="check-item">
+          <div class="check-dot"></div>
+          <p>Sos CM o SMM y querés dejar de ser genérico para convertirte en referente de un nicho que te apasiona.</p>
+        </div>
+        <div class="check-item">
+          <div class="check-dot"></div>
+          <p>Ya tenés clientes del sector cultural (músicos, artistas, galerías, sellos) pero sentís que no terminás de entender su lógica.</p>
+        </div>
+        <div class="check-item">
+          <div class="check-dot"></div>
+          <p>Querés cobrar más, y entendés que la especialización es el camino para justificar un precio mayor.</p>
+        </div>
+        <div class="check-item">
+          <div class="check-dot"></div>
+          <p>Te gusta la música, el arte y la cultura, y querés que tu vida profesional tenga que ver con eso.</p>
+        </div>
+        <div class="check-item">
+          <div class="check-dot"></div>
+          <p>Frustrado/a con artistas que no entienden el valor de las redes — querés aprender a comunicárselo.</p>
+        </div>
+        <div class="check-item">
+          <div class="check-dot"></div>
+          <p>Necesitás aprender publicidad paga para proyectos culturales: cómo se configura, qué se mide, cómo se justifica.</p>
+        </div>
+        <div class="check-item">
+          <div class="check-dot"></div>
+          <p>Querés acompañamiento real, no un curso grabado que ves solo — seguimiento semana a semana con feedback directo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CÓMO FUNCIONA -->
+  <section class="como-funciona">
+    <p class="section-label" style="color:var(--olive);letter-spacing:0.15em;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:16px;">El formato</p>
+    <h2>Qué incluye cada semana</h2>
+    <div class="pasos">
+      <div class="paso">
+        <div class="paso-num">01</div>
+        <h4>Clase teórica semanal</h4>
+        <p>Temas puntuales y aplicables: cómo hablar con artistas de negocios, cómo armar campañas para músicos, cómo planear contenido cultural, cómo medir resultados en proyectos creativos.</p>
+      </div>
+      <div class="paso">
+        <div class="paso-num">02</div>
+        <h4>2hs semanales de grupo Semilla</h4>
+        <p>Espacio de consultas en vivo con Agus. Traés tus casos, tus clientes, tus campañas — y recibís feedback directo de alguien con 15 años trabajando en el sector.</p>
+      </div>
+      <div class="paso">
+        <div class="paso-num">03</div>
+        <h4>Curso de anuncios avanzados en Meta</h4>
+        <p>Acceso completo al curso de publicidad en Meta Ads aplicado a proyectos culturales: públicos, embudos, optimización para músicos y artistas.</p>
+      </div>
+      <div class="paso">
+        <div class="paso-num">04</div>
+        <h4>Materiales y plantillas</h4>
+        <p>Plantilla de control de campañas, briefing de artista, planner de contenidos culturales y más herramientas para trabajar con tus clientes del sector.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MINI BIO -->
+  <section class="mini-bio">
+    <div class="mini-bio-inner">
+      <div class="mini-bio-avatar"></div>
+      <div class="mini-bio-text">
+        <span class="section-label">Quién te acompaña</span>
+        <h3>Agus Calcagno</h3>
+        <p>Estratega digital con más de 20 años de experiencia. Fundador de Semilla Redes, especializado exclusivamente en proyectos artísticos y culturales. Trabajó con más de 150 artistas, músicos, galerías, sellos discográficos e instituciones culturales en toda Iberoamérica y EE.UU.</p>
+        <p style="margin-top:12px;">No enseña marketing genérico. Enseña lo que aprendió haciendo, durante dos décadas, solo en el sector cultural.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEMARIO -->
+  <section class="temario">
+    <div class="temario-inner">
+      <span class="section-label">Lo que vas a aprender</span>
+      <h2>12 clases. 3 módulos. Una especialización concreta.</h2>
+      <div class="modulos-grid">
+
+        <div class="modulo">
+          <div class="modulo-label">Módulo 1 — Negocio cultural</div>
+          <div class="clase">
+            <div class="clase-num">Clase 1</div>
+            <p>Cómo funciona el ecosistema de un proyecto artístico: ingresos, plataformas y lógica de negocio</p>
+          </div>
+          <div class="clase">
+            <div class="clase-num">Clase 2</div>
+            <p>Cómo hablarle a un artista de estrategia, dinero y crecimiento sin que se cierre</p>
+          </div>
+          <div class="clase">
+            <div class="clase-num">Clase 3</div>
+            <p>Cómo armar un plan de trabajo y propuesta de servicios para clientes culturales</p>
+          </div>
+          <div class="clase">
+            <div class="clase-num">Clase 4</div>
+            <p>Cómo ordenar objetivos, métricas y reportes para proyectos artísticos</p>
+          </div>
+        </div>
+
+        <div class="modulo">
+          <div class="modulo-label">Módulo 2 — Comunicación cultural</div>
+          <div class="clase">
+            <div class="clase-num">Clase 5</div>
+            <p>Cómo construir identidad de marca para un artista o proyecto cultural</p>
+          </div>
+          <div class="clase">
+            <div class="clase-num">Clase 6</div>
+            <p>Cómo planear contenidos para músicos, artistas visuales y proyectos escénicos</p>
+          </div>
+          <div class="clase">
+            <div class="clase-num">Clase 7</div>
+            <p>Cómo hacer redes con artistas que no quieren "ser influencers"</p>
+          </div>
+          <div class="clase">
+            <div class="clase-num">Clase 8</div>
+            <p>Cómo armar un planner de contenidos sostenible para clientes del sector cultural</p>
+          </div>
+        </div>
+
+        <div class="modulo">
+          <div class="modulo-label">Módulo 3 — Publicidad para cultura</div>
+          <div class="clase">
+            <div class="clase-num">Clase 9</div>
+            <p>Cómo configurar y gestionar Meta Ads para proyectos artísticos y culturales</p>
+          </div>
+          <div class="clase">
+            <div class="clase-num">Clase 10</div>
+            <p>Cómo definir y segmentar públicos específicos para músicos y artistas</p>
+          </div>
+          <div class="clase">
+            <div class="clase-num">Clase 11</div>
+            <p>Cómo hacer campañas para lanzamientos musicales, shows y productos culturales</p>
+          </div>
+          <div class="clase">
+            <div class="clase-num">Clase 12</div>
+            <p>Spotify Ads y YouTube Ads aplicados al sector cultural: estrategia y ejecución</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PRECIO -->
+  <section class="precio">
+    <div class="precio-inner">
+      <div class="precio-left">
+        <p class="section-label">La inversión</p>
+        <h2>Tu especialización en el sector cultural</h2>
+        <p>Clases semanales + grupo de consultas en vivo + curso de Meta Ads + plantillas para trabajar con clientes del sector cultural desde el primer día.</p>
+        <p>Completá la pre-inscripción y te contactamos con los detalles.</p>
+      </div>
+      <div class="precio-card">
+        <div class="precio-amount">$90.000</div>
+        <div class="precio-period">ARS por mes · También USD 60/mes</div>
+        <ul class="precio-includes">
+          <li>Clase teórica semanal aplicada al sector cultural</li>
+          <li>2hs semanales de grupo Semilla con Agus</li>
+          <li>Curso de anuncios avanzados en Meta</li>
+          <li>Plantilla de control de campañas para artistas</li>
+          <li>Briefing de artista + planner de contenidos culturales</li>
+          <li>Comunidad de CMs especializados en cultura</li>
+        </ul>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfnRfQPOINqMUXiZwB4znF5WTkIcc-sl5cQRHuUGT61CSei6w/viewform?usp=header" target="_blank" class="btn-white">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Completar pre-inscripción
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO -->
+  <section class="video-section-form">
+    <div class="video-form-inner">
+      <p class="section-label">Mirá de qué hablamos</p>
+      <h2>El sector cultural como especialización profesional.</h2>
+      <div class="video-embed-form">
+        <iframe src="https://www.youtube.com/embed/UEcGVTLod4U" title="Semilla Redes — Formación para CMs del sector cultural" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="cta-final">
+    <h2>El nicho ya existe.<br><em>Ocupalo vos.</em></h2>
+    <p>El sector cultural necesita CMs que lo entiendan de verdad. Con Semilla aprendés a ser uno de ellos.</p>
+    <div class="hero-ctas">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSfnRfQPOINqMUXiZwB4znF5WTkIcc-sl5cQRHuUGT61CSei6w/viewform?usp=header" target="_blank" class="btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Quiero especializarme
+      </a>
+      <a href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20quiero%20saber%20m%C3%A1s%20sobre%20la%20formaci%C3%B3n%20para%20CMs%20del%20sector%20cultural" target="_blank" class="btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="currentColor"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.128.557 4.127 1.529 5.862L.057 23.486a.5.5 0 00.609.61l5.624-1.472A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.956 9.956 0 01-5.079-1.39l-.364-.214-3.774.988.988-3.774-.214-.364A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" fill="currentColor"/></svg>
+        Consultar por WhatsApp
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-brand">Semilla Redes · Por Agus Calcagno</span>
+    <div class="footer-links">
+      <a href="https://landing.semillaredes.com">Ver todos los servicios</a>
+      <a href="https://instagram.com/semillaredes" target="_blank">Instagram</a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSfnRfQPOINqMUXiZwB4znF5WTkIcc-sl5cQRHuUGT61CSei6w/viewform?usp=header" target="_blank">Formulario</a>
+    </div>
+  </footer>
+
+</body>
+</html>
