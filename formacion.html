@@ -681,6 +681,36 @@
       margin-top: 2px;
     }
 
+    /* VIDEO SECTION */
+    .video-section-form {
+      padding: 80px 48px;
+      background: var(--cream-dark);
+    }
+    .video-form-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .video-form-inner .section-label { color: var(--olive); }
+    .video-form-inner h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(24px, 3.5vw, 40px);
+      color: var(--navy);
+      margin-bottom: 32px;
+    }
+    .video-embed-form {
+      border-radius: 12px;
+      overflow: hidden;
+      aspect-ratio: 16/9;
+    }
+    .video-embed-form iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    @media (max-width: 768px) {
+      .video-section-form { padding: 60px 24px; }
+    }
+
     /* CTA FINAL */
     .cta-final {
       padding: 100px 48px;
@@ -1081,6 +1111,17 @@
           <div class="testi-author">Manu Durañona</div>
           <div class="testi-role">Músico y compositor</div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO -->
+  <section class="video-section-form">
+    <div class="video-form-inner">
+      <p class="section-label">Mirá cómo funciona</p>
+      <h2>El método Semilla en acción.</h2>
+      <div class="video-embed-form">
+        <iframe src="https://www.youtube.com/embed/ncBZ5-fH0wo" title="Video Formación Semilla" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
       </div>
     </div>
   </section>
