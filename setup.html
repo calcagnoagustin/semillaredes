@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Setup Inicial — De 0 a 100 en 180 días | Semilla Redes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cline x1='22' y1='22' x2='4' y2='22' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='40' y2='22' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='22' y2='4' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='22' y2='40' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='8' y2='8' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='36' y2='36' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='36' y2='8' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='8' y2='36' stroke='%23C97080' stroke-width='1.5'/%3E%3Cpath d='M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z' fill='%237A8A42'/%3E%3Cline x1='22' y1='11' x2='22' y2='33' stroke='white' stroke-width='0.8' opacity='0.6'/%3E%3Ccircle cx='4' cy='22' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='40' cy='22' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='22' cy='4' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='22' cy='40' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='8' cy='8' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='36' cy='36' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='36' cy='8' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='8' cy='36' r='2.5' fill='%23C97080'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --cream: #F2EDE4;
+      --cream-dark: #E8E0D4;
+      --navy: #1A2456;
+      --wine: #7A1F3A;
+      --rose: #C97080;
+      --olive: #7A8A42;
+      --text: #2A2A2A;
+      --white: #FDFAF6;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--cream);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 48px;
+      position: sticky;
+      top: 0;
+      background: var(--cream);
+      z-index: 100;
+      border-bottom: 1px solid rgba(26,36,86,0.08);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-icon { width: 44px; height: 44px; }
+
+    .logo-text {
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--navy);
+      line-height: 1.15;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .nav-cta {
+      background: var(--navy);
+      color: var(--white);
+      padding: 10px 22px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--wine); }
+
+    /* HERO */
+    .hero {
+      padding: 80px 48px 100px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--navy);
+      color: var(--white);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 2px;
+      margin-bottom: 32px;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(42px, 6vw, 76px);
+      font-weight: 900;
+      color: var(--navy);
+      line-height: 1.05;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 .italic-line {
+      font-style: italic;
+      font-weight: 700;
+      color: var(--rose);
+      display: block;
+    }
+
+    .hero-divider {
+      width: 48px;
+      height: 3px;
+      background: var(--olive);
+      margin: 32px 0;
+    }
+
+    .hero-sub {
+      font-size: 19px;
+      line-height: 1.75;
+      color: var(--text);
+      max-width: 600px;
+      margin-bottom: 48px;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-bottom: 52px;
+      padding: 28px 32px;
+      background: var(--white);
+      border-radius: 8px;
+      border-left: 4px solid var(--olive);
+    }
+
+    .hero-meta-item { display: flex; flex-direction: column; gap: 4px; }
+
+    .hero-meta-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--olive);
+    }
+
+    .hero-meta-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--navy);
+      color: var(--white);
+      padding: 17px 34px;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: var(--wine); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--navy);
+      padding: 17px 24px;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1.5px solid var(--navy);
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: var(--navy); color: var(--white); }
+
+    /* QUÉ ES */
+    .que-es {
+      background: var(--navy);
+      color: var(--white);
+      padding: 80px 48px;
+    }
+
+    .que-es-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .que-es h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 46px);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 24px;
+      max-width: 700px;
+    }
+
+    .que-es p {
+      font-size: 17px;
+      line-height: 1.85;
+      color: rgba(255,255,255,0.8);
+      max-width: 660px;
+      margin-bottom: 20px;
+    }
+
+    /* INCLUYE */
+    .incluye {
+      padding: 80px 48px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .incluye h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+
+    .incluye .intro-text {
+      font-size: 17px;
+      line-height: 1.7;
+      color: #555;
+      max-width: 620px;
+      margin-bottom: 56px;
+    }
+
+    .incluye-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .incluye-card {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 32px 28px;
+      border-top: 4px solid var(--rose);
+      position: relative;
+    }
+
+    .incluye-card .card-icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .incluye-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .incluye-card p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #666;
+    }
+
+    /* LOS 3 PILARES */
+    .pilares {
+      background: var(--cream-dark);
+      padding: 80px 48px;
+    }
+
+    .pilares-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .pilares-inner h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+
+    .pilares-intro {
+      font-size: 17px;
+      line-height: 1.7;
+      color: #555;
+      max-width: 600px;
+      margin-bottom: 56px;
+    }
+
+    .pilares-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .pilar-card {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 36px 28px;
+    }
+
+    .pilar-num {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 16px;
+    }
+
+    .pilar-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 14px;
+      line-height: 1.2;
+    }
+
+    .pilar-card p {
+      font-size: 14px;
+      line-height: 1.75;
+      color: #666;
+    }
+
+    .pilar-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .pilar-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 2px;
+      background: var(--cream-dark);
+      color: var(--navy);
+      letter-spacing: 0.04em;
+    }
+
+    /* CÓMO FUNCIONA */
+    .proceso {
+      background: var(--navy);
+      padding: 80px 48px;
+    }
+
+    .proceso-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .proceso-inner h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+
+    .proceso-intro {
+      font-size: 16px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.7);
+      max-width: 560px;
+      margin-bottom: 56px;
+    }
+
+    .proceso-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      position: relative;
+    }
+
+    .proceso-steps::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(255,255,255,0.12);
+    }
+
+    .step {
+      padding-top: 24px;
+      position: relative;
+    }
+
+    .step-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--rose);
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 10px;
+    }
+
+    .step h4 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .step p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* OBJETIVOS */
+    .objetivos {
+      padding: 80px 48px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .objetivos h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+
+    .objetivos-sub {
+      font-size: 16px;
+      line-height: 1.7;
+      color: #666;
+      max-width: 580px;
+      margin-bottom: 48px;
+    }
+
+    .objetivos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .objetivo-card {
+      background: var(--navy);
+      border-radius: 8px;
+      padding: 36px 28px;
+      text-align: center;
+    }
+
+    .objetivo-plataforma {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 16px;
+    }
+
+    .objetivo-numero {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 3.5vw, 40px);
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .objetivo-unidad {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .objetivos-nota {
+      margin-top: 28px;
+      font-size: 13px;
+      line-height: 1.65;
+      color: #888;
+      font-style: italic;
+    }
+
+    /* PRECIOS */
+    .precios {
+      background: var(--cream-dark);
+      padding: 80px 48px;
+    }
+
+    .precios-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .precios-inner h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+
+    .precios-sub {
+      font-size: 17px;
+      color: #666;
+      max-width: 560px;
+      margin-bottom: 48px;
+      line-height: 1.6;
+    }
+
+    .precios-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    .precio-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 40px 36px;
+      border: 2px solid transparent;
+      position: relative;
+    }
+
+    .precio-card.destacado {
+      border-color: var(--olive);
+    }
+
+    .precio-badge-top {
+      position: absolute;
+      top: -12px;
+      left: 32px;
+      background: var(--olive);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 2px;
+    }
+
+    .precio-plan-nombre {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 12px;
+    }
+
+    .precio-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .precio-tagline {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .precio-monto {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .precio-monto span {
+      font-size: 22px;
+      font-weight: 600;
+      vertical-align: super;
+    }
+
+    .precio-periodo {
+      font-size: 13px;
+      color: #aaa;
+      margin-bottom: 32px;
+    }
+
+    .precio-lista {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+
+    .precio-lista li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .precio-lista li::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--olive);
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .precio-lista li.no-incluye {
+      color: #bbb;
+    }
+
+    .precio-lista li.no-incluye::before {
+      background: #ddd;
+    }
+
+    .btn-precio {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--navy);
+      color: var(--white);
+      padding: 15px 28px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s;
+      width: 100%;
+    }
+    .btn-precio:hover { background: var(--wine); }
+
+    .precio-no-incluye-nota {
+      margin-top: 24px;
+      font-size: 12px;
+      color: #aaa;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+      .objetivos { padding: 60px 24px; }
+      .objetivos-grid { grid-template-columns: 1fr; }
+      .precios { padding: 60px 24px; }
+      .precios-grid { grid-template-columns: 1fr; }
+    }
+
+    /* QUOTE */
+    .quote-sep {
+      background: var(--olive);
+      padding: 72px 48px;
+      text-align: center;
+    }
+
+    .quote-sep blockquote {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .quote-sep .quote-main {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(24px, 3.5vw, 40px);
+      font-weight: 700;
+      font-style: italic;
+      color: var(--white);
+      line-height: 1.3;
+      margin-bottom: 20px;
+    }
+
+    .quote-sep .quote-sub {
+      font-size: 16px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.8);
+    }
+
+    /* PARA QUIÉN */
+    .para-quien {
+      padding: 80px 48px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .para-quien h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+
+    .para-quien-sub {
+      font-size: 17px;
+      color: #666;
+      max-width: 560px;
+      margin-bottom: 48px;
+      line-height: 1.6;
+    }
+
+    .checks-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+
+    .check-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .check-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--olive);
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    .check-item p {
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--text);
+    }
+
+    .no-aplica {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 28px 32px;
+      border-left: 4px solid var(--rose);
+    }
+
+    .no-aplica p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #555;
+    }
+
+    .no-aplica strong { color: var(--navy); }
+
+    /* MINI BIO */
+    .mini-bio {
+      padding: 80px 48px;
+      background: var(--cream-dark);
+    }
+
+    .mini-bio-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      gap: 56px;
+      align-items: center;
+    }
+
+    .mini-bio-avatar {
+      width: 200px;
+      height: 200px;
+      border-radius: 16px;
+      flex-shrink: 0;
+      border: 4px solid var(--rose);
+      background-image: url('Agus.png');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+    }
+
+    .mini-bio-text h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+
+    .mini-bio-text p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #555;
+      margin-bottom: 16px;
+    }
+
+    .mini-bio-text .clientes {
+      font-size: 13px;
+      color: var(--rose);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    /* TESTIMONIOS */
+    .testimonios {
+      padding: 80px 48px;
+    }
+
+    .testimonios-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .testimonios h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 48px;
+    }
+
+    .testimonios-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .testi-card {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 32px 28px;
+    }
+
+    .testi-quote {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #444;
+      margin-bottom: 28px;
+      font-style: italic;
+    }
+
+    .testi-author {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: 0.04em;
+    }
+
+    .testi-role {
+      font-size: 12px;
+      color: var(--rose);
+      margin-top: 3px;
+    }
+
+    /* CTA FINAL */
+    .cta-final {
+      background: var(--navy);
+      padding: 100px 48px;
+    }
+
+    .cta-final-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .cta-final h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(30px, 4.5vw, 52px);
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .cta-final h2 .italic-line {
+      font-style: italic;
+      font-weight: 700;
+      color: var(--rose);
+      display: block;
+    }
+
+    .cta-final p {
+      font-size: 17px;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 12px;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-note {
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 44px !important;
+    }
+
+    .cta-final-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-white {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--white);
+      color: var(--navy);
+      padding: 17px 34px;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-white:hover { background: var(--cream); }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: rgba(255,255,255,0.8);
+      padding: 17px 24px;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1.5px solid rgba(255,255,255,0.3);
+      transition: all 0.2s;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.7); color: var(--white); }
+
+    /* FOOTER */
+    footer {
+      padding: 40px 48px;
+      border-top: 1px solid rgba(26,36,86,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-logo {
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      color: var(--navy);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: #888;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--navy); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+      .hero { padding: 60px 24px 80px; }
+      .hero-meta { flex-direction: column; gap: 20px; padding: 24px; }
+      .que-es { padding: 60px 24px; }
+      .incluye { padding: 60px 24px; }
+      .incluye-grid { grid-template-columns: 1fr; }
+      .pilares { padding: 60px 24px; }
+      .pilares-grid { grid-template-columns: 1fr; }
+      .proceso { padding: 60px 24px; }
+      .proceso-steps { grid-template-columns: 1fr 1fr; }
+      .para-quien { padding: 60px 24px; }
+      .checks-grid { grid-template-columns: 1fr; }
+      .mini-bio { padding: 60px 24px; }
+      .mini-bio-inner { flex-direction: column; gap: 28px; }
+      .mini-bio-avatar { width: 100px; height: 100px; }
+      .testimonios { padding: 60px 24px; }
+      .testimonios-grid { grid-template-columns: 1fr; }
+      .cta-final { padding: 72px 24px; }
+      footer { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="https://semillaredes.com" class="logo">
+      <svg class="logo-icon" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+        <line x1="22" y1="22" x2="4" y2="22" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="40" y2="22" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="22" y2="4" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="22" y2="40" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="8" y2="8" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="36" y2="36" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="36" y2="8" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="8" y2="36" stroke="#C97080" stroke-width="1.5"/>
+        <path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/>
+        <line x1="22" y1="11" x2="22" y2="33" stroke="white" stroke-width="0.8" opacity="0.6"/>
+        <circle cx="4" cy="22" r="2.5" fill="#C97080"/>
+        <circle cx="40" cy="22" r="2.5" fill="#C97080"/>
+        <circle cx="22" cy="4" r="2.5" fill="#C97080"/>
+        <circle cx="22" cy="40" r="2.5" fill="#C97080"/>
+        <circle cx="8" cy="8" r="2.5" fill="#C97080"/>
+        <circle cx="36" cy="36" r="2.5" fill="#C97080"/>
+        <circle cx="36" cy="8" r="2.5" fill="#C97080"/>
+        <circle cx="8" cy="36" r="2.5" fill="#C97080"/>
+      </svg>
+      <span class="logo-text">Semilla<br>Redes</span>
+    </a>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfnRfQPOINqMUXiZwB4znF5WTkIcc-sl5cQRHuUGT61CSei6w/viewform?usp=header" class="nav-cta" target="_blank">Quiero mi Setup</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="badge">Setup Inicial</span>
+    <h1>
+      Tu proyecto digital,
+      <span class="italic-line">construido desde cero.</span>
+    </h1>
+    <div class="hero-divider"></div>
+    <p class="hero-sub">
+      Trabajamos juntos para ordenar, estructurar y hacer crecer tu proyecto artístico.
+      En 180 días tenés identidad, web, contenidos, pauta y estrategia funcionando —
+      todo en un solo proceso acompañado por Agus Calcagno.
+    </p>
+
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Duración</span>
+        <span class="hero-meta-value">180 días</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Modalidad</span>
+        <span class="hero-meta-value">1:1 con Agus</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Para</span>
+        <span class="hero-meta-value">Proyectos desde cero</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Cupos</span>
+        <span class="hero-meta-value">Limitados</span>
+      </div>
+    </div>
+
+    <div class="hero-ctas">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSfnRfQPOINqMUXiZwB4znF5WTkIcc-sl5cQRHuUGT61CSei6w/viewform?usp=header" class="btn-primary" target="_blank">
+        Quiero consultar →
+      </a>
+      <a href="https://wa.me/5492665242011" class="btn-secondary" target="_blank">
+        Hablar con Agus
+      </a>
+    </div>
+  </section>
+
+  <!-- QUÉ ES -->
+  <section class="que-es">
+    <div class="que-es-inner">
+      <span class="section-label">¿Qué es el Setup Inicial?</span>
+      <h2>La solución integral para ir de 0 a 100.</h2>
+      <p>
+        El Setup Inicial es el servicio más completo de Semilla Redes.
+        Está pensado para proyectos que todavía no tienen su infraestructura digital armada —
+        o que la tienen pero sin orden ni estrategia.
+      </p>
+      <p>
+        No es consultoría en el vacío ni planillas sin aplicación.
+        Es construir junto con vos cada pieza de tu presencia digital:
+        identidad visual, sitio web, contenidos, campañas y activos comerciales.
+        Todo integrado bajo un método que empieza por lo más importante —
+        entender tu modelo de negocio.
+      </p>
+    </div>
+  </section>
+
+  <!-- QUÉ INCLUYE -->
+  <section class="incluye">
+    <span class="section-label">Lo que construimos juntos</span>
+    <h2>Todo lo que necesitás, armado desde la raíz.</h2>
+    <p class="intro-text">
+      Seis entregables concretos que quedan en tus manos al final del proceso.
+    </p>
+
+    <div class="incluye-grid">
+      <div class="incluye-card">
+        <span class="card-icon">⚙️</span>
+        <h3>Apertura y config. de cuentas</h3>
+        <p>Creación y configuración profesional de tus perfiles en Instagram, YouTube y Spotify para arrancar bien desde el día uno.</p>
+      </div>
+      <div class="incluye-card">
+        <span class="card-icon">🌐</span>
+        <h3>Landing o web</h3>
+        <p>Sitio diseñado para convertir: presentarte bien, captar leads y apoyar tu pauta publicitaria.</p>
+      </div>
+      <div class="incluye-card">
+        <span class="card-icon">📱</span>
+        <h3>12 contenidos iniciales</h3>
+        <p>Los primeros 12 posts producidos y listos para publicar — con estrategia, formato y voz definidos para cada plataforma.</p>
+      </div>
+      <div class="incluye-card">
+        <span class="card-icon">📣</span>
+        <h3>Pauta publicitaria</h3>
+        <p>Campañas en Meta Ads y YouTube Ads configuradas y activas. Costos claros de seguidores, reproducciones y visualizaciones.</p>
+      </div>
+      <div class="incluye-card">
+        <span class="card-icon">🗺️</span>
+        <h3>Modelo de negocio</h3>
+        <p>Definimos qué vendés, a quién y por qué pagarían. Verticales de ingreso, proyecciones y escalera de valor.</p>
+      </div>
+      <div class="incluye-card">
+        <span class="card-icon">📊</span>
+        <h3>Reportes y métricas</h3>
+        <p>Seguimiento mensual con datos reales de tus cuentas. Proyecciones basadas en números que ya estamos ejecutando.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOS 3 PILARES -->
+  <section class="pilares">
+    <div class="pilares-inner">
+      <span class="section-label">El método Semilla</span>
+      <h2>Tres pilares, un solo proceso.</h2>
+      <p class="pilares-intro">
+        Cada entregable del Setup responde a uno de los tres pilares del método.
+        No hay pauta sin estrategia, ni contenido sin modelo de negocio.
+      </p>
+
+      <div class="pilares-grid">
+        <div class="pilar-card">
+          <div class="pilar-num">Pilar 01</div>
+          <h3>Modelo de negocio</h3>
+          <p>Definimos qué vendés, a quién, por qué alguien pagaría, y cuáles son tus verticales de ingreso. Sin esto, todo lo demás es decoración.</p>
+          <div class="pilar-tags">
+            <span class="pilar-tag">Productos y servicios</span>
+            <span class="pilar-tag">CAC y LTV</span>
+            <span class="pilar-tag">Escalera de valor</span>
+          </div>
+        </div>
+        <div class="pilar-card">
+          <div class="pilar-num">Pilar 02</div>
+          <h3>Comunicación</h3>
+          <p>Identidad, voz, audiencia y contenido. Construimos la narrativa que hace que tu proyecto sea reconocible y magnético.</p>
+          <div class="pilar-tags">
+            <span class="pilar-tag">Identidad visual</span>
+            <span class="pilar-tag">Voz y tono</span>
+            <span class="pilar-tag">Estrategia de contenido</span>
+          </div>
+        </div>
+        <div class="pilar-card">
+          <div class="pilar-num">Pilar 03</div>
+          <h3>Publicidad</h3>
+          <p>Meta Ads, YouTube Ads, Spotify Ads — no para "boostearlo todo", sino como herramienta estratégica dentro del sistema.</p>
+          <div class="pilar-tags">
+            <span class="pilar-tag">Meta Ads</span>
+            <span class="pilar-tag">YouTube Ads</span>
+            <span class="pilar-tag">Spotify Ads</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CÓMO FUNCIONA -->
+  <section class="proceso">
+    <div class="proceso-inner">
+      <span class="section-label">El proceso</span>
+      <h2>180 días con un camino claro.</h2>
+      <p class="proceso-intro">
+        Cada etapa tiene entregables concretos. Sabés en todo momento en qué estamos y hacia dónde vamos.
+      </p>
+
+      <div class="proceso-steps">
+        <div class="step">
+          <div class="step-dot"></div>
+          <div class="step-label">Mes 1 y 2</div>
+          <h4>Descubrimiento</h4>
+          <p>Diagnóstico profundo. Definición del modelo de negocio. Identidad narrativa y coherencia visual. Configuración de perfiles. Primera campaña Meta Ads.</p>
+          <p style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.4);font-weight:600;letter-spacing:0.08em;">1 REUNIÓN SEMANAL</p>
+        </div>
+        <div class="step">
+          <div class="step-dot"></div>
+          <div class="step-label">Mes 3 y 4</div>
+          <h4>Desarrollo</h4>
+          <p>Planner de contenido activo. Campañas de crecimiento. YouTube Ads para visualizaciones. Oyentes mensuales activos. Primer reporte con proyectivas.</p>
+          <p style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.4);font-weight:600;letter-spacing:0.08em;">1 REUNIÓN SEMANAL</p>
+        </div>
+        <div class="step">
+          <div class="step-dot"></div>
+          <div class="step-label">Mes 5 y 6</div>
+          <h4>Escalabilidad</h4>
+          <p>Iteración basada en datos. Validación del modelo de negocio con números. Proyección por canal. Decisiones sobre qué escalar. Campañas permanentes.</p>
+          <p style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.4);font-weight:600;letter-spacing:0.08em;">1 REUNIÓN QUINCENAL</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTE -->
+  <section class="quote-sep">
+    <blockquote>
+      <p class="quote-main">"El árbol ya está en la semilla."</p>
+      <p class="quote-sub">Tu potencial ya existe. Nosotros lo ordenamos, lo estructuramos y lo hacemos crecer.</p>
+    </blockquote>
+  </section>
+
+  <!-- PARA QUIÉN -->
+  <section class="para-quien">
+    <span class="section-label">¿Es para mí?</span>
+    <h2>El Setup Inicial es para vos si...</h2>
+    <p class="para-quien-sub">No importa el género, el tipo de proyecto ni el tamaño. Lo que importa es la disposición.</p>
+
+    <div class="checks-grid">
+      <div class="check-item">
+        <div class="check-dot"></div>
+        <p>Tenés talento y proyecto, pero tu presencia digital no refleja lo que sos.</p>
+      </div>
+      <div class="check-item">
+        <div class="check-dot"></div>
+        <p>Nunca ordenaste bien tu modelo de negocio — no sabés bien qué vendés ni a quién.</p>
+      </div>
+      <div class="check-item">
+        <div class="check-dot"></div>
+        <p>Tiraste plata en publicidad sin resultados y querés hacerlo bien esta vez.</p>
+      </div>
+      <div class="check-item">
+        <div class="check-dot"></div>
+        <p>Querés algo más que consejos sueltos: una estrategia y acompañamiento real.</p>
+      </div>
+      <div class="check-item">
+        <div class="check-dot"></div>
+        <p>Estás lanzando algo nuevo y querés arrancar con todo en orden desde el día uno.</p>
+      </div>
+      <div class="check-item">
+        <div class="check-dot"></div>
+        <p>Entendés que crecer digitalmente requiere método, no solo mucho contenido.</p>
+      </div>
+    </div>
+
+    <div class="no-aplica">
+      <p><strong>¿No sabés si aplica a tu caso?</strong> Escribinos y lo evaluamos juntos.
+      El Setup no es para todo el mundo — antes de comenzar, Agus revisa si el proceso
+      es el indicado para tu momento.</p>
+    </div>
+  </section>
+
+  <!-- MINI BIO -->
+  <section class="mini-bio">
+    <div class="mini-bio-inner">
+      <div class="mini-bio-avatar"></div>
+      <div class="mini-bio-text">
+        <span class="section-label">Quién está detrás</span>
+        <h3>Agus Calcagno</h3>
+        <p>
+          Estratega digital con más de 25 años trabajando con músicos, artistas y proyectos culturales.
+          Creador del método Semilla Redes y fundador de ESCORPIO, agencia de desarrollo digital para artistas musicales.
+        </p>
+        <p>
+          Trabajé con más de 150 artistas en toda Iberoamérica y EE.UU., ayudándolos a construir
+          proyectos digitales que funcionan de verdad — no solo en estética, sino en números.
+        </p>
+        <span class="clientes">Federico Andahazi · Alan Sutton · Luis Gamarra · Lara Fichera · Pancake Records · Unicef Argentina · +150 artistas</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- OBJETIVOS -->
+  <section class="objetivos">
+    <span class="section-label">¿Qué resultados esperar?</span>
+    <h2>Proyecciones reales a 180 días.</h2>
+    <p class="objetivos-sub">
+      Números calculados en base al promedio de campañas que estamos ejecutando con proyectos musicales.
+      Se proyectan con una inversión sugerida de USD 2 por día (~USD 360 en 180 días).
+    </p>
+
+    <div class="objetivos-grid">
+      <div class="objetivo-card">
+        <div class="objetivo-plataforma">Instagram</div>
+        <div class="objetivo-numero">500–1.000</div>
+        <div class="objetivo-unidad">seguidores nuevos</div>
+      </div>
+      <div class="objetivo-card">
+        <div class="objetivo-plataforma">YouTube</div>
+        <div class="objetivo-numero">20k–40k</div>
+        <div class="objetivo-unidad">visualizaciones</div>
+      </div>
+      <div class="objetivo-card">
+        <div class="objetivo-plataforma">Spotify</div>
+        <div class="objetivo-numero">40–180</div>
+        <div class="objetivo-unidad">oyentes/mes</div>
+      </div>
+    </div>
+    <p class="objetivos-nota">
+      * Proyecciones basadas en datos reales. Los resultados varían según el proyecto, el contenido y la inversión publicitaria.
+      La inversión en ads es aparte del fee de gestión.
+    </p>
+  </section>
+
+  <!-- PRECIOS -->
+  <section class="precios">
+    <div class="precios-inner">
+      <span class="section-label">Planes</span>
+      <h2>Elegí según tu proyecto.</h2>
+      <p class="precios-sub">
+        Si ya tenés identidad visual definida, el plan Estratégico es suficiente.
+        Si arrancás de cero o querés un rediseño completo, el Estratégico+Diseño incluye todo.
+      </p>
+
+      <div class="precios-grid">
+        <!-- Plan 1 -->
+        <div class="precio-card">
+          <div class="precio-plan-nombre">Plan 01</div>
+          <h3>Estratégico</h3>
+          <p class="precio-tagline">Para artistas con identidad visual definida.</p>
+          <div class="precio-monto"><span>USD</span> 250</div>
+          <div class="precio-periodo">pago único · 6 meses de proceso</div>
+          <ul class="precio-lista">
+            <li>Apertura y configuración de cuentas</li>
+            <li>Landing o web</li>
+            <li>12 contenidos iniciales producidos</li>
+            <li>Modelo de negocio definido</li>
+            <li>Pauta publicitaria (Meta Ads + YouTube Ads)</li>
+            <li>Planner de contenido y estrategia</li>
+            <li>Reportes mensuales con métricas reales</li>
+            <li>1 reunión semanal (meses 1–4)</li>
+            <li>1 reunión quincenal (meses 5–6)</li>
+            <li class="no-incluye">Diseño de identidad visual</li>
+          </ul>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSfnRfQPOINqMUXiZwB4znF5WTkIcc-sl5cQRHuUGT61CSei6w/viewform?usp=header" class="btn-precio" target="_blank">Consultar →</a>
+          <p class="precio-no-incluye-nota">No incluye: costos de ads, hosting ni plantillas.</p>
+        </div>
+
+        <!-- Plan 2 -->
+        <div class="precio-card destacado">
+          <div class="precio-badge-top">Más elegido</div>
+          <div class="precio-plan-nombre">Plan 02</div>
+          <h3>Estratégico + Diseño</h3>
+          <p class="precio-tagline">Para proyectos que arrancan de cero o quieren un rediseño.</p>
+          <div class="precio-monto"><span>USD</span> 300</div>
+          <div class="precio-periodo">pago único · 6 meses de proceso</div>
+          <ul class="precio-lista">
+            <li>Todo lo del plan Estratégico</li>
+            <li>Identidad visual completa (paleta, tipografías, sistema visual)</li>
+            <li>Diseño de web o landing</li>
+            <li>Coherencia visual para todas las plataformas</li>
+          </ul>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSfnRfQPOINqMUXiZwB4znF5WTkIcc-sl5cQRHuUGT61CSei6w/viewform?usp=header" class="btn-precio" target="_blank">Consultar →</a>
+          <p class="precio-no-incluye-nota">No incluye: costos de ads, hosting ni plantillas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIOS -->
+  <section class="testimonios">
+    <div class="testimonios-inner">
+      <span class="section-label">Lo que dicen quienes pasaron por el proceso</span>
+      <h2>Resultados reales, proyectos reales.</h2>
+
+      <div class="testimonios-grid">
+        <div class="testi-card">
+          <p class="testi-quote">"Antes de Semilla Redes tenía presencia pero sin dirección. Agus me ayudó a entender qué estaba vendiendo realmente y cómo comunicarlo. El cambio fue inmediato."</p>
+          <div class="testi-author">Lara Fichera</div>
+          <div class="testi-role">Cantautora</div>
+        </div>
+        <div class="testi-card">
+          <p class="testi-quote">"Lo que más valoro es que no se quedó en lo superficial. Trabajamos el modelo de negocio, la comunicación y la pauta como un sistema. Por primera vez todo tiene sentido."</p>
+          <div class="testi-author">Luis Gamarra</div>
+          <div class="testi-role">Músico y productor</div>
+        </div>
+        <div class="testi-card">
+          <p class="testi-quote">"Arrancamos de cero y en seis meses teníamos web, identidad, campañas activas y un plan claro. No es solo consultoría — es construcción real."</p>
+          <div class="testi-author">Manu Durañona</div>
+          <div class="testi-role">Artista independiente</div>
+        </div>
+      </div>
+
+      <div style="margin-top:40px;padding:28px 32px;background:var(--white);border-radius:8px;text-align:center;">
+        <p style="font-size:13px;color:#888;margin-bottom:16px;letter-spacing:0.05em;text-transform:uppercase;font-weight:700;">También trabajaron con Semilla Redes</p>
+        <p style="font-size:15px;color:var(--navy);font-weight:600;line-height:1.9;">Alan Sutton y las Criaturitas · Sin Fronteras Duo · María Marta Crespo · Federico Andahazi · Y muchos más</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="cta-final">
+    <div class="cta-final-inner">
+      <h2>
+        Empezá a construir
+        <span class="italic-line">tu proyecto en serio.</span>
+      </h2>
+      <p>Completá el formulario y Agus evalúa si el Setup Inicial es el proceso indicado para tu momento.</p>
+      <p class="cta-note">Cupos limitados. Sin compromiso de compra.</p>
+
+      <div class="cta-final-btns">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfnRfQPOINqMUXiZwB4znF5WTkIcc-sl5cQRHuUGT61CSei6w/viewform?usp=header" class="btn-white" target="_blank">
+          Quiero consultar →
+        </a>
+        <a href="https://wa.me/5492665242011" class="btn-ghost" target="_blank">
+          Escribir por WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <a href="https://semillaredes.com" class="footer-logo">Semilla Redes</a>
+    <nav class="footer-links">
+      <a href="https://semillaredes.com">Inicio</a>
+      <a href="formacion.html">Formación grupal</a>
+      <a href="https://wa.me/5492665242011" target="_blank">WhatsApp</a>
+      <a href="https://instagram.com/semillaredes" target="_blank">@semillaredes</a>
+    </nav>
+  </footer>
+
+</body>
+</html>
