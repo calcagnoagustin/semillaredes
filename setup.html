@@ -446,6 +446,44 @@
       color: rgba(255,255,255,0.6);
     }
 
+    /* VIDEO SECTION */
+    .video-section-setup {
+      padding: 80px 48px;
+      background: var(--cream-dark);
+    }
+
+    .video-setup-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .video-setup-inner .section-label { color: var(--olive); }
+
+    .video-setup-inner h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(24px, 3.5vw, 40px);
+      color: var(--navy);
+      margin-bottom: 32px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .video-embed-setup {
+      border-radius: 12px;
+      overflow: hidden;
+      aspect-ratio: 16/9;
+    }
+
+    .video-embed-setup iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .video-section-setup { padding: 60px 24px; }
+    }
+
     /* OBJETIVOS */
     .objetivos {
       padding: 80px 48px;
@@ -1105,6 +1143,22 @@
         Todo integrado bajo un método que empieza por lo más importante —
         entender tu modelo de negocio.
       </p>
+    </div>
+  </section>
+
+  <!-- VIDEO -->
+  <section class="video-section-setup">
+    <div class="video-setup-inner">
+      <p class="section-label">Antes de seguir, mirá esto</p>
+      <h2>Agus te cuenta qué es el Setup Inicial.</h2>
+      <div class="video-embed-setup">
+        <iframe src="https://www.youtube.com/embed/XLwhgYAG5Ag"
+          title="Setup Inicial — Semilla Redes"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen>
+        </iframe>
+      </div>
     </div>
   </section>
 
