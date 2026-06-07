@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auditoría de Artista — Semilla Redes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Playfair+Display:ital,wght@1,500;1,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --crema:#F2EDE4; --navy:#1A2456; --wine:#7A1F3A; --rosa:#C97080; --oliva:#7A8A42;
+    --navy-soft:rgba(26,36,86,.10); --navy-line:rgba(26,36,86,.16);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--crema);color:var(--navy);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+  body{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 18px 60px}
+  .wrap{width:100%;max-width:640px}
+
+  /* HEADER */
+  header{display:flex;align-items:center;gap:12px;margin:6px 0 36px}
+  .logo{width:38px;height:38px;flex:none}
+  .brand{font-family:'Inter',sans-serif;font-weight:800;font-size:14px;line-height:1.15;letter-spacing:.15em;text-transform:uppercase;color:var(--navy)}
+
+  /* HERO */
+  .hero{margin-bottom:30px}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--wine);margin-bottom:14px}
+  h1{font-size:clamp(30px,7vw,46px);line-height:1.02;font-weight:900;letter-spacing:-.03em}
+  h1 em{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;color:var(--wine)}
+  .sub{margin-top:18px;font-size:16px;line-height:1.55;max-width:520px;color:rgba(26,36,86,.82)}
+  .cta-main{margin-top:26px;display:inline-flex;align-items:center;gap:10px;background:var(--navy);color:var(--crema);border:none;font-family:inherit;font-weight:700;font-size:16px;padding:16px 28px;border-radius:999px;cursor:pointer;transition:transform .15s,background .15s}
+  .cta-main:hover{transform:translateY(-2px);background:var(--wine)}
+  .note{margin-top:14px;font-size:13px;color:rgba(26,36,86,.55)}
+
+  /* FORM CARD */
+  .card{background:#fff;border:1px solid var(--navy-line);border-radius:20px;padding:30px 26px;box-shadow:0 18px 50px rgba(26,36,86,.08)}
+  .progress{height:6px;background:var(--navy-soft);border-radius:99px;overflow:hidden;margin-bottom:24px}
+  .bar{height:100%;width:0;background:var(--oliva);border-radius:99px;transition:width .35s ease}
+  .step-tag{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--oliva);margin-bottom:8px}
+  .q{font-size:21px;font-weight:900;letter-spacing:-.02em;line-height:1.2}
+  .q em{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;color:var(--wine)}
+  .hint{font-size:14px;color:rgba(26,36,86,.6);margin-top:8px;line-height:1.45}
+  .fields{margin-top:20px;display:flex;flex-direction:column;gap:14px}
+  label{font-size:13px;font-weight:700;display:block;margin-bottom:6px}
+  .req{color:var(--wine)}
+  input,select,textarea{width:100%;font-family:inherit;font-size:15px;color:var(--navy);background:var(--crema);border:1px solid var(--navy-line);border-radius:12px;padding:13px 14px;outline:none;transition:border .15s}
+  input:focus,select:focus,textarea:focus{border-color:var(--oliva)}
+  textarea{resize:vertical;min-height:96px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:480px){.row2{grid-template-columns:1fr}}
+  .consent{display:flex;gap:10px;align-items:flex-start;background:var(--crema);border:1px solid var(--navy-line);border-radius:12px;padding:14px;font-size:13px;line-height:1.45;color:rgba(26,36,86,.8)}
+  .consent input{width:18px;height:18px;flex:none;margin-top:2px}
+  .nav{display:flex;justify-content:space-between;align-items:center;margin-top:26px;gap:12px}
+  .btn{font-family:inherit;font-weight:700;font-size:15px;border-radius:999px;cursor:pointer;border:1px solid transparent;padding:13px 24px;transition:transform .15s,background .15s}
+  .btn-prev{background:transparent;color:rgba(26,36,86,.6);border-color:var(--navy-line)}
+  .btn-prev:hover{color:var(--navy)}
+  .btn-next{background:var(--navy);color:var(--crema)}
+  .btn-next:hover{transform:translateY(-2px);background:var(--wine)}
+  .err{color:var(--wine);font-size:13px;font-weight:600;margin-top:12px;min-height:18px}
+
+  /* LOADING */
+  .loader{text-align:center;padding:40px 10px}
+  .seed{width:46px;height:46px;margin:0 auto 22px;animation:pulse 1.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(.9);opacity:.6}50%{transform:scale(1.08);opacity:1}}
+  .loader p{font-size:16px;font-weight:700}
+  .loader .lp{font-weight:400;color:rgba(26,36,86,.6);margin-top:8px;font-size:14px}
+
+  /* RESULT */
+  .result h2{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--oliva);margin:28px 0 12px}
+  .result h2:first-child{margin-top:0}
+  .estado{display:inline-block;background:var(--navy);color:var(--crema);font-weight:700;font-size:13px;padding:7px 16px;border-radius:999px;margin-bottom:18px}
+  .diag{font-size:17px;line-height:1.55}
+  .diag em{font-family:'Playfair Display',serif;font-style:italic;color:var(--wine)}
+  ul.list{list-style:none;display:flex;flex-direction:column;gap:10px}
+  ul.list li{display:flex;gap:12px;font-size:15px;line-height:1.45;align-items:flex-start}
+  ul.list li::before{content:"";width:9px;height:9px;border-radius:50%;flex:none;margin-top:6px}
+  .forta li::before{background:var(--oliva)}
+  .oport li::before{background:var(--rosa)}
+  .prio li::before{background:var(--wine)}
+  .cta-box{margin-top:32px;background:var(--navy);color:var(--crema);border-radius:18px;padding:26px}
+  .cta-box .ct{font-family:'Playfair Display',serif;font-style:italic;font-size:22px;font-weight:500;line-height:1.2}
+  .cta-box .cx{margin-top:12px;font-size:15px;line-height:1.55;color:rgba(242,237,228,.85)}
+  .cta-box a{display:inline-block;margin-top:20px;background:var(--crema);color:var(--navy);text-decoration:none;font-weight:700;font-size:15px;padding:13px 26px;border-radius:999px}
+  .upsell{margin-top:18px;font-size:13px;line-height:1.5;color:rgba(26,36,86,.6);text-align:center}
+
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <svg class="logo" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <line x1="22" y1="22" x2="4" y2="22" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="40" y2="22" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="22" y2="4" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="22" y2="40" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="8" y2="8" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="36" y2="36" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="36" y2="8" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="8" y2="36" stroke="#C97080" stroke-width="1.5"/>
+      <circle cx="4" cy="22" r="2.5" fill="#C97080"/><circle cx="40" cy="22" r="2.5" fill="#C97080"/>
+      <circle cx="22" cy="4" r="2.5" fill="#C97080"/><circle cx="22" cy="40" r="2.5" fill="#C97080"/>
+      <circle cx="8" cy="8" r="2.5" fill="#C97080"/><circle cx="36" cy="36" r="2.5" fill="#C97080"/>
+      <circle cx="36" cy="8" r="2.5" fill="#C97080"/><circle cx="8" cy="36" r="2.5" fill="#C97080"/>
+      <path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/>
+    </svg>
+    <div class="brand">Semilla<br>Redes</div>
+  </header>
+
+  <!-- HERO -->
+  <section id="hero" class="hero">
+    <div class="kicker">Auditoría gratuita · Método Semilla</div>
+    <h1>Descubrí en qué punto está tu <em>proyecto artístico</em> y qué hacer para crecer.</h1>
+    <p class="sub">Una auditoría basada en el Método Semilla para revisar tu comunicación, redes, modelo de negocio, contenido, audiencia y próximos pasos. Toma 3-4 minutos.</p>
+    <button class="cta-main" onclick="start()">Hacer mi auditoría gratuita →</button>
+    <p class="note">Gratis. Recibís un diagnóstico al instante.</p>
+  </section>
+
+  <!-- FORM -->
+  <section id="form" class="card hidden">
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div id="step"></div>
+    <div class="err" id="err"></div>
+    <div class="nav">
+      <button class="btn btn-prev" id="prev" onclick="prev()">Atrás</button>
+      <button class="btn btn-next" id="next" onclick="next()">Continuar</button>
+    </div>
+  </section>
+
+  <!-- LOADING -->
+  <section id="loading" class="card hidden">
+    <div class="loader">
+      <svg class="seed" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="22" y1="22" x2="4" y2="22" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="40" y2="22" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="22" y2="4" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="22" y2="40" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="8" y2="8" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="36" y2="36" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="36" y2="8" stroke="#C97080" stroke-width="1.5"/>
+        <line x1="22" y1="22" x2="8" y2="36" stroke="#C97080" stroke-width="1.5"/>
+        <circle cx="4" cy="22" r="2.5" fill="#C97080"/><circle cx="40" cy="22" r="2.5" fill="#C97080"/>
+        <circle cx="22" cy="4" r="2.5" fill="#C97080"/><circle cx="22" cy="40" r="2.5" fill="#C97080"/>
+        <circle cx="8" cy="8" r="2.5" fill="#C97080"/><circle cx="36" cy="36" r="2.5" fill="#C97080"/>
+        <circle cx="36" cy="8" r="2.5" fill="#C97080"/><circle cx="8" cy="36" r="2.5" fill="#C97080"/>
+        <path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/>
+      </svg>
+      <p>Analizando tu proyecto…</p>
+      <p class="lp" id="lp">Leyendo tus respuestas</p>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" class="card result hidden"></section>
+
+</div>
+
+<script>
+/* ===== CONFIG — completar antes de subir =====
+   SUPABASE_FUNCTION_URL: URL de la Edge Function 'auditoria'
+   SUPABASE_ANON_KEY: la Publishable key (Settings → API Keys) */
+const SUPABASE_FUNCTION_URL = "https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/auditoria";
+const SUPABASE_ANON_KEY = "sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17";
+
+/* ===== Definición de pasos del formulario ===== */
+const STEPS = [
+  { tag:"Sobre vos", q:"Empecemos por lo básico", hint:"Para enviarte el diagnóstico y poder contactarte.", fields:[
+    {k:"nombre", label:"Tu nombre", req:true},
+    {k:"proyecto", label:"Nombre artístico / proyecto", req:true},
+    {k:"email", label:"Email", type:"email", req:true},
+    {k:"whatsapp", label:"WhatsApp", placeholder:"+54 9 ..."},
+    {k:"pais", label:"País", req:true, half:true},
+    {k:"ciudad", label:"Ciudad", half:true},
+  ]},
+  { tag:"Tu disciplina", q:"¿Qué tipo de proyecto querés auditar?", fields:[
+    {k:"tipo_proyecto", type:"select", req:true, options:["Músico/a solista","Banda","Productor/a musical","Actor / actriz","Artista visual","Escritor/a","Fotógrafo/a","Comediante","Podcast","Proyecto escénico","Gestor cultural","Docente artístico","Otro"]},
+  ]},
+  { tag:"Tus perfiles", q:"Pegá tus links", hint:"Excluyente para analizarte: link principal e Instagram son obligatorios. Sumá los que tengas.", fields:[
+    {k:"link_principal", label:"Link principal (el que más usás)", req:true, placeholder:"https://..."},
+    {k:"instagram", label:"Instagram", req:true, placeholder:"https://instagram.com/..."},
+    {k:"tiktok", label:"TikTok", placeholder:"https://..."},
+    {k:"youtube", label:"YouTube", placeholder:"https://..."},
+    {k:"spotify", label:"Spotify", placeholder:"https://..."},
+    {k:"web", label:"Web", placeholder:"https://..."},
+    {k:"tienda", label:"Tienda online", placeholder:"https://..."},
+  ]},
+  { tag:"Tu proyecto", q:"¿Cómo describirías tu proyecto en pocas líneas?", hint:"Qué hacés y qué te gustaría que entiendan apenas entran a tus redes.", fields:[
+    {k:"descripcion", type:"textarea", req:true},
+  ]},
+  { tag:"Tu objetivo", q:"¿Cuál es tu principal objetivo para los próximos 12 meses?", fields:[
+    {k:"objetivo", type:"select", req:true, options:["Crecer en redes","Vender más","Conseguir shows","Conseguir prensa","Vender obras","Vender cursos/talleres","Conseguir alumnos","Conseguir castings","Crecer en Spotify","Crecer en YouTube","Construir comunidad","Lanzar un proyecto nuevo","Profesionalizar la comunicación","Otro"]},
+  ]},
+  { tag:"Tu diferencial", q:"¿Qué tiene tu proyecto que <em>no sea tan común</em>?", hint:"Tu sello, tu nicho, lo que te distingue.", fields:[
+    {k:"diferencial", type:"textarea", req:true},
+  ]},
+  { tag:"Modelo de negocio", q:"¿Qué vendés hoy (o qué te gustaría vender)?", hint:"Shows, obras, cursos, merch, servicios, comisiones, música, entradas…", fields:[
+    {k:"que_vende", type:"textarea", req:true},
+    {k:"precios_canal", label:"¿Tenés precios definidos y un canal para que te contraten/compren? ¿Cuál?", type:"textarea"},
+  ]},
+  { tag:"Números", q:"Hablemos de plata (rangos, sin precisión)", hint:"Nos ayuda a entender tu nivel de profesionalización. Quedan internos.", fields:[
+    {k:"inversion_ads", label:"¿Cuánto invertís en publicidad por mes?", type:"select", req:true, options:["Nada","Menos de USD 50","USD 50-100","USD 100-300","USD 300-500","USD 500-1000","Más de USD 1000"]},
+    {k:"ingresos_arte", label:"¿Cuánto ganás con tu arte por mes?", type:"select", req:true, options:["Nada","Menos de USD 100","USD 100-500","USD 500-1000","USD 1000-3000","Más de USD 3000"]},
+  ]},
+  { tag:"Publicidad", q:"¿Hacés publicidad?", hint:"Si sí, contanos en qué plataformas (Meta, Google, TikTok, etc.).", fields:[
+    {k:"publicidad", type:"textarea"},
+  ]},
+  { tag:"Equipo", q:"¿Quién gestiona tus redes?", hint:"¿Solo/a o con equipo? ¿Diseñador, editor, manager?", fields:[
+    {k:"equipo", type:"textarea"},
+  ]},
+  { tag:"Resultados", q:"¿Qué resultado querés mejorar y qué intentaste hasta ahora?", hint:"Lo que probaste y qué no funcionó.", fields:[
+    {k:"resultado_mejorar", type:"textarea", req:true},
+  ]},
+  { tag:"Casi listo", q:"Una última cosa", consent:true, fields:[] },
+];
+
+const LOADING_MSGS = ["Leyendo tus respuestas","Mirando tus perfiles","Cruzando con el Método Semilla","Detectando fortalezas y oportunidades","Definiendo tus prioridades"];
+
+let cur = 0;
+const data = {};
+
+function el(id){return document.getElementById(id)}
+function start(){ el('hero').classList.add('hidden'); el('form').classList.remove('hidden'); render(); window.scrollTo(0,0); }
+
+function render(){
+  const s = STEPS[cur];
+  el('bar').style.width = ((cur)/(STEPS.length-1)*100)+'%';
+  let html = `<div class="step-tag">${s.tag}</div><div class="q">${s.q}</div>`;
+  if(s.hint) html += `<p class="hint">${s.hint}</p>`;
+  html += `<div class="fields">`;
+  for(const f of s.fields){
+    const val = data[f.k] || "";
+    const lbl = f.label ? `<label>${f.label} ${f.req?'<span class="req">*</span>':''}</label>` : "";
+    if(f.type==="select"){
+      let opts = `<option value="" disabled ${val?'':'selected'}>Elegí una opción…</option>`;
+      opts += f.options.map(o=>`<option ${val===o?'selected':''}>${o}</option>`).join("");
+      html += `<div>${lbl}<select data-k="${f.k}">${opts}</select></div>`;
+    } else if(f.type==="textarea"){
+      html += `<div>${lbl}<textarea data-k="${f.k}" placeholder="${f.placeholder||''}">${val}</textarea></div>`;
+    } else {
+      const cls = f.half ? '' : '';
+      html += `<div class="${f.half?'__half':''}">${lbl}<input type="${f.type||'text'}" data-k="${f.k}" value="${val.replace(/"/g,'&quot;')}" placeholder="${f.placeholder||''}"></div>`;
+    }
+  }
+  html += `</div>`;
+  // agrupar pares half en una grilla
+  if(s.fields.some(f=>f.half)){
+    const halves = s.fields.filter(f=>f.half);
+    // reconstruir con row2: simple approach abajo
+  }
+  if(s.consent){
+    html += `<div class="consent"><input type="checkbox" id="cons" ${data.consentimiento?'checked':''}>
+      <span>Al completar esta auditoría gratuita acepto recibir el resultado por email/WhatsApp y que Semilla Redes pueda contactarme con recomendaciones, recursos o propuestas relacionadas con mi proyecto.</span></div>`;
+  }
+  el('step').innerHTML = html;
+  // fix grilla de half-fields
+  const halfDivs = el('step').querySelectorAll('.__half');
+  if(halfDivs.length===2){
+    const grid=document.createElement('div'); grid.className='row2';
+    halfDivs[0].parentNode.insertBefore(grid, halfDivs[0]);
+    grid.appendChild(halfDivs[0]); grid.appendChild(halfDivs[1]);
+  }
+  el('err').textContent="";
+  el('prev').style.visibility = cur===0 ? 'hidden':'visible';
+  el('next').textContent = cur===STEPS.length-1 ? 'Ver mi auditoría →' : 'Continuar';
+}
+
+function collect(){
+  el('step').querySelectorAll('[data-k]').forEach(i=>{ data[i.dataset.k]=i.value.trim(); });
+  const c = el('cons'); if(c) data.consentimiento = c.checked;
+}
+
+function validate(){
+  const s = STEPS[cur];
+  for(const f of s.fields){
+    if(f.req && !data[f.k]){ return "Completá los campos obligatorios (*)."; }
+    if(f.type==="email" && data[f.k] && !/^[^@]+@[^@]+\.[^@]+$/.test(data[f.k])) return "Revisá el email.";
+  }
+  if(s.consent && !data.consentimiento) return "Necesitamos tu consentimiento para enviarte el resultado.";
+  return null;
+}
+
+function next(){
+  collect();
+  const e = validate();
+  if(e){ el('err').textContent=e; return; }
+  if(cur===STEPS.length-1){ submit(); return; }
+  cur++; render(); window.scrollTo(0,0);
+}
+function prev(){ collect(); if(cur>0){cur--; render(); window.scrollTo(0,0);} }
+
+async function submit(){
+  el('form').classList.add('hidden');
+  el('loading').classList.remove('hidden');
+  window.scrollTo(0,0);
+  let i=0; const t=setInterval(()=>{ i=(i+1)%LOADING_MSGS.length; el('lp').textContent=LOADING_MSGS[i]; },1600);
+  try{
+    const r = await fetch(SUPABASE_FUNCTION_URL,{
+      method:"POST",
+      headers:{ "Content-Type":"application/json", "Authorization":"Bearer "+SUPABASE_ANON_KEY, "apikey":SUPABASE_ANON_KEY },
+      body: JSON.stringify(data)
+    });
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const res = await r.json();
+    clearInterval(t);
+    showResult(res);
+  }catch(err){
+    clearInterval(t);
+    el('loading').innerHTML = `<div class="loader"><p>Ups, algo falló al generar tu auditoría.</p><p class="lp">${err.message}. Probá de nuevo en un momento.</p></div>`;
+  }
+}
+
+function showResult(res){
+  el('loading').classList.add('hidden');
+  const r = el('result'); r.classList.remove('hidden');
+  const li = arr => (arr||[]).map(x=>`<li>${x}</li>`).join("");
+  r.innerHTML = `
+    ${res.estado_general?`<div class="estado">${res.estado_general}</div>`:''}
+    <p class="diag">${res.diagnostico||""}</p>
+    <h2>Tus fortalezas</h2><ul class="list forta">${li(res.fortalezas)}</ul>
+    <h2>Oportunidades de mejora</h2><ul class="list oport">${li(res.oportunidades)}</ul>
+    <h2>Tus prioridades ahora</h2><ul class="list prio">${li(res.prioridades)}</ul>
+    <div class="cta-box">
+      <div class="ct">${res.cta?.titulo||"Tu próximo paso"}</div>
+      <div class="cx">${res.cta?.texto||""}</div>
+      <a href="https://wa.me/" target="_blank">Hablar con Semilla →</a>
+    </div>
+    <p class="upsell">Esta es una versión inicial del análisis. En el informe completo revisamos en profundidad tu naming, ecosistema digital, navegabilidad, publicidad, conversión, creatividad, nicho, comunidad y plan de acción.</p>
+  `;
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
