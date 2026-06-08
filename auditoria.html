@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Evalúa tu proyecto · Método Semilla</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2044%2044%27%3E%3Cg%20stroke%3D%27%23C97080%27%20stroke-width%3D%272%27%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%274%27%20y2%3D%2722%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2740%27%20y2%3D%2722%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2722%27%20y2%3D%274%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2722%27%20y2%3D%2740%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%278%27%20y2%3D%278%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2736%27%20y2%3D%2736%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2736%27%20y2%3D%278%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%278%27%20y2%3D%2736%27/%3E%3C/g%3E%3Cpath%20d%3D%27M22%2C10%20C26%2C14%2028%2C18%2028%2C22%20C28%2C26%2026%2C30%2022%2C34%20C18%2C30%2016%2C26%2016%2C22%20C16%2C18%2018%2C14%2022%2C10Z%27%20fill%3D%27%237A8A42%27/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Playfair+Display:ital,wght@1,500;1,700&display=swap" rel="stylesheet">
@@ -40,6 +41,9 @@ h1 em{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;col
 .fields{margin-top:20px;display:flex;flex-direction:column;gap:14px}
 label{font-size:13px;font-weight:700;display:block;margin-bottom:6px}
 .req{color:var(--wine)}
+.checks{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.check{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;cursor:pointer;background:var(--crema);border:1px solid var(--navy-line);border-radius:10px;padding:11px 13px}
+.check input{width:18px;height:18px;flex:none;margin:0}
 input,select,textarea{width:100%;font-family:inherit;font-size:15px;color:var(--navy);background:var(--crema);border:1px solid var(--navy-line);border-radius:12px;padding:13px 14px;outline:none;transition:border .15s}
 input:focus,select:focus,textarea:focus{border-color:var(--oliva)}
 textarea{resize:vertical;min-height:96px}
@@ -214,8 +218,8 @@ const STEPS = [
 {k:"inversion_ads", label:"¿Cuánto invertís en publicidad por mes?", type:"select", req:true, options:["Nada","Menos de USD 50","USD 50-100","USD 100-300","USD 300-500","USD 500-1000","Más de USD 1000"]},
 {k:"ingresos_arte", label:"¿Cuánto ganás con tu arte por mes?", type:"select", req:true, options:["Nada","Menos de USD 100","USD 100-500","USD 500-1000","USD 1000-3000","Más de USD 3000"]},
 ]},
-{ tag:"Publicidad", q:"¿Hacés publicidad?", hint:"Si hacés en varias, elegí la principal.", fields:[
-{k:"publicidad", type:"select", req:true, options:["No hago publicidad","Meta Ads (Instagram/Facebook)","YouTube Ads","Spotify Ads","X Ads","TikTok Ads","Google Ads","Varias plataformas"]},
+{ tag:"Publicidad", q:"¿Hacés publicidad?", hint:"Marcá todas las que uses.", fields:[
+{k:"publicidad", type:"multiselect", req:true, options:["No hago publicidad","Meta Ads (Instagram/Facebook)","YouTube Ads","Spotify Ads","X Ads","TikTok Ads","Google Ads"]},
 ]},
 { tag:"Equipo", q:"¿Cómo gestionás tu proyecto hoy?", hint:"Nos dice qué tan profesionalizada está tu operación.", fields:[
 {k:"equipo", type:"select", req:true, options:["Lo hago todo solo/a","Tengo ayuda puntual (freelance)","Tengo un equipo chico","Tengo manager / productor / agente"]},
@@ -248,6 +252,11 @@ let optList = f.k==="objetivo" ? objetivoOptions(data.tipo_proyecto) : f.options
 let opts = `<option value="" disabled ${val?'':'selected'}>Elegí una opción…</option>`;
 opts += optList.map(o=>`<option ${val===o?'selected':''}>${o}</option>`).join("");
 html += `<div>${lbl}<select data-k="${f.k}">${opts}</select></div>`;
+} else if(f.type==="multiselect"){
+var sel=(data[f.k]||"").split(", ").filter(Boolean);
+var boxes="";
+for(var bi=0;bi<f.options.length;bi++){var o=f.options[bi];boxes+='<label class="check"><input type="checkbox" data-mk="'+f.k+'" value="'+o.replace(/"/g,'&quot;')+'"'+(sel.indexOf(o)>=0?' checked':'')+'> '+o+'</label>';}
+html+='<div>'+lbl+'<div class="checks">'+boxes+'</div></div>';
 } else if(f.type==="textarea"){
 html += `<div>${lbl}<textarea data-k="${f.k}" placeholder="${f.placeholder||''}">${val}</textarea></div>`;
 } else {
@@ -273,6 +282,8 @@ el('next').textContent = cur===STEPS.length-1 ? 'Ver mi evaluación →' : 'Cont
 
 function collect(){
 el('step').querySelectorAll('[data-k]').forEach(i=>{ data[i.dataset.k]=i.value.trim(); });
+const mkeys = new Set([...el('step').querySelectorAll('[data-mk]')].map(i=>i.dataset.mk));
+mkeys.forEach(k=>{ data[k] = [...el('step').querySelectorAll('[data-mk="'+k+'"]:checked')].map(i=>i.value).join(", "); });
 const c = el('cons'); if(c) data.consentimiento = c.checked;
 }
 
