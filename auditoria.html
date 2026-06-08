@@ -202,6 +202,17 @@ function objetivoOptions(tipo){
   return ["Crecer en seguidores","Vender más","Escalar mi proyecto","Conseguir contactos de la industria","Construir comunidad","Conseguir prensa","Lanzar un proyecto nuevo","Profesionalizar la comunicación"];
 }
 
+function nivelesOptions(tipo){
+  const t = (tipo||"").toLowerCase();
+  if(/músico|musico|banda|productor/.test(t)) return ["Temas en Spotify","Shows en vivo","Merch","Videoclips","Produzco para otros","Clases / enseñanza","No vendo aún"];
+  if(/visual|fotógraf|fotograf/.test(t)) return ["Obra pequeño formato","Formato medio","Fine art","Impresiones","Objetos","Comisiones","Clases / enseñanza","No vendo aún"];
+  if(/actor|actriz/.test(t)) return ["Obras en cartel","Castings","Publicidad","Doblaje","Clases / enseñanza","No trabajo de esto aún"];
+  if(/escritor/.test(t)) return ["Libros publicados","Autoedición","Talleres","Colaboraciones","Clases / enseñanza","No publico aún"];
+  if(/yoga|medicina|holístic|holistic|terapeuta|coach/.test(t)) return ["Clases","Cursos online","Retiros","Sesiones 1-a-1","Formación de otros","No vendo aún"];
+  if(/comediante|podcast|escénico|escenico/.test(t)) return ["Shows / fechas","Entradas","Contenido por suscripción","Marca / auspicios","Clases / enseñanza","No vendo aún"];
+  return ["Servicios","Proyectos propios","Talleres","Clases / enseñanza","No vendo aún"];
+}
+
 const STEPS = [
 { tag:"Sobre vos", q:"Empecemos por lo básico", hint:"Te mandamos el diagnóstico por mail y WhatsApp, así que los dos son obligatorios.", fields:[
 {k:"nombre", label:"Tu nombre", req:true},
@@ -214,9 +225,9 @@ const STEPS = [
 { tag:"Tu disciplina", q:"¿Qué tipo de proyecto querés evaluar?", fields:[
 {k:"tipo_proyecto", type:"select", req:true, options:TIPOS},
 ]},
-{ tag:"Tus perfiles", q:"Pegá tus links", hint:"Excluyente para analizarte: link principal e Instagram son obligatorios. Sumá los que tengas.", fields:[
+{ tag:"Tus perfiles", q:"Pegá tus links", hint:"El link principal es obligatorio para poder analizarte. Sumá todos los que tengas: cuantos más, mejor leemos tu proyecto.", fields:[
 {k:"link_principal", label:"Link principal (el que más usás)", req:true, placeholder:"https://..."},
-{k:"instagram", label:"Instagram", req:true, placeholder:"https://instagram.com/..."},
+{k:"instagram", label:"Instagram", placeholder:"https://instagram.com/..."},
 {k:"tiktok", label:"TikTok", placeholder:"https://..."},
 {k:"youtube", label:"YouTube", placeholder:"https://..."},
 {k:"spotify", label:"Spotify", placeholder:"https://..."},
@@ -229,27 +240,16 @@ const STEPS = [
 { tag:"Tu objetivo", q:"¿Qué resultado querés lograr en los próximos 12 meses?", fields:[
 {k:"objetivo", type:"select", req:true, options:[]},
 ]},
-{ tag:"Tu diferencial", q:"¿Qué tiene tu proyecto que <em>no sea tan común</em>?", hint:"Tu sello, tu nicho, lo que te distingue.", fields:[
-{k:"diferencial", type:"textarea", req:true},
-]},
-{ tag:"Modelo de negocio", q:"¿Qué vendés hoy (o qué te gustaría vender)?", hint:"Shows, obras, cursos, merch, servicios, comisiones, música, entradas…", fields:[
-{k:"que_vende", type:"textarea", req:true},
-{k:"precios_canal", label:"¿Tenés precios definidos y un canal para que te contraten/compren? ¿Cuál?", type:"textarea"},
+{ tag:"Qué ofrecés", q:"¿Qué <em>vendés u ofrecés</em> hoy?", hint:"Marcá todo lo que tengas, aunque recién empieces. Nos sirve para leer tu modelo de negocio.", fields:[
+{k:"niveles_producto", type:"multiselect", req:true, options:[]},
 ]},
 { tag:"Números", q:"Hablemos de plata (rangos, sin precisión)", hint:"Nos ayuda a entender tu nivel de profesionalización. Quedan internos.", fields:[
 {k:"inversion_ads", label:"¿Cuánto invertís en publicidad por mes?", type:"select", req:true, options:["Nada","Menos de USD 50","USD 50-100","USD 100-300","USD 300-500","USD 500-1000","Más de USD 1000"]},
 {k:"ingresos_arte", label:"¿Cuánto ganás con tu arte por mes?", type:"select", req:true, options:["Nada","Menos de USD 100","USD 100-500","USD 500-1000","USD 1000-3000","Más de USD 3000"]},
 ]},
-{ tag:"Publicidad", q:"¿Hacés publicidad?", hint:"Marcá todas las que uses.", fields:[
+{ tag:"Publicidad", q:"¿Hacés publicidad?", hint:"Marcá todas las que uses.", consent:true, fields:[
 {k:"publicidad", type:"multiselect", req:true, options:["No hago publicidad","Meta Ads (Instagram/Facebook)","YouTube Ads","Spotify Ads","X Ads","TikTok Ads","Google Ads"]},
 ]},
-{ tag:"Equipo", q:"¿Cómo gestionás tu proyecto hoy?", hint:"Nos dice qué tan profesionalizada está tu operación.", fields:[
-{k:"equipo", type:"select", req:true, options:["Lo hago todo solo/a","Tengo ayuda puntual (freelance)","Tengo un equipo chico","Tengo manager / productor / agente"]},
-]},
-{ tag:"Resultados", q:"¿Qué resultado querés mejorar y qué intentaste hasta ahora?", hint:"Lo que probaste y qué no funcionó.", fields:[
-{k:"resultado_mejorar", type:"textarea", req:true},
-]},
-{ tag:"Casi listo", q:"Una última cosa", consent:true, fields:[] },
 ];
 
 const LOADING_MSGS = ["Leyendo tus respuestas","Entrando a tus perfiles","Mirando seguidores y contenidos","Cruzando con el Método Semilla","Definiendo tu etapa y tus prioridades"];
@@ -275,9 +275,10 @@ let opts = `<option value="" disabled ${val?'':'selected'}>Elegí una opción…
 opts += optList.map(o=>`<option ${val===o?'selected':''}>${o}</option>`).join("");
 html += `<div>${lbl}<select data-k="${f.k}">${opts}</select></div>`;
 } else if(f.type==="multiselect"){
+var mopts = f.k==="niveles_producto" ? nivelesOptions(data.tipo_proyecto) : f.options;
 var sel=(data[f.k]||"").split(", ").filter(Boolean);
 var boxes="";
-for(var bi=0;bi<f.options.length;bi++){var o=f.options[bi];boxes+='<label class="check"><input type="checkbox" data-mk="'+f.k+'" value="'+o.replace(/"/g,'&quot;')+'"'+(sel.indexOf(o)>=0?' checked':'')+'> '+o+'</label>';}
+for(var bi=0;bi<mopts.length;bi++){var o=mopts[bi];boxes+='<label class="check"><input type="checkbox" data-mk="'+f.k+'" value="'+o.replace(/"/g,'&quot;')+'"'+(sel.indexOf(o)>=0?' checked':'')+'> '+o+'</label>';}
 html += `<div>${lbl}<div class="checks">${boxes}</div></div>`;
 } else if(f.type==="textarea"){
 html += `<div>${lbl}<textarea data-k="${f.k}" placeholder="${f.placeholder||''}">${val}</textarea></div>`;
