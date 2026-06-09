@@ -243,9 +243,9 @@ const STEPS = [
 { tag:"Qué ofrecés", q:"¿Qué <em>vendés u ofrecés</em> hoy?", hint:"Marcá todo lo que tengas, aunque recién empieces. Nos sirve para leer tu modelo de negocio.", fields:[
 {k:"niveles_producto", type:"multiselect", req:true, options:[]},
 ]},
-{ tag:"Números", q:"Hablemos de plata (rangos, sin precisión)", hint:"Nos ayuda a entender tu nivel de profesionalización. Quedan internos.", fields:[
+{ tag:"Números", q:"Hablemos de plata (rangos, sin precisión)", hint:"Pueden ser ventas esporádicas: sumá lo de todo el año. Queda interno y nos ayuda a entender tu nivel de profesionalización.", fields:[
 {k:"inversion_ads", label:"¿Cuánto invertís en publicidad por mes?", type:"select", req:true, options:["Nada","Menos de USD 50","USD 50-100","USD 100-300","USD 300-500","USD 500-1000","Más de USD 1000"]},
-{k:"ingresos_arte", label:"¿Cuánto ganás con tu arte por mes?", type:"select", req:true, options:["Nada","Menos de USD 100","USD 100-500","USD 500-1000","USD 1000-3000","Más de USD 3000"]},
+{k:"ingresos_arte", label:"¿Cuánto vendés con tu arte por año?", type:"select", req:true, options:["Nada","Menos de USD 500","USD 500-2.000","USD 2.000-5.000","USD 5.000-15.000","USD 15.000-50.000","Más de USD 50.000"]},
 ]},
 { tag:"Publicidad", q:"¿Hacés publicidad?", hint:"Marcá todas las que uses.", consent:true, fields:[
 {k:"publicidad", type:"multiselect", req:true, options:["No hago publicidad","Meta Ads (Instagram/Facebook)","YouTube Ads","Spotify Ads","X Ads","TikTok Ads","Google Ads"]},
