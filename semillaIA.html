@@ -57,7 +57,7 @@ textarea{resize:vertical;min-height:120px}
 .checks{display:flex;flex-direction:column;gap:10px;margin-top:4px}
 .check{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:500;cursor:pointer;background:var(--cream);border:1px solid var(--navy-line);border-radius:8px;padding:14px 16px}
 .check input{width:20px;height:20px;flex:none;margin:0}
-.consent{display:flex;gap:12px;align-items:flex-start;background:var(--cream);border:1px solid var(--navy-line);border-radius:8px;padding:16px;font-size:14px;line-height:1.5;color:rgba(26,36,86,.8)}
+.consent{display:flex;gap:12px;align-items:flex-start;margin-top:26px;border-top:1px solid var(--navy-line);background:var(--cream);border:1px solid var(--navy-line);border-radius:8px;padding:16px;font-size:14px;line-height:1.5;color:rgba(26,36,86,.8)}
 .consent input{width:20px;height:20px;flex:none;margin-top:2px}
 .nav-btns{display:flex;justify-content:space-between;align-items:center;margin-top:32px;gap:14px}
 .btn{font-family:inherit;font-weight:700;font-size:16px;border-radius:4px;cursor:pointer;border:1px solid transparent;padding:15px 32px;transition:background .2s,transform .15s}
@@ -249,7 +249,7 @@ const STEPS = [
 ]},
 { tag:"Inversión y foco", q:"Para cerrar, dos cosas", hint:"Definen cuál es tu próximo paso. Quedan internas.", consent:true, fields:[
 {k:"inversion_pauta", label:"¿Cuánto podrías invertir por mes en publicidad para construir una comunidad de ~10.000 seguidores de calidad, segmentados y con potencial de volverse clientes?", type:"select", req:true, options:["Por ahora no puedo invertir en pauta","USD 30 a 60","USD 60 a 150","USD 150 a 500","USD 500 a 1.000","Más de USD 1.000"]},
-{k:"punto_debil", label:"¿Cuál sentís que es el punto débil de tu proyecto?", type:"select", req:true, options:["Modelo de negocio","Comunicación","Publicidad"]},
+{k:"punto_debil", label:"¿Cuál sentís que es el punto débil de tu proyecto? (podés marcar más de uno)", type:"multiselect", req:true, options:["Modelo de negocio","Comunicación","Publicidad"]},
 ]},
 ];
 
