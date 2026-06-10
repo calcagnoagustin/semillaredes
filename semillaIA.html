@@ -96,6 +96,7 @@ ul.list li::before{content:"";width:10px;height:10px;border-radius:50%;flex:none
 .cta-box .ct{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(22px,3vw,26px);font-weight:500;line-height:1.2}
 .cta-box .cx{margin-top:14px;font-size:16px;line-height:1.6;color:rgba(253,250,246,.85)}
 .cta-box a{display:inline-block;margin-top:22px;background:var(--white);color:var(--navy);text-decoration:none;font-weight:700;font-size:16px;padding:15px 30px;border-radius:4px}
+.cta-box a.sec{background:transparent;color:var(--white);border:1px solid rgba(253,250,246,.5);margin-left:10px}
 .upsell{margin-top:22px;font-size:14px;line-height:1.55;color:rgba(26,36,86,.6)}
 
 .hidden{display:none}
@@ -187,6 +188,8 @@ nav{padding:18px 20px}
 const SUPABASE_FUNCTION_URL = "https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/auditoria";
 const SUPABASE_ANON_KEY = "sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17";
 const WHATSAPP_SEMILLA = "https://wa.me/5492665242011";
+const AUDITORIA_URL = "https://aguscalcagno.com/s/auditoria-inicial-con-agus";
+const MEMBRESIA_URL = "https://chat.whatsapp.com/ChPARJAjr0BA8OUBGFIK1K";
 
 const TIPOS = ["Músico/a solista","Banda","Productor/a musical","Actor / actriz","Artista visual","Escritor/a","Fotógrafo/a","Comediante","Podcast","Proyecto escénico","Gestor cultural","Docente artístico","Profesor/a de yoga","Música medicina","Proyecto holístico / bienestar","Terapeuta / coach","Otro"];
 
@@ -376,8 +379,9 @@ ${ejes}
 <h2>Tus prioridades ahora</h2><ul class="list prio">${li(res.prioridades)}</ul>
 <div class="cta-box">
 <div class="ct">${res.cta?.titulo||"Tu próximo paso"}</div>
-<div class="cx">${res.cta?.texto||""}</div>
-<a href="${WHATSAPP_SEMILLA}" target="_blank">Hablar con Semilla →</a>
+<div class="cx">${(res.cta?.texto||"").replace(/https?:\/\/\S+/g,"").trim()}</div>
+<a href="${(data.inversion_pauta||"").startsWith("Por ahora no puedo") ? MEMBRESIA_URL : AUDITORIA_URL}" target="_blank">${(data.inversion_pauta||"").startsWith("Por ahora no puedo") ? "Sumate a la Membresía gratuita →" : "Reservá tu Auditoría inicial →"}</a>
+<a class="sec" href="${WHATSAPP_SEMILLA}" target="_blank">Hablar por WhatsApp →</a>
 </div>
 <p class="upsell">Esta es una versión inicial del análisis. En el informe completo revisamos en profundidad tu naming, ecosistema digital, navegabilidad, publicidad, conversión, creatividad, nicho, comunidad y plan de acción.</p>
 `;
