@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Semilla · Panel del playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Playfair+Display:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --crema:#F2EDE4; --navy:#1A2456; --wine:#7A1F3A; --rosa:#C97080; --oliva:#7A8A42;
+    --navy-soft:rgba(26,36,86,.08); --navy-line:rgba(26,36,86,.14);
+    --r:12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--crema); color:var(--navy);
+    font-family:"Inter",system-ui,sans-serif; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:28px 20px 80px}
+
+  /* Header */
+  header{display:flex;align-items:center;gap:14px;padding-bottom:22px;border-bottom:1px solid var(--navy-line)}
+  .seed{flex:0 0 auto}
+  .brand h1{font-size:13px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;line-height:1.1}
+  .brand p{font-family:"Playfair Display",serif;font-style:italic;font-size:18px;color:var(--wine);margin-top:1px}
+
+  /* Tabs */
+  nav.tabs{display:flex;gap:6px;margin:22px 0 24px}
+  .tab{
+    font:inherit;font-size:14px;font-weight:500;cursor:pointer;
+    background:none;border:1px solid var(--navy-line);color:var(--navy);
+    padding:9px 16px;border-radius:999px;transition:.15s;
+  }
+  .tab[aria-selected="true"]{background:var(--navy);color:var(--crema);border-color:var(--navy)}
+  .tab:focus-visible{outline:2px solid var(--rosa);outline-offset:2px}
+
+  .panel[hidden]{display:none}
+
+  /* Candidates intro */
+  .lead{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+  .lead .count{font-family:"Playfair Display",serif;font-style:italic;font-size:26px}
+  .lead .count b{font-style:normal;font-weight:900}
+  .lead .hint{font-size:13px;color:rgba(26,36,86,.6);max-width:42ch}
+
+  /* Card */
+  .card{
+    background:#fff;border:1px solid var(--navy-line);border-radius:var(--r);
+    padding:18px 18px 16px;margin-bottom:14px;transition:.25s;
+  }
+  .card.leaving{opacity:0;transform:translateY(-6px)}
+  .card .top{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .badge{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 9px;border-radius:6px}
+  .badge.llm{background:rgba(122,138,66,.16);color:#4d5826}
+  .badge.artista{background:rgba(201,112,128,.18);color:#7a1f3a}
+  .disc{font-size:12px;color:rgba(26,36,86,.55);margin-left:auto}
+  .rule{font-size:16px;font-weight:500;margin-bottom:8px}
+  .rule .pre{color:rgba(26,36,86,.55);font-weight:400}
+  .evid{font-size:13px;color:rgba(26,36,86,.7);background:var(--navy-soft);border-radius:8px;padding:9px 11px;margin-bottom:14px}
+  .evid .ej{display:block;margin-top:4px;font-style:italic;color:rgba(26,36,86,.6)}
+  .actions{display:flex;gap:10px;align-items:center}
+  .btn{font:inherit;font-size:14px;font-weight:500;cursor:pointer;border-radius:9px;padding:9px 16px;border:1px solid transparent;transition:.15s}
+  .btn:focus-visible{outline:2px solid var(--rosa);outline-offset:2px}
+  .btn.promote{background:var(--oliva);color:#fff}
+  .btn.promote:hover{background:#697838}
+  .btn.reject{background:none;color:rgba(26,36,86,.6);border-color:var(--navy-line)}
+  .btn.reject:hover{color:var(--wine);border-color:var(--rosa)}
+  .why{margin-left:auto;font-size:12px;color:rgba(26,36,86,.45)}
+
+  .empty{text-align:center;padding:48px 20px;color:rgba(26,36,86,.5)}
+  .empty .pf{font-family:"Playfair Display",serif;font-style:italic;font-size:20px;color:var(--navy)}
+
+  .done{margin-top:26px;border-top:1px dashed var(--navy-line);padding-top:16px}
+  .done h3{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(26,36,86,.5);margin-bottom:10px}
+  .done ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+  .done li{font-size:13px;display:flex;gap:8px;align-items:center}
+  .done li .tick{color:var(--oliva);font-weight:700}
+  .done li.rej .tick{color:var(--wine)}
+  .done .none{font-size:13px;color:rgba(26,36,86,.4)}
+
+  /* Sandbox */
+  .sandbox-note{font-size:13px;color:rgba(26,36,86,.7);background:rgba(201,112,128,.12);border:1px solid rgba(201,112,128,.3);border-radius:8px;padding:10px 12px;margin-bottom:16px}
+  .chat{background:#fff;border:1px solid var(--navy-line);border-radius:var(--r);min-height:300px;display:flex;flex-direction:column}
+  .msgs{flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:420px}
+  .msg{max-width:80%;padding:10px 13px;border-radius:12px;font-size:14px}
+  .msg.bot{background:var(--navy-soft);align-self:flex-start;border-bottom-left-radius:3px}
+  .msg.me{background:var(--navy);color:var(--crema);align-self:flex-end;border-bottom-right-radius:3px}
+  .composer{display:flex;gap:8px;padding:12px;border-top:1px solid var(--navy-line)}
+  .composer input{flex:1;font:inherit;font-size:14px;padding:10px 12px;border:1px solid var(--navy-line);border-radius:9px;background:var(--crema)}
+  .composer input:focus{outline:2px solid var(--rosa);outline-offset:1px}
+  .composer button{flex:0 0 auto}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--navy);color:var(--crema);font-size:14px;padding:11px 18px;border-radius:10px;opacity:0;transition:.25s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media (max-width:560px){.actions{flex-wrap:wrap}.why{margin-left:0;width:100%}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <svg class="seed" width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
+      <g stroke="#C97080" stroke-width="1.6" stroke-linecap="round">
+        <line x1="20" y1="20" x2="20" y2="4"/><line x1="20" y1="20" x2="31.3" y2="8.7"/>
+        <line x1="20" y1="20" x2="36" y2="20"/><line x1="20" y1="20" x2="31.3" y2="31.3"/>
+        <line x1="20" y1="20" x2="20" y2="36"/><line x1="20" y1="20" x2="8.7" y2="31.3"/>
+        <line x1="20" y1="20" x2="4" y2="20"/><line x1="20" y1="20" x2="8.7" y2="8.7"/>
+      </g>
+      <g fill="#C97080">
+        <circle cx="20" cy="4" r="2.1"/><circle cx="31.3" cy="8.7" r="2.1"/><circle cx="36" cy="20" r="2.1"/>
+        <circle cx="31.3" cy="31.3" r="2.1"/><circle cx="20" cy="36" r="2.1"/><circle cx="8.7" cy="31.3" r="2.1"/>
+        <circle cx="4" cy="20" r="2.1"/><circle cx="8.7" cy="8.7" r="2.1"/>
+      </g>
+      <ellipse cx="20" cy="20" rx="4.4" ry="6" fill="#7A8A42"/>
+    </svg>
+    <div class="brand">
+      <h1>Semilla · Redes</h1>
+      <p>Panel del playbook</p>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" id="t-cand" role="tab" aria-selected="true" aria-controls="p-cand">Candidatos</button>
+    <button class="tab" id="t-box" role="tab" aria-selected="false" aria-controls="p-box">Probar el bot</button>
+  </nav>
+
+  <!-- CANDIDATOS -->
+  <section class="panel" id="p-cand" role="tabpanel" aria-labelledby="t-cand">
+    <div class="lead">
+      <div class="count"><b id="n">0</b> esperando tu revisión</div>
+      <p class="hint">Cada candidato ya pasó el cotejo automático: no contradice las reglas base. Vos decidís si suma al playbook.</p>
+    </div>
+    <div id="list"></div>
+    <div class="done">
+      <h3>Resueltos en esta sesión</h3>
+      <ul id="resolved"><li class="none">Todavía nada.</li></ul>
+    </div>
+  </section>
+
+  <!-- SANDBOX -->
+  <section class="panel" id="p-box" role="tabpanel" aria-labelledby="t-box" hidden>
+    <p class="sandbox-note">Banco de pruebas. Lo que escribís acá no le llega a ningún artista — sirve para tantear cómo responde el bot y para ensayar el chat de la auditoría paga. En real pega al Edge Function con el playbook vigente.</p>
+    <div class="chat">
+      <div class="msgs" id="msgs">
+        <div class="msg bot">Hola Agus. Soy el bot con el playbook actual cargado. Tirame un caso de artista y te muestro cómo lo diagnostico.</div>
+      </div>
+      <div class="composer">
+        <input id="in" type="text" placeholder="Escribí un caso para probar…" autocomplete="off">
+        <button class="btn promote" id="send">Enviar</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const candidates = [
+  { id:1, src:"llm", disc:"Artistas visuales",
+    rule:"En disciplina visual, evaluar siempre si hay precios públicos de obra en el portfolio o la tienda.",
+    n:9, ej:"“¿cómo pongo precio a mis cuadros?”, “no sé si mostrar valores”…" },
+  { id:2, src:"artista", disc:"Música",
+    rule:"Cuando un músico no tiene press kit, explicar brevemente qué es un EPK antes de marcarlo como faltante.",
+    n:14, ej:"“¿qué es un EPK?”, “me piden press kit y no sé qué es”…" },
+  { id:3, src:"llm", disc:"Transversal",
+    rule:"Marcar un Linktree con más de 6 links como riesgo de dispersión de navegación.",
+    n:11, ej:"perfiles con 8–12 links sin jerarquía a un destino principal." },
+  { id:4, src:"artista", disc:"Transversal",
+    rule:"Si el artista pregunta por pauta pero no tiene landing, priorizar setup antes que campañas.",
+    n:7, ej:"“quiero hacer Meta Ads”, sin destino de conversión armado." },
+  { id:5, src:"llm", disc:"Tono",
+    rule:"Reforzar lenguaje no-humillante en el bloque de calidad del activo: foco en presentación y posicionamiento, nunca en el valor de la obra.",
+    n:6, ej:"varios marcaron 👎 sintiéndose juzgados en ese bloque." },
+];
+
+const listEl = document.getElementById("list");
+const nEl = document.getElementById("n");
+const resolvedEl = document.getElementById("resolved");
+const resolved = [];
+
+function render(){
+  nEl.textContent = candidates.length;
+  if(!candidates.length){
+    listEl.innerHTML = '<div class="empty"><p class="pf">Cola vacía.</p><p>Cuando entren nuevos candidatos del mes, aparecen acá.</p></div>';
+    return;
+  }
+  listEl.innerHTML = candidates.map(c => `
+    <article class="card" data-id="${c.id}">
+      <div class="top">
+        <span class="badge ${c.src}">${c.src==="llm" ? "Sugerencia del bot" : "Recurrencia de artistas"}</span>
+        <span class="disc">${c.disc}</span>
+      </div>
+      <p class="rule"><span class="pre">Regla propuesta:</span> ${c.rule}</p>
+      <div class="evid">Evidencia: apareció <b>${c.n} veces</b> este período.<span class="ej">${c.ej}</span></div>
+      <div class="actions">
+        <button class="btn promote" data-act="promote">Promover al playbook</button>
+        <button class="btn reject" data-act="reject">Descartar</button>
+        <span class="why">Descartar = no volver a sugerirlo.</span>
+      </div>
+    </article>`).join("");
+}
+
+function resolve(id, act){
+  const i = candidates.findIndex(c=>c.id===id);
+  if(i<0) return;
+  const c = candidates[i];
+  const card = listEl.querySelector(`[data-id="${id}"]`);
+  card.classList.add("leaving");
+  setTimeout(()=>{
+    candidates.splice(i,1);
+    resolved.unshift({rule:c.rule, act});
+    render(); renderResolved();
+  }, 240);
+  showToast(act==="promote" ? "Promovido al playbook ✓" : "Descartado · no se vuelve a sugerir");
+}
+
+function renderResolved(){
+  if(!resolved.length){ resolvedEl.innerHTML = '<li class="none">Todavía nada.</li>'; return; }
+  resolvedEl.innerHTML = resolved.map(r=>`
+    <li class="${r.act==="reject"?"rej":""}"><span class="tick">${r.act==="promote"?"✓":"✕"}</span>
+    <span>${r.act==="promote"?"Al core":"Descartada"}: ${r.rule.slice(0,68)}${r.rule.length>68?"…":""}</span></li>`).join("");
+}
+
+listEl.addEventListener("click", e=>{
+  const btn = e.target.closest("[data-act]"); if(!btn) return;
+  const id = +btn.closest(".card").dataset.id;
+  resolve(id, btn.dataset.act);
+});
+
+// Tabs
+const tabs = [...document.querySelectorAll(".tab")];
+tabs.forEach(t=>t.addEventListener("click",()=>{
+  tabs.forEach(x=>{
+    const on = x===t;
+    x.setAttribute("aria-selected", on);
+    document.getElementById(x.getAttribute("aria-controls")).hidden = !on;
+  });
+}));
+
+// Toast
+let toT;
+function showToast(msg){
+  const el = document.getElementById("toast");
+  el.textContent = msg; el.classList.add("show");
+  clearTimeout(toT); toT = setTimeout(()=>el.classList.remove("show"), 2200);
+}
+
+// Sandbox (mock)
+const msgs = document.getElementById("msgs");
+const input = document.getElementById("in");
+function addMsg(text, who){
+  const d = document.createElement("div");
+  d.className = "msg "+who; d.textContent = text;
+  msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
+}
+function sandboxReply(){
+  addMsg("(demo) Acá respondería el bot con el playbook vigente. En la versión conectada esto pega al Edge Function y razona con el Método Semilla sobre el caso que escribiste.", "bot");
+}
+function send(){
+  const v = input.value.trim(); if(!v) return;
+  addMsg(v, "me"); input.value="";
+  setTimeout(sandboxReply, 500);
+}
+document.getElementById("send").addEventListener("click", send);
+input.addEventListener("keydown", e=>{ if(e.key==="Enter") send(); });
+
+render(); renderResolved();
+</script>
+</body>
+</html>
