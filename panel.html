@@ -60,6 +60,10 @@
   .rule .pre{color:rgba(26,36,86,.55);font-weight:400}
   .evid{font-size:13px;color:rgba(26,36,86,.7);background:var(--navy-soft);border-radius:8px;padding:9px 11px;margin-bottom:14px}
   .evid .ej{display:block;margin-top:4px;font-style:italic;color:rgba(26,36,86,.6)}
+  .comment{margin-bottom:12px}
+  .comment label{display:block;font-size:12px;font-weight:500;color:rgba(26,36,86,.6);margin-bottom:5px}
+  .comment textarea{width:100%;font:inherit;font-size:14px;resize:vertical;min-height:42px;padding:9px 11px;border:1px solid var(--navy-line);border-radius:8px;background:var(--crema);color:var(--navy)}
+  .comment textarea:focus{outline:2px solid var(--rosa);outline-offset:1px}
   .actions{display:flex;gap:10px;align-items:center}
   .btn{font:inherit;font-size:14px;font-weight:500;cursor:pointer;border-radius:9px;padding:9px 16px;border:1px solid transparent;transition:.15s}
   .btn:focus-visible{outline:2px solid var(--rosa);outline-offset:2px}
@@ -79,6 +83,7 @@
   .done li .tick{color:var(--oliva);font-weight:700}
   .done li.rej .tick{color:var(--wine)}
   .done .none{font-size:13px;color:rgba(26,36,86,.4)}
+  .done .cmnote{color:var(--wine);font-style:italic}
 
   /* Sandbox */
   .sandbox-note{font-size:13px;color:rgba(26,36,86,.7);background:rgba(201,112,128,.12);border:1px solid rgba(201,112,128,.3);border-radius:8px;padding:10px 12px;margin-bottom:16px}
@@ -196,6 +201,10 @@ function render(){
       </div>
       <p class="rule"><span class="pre">Regla propuesta:</span> ${c.rule}</p>
       <div class="evid">Evidencia: apareció <b>${c.n} veces</b> este período.<span class="ej">${c.ej}</span></div>
+      <div class="comment">
+        <label for="cm-${c.id}">Tu comentario o ajuste (opcional)</label>
+        <textarea id="cm-${c.id}" data-cm="${c.id}" placeholder="Ej: sí, pero solo para óleo y escultura, no para fotografía…">${c.comment||""}</textarea>
+      </div>
       <div class="actions">
         <button class="btn promote" data-act="promote">Promover al playbook</button>
         <button class="btn reject" data-act="reject">Descartar</button>
@@ -208,27 +217,37 @@ function resolve(id, act){
   const i = candidates.findIndex(c=>c.id===id);
   if(i<0) return;
   const c = candidates[i];
+  const ta = listEl.querySelector(`[data-cm="${id}"]`);
+  const comment = ta ? ta.value.trim() : (c.comment||"");
   const card = listEl.querySelector(`[data-id="${id}"]`);
   card.classList.add("leaving");
   setTimeout(()=>{
     candidates.splice(i,1);
-    resolved.unshift({rule:c.rule, act});
+    resolved.unshift({rule:c.rule, act, comment});
     render(); renderResolved();
   }, 240);
-  showToast(act==="promote" ? "Promovido al playbook ✓" : "Descartado · no se vuelve a sugerir");
+  const base = act==="promote" ? "Promovido al playbook ✓" : "Descartado · no se vuelve a sugerir";
+  showToast(comment ? base + " (con tu comentario)" : base);
 }
 
 function renderResolved(){
   if(!resolved.length){ resolvedEl.innerHTML = '<li class="none">Todavía nada.</li>'; return; }
   resolvedEl.innerHTML = resolved.map(r=>`
     <li class="${r.act==="reject"?"rej":""}"><span class="tick">${r.act==="promote"?"✓":"✕"}</span>
-    <span>${r.act==="promote"?"Al core":"Descartada"}: ${r.rule.slice(0,68)}${r.rule.length>68?"…":""}</span></li>`).join("");
+    <span>${r.act==="promote"?"Al core":"Descartada"}: ${r.rule.slice(0,68)}${r.rule.length>68?"…":""}${r.comment?`<em class="cmnote"> · tu nota: “${r.comment}”</em>`:""}</span></li>`).join("");
 }
 
 listEl.addEventListener("click", e=>{
   const btn = e.target.closest("[data-act]"); if(!btn) return;
   const id = +btn.closest(".card").dataset.id;
   resolve(id, btn.dataset.act);
+});
+
+listEl.addEventListener("input", e=>{
+  const ta = e.target.closest("[data-cm]"); if(!ta) return;
+  const id = +ta.dataset.cm;
+  const c = candidates.find(c=>c.id===id);
+  if(c) c.comment = ta.value;
 });
 
 // Tabs
