@@ -845,6 +845,50 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
     </div>
   </section>
 
+  <!-- COUNTDOWN CHARLA GRATUITA -->
+  <section class="charla-countdown" style="background:var(--navy);color:var(--cream);padding:56px 24px;text-align:center;">
+    <p style="color:var(--olive);letter-spacing:0.15em;font-size:11px;font-weight:700;text-transform:uppercase;margin:0 0 14px;">Charla gratuita</p>
+    <h2 style="color:var(--cream);font-family:inherit;font-size:clamp(26px,4.2vw,42px);line-height:1.08;margin:0 0 10px;">Sumate a la charla gratuita</h2>
+    <p style="color:var(--rose);font-size:clamp(17px,2.6vw,24px);font-weight:700;margin:0 0 30px;">Miércoles &middot; 17 hs (Argentina)</p>
+    <div id="cd-charla" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:34px;">
+      <div style="min-width:74px;"><div class="cd-num" data-u="d" style="font-size:clamp(32px,5vw,52px);font-weight:800;line-height:1;color:var(--cream);">00</div><div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(242,237,228,0.65);margin-top:6px;">Días</div></div>
+      <div style="min-width:74px;"><div class="cd-num" data-u="h" style="font-size:clamp(32px,5vw,52px);font-weight:800;line-height:1;color:var(--cream);">00</div><div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(242,237,228,0.65);margin-top:6px;">Horas</div></div>
+      <div style="min-width:74px;"><div class="cd-num" data-u="m" style="font-size:clamp(32px,5vw,52px);font-weight:800;line-height:1;color:var(--cream);">00</div><div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(242,237,228,0.65);margin-top:6px;">Min</div></div>
+      <div style="min-width:74px;"><div class="cd-num" data-u="s" style="font-size:clamp(32px,5vw,52px);font-weight:800;line-height:1;color:var(--cream);">00</div><div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(242,237,228,0.65);margin-top:6px;">Seg</div></div>
+    </div>
+    <a href="https://calendar.app.google/ejxnpx8RkM6MPVkb7" target="_blank" class="btn-primary" style="background:var(--olive);color:var(--white);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 2v3M16 2v3M3.5 9h17M5 5h14a1 1 0 011 1v13a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      AGENDÁ LA CHARLA ACÁ
+    </a>
+  </section>
+  <script>
+    (function(){
+      function nextWed(){
+        var now=new Date(), t=new Date(now);
+        t.setUTCHours(20,0,0,0); // 17 hs ART = 20:00 UTC
+        var diff=(3 - t.getUTCDay() + 7)%7;
+        if(diff===0 && now.getTime()>t.getTime()) diff=7;
+        t.setUTCDate(t.getUTCDate()+diff);
+        return t;
+      }
+      var target=nextWed();
+      function pad(n){return (n<10?'0':'')+n;}
+      function tick(){
+        var now=new Date(), s=Math.floor((target-now)/1000);
+        if(s<0){ target=nextWed(); s=Math.floor((target-now)/1000); }
+        var d=Math.floor(s/86400); s-=d*86400;
+        var h=Math.floor(s/3600); s-=h*3600;
+        var m=Math.floor(s/60); s-=m*60;
+        var r=document.getElementById('cd-charla'); if(!r) return;
+        r.querySelector('[data-u=d]').textContent=pad(d);
+        r.querySelector('[data-u=h]').textContent=pad(h);
+        r.querySelector('[data-u=m]').textContent=pad(m);
+        r.querySelector('[data-u=s]').textContent=pad(s);
+      }
+      tick(); setInterval(tick,1000);
+    })();
+  </script>
+
   <!-- VIDEO -->
   <section class="video-section-form">
     <div class="video-form-inner">
@@ -1118,5 +1162,61 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
   });
 </script>
   
+<!-- POPUP CHARLA GRATUITA -->
+<div id="charla-pop-overlay" style="display:none;position:fixed;inset:0;background:rgba(26,36,86,0.72);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+  <div role="dialog" aria-modal="true" aria-label="Charla gratuita" style="position:relative;background:var(--navy,#1A2456);color:var(--cream,#F2EDE4);max-width:440px;width:100%;border-radius:16px;padding:44px 28px 32px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.45);">
+    <button id="charla-pop-close" aria-label="Cerrar" style="position:absolute;top:10px;right:14px;background:none;border:none;color:rgba(242,237,228,0.6);font-size:28px;line-height:1;cursor:pointer;padding:4px;">&times;</button>
+    <p style="color:var(--olive,#7A8A42);letter-spacing:0.15em;font-size:11px;font-weight:700;text-transform:uppercase;margin:0 0 12px;">Charla gratuita</p>
+    <h2 style="color:var(--cream,#F2EDE4);font-family:inherit;font-size:clamp(24px,5vw,34px);line-height:1.1;margin:0 0 8px;">Sumate a la charla gratuita</h2>
+    <p style="color:var(--rose,#C97080);font-size:clamp(15px,3.5vw,19px);font-weight:700;margin:0 0 24px;">Mi&eacute;rcoles &middot; 17 hs (Argentina)</p>
+    <div id="cd-charla-pop" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px;">
+      <div style="min-width:62px;"><div data-up="d" style="font-size:clamp(28px,6vw,44px);font-weight:800;line-height:1;color:var(--cream,#F2EDE4);">00</div><div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(242,237,228,0.65);margin-top:6px;">D&iacute;as</div></div>
+      <div style="min-width:62px;"><div data-up="h" style="font-size:clamp(28px,6vw,44px);font-weight:800;line-height:1;color:var(--cream,#F2EDE4);">00</div><div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(242,237,228,0.65);margin-top:6px;">Horas</div></div>
+      <div style="min-width:62px;"><div data-up="m" style="font-size:clamp(28px,6vw,44px);font-weight:800;line-height:1;color:var(--cream,#F2EDE4);">00</div><div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(242,237,228,0.65);margin-top:6px;">Min</div></div>
+      <div style="min-width:62px;"><div data-up="s" style="font-size:clamp(28px,6vw,44px);font-weight:800;line-height:1;color:var(--cream,#F2EDE4);">00</div><div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(242,237,228,0.65);margin-top:6px;">Seg</div></div>
+    </div>
+    <a href="https://calendar.app.google/ejxnpx8RkM6MPVkb7" target="_blank" class="btn-primary" style="background:var(--olive,#7A8A42);color:var(--white,#FDFAF6);width:100%;justify-content:center;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 2v3M16 2v3M3.5 9h17M5 5h14a1 1 0 011 1v13a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      AGEND&Aacute; LA CHARLA AC&Aacute;
+    </a>
+  </div>
+</div>
+<script>
+  (function(){
+    var KEY='charla_pop_seen';
+    try{ var seen=localStorage.getItem(KEY); if(seen && (Date.now()-parseInt(seen,10) < 86400000)) return; }catch(e){}
+    function nextWed(){
+      var now=new Date(), t=new Date(now);
+      t.setUTCHours(20,0,0,0); // 17 hs ART = 20:00 UTC
+      var diff=(3 - t.getUTCDay() + 7)%7;
+      if(diff===0 && now.getTime()>t.getTime()) diff=7;
+      t.setUTCDate(t.getUTCDate()+diff);
+      return t;
+    }
+    var target=nextWed();
+    function pad(n){return (n<10?'0':'')+n;}
+    var ov=document.getElementById('charla-pop-overlay');
+    var r=document.getElementById('cd-charla-pop');
+    function tick(){
+      var now=new Date(), s=Math.floor((target-now)/1000);
+      if(s<0){ target=nextWed(); s=Math.floor((target-now)/1000); }
+      var d=Math.floor(s/86400); s-=d*86400;
+      var h=Math.floor(s/3600); s-=h*3600;
+      var m=Math.floor(s/60); s-=m*60;
+      if(!r) return;
+      r.querySelector('[data-up=d]').textContent=pad(d);
+      r.querySelector('[data-up=h]').textContent=pad(h);
+      r.querySelector('[data-up=m]').textContent=pad(m);
+      r.querySelector('[data-up=s]').textContent=pad(s);
+    }
+    function openPop(){ if(ov.dataset.shown) return; ov.dataset.shown='1'; ov.style.display='flex'; tick(); setInterval(tick,1000); }
+    function closePop(){ ov.style.display='none'; try{ localStorage.setItem(KEY, String(Date.now())); }catch(e){} }
+    document.getElementById('charla-pop-close').addEventListener('click', closePop);
+    ov.addEventListener('click', function(e){ if(e.target===ov) closePop(); });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closePop(); });
+    setTimeout(openPop, 6000);
+    document.addEventListener('mouseout', function(e){ if(e.clientY<=0) openPop(); });
+  })();
+</script>
 </body>
 </html>
