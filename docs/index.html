@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Semillas 2.0 · Estado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --soil:#0E1411; --surface:#15201B; --surface-2:#192A22;
+    --hair:#243029; --hair-soft:#1d281f;
+    --ink:#E8EDE9; --muted:#7E9085; --faint:#586860;
+    --jade:#6FBF8E; --grain:#E8C36A; --clay:#E07A5F; --sky:#7FB0C9;
+    --r:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--soil);
+    color:var(--ink);
+    font-family:"Space Grotesk",system-ui,sans-serif;
+    line-height:1.45;
+    padding:clamp(16px,4vw,40px);
+    max-width:1080px;margin:0 auto;
+    background-image:radial-gradient(120% 80% at 50% -10%, #16241c 0%, var(--soil) 55%);
+    min-height:100vh;
+  }
+  .mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+  .eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:500}
+
+  /* header */
+  header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:28px}
+  .brand h1{font-size:clamp(22px,3.6vw,30px);font-weight:700;letter-spacing:-.01em}
+  .brand .sub{color:var(--muted);font-size:13px;margin-top:2px}
+  .pulse{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:12px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--jade);box-shadow:0 0 0 0 rgba(111,191,142,.6);animation:beat 2.6s infinite}
+  @keyframes beat{0%{box-shadow:0 0 0 0 rgba(111,191,142,.45)}70%{box-shadow:0 0 0 7px rgba(111,191,142,0)}100%{box-shadow:0 0 0 0 rgba(111,191,142,0)}}
+
+  /* hero */
+  .hero{background:linear-gradient(180deg,var(--surface) 0%, #121b16 100%);border:1px solid var(--hair);border-radius:var(--r);padding:clamp(18px,3vw,26px);margin-bottom:18px;display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between}
+  .hero .pnl-val{font-size:clamp(30px,6vw,46px);font-weight:600;letter-spacing:-.02em;line-height:1}
+  .hero .pnl-sub{color:var(--muted);font-size:13px;margin-top:6px}
+  .hero-stats{display:flex;gap:clamp(16px,4vw,38px);flex-wrap:wrap}
+  .stat .k{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+  .stat .v{font-size:18px;margin-top:3px}
+
+  /* grid */
+  .cols{display:grid;grid-template-columns:1fr;gap:18px}
+  @media(min-width:760px){.cols{grid-template-columns:1.6fr 1fr}}
+  .card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r);overflow:hidden}
+  .card > .head{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid var(--hair-soft)}
+  .card > .head .title{font-weight:500;font-size:15px}
+  .card .body{padding:6px 18px 16px}
+
+  /* positions */
+  .pos{padding:14px 0;border-bottom:1px solid var(--hair-soft)}
+  .pos:last-child{border-bottom:none}
+  .pos.closed{opacity:.5}
+  .pos-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .sym{font-size:17px;font-weight:600}
+  .sym .pair{color:var(--faint);font-weight:400;font-size:13px}
+  .pos-pnl{text-align:right}
+  .pos-pnl .pct{font-size:17px;font-weight:600}
+  .pos-pnl .abs{font-size:12px;color:var(--muted)}
+  .pos-meta{display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:9px;font-size:12.5px;color:var(--muted)}
+  .pos-meta b{color:var(--ink);font-weight:500}
+  .up{color:var(--jade)} .down{color:var(--clay)} .flat{color:var(--muted)}
+
+  /* stage track */
+  .stage{display:inline-flex;align-items:center;gap:0;margin-top:10px}
+  .seg{height:4px;width:34px;background:var(--hair);border-radius:2px;margin-right:4px}
+  .seg.on{background:var(--jade)} .seg.stop{background:var(--clay)}
+  .badge{display:inline-block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:999px;border:1px solid var(--hair);color:var(--muted)}
+  .badge.confirmed{color:var(--jade);border-color:rgba(111,191,142,.4)}
+  .badge.moonbag{color:var(--grain);border-color:rgba(232,195,106,.4)}
+  .badge.seed{color:var(--sky);border-color:rgba(127,176,201,.4)}
+  .badge.closed{color:var(--clay);border-color:rgba(224,122,95,.4)}
+
+  /* side rows */
+  .row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--hair-soft);font-size:14px}
+  .row:last-child{border-bottom:none}
+  .row .lbl{color:var(--muted)}
+  .chip{display:inline-block;background:var(--surface-2);border:1px solid var(--hair);border-radius:8px;padding:3px 9px;font-size:13px;margin:0 6px 6px 0}
+  .chip .live{color:var(--faint);font-size:11px;margin-left:6px}
+
+  footer{margin-top:22px;color:var(--faint);font-size:12px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+  .note{background:var(--surface);border:1px solid var(--hair-soft);border-left:2px solid var(--grain);border-radius:8px;padding:10px 13px;color:var(--muted);font-size:12.5px;margin-top:14px}
+  a{color:var(--sky);text-decoration:none}
+  .err{color:var(--clay)}
+  @media(prefers-reduced-motion:reduce){.dot{animation:none}}
+</style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <h1>Sistema Semillas 2.0</h1>
+      <div class="sub">Especulación disciplinada · Binance Spot · sub-cuenta aislada</div>
+    </div>
+    <div class="pulse"><span class="dot"></span><span id="freshness">precios en vivo</span></div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">P&amp;L no realizado · posiciones abiertas</div>
+      <div class="pnl-val mono" id="pnlTotal">—</div>
+      <div class="pnl-sub" id="pnlTotalSub">cargando estado…</div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="k">Valor mercado</div><div class="v mono" id="mktTotal">—</div></div>
+      <div class="stat"><div class="k">Costo base</div><div class="v mono" id="costTotal">—</div></div>
+      <div class="stat"><div class="k">Capital + depósitos</div><div class="v mono" id="capTotal">—</div></div>
+    </div>
+  </section>
+
+  <div class="cols">
+    <div class="card">
+      <div class="head"><span class="title">Posiciones</span><span class="eyebrow" id="posCount"></span></div>
+      <div class="body" id="positions"><div class="row"><span class="lbl">Cargando…</span></div></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div class="card">
+        <div class="head"><span class="title">Bot diario</span><span class="eyebrow">filtro determinístico</span></div>
+        <div class="body">
+          <div class="row"><span class="lbl">Última corrida</span><span class="mono" id="lastRun">—</span></div>
+          <div class="row"><span class="lbl">Narrativa activa</span><span class="mono" id="narr">—</span></div>
+          <div style="padding-top:11px"><div class="lbl" style="color:var(--muted);font-size:13px;margin-bottom:8px">Shortlist (vigilancia)</div><div id="shortlist"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="head"><span class="title">Cerebro</span><span class="eyebrow">LLM mensual</span></div>
+        <div class="body">
+          <div class="row"><span class="lbl">Último análisis</span><span class="mono" id="brainLast">—</span></div>
+          <div class="row"><span class="lbl">Próximo</span><span class="mono" id="brainNext">—</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note" id="discipline">Vista de control, no de trading. El sistema revisa una vez al día; mirar precios al segundo no cambia ninguna decisión.</div>
+
+  <footer>
+    <span id="dataStamp">—</span>
+    <span>Precios: Binance público · P&amp;L calculado en el navegador</span>
+  </footer>
+
+<script>
+const MONTHS=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const fmtUSD=(n,d=2)=>(n<0?"-":"")+"$"+Math.abs(n).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+const fmtPct=n=>(n>=0?"+":"")+n.toFixed(2)+"%";
+const cls=n=>n>0.0001?"up":(n<-0.0001?"down":"flat");
+const bSym=s=>s.replace("/","").toUpperCase();
+let DATA=null, PRICES={}, lastFetch=0;
+
+function stageFor(status){
+  // semilla -> confirmada -> moonbag ; stop = clay
+  if(status==="closed")  return {badge:"closed",  label:"stop",      segs:["stop","stop","stop"]};
+  if(status==="moonbag") return {badge:"moonbag", label:"moonbag",   segs:["on","on","on"]};
+  if(status==="confirmed")return{badge:"confirmed",label:"confirmada",segs:["on","on",""]};
+  return {badge:"seed", label:"semilla", segs:["on","",""]};
+}
+
+async function loadData(){
+  const r=await fetch("./dashboard_data.json?ts="+Date.now());
+  if(!r.ok) throw new Error("dashboard_data.json "+r.status);
+  DATA=await r.json();
+}
+
+async function loadPrices(){
+  const syms=new Set();
+  (DATA.positions||[]).forEach(p=>{if(p.qty>0)syms.add(bSym(p.symbol))});
+  (DATA.shortlist||[]).forEach(s=>syms.add(bSym(s)));
+  if(syms.size===0){lastFetch=Date.now();return;}
+  const list=JSON.stringify([...syms]);
+  const urls=[
+    "https://data-api.binance.vision/api/v3/ticker/24hr?symbols="+encodeURIComponent(list),
+    "https://api.binance.com/api/v3/ticker/24hr?symbols="+encodeURIComponent(list)
+  ];
+  let arr=null,err=null;
+  for(const u of urls){try{const r=await fetch(u);if(r.ok){arr=await r.json();break;}}catch(e){err=e;}}
+  if(!arr) throw err||new Error("sin precios");
+  arr.forEach(t=>{PRICES[t.symbol]={price:parseFloat(t.lastPrice),chg:parseFloat(t.priceChangePercent)}});
+  lastFetch=Date.now();
+}
+
+function render(){
+  if(!DATA) return;
+  // hero / positions
+  const open=(DATA.positions||[]).filter(p=>p.qty>0);
+  const closed=(DATA.positions||[]).filter(p=>!(p.qty>0));
+  let cost=0,mkt=0,priced=true;
+  open.forEach(p=>{const px=PRICES[bSym(p.symbol)];const c=p.qty*p.avg_cost;cost+=c;if(px){mkt+=p.qty*px.price}else{priced=false}});
+  const pnl=mkt-cost, pnlPct=cost>0?(pnl/cost*100):0;
+
+  document.getElementById("pnlTotal").innerHTML=priced&&open.length
+      ? `<span class="${cls(pnl)}">${fmtUSD(pnl)} <span style="font-size:.55em">${fmtPct(pnlPct)}</span></span>`
+      : (open.length?"—":'<span class="flat">sin posiciones abiertas</span>');
+  document.getElementById("pnlTotalSub").textContent =
+      open.length? `${open.length} abierta${open.length>1?"s":""} · ${closed.length} cerrada${closed.length!==1?"s":""}`
+                 : `${closed.length} cerrada${closed.length!==1?"s":""}`;
+  document.getElementById("mktTotal").textContent = priced? fmtUSD(mkt): "—";
+  document.getElementById("costTotal").textContent = fmtUSD(cost);
+  const dep=(DATA.deposits||[]).reduce((a,d)=>a+(d.amount||0),0);
+  document.getElementById("capTotal").textContent = fmtUSD((DATA.capital_inicial||0)+dep,0);
+
+  document.getElementById("posCount").textContent = (DATA.positions||[]).length+" total";
+  const pc=document.getElementById("positions"); pc.innerHTML="";
+  const ordered=[...open,...closed];
+  if(ordered.length===0) pc.innerHTML='<div class="row"><span class="lbl">Sin posiciones.</span></div>';
+  ordered.forEach(p=>{
+    const px=PRICES[bSym(p.symbol)];
+    const isOpen=p.qty>0;
+    const upnl=(isOpen&&px)?(px.price-p.avg_cost)*p.qty:0;
+    const upct=(isOpen&&px)?((px.price/p.avg_cost-1)*100):0;
+    const st=stageFor(p.status);
+    const [base,quote]=p.symbol.split("/");
+    const el=document.createElement("div");
+    el.className="pos"+(isOpen?"":" closed");
+    el.innerHTML=`
+      <div class="pos-top">
+        <div><span class="sym">${base}</span> <span class="pair">/${quote||"USDT"}</span>
+             <span class="badge ${st.badge}" style="margin-left:8px">${st.label}</span></div>
+        <div class="pos-pnl">${isOpen?(px?`<div class="pct ${cls(upnl)}">${fmtPct(upct)}</div><div class="abs">${fmtUSD(upnl)}</div>`:`<div class="pct flat">—</div>`):`<div class="pct flat">cerrada</div>`}</div>
+      </div>
+      <div class="pos-meta">
+        ${isOpen?`<span>Precio <b class="mono">${px?fmtUSD(px.price,px.price<1?4:2):"—"}</b></span>
+        <span>Costo prom <b class="mono">${fmtUSD(p.avg_cost,p.avg_cost<1?4:2)}</b></span>
+        <span>Cant <b class="mono">${p.qty}</b></span>
+        <span>Valor <b class="mono">${px?fmtUSD(p.qty*px.price):"—"}</b></span>`
+        :`<span>Costo prom <b class="mono">${fmtUSD(p.avg_cost,p.avg_cost<1?4:2)}</b></span>`}
+        <span>DCA <b class="mono">${p.dca_adds||0}</b></span>
+        <span>TP <b class="mono">${(p.tp_hit&&p.tp_hit.length)?p.tp_hit.join(","):"—"}</b></span>
+        ${px&&isOpen?`<span>24h <b class="mono ${cls(px.chg)}">${fmtPct(px.chg)}</b></span>`:""}
+      </div>
+      <div class="stage">${st.segs.map(s=>`<span class="seg ${s}"></span>`).join("")}</div>`;
+    pc.appendChild(el);
+  });
+
+  // bot diario
+  document.getElementById("lastRun").textContent = DATA.generated_at? stampShort(DATA.generated_at):"—";
+  document.getElementById("narr").textContent = DATA.narrativa_active? DATA.narrativa_active : "ninguna";
+  const sl=document.getElementById("shortlist"); sl.innerHTML="";
+  if(!DATA.shortlist||!DATA.shortlist.length){ sl.innerHTML='<span class="lbl" style="font-size:13px">vacía</span>'; }
+  (DATA.shortlist||[]).forEach(s=>{
+    const px=PRICES[bSym(s)];
+    const c=document.createElement("span");c.className="chip";
+    c.innerHTML=`${s.split("/")[0]} ${px?`<span class="live mono ${cls(px.chg)}">${fmtPct(px.chg)}</span>`:""}`;
+    sl.appendChild(c);
+  });
+
+  // cerebro
+  document.getElementById("brainLast").textContent = DATA.last_brain_run? dateShort(DATA.last_brain_run):"—";
+  document.getElementById("brainNext").textContent = nextBrain(DATA.last_brain_run);
+
+  // stamps
+  document.getElementById("dataStamp").textContent = "Estado generado: "+(DATA.generated_at?stampShort(DATA.generated_at):"—");
+  tickFreshness();
+}
+
+function dateShort(d){const t=new Date(d+"T00:00:00");return isNaN(t)?d:`${t.getDate()} ${MONTHS[t.getMonth()]} ${t.getFullYear()}`}
+function stampShort(iso){const t=new Date(iso);if(isNaN(t))return iso;return `${t.getDate()} ${MONTHS[t.getMonth()]} ${String(t.getHours()).padStart(2,"0")}:${String(t.getMinutes()).padStart(2,"0")}`}
+function nextBrain(last){let base=last?new Date(last+"T00:00:00"):new Date();const n=new Date(base.getFullYear(),base.getMonth()+1,1);return `1 ${MONTHS[n.getMonth()]} ${n.getFullYear()}`}
+function tickFreshness(){
+  const el=document.getElementById("freshness");
+  if(!lastFetch){el.textContent="esperando precios…";return;}
+  const s=Math.round((Date.now()-lastFetch)/1000);
+  el.textContent = s<5?"precios en vivo":`precios · hace ${s<60?s+"s":Math.round(s/60)+"m"}`;
+}
+
+async function cyclePrices(){ try{await loadPrices();render();}catch(e){document.getElementById("freshness").innerHTML='<span class="err">precios no disponibles</span>';} }
+
+(async function init(){
+  try{ await loadData(); }
+  catch(e){
+    document.getElementById("pnlTotalSub").innerHTML='<span class="err">No se pudo leer dashboard_data.json — ¿ya corrió el deploy?</span>';
+    return;
+  }
+  render();
+  await cyclePrices();
+  setInterval(cyclePrices,60000);
+  setInterval(tickFreshness,1000);
+})();
+</script>
+</body>
+</html>
