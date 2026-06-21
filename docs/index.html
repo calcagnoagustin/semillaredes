@@ -122,6 +122,7 @@
       <div class="pnl-sub" id="pnlTotalSub">cargando estado…</div>
     </div>
     <div class="hero-stats">
+      <div class="stat"><div class="k">Equity</div><div class="v mono" id="semEquity">—</div></div>
       <div class="stat"><div class="k">Valor mercado</div><div class="v mono" id="mktTotal">—</div></div>
       <div class="stat"><div class="k">Costo base</div><div class="v mono" id="costTotal">—</div></div>
       <div class="stat"><div class="k">Capital + depósitos</div><div class="v mono" id="capTotal">—</div></div>
@@ -263,6 +264,8 @@ function render(){
   document.getElementById("costTotal").textContent = fmtUSD(cost);
   const dep=(DATA.deposits||[]).reduce((a,d)=>a+(d.amount||0),0);
   document.getElementById("capTotal").textContent = fmtUSD((DATA.capital_inicial||0)+dep,0);
+  const _semEq=(DATA.free_usdt!=null)?DATA.free_usdt+mkt:((DATA.capital_inicial||0)+dep)+(mkt-cost);
+  document.getElementById("semEquity").textContent=priced?fmtUSD(_semEq):"—";
 
   document.getElementById("posCount").textContent = (DATA.positions||[]).length+" total";
   const pc=document.getElementById("positions"); pc.innerHTML="";
@@ -286,6 +289,7 @@ function render(){
       <div class="pos-meta">
         ${isOpen?`<span>Precio <b class="mono">${px?fmtUSD(px.price,px.price<1?4:2):"—"}</b></span>
         <span>Costo prom <b class="mono">${fmtUSD(p.avg_cost,p.avg_cost<1?4:2)}</b></span>
+        <span>Invertido <b class="mono">${fmtUSD(p.qty*p.avg_cost)}</b></span>
         <span>Cant <b class="mono">${p.qty}</b></span>
         <span>Valor <b class="mono">${px?fmtUSD(p.qty*px.price):"—"}</b></span>`
         :`<span>Costo prom <b class="mono">${fmtUSD(p.avg_cost,p.avg_cost<1?4:2)}</b></span>`}
@@ -383,7 +387,7 @@ async function cyclePrices(){ try{await loadPrices();render();}catch(e){document
       const px=PX[bS(p.symbol)];const up=px?(px.price-p.entry)*p.qty:0;const uc=px?((px.price/p.entry-1)*100):0;
       const[b,q]=p.symbol.split("/");const sp=px?((p.stop/px.price-1)*100):null;
       const el=document.createElement("div");el.className="pos";
-      el.innerHTML=`<div class="pos-top"><div><span class="sym">${b}</span> <span class="pair">/${q||"USDT"}</span>${p.tp1_done?' <span class="badge moonbag" style="margin-left:6px">TP1 ✓</span>':''}</div><div class="pos-pnl">${px?`<div class="pct ${cl(up)}">${fP(uc)}</div><div class="abs">${fU(up)}</div>`:'<div class="pct flat">—</div>'}</div></div><div class="pos-meta"><span>Precio <b class="mono">${px?fU(px.price,px.price<1?4:2):"—"}</b></span><span>Entrada <b class="mono">${fU(p.entry,p.entry<1?4:2)}</b></span><span>Cant <b class="mono">${p.qty}</b></span><span>Stop <b class="mono">${fU(p.stop,p.stop<1?4:2)}</b>${sp!=null?` <span class="${cl(sp)}">(${fP(sp)})</span>`:""}</span>${px?`<span>24h <b class="mono ${cl(px.chg)}">${fP(px.chg)}</b></span>`:""}</div>`;
+      el.innerHTML=`<div class="pos-top"><div><span class="sym">${b}</span> <span class="pair">/${q||"USDT"}</span>${p.tp1_done?' <span class="badge moonbag" style="margin-left:6px">TP1 ✓</span>':''}</div><div class="pos-pnl">${px?`<div class="pct ${cl(up)}">${fP(uc)}</div><div class="abs">${fU(up)}</div>`:'<div class="pct flat">—</div>'}</div></div><div class="pos-meta"><span>Precio <b class="mono">${px?fU(px.price,px.price<1?4:2):"—"}</b></span><span>Entrada <b class="mono">${fU(p.entry,p.entry<1?4:2)}</b></span><span>Invertido <b class="mono">${fU(p.qty*p.entry)}</b></span><span>Cant <b class="mono">${p.qty}</b></span><span>Stop <b class="mono">${fU(p.stop,p.stop<1?4:2)}</b>${sp!=null?` <span class="${cl(sp)}">(${fP(sp)})</span>`:""}</span>${px?`<span>24h <b class="mono ${cl(px.chg)}">${fP(px.chg)}</b></span>`:""}</div>`;
       pc.appendChild(el);
     });
     fresh();
