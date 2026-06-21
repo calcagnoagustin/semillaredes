@@ -1,5 +1,5 @@
 {
- "updated_at": 1782013006,
+ "updated_at": 1782013317,
  "bot": "Ganesha",
  "dry_run": true,
  "equity_now": 50.0,
@@ -9,9 +9,18 @@
  "trades_total": 0,
  "win_rate": 0.0,
  "profit_factor": 0,
- "trades_today": 0,
+ "trades_today": 1,
  "pnl_today": 0.0,
- "open_positions": [],
+ "open_positions": [
+  {
+   "symbol": "MEGA/USDT",
+   "entry": 0.05711,
+   "qty": 385.2215023638592,
+   "stop": 0.05617220580174176,
+   "tp1_done": false,
+   "opened_ts": 1782013317.3284347
+  }
+ ],
  "recent_closed": [],
  "equity_curve": []
 }
