@@ -1,26 +1,33 @@
 {
- "updated_at": 1782071079,
+ "updated_at": 1782086148,
  "bot": "Ganesha",
  "dry_run": false,
- "equity_now": 50.070182,
- "realized_pnl": 0.0,
+ "equity_now": 49.033048,
+ "realized_pnl": -1.02,
  "deposits_total": 0.0,
  "main_spot_usdt": null,
- "trades_total": 0,
+ "trades_total": 1,
  "win_rate": 0.0,
- "profit_factor": 0,
+ "profit_factor": 0.0,
  "trades_today": 1,
- "pnl_today": 0.0,
- "open_positions": [
+ "pnl_today": -1.02,
+ "open_positions": [],
+ "recent_closed": [
   {
    "symbol": "EIGEN/USDT",
    "entry": 0.2821,
-   "qty": 77.98,
-   "stop": 0.2736271405076216,
-   "tp1_done": false,
-   "opened_ts": 1782036982.1743028
+   "exit": 0.2696,
+   "qty_total": 77.98,
+   "action": "stop",
+   "pnl_net": -1.0173,
+   "opened_ts": 1782036982.1743028,
+   "closed_ts": 1782086116.439127
   }
  ],
- "recent_closed": [],
- "equity_curve": []
+ "equity_curve": [
+  {
+   "ts": 1782086116.439127,
+   "cum_pnl": -1.02
+  }
+ ]
 }
