@@ -1,17 +1,26 @@
 {
- "updated_at": 1782036833,
+ "updated_at": 1782037165,
  "bot": "Ganesha",
  "dry_run": false,
- "equity_now": 50.0,
+ "equity_now": 49.883030000000005,
  "realized_pnl": 0.0,
  "deposits_total": 0.0,
  "main_spot_usdt": null,
  "trades_total": 0,
  "win_rate": 0.0,
  "profit_factor": 0,
- "trades_today": 0,
+ "trades_today": 1,
  "pnl_today": 0.0,
- "open_positions": [],
+ "open_positions": [
+  {
+   "symbol": "EIGEN/USDT",
+   "entry": 0.2821,
+   "qty": 77.98,
+   "stop": 0.2736271405076216,
+   "tp1_done": false,
+   "opened_ts": 1782036982.1743028
+  }
+ ],
  "recent_closed": [],
  "equity_curve": []
 }
