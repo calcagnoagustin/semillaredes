@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-20T19:22:52Z",
+ "generated_at": "2026-06-21T00:15:58Z",
  "cron": "15 0 * * * (00:15 UTC / 21:15 ART)",
  "capital_inicial": 100.0,
  "deposits": [],
@@ -28,10 +28,14 @@
   }
  ],
  "shortlist": [
-  "BICO/USDT"
+  "ENS/USDT",
+  "ZEN/USDT",
+  "SAND/USDT",
+  "AXS/USDT",
+  "JUP/USDT"
  ],
  "narrativa_active": null,
- "last_brain_run": "2026-06-20",
+ "last_brain_run": "2026-06-21",
  "rules": {
   "freeze_days": 60,
   "max_seeds": 3,
