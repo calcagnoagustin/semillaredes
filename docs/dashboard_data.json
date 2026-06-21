@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-21T04:07:20Z",
+ "generated_at": "2026-06-21T05:17:33Z",
  "cron": "15 0 * * * (00:15 UTC / 21:15 ART)",
  "capital_inicial": 100.0,
  "free_usdt": 84.00156,
@@ -19,13 +19,13 @@
   {
    "symbol": "ONDO/USDT",
    "binance": "ONDOUSDT",
-   "status": "closed",
-   "qty": 0,
+   "status": "confirmed",
+   "qty": 22.3776,
    "avg_cost": 0.3571,
    "dca_adds": 0,
    "tp_hit": [],
    "confirmed_at": "2026-06-19",
-   "note": "override_manual_test"
+   "note": "reconciliado: held real"
   }
  ],
  "shortlist": [
