@@ -1,26 +1,17 @@
 {
- "updated_at": 1782092072,
+ "updated_at": 1782092375,
  "bot": "Ganesha",
  "dry_run": false,
- "equity_now": 48.92147616,
- "realized_pnl": -1.02,
- "deposits_total": 20.98,
+ "equity_now": 48.47245063,
+ "realized_pnl": -1.53,
+ "deposits_total": 42.31,
  "main_spot_usdt": null,
- "trades_total": 1,
+ "trades_total": 2,
  "win_rate": 0.0,
  "profit_factor": 0.0,
  "trades_today": 1,
- "pnl_today": 0.0,
- "open_positions": [
-  {
-   "symbol": "XAUT/USDT",
-   "entry": 4200.27,
-   "qty": 0.0052,
-   "stop": 4187.496141406642,
-   "tp1_done": false,
-   "opened_ts": 1782090057.1847198
-  }
- ],
+ "pnl_today": -0.51,
+ "open_positions": [],
  "recent_closed": [
   {
    "symbol": "EIGEN/USDT",
@@ -31,12 +22,26 @@
    "pnl_net": -1.0173,
    "opened_ts": 1782036982.1743028,
    "closed_ts": 1782086116.439127
+  },
+  {
+   "symbol": "XAUT/USDT",
+   "entry": 4200.27,
+   "exit": 4186.77,
+   "qty_total": 0.0052,
+   "action": "stop",
+   "pnl_net": -0.5102,
+   "opened_ts": 1782090057.1847198,
+   "closed_ts": 1782092134.4810057
   }
  ],
  "equity_curve": [
   {
    "ts": 1782086116.439127,
    "cum_pnl": -1.02
+  },
+  {
+   "ts": 1782092134.4810057,
+   "cum_pnl": -1.53
   }
  ]
 }
