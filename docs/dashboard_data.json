@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-06-21T05:17:33Z",
+ "generated_at": "2026-06-22T00:18:41Z",
  "cron": "15 0 * * * (00:15 UTC / 21:15 ART)",
  "capital_inicial": 100.0,
- "free_usdt": 84.00156,
+ "free_usdt": 91.39107309,
  "deposits": [],
  "positions": [
   {
@@ -19,8 +19,8 @@
   {
    "symbol": "ONDO/USDT",
    "binance": "ONDOUSDT",
-   "status": "confirmed",
-   "qty": 22.3776,
+   "status": "closed",
+   "qty": 0,
    "avg_cost": 0.3571,
    "dca_adds": 0,
    "tp_hit": [],
@@ -29,14 +29,14 @@
   }
  ],
  "shortlist": [
-  "ENS/USDT",
-  "ZEN/USDT",
-  "SAND/USDT",
-  "AXS/USDT",
-  "JUP/USDT"
+  "IO/USDT",
+  "SPK/USDT",
+  "ID/USDT",
+  "XAI/USDT",
+  "DYM/USDT"
  ],
  "narrativa_active": null,
- "last_brain_run": "2026-06-21",
+ "last_brain_run": "2026-06-22",
  "rules": {
   "freeze_days": 60,
   "max_seeds": 3,
