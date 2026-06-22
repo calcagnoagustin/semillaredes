@@ -1,17 +1,26 @@
 {
- "updated_at": 1782089903,
+ "updated_at": 1782090239,
  "bot": "Ganesha",
  "dry_run": false,
- "equity_now": 48.98268016,
+ "equity_now": 48.96224416,
  "realized_pnl": -1.02,
  "deposits_total": 20.98,
  "main_spot_usdt": null,
  "trades_total": 1,
  "win_rate": 0.0,
  "profit_factor": 0.0,
- "trades_today": 0,
+ "trades_today": 1,
  "pnl_today": 0.0,
- "open_positions": [],
+ "open_positions": [
+  {
+   "symbol": "XAUT/USDT",
+   "entry": 4200.27,
+   "qty": 0.0052,
+   "stop": 4187.496141406642,
+   "tp1_done": false,
+   "opened_ts": 1782090057.1847198
+  }
+ ],
  "recent_closed": [
   {
    "symbol": "EIGEN/USDT",
