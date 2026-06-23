@@ -301,7 +301,7 @@ function renderList(){
   const q=query.trim().toLowerCase();
   let list=DROPS.filter(d=>{
     const okCat = activeCat==='Todos' || d.category===activeCat;
-    const okQ = !q || (d.title+' '+d.snippet+' '+d.category).toLowerCase().includes(q);
+    const okQ = !q || (d._s||(d._s=(d.title+' '+d.category+' '+(d.html||'').replace(/<[^>]+>/g,' ')).toLowerCase())).includes(q);
     return okCat && okQ;
   }).sort((a,b)=>b.n-a.n);
   grid.innerHTML = list.map(cardHTML).join('') || '<p style="color:rgba(26,36,86,.6)">No encontramos drops con ese filtro. Probá otra búsqueda.</p>';
