@@ -124,7 +124,7 @@ footer b{color:var(--navy)}
 <div class="wrap">
   <header class="top">
     <div class="brandrow">
-      <svg class="seed" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 30C9 30 4 24.5 4 17.5 4 9 11 3 16 2c5 1 12 7 12 15.5C28 24.5 23 30 16 30Z" fill="none" stroke="#7A1F3A" stroke-width="2"/><path d="M16 27V11M16 16c0-3 2.5-5 6-5.5M16 19c0-3-2.5-5-6-5.5" fill="none" stroke="#7A8A42" stroke-width="2" stroke-linecap="round"/></svg>
+      <svg class="seed" viewBox="0 0 44 44" fill="none" aria-hidden="true"><line x1="22" y1="22" x2="4" y2="22" stroke="#C97080" stroke-width="1.5"/><line x1="22" y1="22" x2="40" y2="22" stroke="#C97080" stroke-width="1.5"/><line x1="22" y1="22" x2="22" y2="4" stroke="#C97080" stroke-width="1.5"/><line x1="22" y1="22" x2="22" y2="40" stroke="#C97080" stroke-width="1.5"/><line x1="22" y1="22" x2="8" y2="8" stroke="#C97080" stroke-width="1.5"/><line x1="22" y1="22" x2="36" y2="36" stroke="#C97080" stroke-width="1.5"/><line x1="22" y1="22" x2="36" y2="8" stroke="#C97080" stroke-width="1.5"/><line x1="22" y1="22" x2="8" y2="36" stroke="#C97080" stroke-width="1.5"/><path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/><line x1="22" y1="11" x2="22" y2="33" stroke="white" stroke-width="0.8" opacity="0.6"/><line x1="22" y1="16" x2="18" y2="19" stroke="white" stroke-width="0.5" opacity="0.5"/><line x1="22" y1="16" x2="26" y2="19" stroke="white" stroke-width="0.5" opacity="0.5"/><line x1="22" y1="22" x2="17" y2="23" stroke="white" stroke-width="0.5" opacity="0.5"/><line x1="22" y1="22" x2="27" y2="23" stroke="white" stroke-width="0.5" opacity="0.5"/><line x1="22" y1="27" x2="18" y2="29" stroke="white" stroke-width="0.5" opacity="0.5"/><line x1="22" y1="27" x2="26" y2="29" stroke="white" stroke-width="0.5" opacity="0.5"/><circle cx="4" cy="22" r="2.5" fill="#C97080"/><circle cx="40" cy="22" r="2.5" fill="#C97080"/><circle cx="22" cy="4" r="2.5" fill="#C97080"/><circle cx="22" cy="40" r="2.5" fill="#C97080"/><circle cx="8" cy="8" r="2.5" fill="#C97080"/><circle cx="36" cy="36" r="2.5" fill="#C97080"/><circle cx="36" cy="8" r="2.5" fill="#C97080"/><circle cx="8" cy="36" r="2.5" fill="#C97080"/></svg>
       <span>Semilla Redes · Membresía para Artistas</span>
     </div>
     <div class="hero">
@@ -133,7 +133,7 @@ footer b{color:var(--navy)}
       <div class="kpis">
         <div class="kpi"><b id="kTotal">86</b><span>viernes consecutivos</span></div>
         <div class="kpi"><b>3</b><span>ejes: negocio, comunicación, publicidad</span></div>
-        <div class="kpi"><b>+170</b><span>artistas en la comunidad</span></div>
+        <div class="kpi"><b id="kArtists">+170</b><span>artistas en la comunidad</span></div>
       </div>
     </div>
   </header>
@@ -164,7 +164,7 @@ footer b{color:var(--navy)}
   <footer>
     <div class="frow">
       <b>Semilla Redes</b><span>·</span>
-      <a href="https://semillaredes.com/membresia-gratuita" target="_blank" rel="noopener">Membresía gratuita</a>
+      <a href="https://chat.whatsapp.com/ChPARJAjr0BA8OUBGFIK1K?mode=gi_t" target="_blank" rel="noopener">Membresía gratuita</a>
       <a href="https://www.instagram.com/semillaredes" target="_blank" rel="noopener">Instagram</a>
       <a href="https://www.youtube.com/@semillART" target="_blank" rel="noopener">YouTube</a>
       <a href="https://landing.semillaredes.com/formacion" target="_blank" rel="noopener">Formación</a>
@@ -271,6 +271,8 @@ let activeCat = 'Todos', query = '';
 const grid = document.getElementById('grid');
 const countEl = document.getElementById('count');
 document.getElementById('kTotal').textContent = DROPS.length;
+// "+N artistas": crece solo (~ARTIST_PER_WEEK/semana desde ARTIST_BASE_DATE). Ajusta base/ritmo cuando quieras.
+(function(){var ARTIST_BASE=170,ARTIST_BASE_DATE='2026-06-20',ARTIST_PER_WEEK=2;var wk=Math.max(0,Math.floor((Date.now()-new Date(ARTIST_BASE_DATE))/6048e5));var el=document.getElementById('kArtists');if(el)el.textContent='+'+(ARTIST_BASE+wk*ARTIST_PER_WEEK);})();
 
 // chips
 const cats = ['Todos', ...Array.from(new Set(DROPS.map(d=>d.category)))];
@@ -323,7 +325,7 @@ function renderDetail(n){
   document.getElementById('dAudio').innerHTML = d.audio
     ? `<div class="audio-cta"><h4>♪ Escuchá este drop con la voz de Agus</h4>
         <p>El audio original de cada drop vive en el grupo de WhatsApp de la Membresía para Artistas. Sumarte es gratis.</p>
-        <a class="btn" href="https://semillaredes.com/membresia-gratuita" target="_blank" rel="noopener">Sumarme a la Membresía</a></div>`
+        <a class="btn" href="https://chat.whatsapp.com/ChPARJAjr0BA8OUBGFIK1K?mode=gi_t" target="_blank" rel="noopener">Sumarme a la Membresía</a></div>`
     : `<div class="audio-cta muted"><h4>Este drop salió sin audio</h4><p>Era un drop sobre una herramienta, así que ese viernes fue solo texto.</p></div>`;
   // prev/next
   const prev=byN(d.n-1), next=byN(d.n+1);
