@@ -275,7 +275,14 @@ document.getElementById('kTotal').textContent = DROPS.length;
 (function(){var ARTIST_BASE=170,ARTIST_BASE_DATE='2026-06-20',ARTIST_PER_WEEK=2;var wk=Math.max(0,Math.floor((Date.now()-new Date(ARTIST_BASE_DATE))/6048e5));var el=document.getElementById('kArtists');if(el)el.textContent='+'+(ARTIST_BASE+wk*ARTIST_PER_WEEK);})();
 
 // chips
-const cats = ['Todos', ...Array.from(new Set(DROPS.map(d=>d.category)))];
+// etiquetas por contenido (ademas de la categoria): sumar mas en TAG_DEFS
+const TAG_DEFS = [
+  {label:'YouTube', re:/youtube|\byt\b/i},
+  {label:'Instagram', re:/instagram|\breels?\b|historias destacadas|\bstories\b/i},
+  {label:'Libros', re:/\blibros?\b|\blectura\b|\bleer\b/i}
+];
+DROPS.forEach(d=>{ const txt=(d.title+' '+(d.html||'')).toLowerCase(); d.tags=TAG_DEFS.filter(t=>t.re.test(txt)).map(t=>t.label); });
+const cats = ['Todos', ...Array.from(new Set(DROPS.map(d=>d.category))), ...TAG_DEFS.map(t=>t.label)];
 const chipsEl = document.getElementById('chips');
 cats.forEach(c=>{
   const b=document.createElement('button');
@@ -300,7 +307,7 @@ function cardHTML(d){
 function renderList(){
   const q=query.trim().toLowerCase();
   let list=DROPS.filter(d=>{
-    const okCat = activeCat==='Todos' || d.category===activeCat;
+    const okCat = activeCat==='Todos' || d.category===activeCat || (d.tags&&d.tags.includes(activeCat));
     const okQ = !q || (d._s||(d._s=(d.title+' '+d.category+' '+(d.html||'').replace(/<[^>]+>/g,' ')).toLowerCase())).includes(q);
     return okCat && okQ;
   }).sort((a,b)=>b.n-a.n);
