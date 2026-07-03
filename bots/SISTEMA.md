@@ -49,3 +49,15 @@ Exchange: Binance Spot (sin apalancamiento, sin futuros). Dashboard: `cripto.sem
 - Verificar OTOCO desde sub-cuenta (hoy el stop nativo es stop-loss-limit, suficiente v1).
 - Decidir si el Ejecutor reemplaza a Ganesha Freqtrade o conviven.
 - Encriptar dashboard cuando el portfolio supere $2,000.
+
+## Próxima sesión (acordado 2026-07-03)
+1. Etiqueta de narrativa: cada semilla nueva registra "alineada con narrativa del brain: sí/no"
+   en el learning loop, para medir en 2-3 meses si el sesgo narrativo mejora los picks.
+2. OCO parcial en Ganesha-Ejecutor: OCO nativa sobre el 30% (TP duro a +2R + stop) y el 70%
+   restante con stop nativo + trailing del bot. Requiere refactor de manejo de posiciones
+   (reconciliar si la OCO ya ejecutó). Idealmente antes de la primera entrada real.
+3. Revisión del jardín (brain mensual): el brain evalúa moonbags/stoppeadas/semillas viejas
+   con métricas del learning loop y dictamina: tesis viva (mantener) / muerta (liquidar
+   automático) / dust <$5 (conversión a BNB). Moonbag con tesis activa solo se recomienda
+   cortar — la decisión es de Agus (regla inviolable del testigo).
+   Nota: puntos 1 y 2 ya están también en el SISTEMA.md de la VM; el 3 solo acá.
