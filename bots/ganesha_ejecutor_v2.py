@@ -55,8 +55,15 @@ def get_ex():
     if live:
         k = load(KEYS, {})
         if not k.get("apiKey"):
-            c = load(FT_CONFIG, {}).get("exchange", {})
-            k = {"apiKey": c.get("key"), "secret": c.get("secret")}
+            try:
+                import importlib.util as iu
+                sp = iu.spec_from_file_location("gcfg", "/opt/ganesha_bot/config.py")
+                m = iu.module_from_spec(sp)
+                sp.loader.exec_module(m)
+                k = {"apiKey": getattr(m, "BINANCE_API_KEY", None),
+                     "secret": getattr(m, "BINANCE_API_SECRET", None)}
+            except Exception:
+                k = {}
         if k.get("apiKey") and k.get("secret"):
             creds = k
         else:

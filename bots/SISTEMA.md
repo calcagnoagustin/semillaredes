@@ -24,7 +24,8 @@ Exchange: Binance Spot (sin apalancamiento, sin futuros). Dashboard: `cripto.sem
 - Scale-out 30% a +2R (stop a breakeven), trailing ATR-4h desde +2R.
 - Sizing fixed-fractional: 2% riesgo sobre equity $46; mínimo notional $5.
 - Modo PAPER por defecto. Modo LIVE: requiere que Agus cree `~/bot_semillas/ejecutor/LIVE`
-  (touch) — keys se leen de `ejecutor/keys.json` o del config de Freqtrade. En live coloca
+  (touch) — keys se leen de `ejecutor/keys.json` o de `/opt/ganesha_bot/config.py`
+  (BINANCE_API_KEY/SECRET, verificado accesible). En live coloca
   stop-loss-limit NATIVO en Binance en cada entrada (lección: stops de software no bastan).
 - Log: `ejecutor/events.jsonl`, estado: `ejecutor/state.json`.
 
