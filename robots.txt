@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 
 Sitemap: https://landing.semillaredes.com/sitemap.xml
+
+# redeploy 2026-07-03
