@@ -1,0 +1,2612 @@
+=====[ config.py ]=====
+"""Carga y validacion de configuracion desde .env."""
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+def _f(key, default):
+    return float(os.getenv(key, default))
+
+
+def _i(key, default):
+    return int(os.getenv(key, default))
+
+
+def _parse_tp(raw):
+    """ '30:25,60:25,120:25' -> [(30.0, 25.0), (60.0, 25.0), (120.0, 25.0)] """
+    levels = []
+    for chunk in raw.split(","):
+        chunk = chunk.strip()
+        if not chunk:
+            continue
+        gain, frac = chunk.split(":")
+        levels.append((float(gain), float(frac)))
+    return sorted(levels, key=lambda x: x[0])
+
+
+# --- Binance ---
+BINANCE_API_KEY = os.getenv("BINANCE_API_KEY", "")
+BINANCE_API_SECRET = os.getenv("BINANCE_API_SECRET", "")
+BINANCE_TESTNET = os.getenv("BINANCE_TESTNET", "true").lower() == "true"
+QUOTE_ASSET = os.getenv("QUOTE_ASSET", "USDT")
+
+# --- Email ---
+RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
+EMAIL_FROM = os.getenv("EMAIL_FROM", "")
+EMAIL_TO = os.getenv("EMAIL_TO", "")
+
+# --- Claude ---
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
+
+# --- Estrategia ---
+MA_PERIOD = _i("MA_PERIOD", 30)
+CONFIRM_DAYS = _i("CONFIRM_DAYS", 10)
+SLOPE_LOOKBACK = _i("SLOPE_LOOKBACK", 5)
+
+SEED_SIZE_USDT = _f("SEED_SIZE_USDT", 7)
+MAX_SEEDS = _i("MAX_SEEDS", 60)
+MAX_DCA_ADDS = _i("MAX_DCA_ADDS", 3)
+DCA_SIZE_USDT = _f("DCA_SIZE_USDT", 7)
+
+TP_LEVELS = _parse_tp(os.getenv("TP_LEVELS", "30:25,60:25,120:25"))
+MOONBAG_PCT = _f("MOONBAG_PCT", 25)
+
+FREEZE_DAYS = _i("FREEZE_DAYS", 60)
+
+# --- Triggers ---
+TRIGGER_WEEKLY_MOVE = _f("TRIGGER_WEEKLY_MOVE", 25)
+TRIGGER_VOLUME_MULT = _f("TRIGGER_VOLUME_MULT", 3)
+RSS_FEEDS = [u.strip() for u in os.getenv("RSS_FEEDS", "").split(",") if u.strip()]
+RSS_KEYWORDS = [k.strip().lower() for k in os.getenv("RSS_KEYWORDS", "").split(",") if k.strip()]
+
+
+def validate(require_trading=False):
+    """Chequea que lo minimo este seteado. Devuelve lista de errores."""
+    errs = []
+    if not BINANCE_API_KEY or not BINANCE_API_SECRET:
+        errs.append("Falta BINANCE_API_KEY / BINANCE_API_SECRET")
+    if not RESEND_API_KEY:
+        errs.append("Falta RESEND_API_KEY (reportes por email desactivados)")
+    if not EMAIL_TO:
+        errs.append("Falta EMAIL_TO")
+    if require_trading and BINANCE_TESTNET:
+        errs.append("BINANCE_TESTNET=true pero pediste modo real")
+    return errs
+
+SCAN_FEED = os.getenv("SCAN_FEED", "brain")
+SCAN_TOP = _i("SCAN_TOP", 12)
+SCAN_SHORTLIST_N = _i("SCAN_SHORTLIST_N", 3)
+
+DCA_LADDER = [6, 6, 6]  # refuerzos escalonados en USDT (add 1, 2, 3)
+MAX_AUTO_CLAMP_USDT = _f("MAX_AUTO_CLAMP_USDT", 10)  # P3: tope para subir una orden al min_notional; si el min supera esto, se saltea
+SEEDS_PER_MONTH = _i("SEEDS_PER_MONTH", 3)
+MOONBAG_FRAC = _f("MOONBAG_FRAC", 0.10)
+
+LIQUIDITY_BUFFER_USDT = _f("LIQUIDITY_BUFFER_USDT", 15)  # P6 colchon minimo USDT libre
+
+# --- P9/P11 (aprobado 29/jun: Agus + Grok + ChatGPT + Claude) ---
+RUNNER_TRIGGER_DCA = _i("RUNNER_TRIGGER_DCA", 2)
+RUNNER_TRIGGER_PNL = _f("RUNNER_TRIGGER_PNL", 45.0)
+LEGACY_MOONBAG_FRAC = _f("LEGACY_MOONBAG_FRAC", 0.15)
+RUNNER_TRAIL_LOOKBACK = _i("RUNNER_TRAIL_LOOKBACK", 10)
+RUNNER_DCA_USDT = _f("RUNNER_DCA_USDT", 6.0)
+RUNNER_MAX_EXPOSURE_FRAC = _f("RUNNER_MAX_EXPOSURE_FRAC", 0.30)
+RUNNER_RECOVER_SELL_FRAC = _f("RUNNER_RECOVER_SELL_FRAC", 0.25)
+
+=====[ main.py ]=====
+#!/usr/bin/env python3
+"""Sistema Semillas 2.0 - Bot de ejecucion diaria.
+
+Corre una vez por dia (cron). Flujo:
+  0. Lock anti doble-corrida (P1) + reconciliacion state<->Binance (P5, solo alerta).
+  1. Detecta depositos nuevos (loggea separado del P&L).
+  2. Gestiona cada posicion abierta segun las reglas Semillas (strategy.decide).
+  3. Ejecuta via wrapper unico (P3), actualizando estado SOLO con fill confirmado (P4).
+  4. Evalua triggers; si dispara o toca el ciclo mensual, despierta al cerebro.
+  5. Manda reporte diario por email (Resend) y persiste estado (no en --dry).
+
+Uso:
+  python main.py            # corrida diaria normal
+  python main.py --brain    # fuerza correr el cerebro mensual ahora
+  python main.py --dry      # no ejecuta ordenes ni persiste estado; solo simula y reporta
+"""
+import sys
+from datetime import date
+
+import config
+import state as st
+import dashboard
+import strategy
+import triggers
+import notify
+import brain_monthly
+from exchange import Exchange
+import seeds
+import scanner
+import runlock
+import ledger
+import execlayer
+import p9_runner
+import reconcile
+
+DRY = "--dry" in sys.argv
+FORCE_BRAIN = "--brain" in sys.argv
+
+
+def detect_deposits(ex, state):
+    """Loggea depositos nuevos para separarlos del P&L."""
+    known = {(d["date"], d["amount"], d["asset"]) for d in state["deposits"]}
+    new = []
+    for d in ex.deposits():
+        if d.get("status") not in ("ok", "completed", None):
+            continue
+        rec = {
+            "date": (d.get("datetime") or "")[:10] or st.today_str(),
+            "amount": float(d.get("amount") or 0),
+            "asset": d.get("currency") or config.QUOTE_ASSET,
+        }
+        key = (rec["date"], rec["amount"], rec["asset"])
+        if key not in known and rec["amount"] > 0:
+            new.append(rec)
+            state["deposits"].append(rec)
+    return new
+
+
+def execute(ex, action, pos, state, run_id):
+    """Aplica una accion al exchange (via wrapper unico) y actualiza el estado.
+
+    P4: el estado SOLO se muta con fill confirmado. Si una venta falla, NO se
+    descuenta qty. Si una compra falla/saltea, NO se crea ni agranda la posicion.
+    """
+    sym = action["symbol"]
+    typ = action["type"]
+
+    if typ == "ACTIVATE":
+        # confirmacion: pasa a 'confirmed' (la compra semilla ya estaba hecha)
+        pos["status"] = "confirmed"
+        pos["confirmed_at"] = st.today_str()
+
+    elif typ == "DCA":
+        # regimen POR MONEDA: strategy.py ya exige Stage 2 propio; sin gate global.
+        adds = pos.get("dca_adds", 0)
+        usdt_amt = config.DCA_LADDER[adds] if adds < len(config.DCA_LADDER) else config.DCA_LADDER[-1]
+        if not DRY:
+            free = float((ex.client.fetch_balance().get("USDT") or {}).get("free", 0) or 0)
+            if free < usdt_amt:
+                notify.funding_alert(sym, usdt_amt, free)
+                print("[dca] " + sym + ": faltan fondos; aviso enviado")
+                return pos
+        res = execlayer.execute_buy_quote(ex, sym, usdt_amt, "DCA", run_id, DRY, price=action["price"])
+        if not res["ok"] or res["filled"] <= 0:
+            print(f"[dca] {sym}: no ejecutado ({res['reason']}); estado sin tocar")
+            return pos
+        added_qty = res["filled"]
+        added_cost = res["cost"] or usdt_amt
+        old_qty = pos["qty"]
+        pos["avg_cost"] = (pos["avg_cost"] * old_qty + added_cost) / (old_qty + added_qty)
+        pos["qty"] = old_qty + added_qty
+        pos["dca_adds"] = adds + 1
+
+    elif typ == "TAKE_PROFIT":
+        sell_qty = pos["qty"] * (action["sell_frac"] / 100.0)
+        res = execlayer.execute_sell_base(ex, sym, sell_qty, "TAKE_PROFIT", run_id, DRY)
+        if res["ok"] and res["filled"] > 0:
+            pos["qty"] -= res["filled"]
+            pos.setdefault("tp_hit", []).append(action["level"])
+            if len(pos["tp_hit"]) >= len(config.TP_LEVELS):
+                pos["status"] = "moonbag"
+        else:
+            print(f"[tp] {sym}: venta no ejecutada ({res['reason']}); estado sin tocar")
+
+    elif typ == "STOP":
+        # stop: preserva moonbag testigo. Vende (qty - keep); estado se ajusta por fill real.
+        keep = pos["qty"] * config.MOONBAG_FRAC
+        sell_qty = pos["qty"] - keep
+        res = execlayer.execute_sell_base(ex, sym, sell_qty, "STOP", run_id, DRY)
+        if res["ok"] and res["filled"] > 0:
+            pos["qty"] -= res["filled"]
+            pos["status"] = "stopped_moonbag"  # P9: terminal, decide() no re-dispara STOP
+        else:
+            print(f"[stop] {sym}: venta no ejecutada ({res['reason']}); estado sin tocar")
+
+    elif typ == "RUNNER_TP":
+        trad = p9_runner.tradable_qty(pos)
+        sell_qty = min(trad, pos["qty"] * (action["sell_frac"] / 100.0))
+        if sell_qty > 0:
+            res = execlayer.execute_sell_base(ex, sym, sell_qty, "RUNNER_TP", run_id, DRY)
+            if res["ok"] and res["filled"] > 0:
+                pos["qty"] -= res["filled"]
+                pos["recovered_usd"] = pos.get("recovered_usd", 0) + (res["cost"] or 0)
+                cost_total = (pos.get("avg_cost") or 0) * pos.get("max_qty", 0)
+                if pos["recovered_usd"] >= cost_total:
+                    pos["capital_recovered"] = True
+            else:
+                print(f"[runner_tp] {sym}: venta no ejecutada ({res['reason']}); estado sin tocar")
+
+    elif typ == "RUNNER_TRAIL_EXIT":
+        sell_qty = p9_runner.tradable_qty(pos)
+        if sell_qty > 0:
+            res = execlayer.execute_sell_base(ex, sym, sell_qty, "RUNNER_TRAIL", run_id, DRY)
+            if res["ok"] and res["filled"] > 0:
+                pos["qty"] -= res["filled"]
+                pos["recovered_usd"] = pos.get("recovered_usd", 0) + (res["cost"] or 0)
+                pos["status"] = "stopped_moonbag"
+            else:
+                print(f"[runner_trail] {sym}: venta no ejecutada ({res['reason']}); estado sin tocar")
+
+    elif typ == "RUNNER_DCA":
+        usdt_amt = action["usdt"]
+        if not DRY:
+            free = float((ex.client.fetch_balance().get("USDT") or {}).get("free", 0) or 0)
+            if free < usdt_amt:
+                notify.funding_alert(sym, usdt_amt, free)
+                return pos
+        res = execlayer.execute_buy_quote(ex, sym, usdt_amt, "RUNNER_DCA", run_id, DRY, price=action["price"])
+        if res["ok"] and res["filled"] > 0:
+            old_qty = pos["qty"]
+            pos["avg_cost"] = (pos["avg_cost"] * old_qty + (res["cost"] or usdt_amt)) / (old_qty + res["filled"])
+            pos["qty"] = old_qty + res["filled"]
+            if pos["qty"] > pos.get("max_qty", 0):
+                pos["max_qty"] = pos["qty"]
+
+    elif typ == "FREEZE":
+        # liberar capital de semilla muerta
+        if pos["qty"] > 0:
+            res = execlayer.execute_sell_base(ex, sym, pos["qty"], "FREEZE", run_id, DRY)
+            if res["ok"] and res["filled"] > 0:
+                pos["qty"] -= res["filled"]
+                if pos["qty"] <= 1e-9:
+                    pos["qty"] = 0
+                    pos["status"] = "frozen"
+                else:
+                    print(f"[freeze] {sym}: venta parcial; queda {pos['qty']:.8f}")
+            else:
+                print(f"[freeze] {sym}: venta no ejecutada ({res['reason']}); no congelo")
+        else:
+            pos["status"] = "frozen"
+
+    return pos
+
+
+def manage_positions(ex, state, run_id):
+    actions = []
+    for sym, pos in list(state["positions"].items()):
+        if pos.get("status") in ("closed", "frozen"):
+            continue
+        try:
+            ohlcv = ex.ohlcv(sym, "1d", limit=config.MA_PERIOD + config.CONFIRM_DAYS + 20)
+        except Exception as e:
+            actions.append({"symbol": sym, "type": "ERROR", "reason": f"sin datos: {e}"})
+            continue
+        p9_runner.ensure_fields(pos)
+        if p9_runner.should_promote(pos, ohlcv):
+            p9_runner.promote(pos)
+            print(f"[p9] {sym} promovida a RUNNER (moonbag legacy apartada)")
+        if pos.get("status") == "runner":
+            free_usdt = 0.0
+            try:
+                free_usdt = float((ex.client.fetch_balance().get("USDT") or {}).get("free", 0) or 0)
+            except Exception:
+                pass
+            equity_est = free_usdt + pos.get("qty", 0) * ohlcv[-1][4]
+            action = p9_runner.decide_runner(sym, ohlcv, pos, equity_usdt=equity_est)
+        else:
+            action = strategy.decide(sym, ohlcv, pos)
+        if action and action["type"] not in ("HOLD",):
+            _was_open = pos.get("qty", 0) > 0 and pos.get("status") not in ("closed", "frozen")
+            _entry = pos.get("avg_cost", 0)
+            _qty0 = pos.get("qty", 0)
+            _thesis = pos.get("thesis", "")
+            newpos = execute(ex, action, pos, state, run_id)
+            state["positions"][sym] = newpos
+            actions.append(action)
+            if _was_open and newpos.get("status") == "closed":
+                try:
+                    _exit = float(ohlcv[-1][4])
+                except Exception:
+                    _exit = _entry
+                if not _thesis:
+                    for _c in state.get("shortlist_full", []):
+                        if _c.get("symbol") == sym:
+                            _thesis = _c.get("thesis", "")
+                            break
+                state.setdefault("recent_closed", []).append({
+                    "symbol": sym, "entry": _entry, "exit": _exit,
+                    "qty_total": round(_qty0, 8),
+                    "action": (action.get("type", "") or "").lower(),
+                    "pnl_net": round((_exit - _entry) * _qty0, 4),
+                    "thesis": _thesis,
+                    "opened_ts": pos.get("opened_ts"),
+                    "closed_ts": __import__("time").time(),
+                })
+                state["recent_closed"] = state["recent_closed"][-1000:]
+    return actions
+
+
+def maybe_run_brain(ex, state, trig_hits):
+    """Despierta el cerebro si: hay triggers, es nuevo mes, o se forzo."""
+    if DRY:
+        print("[brain] modo dry: no se consulta el cerebro (se ahorra credito).")
+        return None
+    today = date.today().isoformat()
+    last_succ = state.get("last_brain_success") or state.get("last_brain_run")
+    new_month = (last_succ is None) or (last_succ[:7] != today[:7])
+    if not (trig_hits or new_month or FORCE_BRAIN):
+        return None
+    if not FORCE_BRAIN and state.get("last_brain_attempt") == today:
+        print("[brain] cooldown: ya se intento hoy; salteo.")
+        return None
+    state["last_brain_attempt"] = today
+
+    ctx_lines = [f"- {h['symbol']}: {h['signal']} ({h['detail']})" for h in trig_hits]
+    ctx = "\n".join(ctx_lines) or "Sin triggers; corrida mensual de rutina."
+    _sc = state.get("scanner_raw", [])
+    if _sc:
+        ctx = ctx + " || Scanner: " + "; ".join("%s sc %.1f st %s m30 %s%% tr %s" % (c["symbol"], c["score"], c["stage"], c["mom30"], c["trending"]) for c in _sc[:12])
+    result = brain_monthly.run(ctx)
+    if result.get("shortlist"):
+        _mk = ex.markets()
+        _full = [c for c in result["shortlist"] if c.get("symbol") in _mk]
+        state["shortlist"] = [c["symbol"] for c in _full]
+        state["shortlist_full"] = _full
+        state["last_brain_success"] = today
+    state["last_brain_run"] = today
+    state["regimen"] = result.get("regimen") or "neutral"
+    return result
+
+
+def build_portfolio_view(ex, state):
+    view = {}
+    for sym, p in state["positions"].items():
+        if p.get("status") in ("closed",):
+            continue
+        pnl = "-"
+        try:
+            if p.get("avg_cost"):
+                price = ex.price(sym)
+                pnl = f"{(price / p['avg_cost'] - 1) * 100:+.1f}%"
+        except Exception:
+            pass
+        view[sym] = {"status": p["status"], "qty": p.get("qty", 0), "pnl_pct": pnl}
+    return view
+
+
+def main():
+    run_id = ledger.new_run_id()
+    errs = config.validate(require_trading=not config.BINANCE_TESTNET)
+    for e in errs:
+        print(f"[config] aviso: {e}")
+
+    ex = Exchange()
+    state = st.load()
+
+    # P5 - reconciliacion state<->Binance (solo alerta, no auto-corrige)
+    try:
+        diffs = reconcile.reconcile(ex, state)
+        if diffs:
+            notify.reconcile_alert(diffs)
+            print(f"[reconcile] {len(diffs)} diferencia(s) detectada(s) (ver alerta).")
+        else:
+            print("[reconcile] state y Binance coinciden.")
+    except Exception as e:
+        print("[reconcile] fallo:", str(e)[:160])
+
+    # P6 - buffer de liquidez: avisar si el USDT libre cae bajo el colchon
+    try:
+        _bal = ex.client.fetch_balance()
+        _freeq = float((_bal.get(config.QUOTE_ASSET) or {}).get("free", 0) or 0)
+        if _freeq < config.LIQUIDITY_BUFFER_USDT:
+            print(f"[liquidez] {config.QUOTE_ASSET} libre ${_freeq:.2f} < colchon ${config.LIQUIDITY_BUFFER_USDT}")
+            if not DRY:
+                notify.liquidity_alert(_freeq, config.LIQUIDITY_BUFFER_USDT)
+        else:
+            print(f"[liquidez] {config.QUOTE_ASSET} libre ${_freeq:.2f} OK")
+    except Exception as e:
+        print("[liquidez] check fallo:", str(e)[:120])
+
+    deposits = detect_deposits(ex, state)
+    for d in deposits:
+        print(f"[deposit] +{d['amount']} {d['asset']} (loggeado, fuera del P&L)")
+
+    try:
+        actions = manage_positions(ex, state, run_id)
+    except Exception as e:
+        actions = []
+        print('[main] manage_positions fallo:', str(e)[:160])
+    try:
+        scanner.apply_to_shortlist(ex, state)
+    except Exception as e:
+        print('[main] scanner fallo:', str(e)[:160])
+
+    universe = list(set(state.get("shortlist", []) + list(state["positions"].keys())))
+    trig_hits = []
+    trig_hits += triggers.weekly_move_triggers(ex, universe)
+    vol_hits, current_rank = triggers.volume_rank_triggers(ex, state)
+    trig_hits += vol_hits
+    state["prev_volume_rank"] = current_rank
+    trig_hits += triggers.news_triggers(state, universe)
+
+    brain = maybe_run_brain(ex, state, trig_hits)
+    # P7: plantar semillas DESPUES del brain, para usar la shortlist fresca
+    try:
+        actions += seeds.plant_seeds(ex, state, DRY, run_id)
+    except Exception as e:
+        print('[main] plant_seeds fallo:', str(e)[:160])
+    brain_summary = brain.get("summary") if brain else None
+    if brain and not brain.get("shortlist"):
+        brain_summary = "BRAIN VACIO (revisar credito Anthropic). " + (brain_summary or "")
+
+    portfolio = build_portfolio_view(ex, state)
+    html = notify.daily_report(actions, trig_hits, portfolio, brain_summary, config.BINANCE_TESTNET)
+    mode = "TESTNET" if config.BINANCE_TESTNET else "REAL"
+    dry = " [DRY]" if DRY else ""
+    notify.send(f"Semillas - {st.today_str()} ({mode}){dry}", html)
+
+    if DRY:
+        print("[dry] estado NO persistido (corrida observadora).")
+    else:
+        st.save(state)
+        dashboard.update()
+    try:
+        import learning_loop
+        learning_loop.run(state)
+        import loop_analista
+        loop_analista.run()
+    except Exception as e:
+        print("[learn] fallo no critico:", str(e)[:160])
+
+    print(f"[ok] corrida completa. run_id={run_id}. {len(actions)} acciones, {len(trig_hits)} triggers.")
+
+
+if __name__ == "__main__":
+    try:
+        with runlock.run_lock():
+            main()
+    except runlock.LockBusy as e:
+        print("[lock]", e)
+
+=====[ scanner.py ]=====
+import requests
+import config
+import indicators as ind
+from exchange import Exchange
+
+STABLES = {"USDT", "USDC", "FDUSD", "TUSD", "DAI", "BUSD", "USDP", "EUR", "TRY", "BRL", "ARS", "GBP", "AEUR", "RLUSD", "USD1", "USDE", "PYUSD", "USDD", "GUSD", "FRAX", "LUSD", "USDS", "USDF", "EURI", "XUSD"}
+
+def _is_lev(base):
+    return base.endswith("UP") or base.endswith("DOWN") or base.endswith("BULL") or base.endswith("BEAR") or "3L" in base or "3S" in base
+
+def top_universe(ex, n=300):
+    tk = ex.client.fetch_tickers()
+    rows = []
+    for sym, t in tk.items():
+        if not sym.endswith("/USDT"):
+            continue
+        base = sym.split("/")[0]
+        if base in STABLES or _is_lev(base):
+            continue
+        qv = t.get("quoteVolume") or 0
+        rows.append((sym, qv, t.get("percentage") or 0, t.get("last") or 0))
+    rows.sort(key=lambda r: r[1], reverse=True)
+    return rows[:n]
+
+def trending_cg():
+    try:
+        r = requests.get("https://api.coingecko.com/api/v3/search/trending", timeout=15)
+        d = r.json()
+        return {c["item"]["symbol"].upper() for c in d.get("coins", [])}
+    except Exception:
+        return set()
+
+def score_candidates(ex, universe, deep=40):
+    trend = trending_cg()
+    pre = sorted(universe, key=lambda r: r[1] * (1 + max(r[2], 0) / 100.0), reverse=True)[:deep]
+    out = []
+    for sym, qv, pct, last in pre:
+        try:
+            oh = ex.ohlcv(sym, "1d", limit=config.MA_PERIOD + 40)
+            stg = ind.stage(oh, config.MA_PERIOD, config.SLOPE_LOOKBACK)
+            cl = ind.closes(oh)
+            mom7 = (cl[-1] / cl[-8] - 1) * 100 if len(cl) > 8 else 0
+            mom30 = (cl[-1] / cl[-31] - 1) * 100 if len(cl) > 31 else 0
+        except Exception:
+            continue
+        base = sym.split("/")[0]
+        tr = base in trend
+        sc = 0.0
+        sc += 2.0 if stg == 2 else (0.5 if stg == 1 else (-2.0 if stg == 4 else 0.0))
+        sc += min(mom7, 50) * 0.05 + min(mom30, 100) * 0.02
+        sc += 1.5 if tr else 0.0
+        out.append({"symbol": sym, "score": round(sc, 2), "stage": stg, "mom7": round(mom7, 1), "mom30": round(mom30, 1), "vol_musd": round(qv / 1e6, 1), "trending": tr})
+    out.sort(key=lambda c: c["score"], reverse=True)
+    return out
+
+def scan(ex, top=12):
+    return score_candidates(ex, top_universe(ex))[:top]
+
+if __name__ == "__main__":
+    ex = Exchange()
+    uni = top_universe(ex)
+    print("universo /USDT:", len(uni))
+    print("trending CG:", trending_cg())
+    print("=== TOP CANDIDATOS ===")
+    for c in scan(ex, 12):
+        print(c)
+
+def apply_to_shortlist(ex, state):
+    mode = getattr(config, "SCAN_FEED", "direct")
+    try:
+        cands = scan(ex, top=getattr(config, "SCAN_TOP", 12))
+    except Exception as e:
+        print("[scanner] error:", e)
+        return
+    state["scanner_raw"] = cands
+    print("[scanner] %d candidatos modo=%s" % (len(cands), mode))
+    if mode == "direct":
+        n = getattr(config, "SCAN_SHORTLIST_N", 3)
+        picks = [c for c in cands if c["stage"] in (1, 2)][:n]
+        state["shortlist"] = [c["symbol"] for c in picks]
+        state["shortlist_full"] = [{"symbol": c["symbol"], "thesis": "scanner score %.1f stage %s mom30 %s%% trending %s" % (c["score"], c["stage"], c["mom30"], c["trending"])} for c in picks]
+
+=====[ seeds.py ]=====
+import datetime
+import config
+import indicators as ind
+import state as st
+import execlayer
+
+
+def plant_seeds(ex, state, DRY, run_id):
+    """3 semillas FORZADAS por mes (las del brain). Sin regimen global, sin requisito de stage.
+    Son $7 de seguimiento/aprendizaje. El stage por-moneda gobierna despues el DCA, no la entrada."""
+    acts = []
+    positions = state.setdefault("positions", {})
+    mes = datetime.datetime.utcnow().strftime("%Y-%m")
+    if state.get("last_seed_month") == mes:
+        return acts  # ya se plantaron las de este mes
+    theses = {c.get("symbol"): c.get("thesis", "") for c in state.get("shortlist_full", [])}
+    plantadas = 0
+    for sym in state.get("shortlist", []):
+        if plantadas >= config.SEEDS_PER_MONTH:
+            break
+        p = positions.get(sym)
+        if p and p.get("status") in ("seed", "confirmed", "moonbag"):
+            continue
+        try:
+            ohlcv = ex.ohlcv(sym, "1d", limit=config.MA_PERIOD + config.SLOPE_LOOKBACK + 20)
+            price = ind.closes(ohlcv)[-1]
+        except Exception as e:
+            acts.append({"symbol": sym, "type": "SEED_ERROR", "reason": str(e)[:120]})
+            continue
+        res = execlayer.execute_buy_quote(ex, sym, config.SEED_SIZE_USDT, "SEED", run_id, DRY, price=price)
+        if not res["ok"]:
+            acts.append({"symbol": sym, "type": "SEED_ERROR", "reason": res["reason"]})
+            continue
+        qty = res["filled"] if res["filled"] > 0 else (config.SEED_SIZE_USDT / price)
+        avg_cost = res["avg"] or price
+        positions[sym] = {"symbol": sym, "status": "seed", "qty": qty, "avg_cost": avg_cost,
+                          "dca_adds": 0, "tp_hit": [], "planted_at": st.today_str(),
+                          "thesis": theses.get(sym, "")}
+        plantadas += 1
+        acts.append({"symbol": sym, "type": "SEED", "price": price})
+        print("[seed] plantada " + sym + f" (${config.SEED_SIZE_USDT})")
+    if plantadas > 0:
+        state["last_seed_month"] = mes
+    return acts
+
+=====[ strategy.py ]=====
+"""Motor de reglas del Sistema Semillas 2.0.
+
+Decide acciones a partir de velas + estado de la posición. NO ejecuta órdenes
+(eso lo hace main.py). Cada función devuelve una "acción" o None.
+
+Reglas inviolables implementadas:
+  - Stop DURO ante invalidación de tesis (Stage 4) -> salida 100%, incluida moonbag.
+    (La tesis murió; ya no hay nada que preservar.)
+  - Moonbag universal en TOMAS DE GANANCIA: nunca se vende el 100% mientras la
+    tesis sigue viva. Siempre queda MOONBAG_PCT.
+  - DCA SOLO con confirmación de tendencia (Stage 2). Nunca promediar a la baja.
+  - Regla 60 días: semilla sin activar -> congelar.
+"""
+from datetime import date
+import config
+import indicators as ind
+
+
+def _days_since(iso):
+    if not iso:
+        return 0
+    y, m, d = map(int, iso.split("-"))
+    return (date.today() - date(y, m, d)).days
+
+
+def decide(symbol, ohlcv, pos):
+    """Devuelve un dict de acción o None.
+
+    Acción: {"type": ..., "symbol": ..., "reason": ..., ...}
+      types: ACTIVATE, DCA, TAKE_PROFIT, STOP, FREEZE, HOLD
+    """
+    st = ind.stage(ohlcv, config.MA_PERIOD, config.SLOPE_LOOKBACK)
+    price = ind.closes(ohlcv)[-1]
+    status = pos.get("status", "seed")
+
+    # P9: moonbag terminal tras STOP - no re-vender nunca mas
+    if status == "stopped_moonbag":
+        return {"type": "HOLD", "symbol": symbol, "reason": "Moonbag terminal (stop ya ejecutado)."}
+
+    # 1) STOP DURO — invalidación de tesis. Aplica a cualquier estado vivo.
+    if status in ("seed", "confirmed", "moonbag") and st == 4:
+        return {
+            "type": "STOP", "symbol": symbol, "price": price,
+            "qty": pos["qty"],
+            "reason": "Tesis invalidada (Stage 4: precio < MA y MA en baja). Salida total, incluida moonbag.",
+        }
+
+    # 2) Semilla aún sin confirmar
+    if status == "seed":
+        # Regla 60 días: sin activación -> congelar
+        if _days_since(pos.get("planted_at")) >= config.FREEZE_DAYS:
+            return {
+                "type": "FREEZE", "symbol": symbol, "price": price,
+                "qty": pos["qty"],
+                "reason": f"Semilla sin activar en {config.FREEZE_DAYS} días. Congelar.",
+            }
+        # ¿Confirmó Stage 2 sostenido?
+        if ind.consecutive_stage2(ohlcv, config.MA_PERIOD, config.SLOPE_LOOKBACK, config.CONFIRM_DAYS):
+            return {
+                "type": "ACTIVATE", "symbol": symbol, "price": price,
+                "reason": f"Stage 2 confirmado {config.CONFIRM_DAYS} días. Activar -> habilita DCA.",
+            }
+        return {"type": "HOLD", "symbol": symbol, "reason": "Semilla esperando confirmación."}
+
+    # 3) Posición confirmada -> DCA con tendencia + tomas de ganancia
+    if status == "confirmed":
+        action = _check_take_profit(symbol, pos, price)
+        if action:
+            return action
+        # DCA SOLO con tendencia intacta (Stage 2) y sin pasarse del máximo de agregados
+        if st == 2 and pos.get("dca_adds", 0) < config.MAX_DCA_ADDS:
+            # confirmación de continuación: nuevo máximo de los últimos CONFIRM_DAYS
+            recent_high = max(ind.closes(ohlcv)[-config.CONFIRM_DAYS:])
+            if price >= recent_high:
+                return {
+                    "type": "DCA", "symbol": symbol, "price": price,
+                    "reason": "Tendencia confirmada + nuevo máximo. Agregar con tendencia (nunca a la baja).",
+                }
+        return {"type": "HOLD", "symbol": symbol, "reason": "Confirmada, sin gatillo."}
+
+    # 4) Moonbag — solo se cierra por stop duro (ya cubierto arriba)
+    if status == "moonbag":
+        return {"type": "HOLD", "symbol": symbol, "reason": "Moonbag testigo, tesis viva."}
+
+    return None
+
+
+def _check_take_profit(symbol, pos, price):
+    """Tomas escalonadas preservando moonbag. Devuelve acción TAKE_PROFIT o None."""
+    avg = pos.get("avg_cost", 0) or 0
+    if avg <= 0:
+        return None
+    gain = (price / avg - 1) * 100
+    already = set(pos.get("tp_hit", []))
+
+    for level_pct, sell_frac in config.TP_LEVELS:
+        if gain >= level_pct and level_pct not in already:
+            return {
+                "type": "TAKE_PROFIT", "symbol": symbol, "price": price,
+                "level": level_pct, "sell_frac": sell_frac,
+                "reason": f"+{gain:.0f}% (nivel {level_pct}%). Vender {sell_frac:.0f}%, preservar moonbag.",
+            }
+    return None
+
+=====[ triggers.py ]=====
+"""Triggers que despiertan al cerebro mensual (filtro barato, sin LLM).
+
+Tres señales:
+  1. Movimiento semanal fuerte (>= TRIGGER_WEEKLY_MOVE %) con volumen (>= xN).
+  2. Salto en el ranking por volumen 24h (gigante que despierta en el top-100).
+  3. Noticia RSS que matchea keyword narrativa + un ticker del universo.
+
+Todo con deduplicación vía state["seen_news"] para no repetir alertas.
+"""
+import hashlib
+import feedparser
+import config
+import indicators as ind
+
+
+def weekly_move_triggers(ex, symbols):
+    """Revisa la shortlist/universo por movimientos semanales con volumen."""
+    hits = []
+    for sym in symbols:
+        try:
+            ohlcv = ex.ohlcv(sym, "1d", limit=config.MA_PERIOD + 30)
+        except Exception:
+            continue
+        cl = ind.closes(ohlcv)
+        if len(cl) < 8:
+            continue
+        wk = ind.pct_return(cl, 7)
+        vspike = ind.volume_spike(ohlcv)
+        if abs(wk) >= config.TRIGGER_WEEKLY_MOVE and vspike >= config.TRIGGER_VOLUME_MULT:
+            hits.append({
+                "symbol": sym,
+                "signal": "weekly_move",
+                "detail": f"{wk:+.0f}% en 7d, volumen {vspike:.1f}x",
+            })
+    return hits
+
+
+def volume_rank_triggers(ex, state, top_n=100):
+    """Detecta activos que suben fuerte en el ranking por volumen (quote)."""
+    hits = []
+    try:
+        tickers = ex.tickers()
+    except Exception:
+        return hits, state.get("prev_volume_rank", {})
+
+    quote = config.QUOTE_ASSET
+    ranked = sorted(
+        [(s, t.get("quoteVolume") or 0) for s, t in tickers.items() if s.endswith("/" + quote)],
+        key=lambda x: x[1], reverse=True,
+    )
+    current_rank = {s: i + 1 for i, (s, _) in enumerate(ranked[:300])}
+    prev = state.get("prev_volume_rank", {})
+
+    for sym, rank in current_rank.items():
+        if rank <= top_n:
+            old = prev.get(sym)
+            # entró nuevo al top-100, o saltó >=50 puestos hacia arriba
+            if old is None or (old - rank) >= 50:
+                detail = "nuevo en top-100" if old is None else f"saltó {old}->{rank}"
+                hits.append({"symbol": sym, "signal": "volume_rank", "detail": detail})
+    return hits, current_rank
+
+
+def news_triggers(state, symbols):
+    """Parsea RSS y matchea keywords narrativas + tickers del universo."""
+    hits = []
+    seen = set(state.get("seen_news", []))
+    # bases de los símbolos (WLD/USDT -> wld)
+    bases = {s.split("/")[0].lower(): s for s in symbols}
+
+    for url in config.RSS_FEEDS:
+        try:
+            feed = feedparser.parse(url)
+        except Exception:
+            continue
+        for entry in feed.entries[:40]:
+            title = (entry.get("title", "") + " " + entry.get("summary", "")).lower()
+            h = hashlib.sha1(title.encode("utf-8")).hexdigest()[:16]
+            if h in seen:
+                continue
+            kw = next((k for k in config.RSS_KEYWORDS if k in title), None)
+            base = next((b for b in bases if b in title.split()), None)
+            if kw and base:
+                hits.append({
+                    "symbol": bases[base], "signal": "news",
+                    "detail": f"[{kw}] {entry.get('title', '')[:90]}",
+                })
+                seen.add(h)
+    state["seen_news"] = list(seen)[-500:]  # acotar
+    return hits
+
+=====[ indicators.py ]=====
+"""Indicadores técnicos puros. Entrada: lista de velas OHLCV de ccxt.
+Sin red ni estado -> fáciles de testear.
+"""
+
+
+def closes(ohlcv):
+    return [c[4] for c in ohlcv]
+
+
+def volumes(ohlcv):
+    return [c[5] for c in ohlcv]
+
+
+def sma(values, period):
+    """Media móvil simple. Devuelve lista alineada (None hasta tener 'period')."""
+    out = []
+    for i in range(len(values)):
+        if i + 1 < period:
+            out.append(None)
+        else:
+            window = values[i + 1 - period:i + 1]
+            out.append(sum(window) / period)
+    return out
+
+
+def slope(series, lookback):
+    """Pendiente simple: valor actual - valor hace 'lookback'. >0 sube, <0 baja."""
+    vals = [v for v in series if v is not None]
+    if len(vals) <= lookback:
+        return 0.0
+    return vals[-1] - vals[-1 - lookback]
+
+
+def pct_return(values, periods):
+    if len(values) <= periods or values[-1 - periods] == 0:
+        return 0.0
+    return (values[-1] / values[-1 - periods] - 1) * 100
+
+
+def volume_spike(ohlcv, window=20):
+    """Ratio del volumen actual vs promedio de las últimas 'window' velas."""
+    vols = volumes(ohlcv)
+    if len(vols) < window + 1:
+        return 1.0
+    avg = sum(vols[-window - 1:-1]) / window
+    if avg == 0:
+        return 1.0
+    return vols[-1] / avg
+
+
+def stage(ohlcv, ma_period, slope_lookback):
+    """Proxy de Stan Weinstein Stage Analysis.
+       Stage 2 = precio > MA y MA en alza (tendencia alcista confirmada).
+       Stage 4 = precio < MA y MA en baja (tendencia bajista -> invalidación).
+       Devuelve: 2 (alcista), 4 (bajista), o 1/3 (transición/lateral).
+    """
+    cl = closes(ohlcv)
+    ma = sma(cl, ma_period)
+    if ma[-1] is None:
+        return None
+    price = cl[-1]
+    ma_now = ma[-1]
+    ma_slope = slope(ma, slope_lookback)
+
+    if price > ma_now and ma_slope > 0:
+        return 2
+    if price < ma_now and ma_slope < 0:
+        return 4
+    if price > ma_now:
+        return 3  # sobre MA pero MA aún no gira -> transición alcista
+    return 1      # bajo MA pero MA no cae -> base/lateral
+
+
+def consecutive_stage2(ohlcv, ma_period, slope_lookback, n):
+    """¿Hubo Stage 2 sostenido los últimos 'n' días? Confirmación de entrada."""
+    cl = closes(ohlcv)
+    ma = sma(cl, ma_period)
+    if len(cl) < ma_period + n + slope_lookback:
+        return False
+    for i in range(n):
+        idx = len(cl) - 1 - i
+        if ma[idx] is None:
+            return False
+        if cl[idx] <= ma[idx]:
+            return False
+        # pendiente local de la MA en ese punto
+        if ma[idx] - ma[idx - slope_lookback] <= 0:
+            return False
+    return True
+
+=====[ exchange.py ]=====
+"""Capa de acceso a Binance Spot vía ccxt. Soporta testnet (sandbox)."""
+import ccxt
+import config
+
+
+class Exchange:
+    def __init__(self):
+        self.client = ccxt.binance({
+            "apiKey": config.BINANCE_API_KEY,
+            "secret": config.BINANCE_API_SECRET,
+            "enableRateLimit": True,
+            "options": {"defaultType": "spot"},
+        })
+        if config.BINANCE_TESTNET:
+            self.client.set_sandbox_mode(True)
+        self._markets = None
+
+    # ---------- lectura ----------
+    def markets(self):
+        if self._markets is None:
+            self._markets = self.client.load_markets()
+        return self._markets
+
+    def ohlcv(self, symbol, timeframe="1d", limit=200):
+        """Devuelve lista de [ts, open, high, low, close, volume]."""
+        return self.client.fetch_ohlcv(symbol, timeframe=timeframe, limit=limit)
+
+    def price(self, symbol):
+        return self.client.fetch_ticker(symbol)["last"]
+
+    def tickers(self):
+        """Todos los tickers 24h. Para ranking por volumen."""
+        return self.client.fetch_tickers()
+
+    def balance(self, asset=None):
+        bal = self.client.fetch_balance()
+        if asset:
+            return bal.get("total", {}).get(asset, 0.0)
+        return bal
+
+    def deposits(self, since_ms=None):
+        try:
+            return self.client.fetch_deposits(since=since_ms)
+        except Exception:
+            return []
+
+    # ---------- ejecución ----------
+    def market_buy_quote(self, symbol, quote_amount):
+        """Compra a mercado gastando 'quote_amount' de la quote (USDT)."""
+        return self.client.create_order(
+            symbol, "market", "buy", None, None,
+            {"quoteOrderQty": quote_amount},
+        )
+
+    def market_sell_base(self, symbol, base_qty):
+        """Vende a mercado 'base_qty' del activo base, acotado al balance LIBRE real."""
+        base = symbol.split("/")[0]
+        free = float((self.client.fetch_balance().get(base) or {}).get("free", 0) or 0)
+        base_qty = min(float(base_qty), free)
+        base_qty = float(self.client.amount_to_precision(symbol, base_qty))
+        if base_qty <= 0:
+            print(f"[sell] {symbol}: balance libre {free} insuficiente, venta omitida")
+            return None
+        try:
+            _t = self.client.fetch_ticker(symbol)
+            _last = float((_t or {}).get("last") or 0)
+            if _last and base_qty * _last < self.min_notional(symbol):
+                print("[sell] " + symbol + ": dust < min_notional, venta omitida")
+                return None
+        except Exception as _e:
+            print("[sell] " + symbol + ": min_notional check fallo: " + str(_e)[:80])
+        try:
+            return self.client.create_order(symbol, "market", "sell", base_qty)
+        except Exception as _e:
+            print("[sell] " + symbol + ": orden rechazada: " + str(_e)[:140] + " -- sigo sin cortar")
+            return None
+
+    def min_notional(self, symbol):
+        m = self.markets().get(symbol, {})
+        limits = m.get("limits", {})
+        cost = (limits.get("cost") or {}).get("min")
+        return cost or 5.0  # fallback típico de Binance
+
+=====[ execlayer.py ]=====
+"""P3 - Wrapper unico de ejecucion.
+
+UNICA puerta para mandar ordenes a Binance. seeds.py y main.execute NO deben
+llamar a ex.market_* directo: pasan por aca. Centraliza:
+  - validacion de min_notional con CLAMP CONTROLADO,
+  - lectura del fill real (filled/cost/avg),
+  - registro en el ledger,
+  - resultado normalizado: {ok, filled, cost, avg, order_id, reason, status, dry, clamped}.
+
+Regla de clamp (compra): si quote < min_notional, se sube al minimo SOLO si
+min_notional <= MAX_AUTO_CLAMP_USDT; si lo supera, se saltea la orden
+(status skipped_min_notional) + ledger + alerta. Nunca infla el sizing a ciegas.
+"""
+import config
+import ledger
+import notify
+
+
+def _max_clamp():
+    return float(getattr(config, "MAX_AUTO_CLAMP_USDT", 10))
+
+
+def _norm(ok=False, filled=0.0, cost=0.0, avg=0.0, order_id=None,
+          reason="", status="failed", dry=False, clamped=False):
+    return {"ok": ok, "filled": float(filled or 0), "cost": float(cost or 0),
+            "avg": float(avg or 0), "order_id": order_id, "reason": reason,
+            "status": status, "dry": dry, "clamped": clamped}
+
+
+def _read_fill(order):
+    """Extrae filled/cost/avg de una orden ccxt, con fallbacks."""
+    o = order or {}
+    filled = float(o.get("filled") or 0)
+    cost = float(o.get("cost") or 0)
+    avg = o.get("average")
+    if avg:
+        avg = float(avg)
+    elif filled > 0 and cost > 0:
+        avg = cost / filled
+    else:
+        avg = 0.0
+    return filled, cost, avg, o.get("id")
+
+
+def execute_buy_quote(ex, sym, quote, intent, run_id, dry, price=None):
+    """Compra a mercado gastando 'quote' USDT. Devuelve dict normalizado."""
+    quote = float(quote)
+    clamped = False
+    try:
+        min_notional = float(ex.min_notional(sym))
+    except Exception:
+        min_notional = 5.0
+
+    if quote < min_notional:
+        if min_notional <= _max_clamp():
+            quote = min_notional
+            clamped = True
+        else:
+            ledger.append(run_id, sym, intent, "buy", requested_quote=quote,
+                          status="skipped_min_notional",
+                          extra={"min_notional": min_notional})
+            try:
+                notify.exec_alert(sym, intent,
+                                  f"orden de ${quote} salteada: min_notional ${min_notional} > clamp ${_max_clamp()}")
+            except Exception:
+                pass
+            return _norm(reason="min_notional", status="skipped_min_notional")
+
+    if dry:
+        th_qty = (quote / price) if price else 0.0
+        ledger.append(run_id, sym, intent, "buy", requested_quote=quote,
+                      status="dry", filled=th_qty, cost=quote, avg=price or 0,
+                      extra={"clamped": clamped})
+        return _norm(ok=True, filled=th_qty, cost=quote, avg=price or 0,
+                     reason="dry", status="dry", dry=True, clamped=clamped)
+
+    try:
+        order = ex.market_buy_quote(sym, quote)
+    except Exception as e:
+        ledger.append(run_id, sym, intent, "buy", requested_quote=quote,
+                      status="failed", extra={"error": str(e)[:160], "clamped": clamped})
+        return _norm(reason=str(e)[:160], status="failed", clamped=clamped)
+
+    filled, cost, avg, oid = _read_fill(order)
+    status = "filled" if filled > 0 else "failed"
+    ledger.append(run_id, sym, intent, "buy", requested_quote=quote,
+                  order_id=oid, status=status, filled=filled, cost=cost,
+                  avg=avg, raw=order, extra={"clamped": clamped})
+    return _norm(ok=(filled > 0), filled=filled, cost=cost, avg=avg,
+                 order_id=oid, reason=status, status=status, clamped=clamped)
+
+
+def execute_sell_base(ex, sym, qty, intent, run_id, dry):
+    """Vende a mercado 'qty' del activo base. Devuelve dict normalizado.
+
+    market_sell_base ya clampea al balance libre y chequea min_notional;
+    devuelve None si no pudo vender (dust / insuficiente / rechazo).
+    """
+    qty = float(qty)
+    if qty <= 0:
+        return _norm(reason="qty<=0", status="skipped")
+
+    if dry:
+        ledger.append(run_id, sym, intent, "sell", requested_qty=qty,
+                      status="dry", filled=qty)
+        return _norm(ok=True, filled=qty, reason="dry", status="dry", dry=True)
+
+    try:
+        order = ex.market_sell_base(sym, qty)
+    except Exception as e:
+        ledger.append(run_id, sym, intent, "sell", requested_qty=qty,
+                      status="failed", extra={"error": str(e)[:160]})
+        return _norm(reason=str(e)[:160], status="failed")
+
+    if order is None:
+        # venta omitida por el exchange layer (dust / insuficiente / rechazo)
+        ledger.append(run_id, sym, intent, "sell", requested_qty=qty,
+                      status="skipped")
+        return _norm(reason="sell_skipped_or_rejected", status="skipped")
+
+    filled, cost, avg, oid = _read_fill(order)
+    if filled <= 0:
+        ledger.append(run_id, sym, intent, "sell", requested_qty=qty,
+                      order_id=oid, status="failed", raw=order)
+        return _norm(reason="no_fill", status="failed", order_id=oid)
+    status = "partial" if filled < qty * 0.999 else "filled"
+    ledger.append(run_id, sym, intent, "sell", requested_qty=qty,
+                  order_id=oid, status=status, filled=filled, cost=cost,
+                  avg=avg, raw=order)
+    return _norm(ok=True, filled=filled, cost=cost, avg=avg, order_id=oid,
+                 reason=status, status=status)
+
+=====[ ledger.py ]=====
+"""P2 - Ledger append-only de ordenes (orders.jsonl).
+
+Verdad de ejecucion del sistema. Cada intento de orden (exitoso, parcial,
+fallido o salteado) deja un registro. NUNCA se reescribe: solo se appendea.
+El run_id agrupa todas las acciones de una misma corrida.
+"""
+import os
+import json
+import time
+import datetime
+
+LEDGER_PATH = os.getenv("SEMILLAS_LEDGER", os.path.join(os.path.dirname(__file__), "orders.jsonl"))
+
+
+def new_run_id():
+    """ID de corrida estable: UTC compacto, p.ej. 20260629T001500Z."""
+    return datetime.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+
+
+def append(run_id, symbol, intent, side,
+           requested_quote=None, requested_qty=None,
+           order_id=None, status="unknown",
+           filled=0.0, cost=0.0, avg=0.0, raw=None, extra=None):
+    """Appendea un registro al ledger. Nunca lanza: si falla, loggea y sigue.
+
+    status: filled | partial | failed | skipped | skipped_min_notional | dry
+    """
+    rec = {
+        "ts": time.time(),
+        "iso": datetime.datetime.utcnow().isoformat() + "Z",
+        "run_id": run_id,
+        "symbol": symbol,
+        "intent": intent,            # SEED / DCA / TAKE_PROFIT / STOP / FREEZE
+        "side": side,                # buy / sell
+        "requested_quote": requested_quote,
+        "requested_qty": requested_qty,
+        "order_id": order_id,
+        "status": status,
+        "filled": round(float(filled or 0), 10),
+        "cost": round(float(cost or 0), 10),
+        "avg": round(float(avg or 0), 10),
+    }
+    if extra:
+        rec.update(extra)
+    if raw is not None:
+        # recorto el raw para no inflar el archivo
+        try:
+            rec["raw"] = {k: raw.get(k) for k in ("id", "status", "filled", "cost", "average", "amount", "side", "symbol") if isinstance(raw, dict)}
+        except Exception:
+            rec["raw"] = None
+    try:
+        with open(LEDGER_PATH, "a") as f:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    except Exception as e:
+        print("[ledger] no se pudo escribir:", str(e)[:120])
+    return rec
+
+=====[ reconcile.py ]=====
+"""P5 - Reconciliacion state <-> Binance.
+
+Al inicio de cada corrida compara lo que el bot CREE tener (state.json) contra
+lo que REALMENTE hay en Binance. SOLO ALERTA: no auto-corrige (al principio,
+observar antes de automatizar). Detecta:
+  - el state dice tener X pero Binance tiene bastante mas/menos (venta que fallo, etc.),
+  - Binance tiene un activo que el state no trackea,
+  - posiciones que el state da por vivas pero en Binance no estan.
+"""
+import config
+
+# tolerancia relativa para considerar "coincide" (fees/dust/redondeo)
+REL_TOL = 0.05      # 5%
+DUST_USDT = 1.0     # diferencias por debajo de ~1 USD se ignoran
+
+
+def _base(sym):
+    return sym.split("/")[0]
+
+
+def reconcile(ex, state):
+    """Devuelve lista de discrepancias [{symbol, kind, state_qty, real_qty, detail}]."""
+    diffs = []
+    try:
+        bal = ex.balance()
+        totals = (bal or {}).get("total", {}) or {}
+    except Exception as e:
+        return [{"symbol": "-", "kind": "balance_error",
+                 "state_qty": None, "real_qty": None, "detail": str(e)[:140]}]
+
+    quote = config.QUOTE_ASSET
+    tracked_assets = set()
+
+    # 1) cada posicion viva del state vs Binance
+    for sym, p in state.get("positions", {}).items():
+        if p.get("status") in ("closed", "frozen"):
+            continue
+        base = _base(sym)
+        tracked_assets.add(base)
+        sqty = float(p.get("qty", 0) or 0)
+        rqty = float(totals.get(base, 0) or 0)
+        if sqty <= 0 and rqty <= 0:
+            continue
+        denom = max(sqty, rqty, 1e-12)
+        rel = abs(sqty - rqty) / denom
+        # estimo el valor en USD de la diferencia para no alertar por polvo
+        try:
+            px = ex.price(sym)
+        except Exception:
+            px = 0.0
+        usd_diff = abs(sqty - rqty) * (px or 0)
+        if rel > REL_TOL and usd_diff >= DUST_USDT:
+            diffs.append({
+                "symbol": sym, "kind": "qty_mismatch",
+                "state_qty": round(sqty, 8), "real_qty": round(rqty, 8),
+                "detail": f"state {sqty:.6f} vs binance {rqty:.6f} (~${usd_diff:.2f})",
+            })
+
+    # 2) activos en Binance que el state no trackea (posible holding fantasma)
+    for asset, amt in totals.items():
+        amt = float(amt or 0)
+        if asset == quote or amt <= 0:
+            continue
+        if asset in tracked_assets:
+            continue
+        sym = f"{asset}/{quote}"
+        try:
+            px = ex.price(sym)
+        except Exception:
+            px = 0.0
+        usd = amt * (px or 0)
+        if usd >= DUST_USDT:
+            diffs.append({
+                "symbol": sym, "kind": "untracked_holding",
+                "state_qty": 0.0, "real_qty": round(amt, 8),
+                "detail": f"Binance tiene {amt:.6f} {asset} (~${usd:.2f}) que el bot no trackea",
+            })
+
+    return diffs
+
+=====[ runlock.py ]=====
+"""P1 - Lock anti doble-corrida (fcntl.flock, stdlib).
+
+Garantiza que solo una instancia de main() corra a la vez. Si el cron se
+solapa o se dispara dos veces, la segunda sale limpia sin tocar nada.
+"""
+import os
+import fcntl
+
+LOCK_PATH = os.getenv("SEMILLAS_LOCK", os.path.join(os.path.dirname(__file__), ".semillas.lock"))
+
+
+class LockBusy(Exception):
+    pass
+
+
+class run_lock:
+    """Context manager. Levanta LockBusy si ya hay una corrida en curso."""
+
+    def __init__(self, path=LOCK_PATH):
+        self.path = path
+        self._fh = None
+
+    def __enter__(self):
+        self._fh = open(self.path, "w")
+        try:
+            fcntl.flock(self._fh.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except (BlockingIOError, OSError):
+            self._fh.close()
+            self._fh = None
+            raise LockBusy("Ya hay una corrida en curso (lock tomado).")
+        self._fh.write(str(os.getpid()))
+        self._fh.flush()
+        return self
+
+    def __exit__(self, *exc):
+        if self._fh is not None:
+            try:
+                fcntl.flock(self._fh.fileno(), fcntl.LOCK_UN)
+            finally:
+                self._fh.close()
+                self._fh = None
+        return False
+
+=====[ state.py ]=====
+"""Estado persistente del bot (JSON en disco, con deduplicación).
+
+Estructura de state.json:
+{
+  "positions": {
+     "WLD/USDT": {
+        "status": "seed" | "confirmed" | "moonbag" | "frozen" | "closed",
+        "planted_at": "2026-06-18",
+        "confirmed_at": "2026-06-25" | null,
+        "qty": 12.34,                # cantidad base en cartera (gestionada por el bot)
+        "avg_cost": 1.83,           # costo promedio
+        "dca_adds": 1,              # cuántos agregados se hicieron
+        "tp_hit": [30],             # niveles de TP ya ejecutados
+        "tag": "NARRATIVA" | null
+     }
+  },
+  "shortlist": ["WLD/USDT", "PENDLE/USDT", ...],
+  "prev_volume_rank": {"WLD/USDT": 84, ...},
+  "seen_news": ["hash1", "hash2", ...],     # dedup de noticias ya reportadas
+  "deposits": [{"date": "...", "amount": 50.0, "asset": "USDT"}],
+  "last_brain_run": "2026-06-01",
+  "narrativa_active": "XYZ/USDT" | null
+}
+"""
+import json
+import os
+from datetime import date
+
+STATE_PATH = os.getenv("SEMILLAS_STATE", os.path.join(os.path.dirname(__file__), "state.json"))
+
+_DEFAULT = {
+    "positions": {},
+    "shortlist": [],
+    "prev_volume_rank": {},
+    "seen_news": [],
+    "deposits": [],
+    "last_brain_run": None,
+    "narrativa_active": None,
+}
+
+
+def load():
+    if not os.path.exists(STATE_PATH):
+        return json.loads(json.dumps(_DEFAULT))
+    with open(STATE_PATH, "r") as f:
+        data = json.load(f)
+    # rellenar claves nuevas si el archivo es viejo
+    for k, v in _DEFAULT.items():
+        data.setdefault(k, json.loads(json.dumps(v)))
+    return data
+
+
+def save(state):
+    tmp = STATE_PATH + ".tmp"
+    with open(tmp, "w") as f:
+        json.dump(state, f, indent=2, ensure_ascii=False)
+    os.replace(tmp, STATE_PATH)  # escritura atómica
+
+
+def today_str():
+    return date.today().isoformat()
+
+=====[ notify.py ]=====
+"""Envío de reportes por email vía Resend (HTTP API)."""
+import requests
+import config
+
+
+def send(subject, html):
+    if not config.RESEND_API_KEY or not config.EMAIL_TO:
+        print("[notify] Resend no configurado; salteando email.\n" + subject)
+        return False
+    try:
+        r = requests.post(
+            "https://api.resend.com/emails",
+            headers={"Authorization": f"Bearer {config.RESEND_API_KEY}"},
+            json={
+                "from": config.EMAIL_FROM,
+                "to": [config.EMAIL_TO],
+                "subject": subject,
+                "html": html,
+            },
+            timeout=20,
+        )
+        ok = r.status_code in (200, 201)
+        if not ok:
+            print(f"[notify] Resend error {r.status_code}: {r.text[:200]}")
+        return ok
+    except Exception as e:
+        print(f"[notify] excepción enviando email: {e}")
+        return False
+
+
+def daily_report(actions, triggers, portfolio, brain_summary, mode):
+    """Construye el HTML del reporte diario."""
+    badge = "TESTNET" if mode else "REAL"
+    rows = ""
+    for a in actions:
+        rows += (
+            f"<tr><td>{a.get('symbol','')}</td>"
+            f"<td><b>{a.get('type','')}</b></td>"
+            f"<td>{a.get('reason','')}</td></tr>"
+        )
+    if not rows:
+        rows = "<tr><td colspan='3'>Sin acciones hoy. El sistema esperó.</td></tr>"
+
+    trig = ""
+    for t in triggers:
+        trig += f"<li>{t['symbol']} — {t['signal']}: {t['detail']}</li>"
+    if not trig:
+        trig = "<li>Ningún trigger disparó.</li>"
+
+    pf = ""
+    for sym, p in portfolio.items():
+        pf += (
+            f"<tr><td>{sym}</td><td>{p['status']}</td>"
+            f"<td>{p.get('qty',0):.4f}</td>"
+            f"<td>{p.get('pnl_pct','—')}</td></tr>"
+        )
+    if not pf:
+        pf = "<tr><td colspan='4'>Sin posiciones abiertas.</td></tr>"
+
+    brain = f"<p><b>Cerebro mensual:</b> {brain_summary}</p>" if brain_summary else ""
+
+    return f"""
+    <div style="font-family:system-ui,Arial,sans-serif;max-width:640px">
+      <h2>🌱 Sistema Semillas — Reporte diario <span style="font-size:12px;
+          background:#eee;padding:2px 8px;border-radius:6px">{badge}</span></h2>
+
+      <h3>Acciones ejecutadas</h3>
+      <table cellpadding="6" style="border-collapse:collapse;width:100%;font-size:14px"
+             border="1">{rows}</table>
+
+      <h3>Portfolio</h3>
+      <table cellpadding="6" style="border-collapse:collapse;width:100%;font-size:14px"
+             border="1">
+        <tr><th>Activo</th><th>Estado</th><th>Cantidad</th><th>P&amp;L</th></tr>
+        {pf}
+      </table>
+
+      <h3>Triggers</h3>
+      <ul style="font-size:14px">{trig}</ul>
+      {brain}
+      <p style="color:#888;font-size:12px">Revisión una vez al día. Pausar no es fallar.</p>
+    </div>
+    """
+
+
+def funding_alert(sym, need, have):
+    """Aviso por mail: falta USDT libre para reforzar (DCA) una posicion."""
+    try:
+        import requests, config
+        subject = f"[Semillas] Fondear para reforzar {sym}"
+        html = (f"<p>El bot quiere reforzar <b>{sym}</b> con <b>${need}</b> USDT "
+                f"pero el balance libre es <b>${have:.2f}</b>.</p>"
+                f"<p>Transferi USDT a la sub-cuenta para que el proximo DCA entre.</p>")
+        requests.post("https://api.resend.com/emails",
+            headers={"Authorization": f"Bearer {config.RESEND_API_KEY}"},
+            json={"from": config.EMAIL_FROM, "to": [config.EMAIL_TO],
+                  "subject": subject, "html": html}, timeout=20)
+        print(f"[notify] funding_alert enviado: {sym} need ${need} have ${have:.2f}")
+    except Exception as e:
+        print("[notify] funding_alert fallo:", str(e)[:120])
+
+
+def exec_alert(sym, intent, msg):
+    """Aviso de ejecucion: orden salteada/clampeada/rechazada que merece atencion."""
+    try:
+        import requests, config
+        subject = f"[Semillas] Ejecucion {intent} {sym}: atencion"
+        html = f"<p><b>{intent} {sym}</b></p><p>{msg}</p>"
+        if config.RESEND_API_KEY and config.EMAIL_TO:
+            requests.post("https://api.resend.com/emails",
+                headers={"Authorization": f"Bearer {config.RESEND_API_KEY}"},
+                json={"from": config.EMAIL_FROM, "to": [config.EMAIL_TO],
+                      "subject": subject, "html": html}, timeout=20)
+        print(f"[notify] exec_alert: {intent} {sym}: {msg}")
+    except Exception as e:
+        print("[notify] exec_alert fallo:", str(e)[:120])
+
+
+def reconcile_alert(diffs):
+    """Aviso de desincronizacion state<->Binance. diffs: lista de dicts."""
+    if not diffs:
+        return
+    try:
+        import requests, config
+        rows = ""
+        for d in diffs:
+            rows += (f"<tr><td>{d.get('symbol')}</td><td>{d.get('kind')}</td>"
+                     f"<td>{d.get('detail')}</td></tr>")
+        html = ("<p><b>Desincronizacion state vs Binance detectada.</b> "
+                "El bot no auto-corrige; revisar manualmente.</p>"
+                "<table border='1' cellpadding='6' style='border-collapse:collapse;font-size:13px'>"
+                "<tr><th>Symbol</th><th>Tipo</th><th>Detalle</th></tr>"
+                f"{rows}</table>")
+        subject = f"[Semillas] RECONCILIACION: {len(diffs)} diferencia(s)"
+        if config.RESEND_API_KEY and config.EMAIL_TO:
+            requests.post("https://api.resend.com/emails",
+                headers={"Authorization": f"Bearer {config.RESEND_API_KEY}"},
+                json={"from": config.EMAIL_FROM, "to": [config.EMAIL_TO],
+                      "subject": subject, "html": html}, timeout=20)
+        for d in diffs:
+            print(f"[reconcile] {d.get('kind')} {d.get('symbol')}: {d.get('detail')}")
+    except Exception as e:
+        print("[notify] reconcile_alert fallo:", str(e)[:120])
+
+
+def liquidity_alert(free, buffer):
+    """P6: aviso proactivo de colchon de USDT bajo."""
+    try:
+        import requests, config
+        subject = f"[Semillas] Liquidez baja: ${free:.2f} USDT"
+        html = (f"<p>El USDT libre cayo a <b>${free:.2f}</b>, por debajo del colchon de <b>${buffer:.0f}</b>.</p>"
+                f"<p>Transferi USDT a la sub-cuenta para que los proximos DCA y seeds entren sin problema.</p>")
+        if config.RESEND_API_KEY and config.EMAIL_TO:
+            requests.post("https://api.resend.com/emails",
+                headers={"Authorization": f"Bearer {config.RESEND_API_KEY}"},
+                json={"from": config.EMAIL_FROM, "to": [config.EMAIL_TO],
+                      "subject": subject, "html": html}, timeout=20)
+        print(f"[notify] liquidity_alert: free ${free:.2f} < buffer ${buffer:.0f}")
+    except Exception as e:
+        print("[notify] liquidity_alert fallo:", str(e)[:120])
+
+=====[ dashboard.py ]=====
+"""
+dashboard.py — Publica el estado del Sistema Semillas 2.0 a GitHub Pages.
+
+- Lee state.json (fuente de verdad), arma un payload publico (sin secretos)
+  y lo sube como docs/dashboard_data.json al repo via GitHub Contents API.
+- `--deploy` ademas sube docs/index.html (la cascara estatica, una sola vez).
+- update() se llama al final de main.py; cualquier error se traga para no
+  afectar nunca la corrida del bot.
+
+Requiere en .env:  GITHUB_TOKEN   (fine-grained PAT, Contents: R/W sobre el repo)
+Opcionales:        GITHUB_REPO=calcagnoagustin/semillaredes
+                   GITHUB_BRANCH=main
+                   CAPITAL_INICIAL=100
+"""
+import os, json, base64, datetime, pathlib
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:
+    pass
+
+import requests
+
+HERE      = pathlib.Path(__file__).resolve().parent
+STATE_PATH= HERE / "state.json"
+### <redactado: posible secreto> ###
+BRANCH    = os.getenv("GITHUB_BRANCH", "main")
+TOKEN     = os.getenv("GITHUB_TOKEN", "")
+CAPITAL   = float(os.getenv("CAPITAL_INICIAL", "100"))
+API       = "https://api.github.com"
+
+# Orden de prioridad para mostrar estados (abiertas primero, cerradas al final)
+def _binance(sym): return sym.replace("/", "").upper()
+
+
+def _rules():
+    r = {"freeze_days": 60, "max_seeds": 3, "seed_size_usdt": 7}
+    try:
+        import config
+        r["freeze_days"]    = getattr(config, "FREEZE_DAYS", r["freeze_days"])
+        r["max_seeds"]      = getattr(config, "MAX_SEEDS", r["max_seeds"])
+        r["seed_size_usdt"] = getattr(config, "SEED_SIZE_USDT", r["seed_size_usdt"])
+    except Exception:
+        pass
+    return r
+
+
+BRAIN_LOG = HERE / "learning" / "brain_log.jsonl"
+def _brain_hist(state):
+    try:
+        hist=[json.loads(l) for l in BRAIN_LOG.read_text().splitlines() if l.strip()]
+    except Exception:
+        hist=[]
+    lbr=state.get("last_brain_run")
+    if lbr and (not hist or hist[-1].get("date")!=lbr):
+        hist.append({"date": lbr, "narrativa": state.get("narrativa_active"),
+                     "shortlist": state.get("shortlist", []),
+                     "regimen": state.get("regimen")})
+        try:
+            BRAIN_LOG.parent.mkdir(exist_ok=True)
+            BRAIN_LOG.write_text("\n".join(json.dumps(h) for h in hist)+"\n")
+        except Exception:
+            pass
+    return hist[-12:]
+
+def _load_recs():
+    try:
+        r=json.loads((HERE/"learning"/"recommendations.json").read_text())
+        return {"generated": r.get("generated"), "ranking": r.get("ranking", [])}
+    except Exception:
+        return None
+
+
+def _ops_from_ledger(n=40):
+    """Historial completo de operaciones desde el ledger (P2, verdad de ejecucion)."""
+    import json as _json, os as _os
+    path = _os.path.join(_os.path.dirname(__file__), "orders.jsonl")
+    rows = []
+    try:
+        with open(path) as f:
+            lines = f.readlines()[-200:]
+        for ln in lines:
+            try:
+                r = _json.loads(ln)
+            except Exception:
+                continue
+            if r.get("status") not in ("filled", "partial"):
+                continue
+            px = r.get("avg") or 0
+            rows.append({
+                "symbol": r.get("symbol", "?"),
+                "action": r.get("intent", "?"),
+                "entry": px, "exit": px,
+                "qty_total": r.get("filled", 0),
+                "pnl_net": 0,
+                "closed_ts": r.get("ts", 0),
+            })
+    except Exception:
+        pass
+    return rows[-n:]
+
+
+def build_payload():
+    state = json.loads(STATE_PATH.read_text())
+    positions = []
+    for sym, p in (state.get("positions") or {}).items():
+        positions.append({
+            "symbol":       sym,
+            "binance":      _binance(sym),
+            "status":       p.get("status"),
+            "qty":          p.get("qty", 0),
+            "avg_cost":     p.get("avg_cost", 0),
+            "dca_adds":     p.get("dca_adds", 0),
+            "tp_hit":       p.get("tp_hit", []),
+            "confirmed_at": p.get("confirmed_at"),
+            "note":         p.get("note", ""),
+        })
+    # abiertas primero
+    positions.sort(key=lambda x: (0 if (x["qty"] or 0) > 0 else 1, x["symbol"]))
+
+    _free_usdt = None
+    try:
+        import ccxt as _ccxt, os as _os
+        _ex = _ccxt.binance({"apiKey": _os.environ.get("BINANCE_API_KEY", ""), "secret": _os.environ.get("BINANCE_API_SECRET", ""), "enableRateLimit": True})
+        _free_usdt = float(_ex.fetch_balance()["free"].get("USDT", 0))
+    except Exception:
+        _free_usdt = None
+    return {
+        "generated_at":     datetime.datetime.now(datetime.timezone.utc)
+                              .strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "cron":             "15 0 * * * (00:15 UTC / 21:15 ART)",
+        "capital_inicial":  CAPITAL,
+        "free_usdt": _free_usdt,
+        "deposits":         state.get("deposits", []),
+        "positions":        positions,
+        "shortlist":        state.get("shortlist", []),
+        "narrativa_active": state.get("narrativa_active"),
+        "regimen": state.get("regimen", "neutral"),
+        "last_brain_run":   state.get("last_brain_run"),
+        "recent_closed": _ops_from_ledger(),
+        "shortlist_full": state.get("shortlist_full", []),
+        "brain_history":  _brain_hist(state),
+        "loop_recs": _load_recs(),
+        "rules":            _rules(),
+    }
+
+
+def _headers():
+    return {
+        "Authorization": f"Bearer {TOKEN}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+
+
+def gh_put(repo_path, content_bytes, message):
+    """Crea o actualiza un archivo en el repo via Contents API."""
+    if not TOKEN:
+        raise RuntimeError("GITHUB_TOKEN no esta seteado en .env")
+    url = f"{API}/repos/{REPO}/contents/{repo_path}"
+    # sha actual (si existe)
+    sha = None
+    g = requests.get(url, headers=_headers(), params={"ref": BRANCH}, timeout=20)
+    if g.status_code == 200:
+        sha = g.json().get("sha")
+    body = {
+        "message": message,
+        "content": base64.b64encode(content_bytes).decode(),
+        "branch":  BRANCH,
+    }
+    if sha:
+        body["sha"] = sha
+    r = requests.put(url, headers=_headers(), json=body, timeout=20)
+    r.raise_for_status()
+    return r.json()
+
+
+def update():
+    """Push del snapshot diario. Se llama desde main.py; nunca lanza."""
+    try:
+        payload = build_payload()
+        gh_put("docs/dashboard_data.json",
+               json.dumps(payload, ensure_ascii=False, indent=1).encode("utf-8"),
+               f"dashboard: estado {payload['generated_at']}")
+        print("[dashboard] data publicada OK")
+        return True
+    except Exception as e:
+        print(f"[dashboard] update fallo (ignorado): {e}")
+        return False
+
+
+def deploy():
+    """Sube la cascara index.html + el primer dashboard_data.json."""
+    html = (HERE / "docs" / "index.html").read_text(encoding="utf-8")
+    gh_put("docs/index.html", html.encode("utf-8"), "dashboard: shell index.html")
+    payload = build_payload()
+    gh_put("docs/dashboard_data.json",
+           json.dumps(payload, ensure_ascii=False, indent=1).encode("utf-8"),
+           "dashboard: snapshot inicial")
+    print("[dashboard] deploy OK -> docs/index.html + docs/dashboard_data.json")
+
+
+if __name__ == "__main__":
+    import sys
+    if "--deploy" in sys.argv:
+        deploy()
+    else:
+        update()
+
+=====[ brain_monthly.py ]=====
+"""Cerebro mensual de seleccion (llama a Claude API con web_search).
+
+Filosofia: filtro barato (triggers) primero; el LLM corre SOLO sobre lo que pasa
+el filtro. Scout multi-senal: busca asimetrias tempranas (monedas que explotan)
+con disciplina. Produce shortlist rankeado con fundamentales, senales y tesis.
+
+Devuelve dict: {"regimen": "...", "summary": "...", "shortlist": [...], "raw": "..."}
+"""
+import json
+import requests
+import config
+
+MODEL = "claude-opus-4-8"
+
+SYSTEM = """Sos el cerebro de seleccion del Sistema Semillas 2.0: especulacion
+disciplinada en Binance Spot (sin leverage, sin futuros). Tu trabajo es encontrar
+monedas con potencial de EXPLOTAR temprano (asimetria grande), sin perder la
+disciplina del sistema.
+
+OBJETIVO
+Detectar criptos en transicion Stage 1->2 (Weinstein) o en acumulacion Wyckoff,
+ANTES del movimiento grande, con confirmacion tecnica. Buscas "el proximo Kite":
+proyectos que arrancan a moverse con narrativa + volumen + interes creciente.
+
+DOS CANASTAS (cubri las dos en cada run)
+1) LAUNCHES RECIENTES de Binance: listings nuevos, Launchpool, Launchpad, Megadrop,
+   HODLer Airdrops. Tickers recien salidos con volumen real. Marca type="launch".
+2) HISTORICAS EN REACELERACION: proyectos con +1 ano de historia y liquidez sana
+   que vuelven a despertar (ej. tipo FET y otros nombres AI/L1/L2/DePIN
+   establecidos saliendo de base larga). Marca type="historica".
+   (momentum generico de mediana data: type="momentum".)
+
+INVESTIGACION MULTI-SENAL (usa web_search, cruza varias fuentes)
+Para cada candidato junta y cita evidencia de:
+- Google Trends / interes de busqueda subiendo en el token o su narrativa.
+- Social: X/Twitter, Reddit, Telegram - menciones y sentimiento creciente.
+- Binance: trending, spikes de volumen, nuevos listings/programas.
+- On-chain / mercado: volumen, liquidez, market cap, holders, TVL si aplica.
+- Narrativa de sector que esta rotando capital este mes.
+El cruce de senales es lo predictivo: una sola senal no alcanza.
+
+FUNDAMENTALES (obligatorio por candidato)
+Explica que hace el proyecto, sector/narrativa, utilidad del token, por que AHORA
+(catalizador concreto), y contexto de liquidez/market cap. Esto fundamenta la
+compra y queda registrado en el historial.
+
+DISCIPLINA (no negociable)
+- No persigas Stage 3/4 ni cosas ya extendidas/parabolicas: buscas temprano.
+- La senal tecnica manda sobre la narrativa. Sin estructura, no entra.
+- Liquidez sana obligatoria (nada iliquido/manipulable).
+- Se honesto con el riesgo; si no hay nada bueno, devolve shortlist corto o vacio.
+
+REGIMEN
+Lee el macro del mes (BTC, dominancia, condiciones) y devolve regimen:
+"risk_on" (ofensivo), "neutral", o "risk_off" (defensivo, priorizar caja).
+
+SALIDA
+No mas de ~8 busquedas; despues ESCRIBI el JSON. Tu ULTIMO mensaje debe ser
+EXCLUSIVAMENTE un JSON valido, sin markdown ni texto extra, con forma:
+{"regimen":"risk_on|neutral|risk_off",
+ "summary":"2-3 frases con la lectura macro del mes",
+ "shortlist":[{"symbol":"XXX/USDT","rank":1,"type":"launch|historica|momentum",
+   "stage":"1|2","thesis":"1-2 frases accionables: por que entrar",
+   "fundamentals":"que hace, sector, utilidad, por que ahora",
+   "catalyst":"evento/catalizador concreto",
+   "signals":{"google_trends":"...","social":"...","binance":"...","onchain":"..."},
+   "risk":"riesgo principal","sources":["url"]}]}
+Exactamente 3 candidatos (las 3 mejores a 30 dias), rankeados por asimetria/conviccion. Cada uno operable en
+Binance Spot, con liquidez sana. Prioriza calidad sobre cantidad."""
+
+
+def run(candidates_context):
+    """candidates_context: texto con los disparadores y datos tecnicos detectados."""
+    if not config.ANTHROPIC_API_KEY:
+        return {"shortlist": [], "summary": "ANTHROPIC_API_KEY no configurada.", "raw": ""}
+    user = (
+        "Disparadores y contexto tecnico detectados este ciclo:\n\n"
+        + candidates_context
+        + "\n\nResearchea con web_search las dos canastas (launches recientes de "
+          "Binance e historicas en reaceleracion tipo FET), cruza senales "
+          "(Google Trends, social, Binance trending, on-chain), y devolve el "
+          "shortlist rankeado con fundamentales y tesis en el JSON especificado."
+    )
+    headers = {
+        "x-api-key": config.ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+    }
+    messages = [{"role": "user", "content": user}]
+    text = ""
+    try:
+        for _ in range(6):  # continua si la API devuelve pause_turn
+            r = requests.post(
+                "https://api.anthropic.com/v1/messages",
+                headers=headers,
+                json={
+                    "model": MODEL,
+                    "max_tokens": 8000,
+                    "system": SYSTEM,
+                    "messages": messages,
+                    "tools": [{"type": "web_search_20250305", "name": "web_search",
+                               "max_uses": 8}],
+                },
+                timeout=240,
+            )
+            data = r.json()
+            content = data.get("content")
+            if not content:
+                return {"shortlist": [], "summary": "Cerebro: respuesta sin content (%s)" % str(data.get("error") or data.get("type")), "raw": json.dumps(data)[:2000]}
+            blocks = [b.get("text", "") for b in content if b.get("type") == "text"]
+            if blocks:
+                text = blocks[-1]
+            if data.get("stop_reason") == "pause_turn":
+                messages.append({"role": "assistant", "content": content})
+                continue
+            break
+        text = (text or "").strip()
+        clean = text.replace("```json", "").replace("```", "").strip()
+        a = clean.find("{"); b = clean.rfind("}")
+        if a != -1 and b > a:
+            clean = clean[a:b + 1]
+        parsed = json.loads(clean)
+        try:
+            import tokenomics
+            if isinstance(parsed.get("shortlist"), list):
+                parsed["shortlist"] = tokenomics.annotate_shortlist(parsed["shortlist"])
+        except Exception as _te:
+            print("[brain] tokenomics skip:", str(_te)[:120])
+        parsed.setdefault("regimen", "neutral")
+        parsed["raw"] = text
+        return parsed
+    except Exception as e:
+        return {"shortlist": [], "summary": f"Error en cerebro: {e}", "raw": text[:2000]}
+
+=====[ learning_loop.py ]=====
+"""Learning loop: captura OHLCV 1h de entradas confirmadas para calibrar Ganesha-Ejecutor.
+Solo lectura de mercado + escritura local en learning/. Nunca opera."""
+import json, os, time
+import ccxt
+
+BASE = os.path.dirname(os.path.abspath(__file__))
+LDIR = os.path.join(BASE, "learning")
+ODIR = os.path.join(LDIR, "ohlcv")
+EVENTS = os.path.join(LDIR, "events.jsonl")
+LSTATE = os.path.join(LDIR, "loop_state.json")
+SUMMARY = os.path.join(LDIR, "summary.json")
+TRACK = ("confirmed", "moonbag")
+PRE_H = 168
+CAP_D = 45
+H = 3600000
+
+def _load(p, d):
+    try:
+        return json.load(open(p))
+    except Exception:
+        return d
+
+def _iso2ms(s):
+    return int(time.mktime(time.strptime(s[:10], "%Y-%m-%d")) * 1000)
+
+def _fetch(ex, sym, since, until):
+    out, ms = [], since
+    while ms < until:
+        try:
+            b = ex.fetch_ohlcv(sym, "1h", since=ms, limit=1000)
+        except Exception as e:
+            print("[learn] fetch fallo", sym, str(e)[:80])
+            break
+        if not b:
+            break
+        out += b
+        nxt = b[-1][0] + H
+        if nxt <= ms:
+            break
+        ms = nxt
+        if len(b) < 1000:
+            break
+    return [c for c in out if c[0] < until]
+
+def _event(ev):
+    ev["ts"] = time.time()
+    ev["iso"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    with open(EVENTS, "a") as f:
+        f.write(json.dumps(ev) + "\n")
+
+def _summ(sym, candles, conf_ms, pos):
+    post = [c for c in candles if c[0] >= conf_ms]
+    if not post:
+        return None
+    p0 = post[0][4]
+    hi = max(c[2] for c in post)
+    lo = min(c[3] for c in post)
+    trs = []
+    for i in range(1, len(post)):
+        h, l, pc = post[i][2], post[i][3], post[i - 1][4]
+        trs.append(max(h - l, abs(h - pc), abs(l - pc)))
+    atr = sum(trs[-14:]) / min(14, len(trs)) if trs else 0
+    return {"symbol": sym, "status": pos.get("status"),
+            "confirmed_at": pos.get("confirmed_at"), "ref_close": p0,
+            "last": post[-1][4],
+            "max_runup_pct": round((hi / p0 - 1) * 100, 2),
+            "max_dd_pct": round((lo / p0 - 1) * 100, 2),
+            "ret_pct": round((post[-1][4] / p0 - 1) * 100, 2),
+            "hours": len(post),
+            "atr14h_pct": round(atr / post[-1][4] * 100, 3)}
+
+def run(state, ex=None):
+    os.makedirs(ODIR, exist_ok=True)
+    if ex is None:
+        ex = ccxt.binance({"enableRateLimit": True})
+    ls = _load(LSTATE, {"statuses": {}})
+    summ = _load(SUMMARY, {})
+    now = int(time.time() * 1000)
+    for sym, pos in state.get("positions", {}).items():
+        st_now = pos.get("status")
+        if ls["statuses"].get(sym) != st_now:
+            _event({"type": "status_change", "symbol": sym,
+                    "from": ls["statuses"].get(sym), "to": st_now,
+                    "avg_cost": pos.get("avg_cost"), "qty": pos.get("qty"),
+                    "tp_hit": pos.get("tp_hit")})
+            ls["statuses"][sym] = st_now
+        conf = pos.get("confirmed_at")
+        if st_now not in TRACK or not conf:
+            continue
+        conf_ms = _iso2ms(conf)
+        until = min(now - H, conf_ms + CAP_D * 86400000)
+        f = os.path.join(ODIR, sym.replace("/", "_") + "_1h.json")
+        data = _load(f, [])
+        since = data[-1][0] + H if data else conf_ms - PRE_H * H
+        if since < until:
+            new = _fetch(ex, sym, since, until)
+            if new:
+                data += new
+                json.dump(data, open(f, "w"))
+                print("[learn] %s: +%d velas 1h (total %d)" % (sym, len(new), len(data)))
+        s = _summ(sym, data, conf_ms, pos)
+        if s:
+            summ[sym] = s
+    json.dump(ls, open(LSTATE, "w"))
+    json.dump(summ, open(SUMMARY, "w"), indent=1)
+    print("[learn] ok. %d simbolos trackeados." % len(summ))
+
+if __name__ == "__main__":
+    import state as stmod
+    run(stmod.load())
+
+=====[ loop_analista.py ]=====
+"""Loop analista: unifica eventos (Semillas+Ejecutor+Brain) en learning/events.jsonl,
+captura contexto 15m de cada senal del Ejecutor y recalcula sims con grilla de
+parametros. SOLO informa (recommendations.json); nunca toca parametros vivos."""
+import json, os, time
+import ccxt
+
+BASE = os.path.dirname(os.path.abspath(__file__))
+LDIR = os.path.join(BASE, "learning")
+UNI = os.path.join(LDIR, "events.jsonl")
+ASTATE = os.path.join(LDIR, "analista_state.json")
+RECS = os.path.join(LDIR, "recommendations.json")
+SRC = [("ejecutor", os.path.join(BASE, "ejecutor", "events.jsonl")),
+       ("brain", os.path.join(LDIR, "brain_log.jsonl"))]
+
+def _load(p, d):
+    try:
+        return json.load(open(p))
+    except Exception:
+        return d
+
+def ingest():
+    st = _load(ASTATE, {"offsets": {}})
+    new_entries = []
+    for name, path in SRC:
+        off = st["offsets"].get(name, 0)
+        try:
+            lines = open(path).read().splitlines()
+        except Exception:
+            lines = []
+        rows = []
+        for ln in lines[off:]:
+            try:
+                e = json.loads(ln)
+                e["src"] = name
+                rows.append(e)
+            except Exception:
+                pass
+        if rows:
+            with open(UNI, "a") as f:
+                for r in rows:
+                    f.write(json.dumps(r) + "\n")
+            for e in rows:
+                if str(e.get("type", "")).endswith("_ENTRY"):
+                    new_entries.append(e)
+        st["offsets"][name] = len(lines)
+    json.dump(st, open(ASTATE, "w"))
+    return new_entries
+
+def capture15(events):
+    if not events:
+        return
+    ex = ccxt.binance({"enableRateLimit": True})
+    os.makedirs(os.path.join(LDIR, "ohlcv"), exist_ok=True)
+    for e in events:
+        sym = e.get("symbol")
+        if not sym:
+            continue
+        ts = int(float(e.get("ts", time.time())) * 1000)
+        f = os.path.join(LDIR, "ohlcv", sym.replace("/", "_") + "_15m.json")
+        data = _load(f, [])
+        seen = set(c[0] for c in data)
+        try:
+            batch = ex.fetch_ohlcv(sym, "15m", since=ts - 48 * 3600000, limit=1000)
+        except Exception as err:
+            print("[analista] 15m fallo", sym, str(err)[:60])
+            continue
+        data += [c for c in batch if c[0] not in seen]
+        data.sort()
+        json.dump(data, open(f, "w"))
+        print("[analista] %s: contexto 15m %d velas" % (sym, len(data)))
+
+def analyze():
+    import sim_ejecutor as SE
+    import state as stmod
+    grid = [(a, v) for a in (2.0, 2.5, 3.0) for v in (1.3, 1.5, 2.0)]
+    odir = os.path.join(LDIR, "ohlcv")
+    try:
+        files = [x for x in os.listdir(odir) if x.endswith("_1h.json")]
+    except Exception:
+        files = []
+    positions = stmod.load().get("positions", {})
+    res, agg = {}, {}
+    for fn in files:
+        sym = fn[:-8].replace("_", "/")
+        conf = (positions.get(sym) or {}).get("confirmed_at")
+        if not conf:
+            continue
+        conf_ms = int(time.mktime(time.strptime(conf[:10], "%Y-%m-%d")) * 1000)
+        candles = _load(os.path.join(odir, fn), [])
+        rows = []
+        for a, v in grid:
+            SE.P["atr_mult"] = a
+            SE.P["vol_mult"] = v
+            r = SE.sim(candles, conf_ms)
+            rm = r.get("r_multiple")
+            rows.append({"atr_mult": a, "vol_mult": v, "r_multiple": rm,
+                         "error": r.get("error")})
+            if rm is not None:
+                agg.setdefault((a, v), []).append(rm)
+        res[sym] = rows
+    rank = sorted(((sum(v) / len(v), len(v), k) for k, v in agg.items()), reverse=True)
+    out = {"generated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+           "nota": "solo informativo; nada se aplica automaticamente",
+           "n_simbolos": len(res),
+           "ranking": [{"atr_mult": k[0], "vol_mult": k[1],
+                        "r_promedio": round(m, 2), "n": n} for m, n, k in rank[:5]],
+           "detalle": res}
+    json.dump(out, open(RECS, "w"), indent=1)
+    print("[analista] top:", json.dumps(out["ranking"][:2]) if out["ranking"] else "sin datos")
+
+def run():
+    os.makedirs(LDIR, exist_ok=True)
+    ev = ingest()
+    capture15(ev)
+    try:
+        analyze()
+    except Exception as e:
+        print("[analista] analyze fallo:", str(e)[:120])
+    print("[analista] ok.")
+
+if __name__ == "__main__":
+    run()
+
+=====[ sim_ejecutor.py ]=====
+"""Simulador Ganesha-Ejecutor v1 sobre datos 1h capturados por learning_loop.
+Uso: python3 sim_ejecutor.py SYN/USDT
+Parametros = placeholders a calibrar con datos reales del loop."""
+import json, os, sys
+
+BASE = os.path.dirname(os.path.abspath(__file__))
+ODIR = os.path.join(BASE, "learning", "ohlcv")
+
+P = {"equity": 1000.0, "risk_pct": 1.0, "vol_mult": 1.5, "vol_sma": 20,
+     "mom_lookback_h": 24, "atr_n": 14, "atr_mult": 2.5,
+     "pyramid_max": 2, "pyramid_step_r": 1.0, "pyramid_frac": 0.5,
+     "scaleout_r": 2.0, "scaleout_frac": 0.30, "trail_after_r": 2.0}
+
+def atr(c, i, n):
+    trs = []
+    for j in range(max(1, i - n + 1), i + 1):
+        h, l, pc = c[j][2], c[j][3], c[j - 1][4]
+        trs.append(max(h - l, abs(h - pc), abs(l - pc)))
+    return sum(trs) / len(trs) if trs else 0
+
+def sim(candles, conf_ms):
+    idx0 = next((i for i, c in enumerate(candles) if c[0] >= conf_ms), None)
+    if idx0 is None or idx0 < P["vol_sma"] + 1:
+        return {"error": "datos insuficientes pre-confirmacion"}
+    ev, pos = [], None
+    for i in range(max(idx0, P["mom_lookback_h"] + 1), len(candles)):
+        t, o, h, l, cl, v = candles[i]
+        if pos is None:
+            hh = max(x[4] for x in candles[i - P["mom_lookback_h"]:i])
+            vs = sum(x[5] for x in candles[i - P["vol_sma"]:i]) / P["vol_sma"]
+            if cl > hh and v > P["vol_mult"] * vs:
+                a = atr(candles, i, P["atr_n"])
+                stop = cl - P["atr_mult"] * a
+                if stop >= cl:
+                    continue
+                risk = P["equity"] * P["risk_pct"] / 100
+                qty = risk / (cl - stop)
+                pos = {"e": cl, "q": qty, "q0": qty, "stop": stop,
+                       "r": cl - stop, "adds": 0, "so": False, "pnl": 0.0}
+                ev.append(("ENTRY", t, cl, qty))
+            continue
+        rmult = (cl - pos["e"]) / pos["r"]
+        if cl < pos["stop"]:
+            pos["pnl"] += pos["q"] * (cl - pos["e"])
+            ev.append(("STOP_OUT", t, cl, pos["q"]))
+            return report(ev, pos, candles, idx0)
+        if not pos["so"] and rmult >= P["scaleout_r"]:
+            sq = pos["q"] * P["scaleout_frac"]
+            pos["pnl"] += sq * (cl - pos["e"])
+            pos["q"] -= sq
+            pos["so"] = True
+            ev.append(("SCALE_OUT", t, cl, sq))
+        if pos["adds"] < P["pyramid_max"] and rmult >= (pos["adds"] + 1) * P["pyramid_step_r"]:
+            aq = pos["q0"] * P["pyramid_frac"]
+            pos["e"] = (pos["e"] * pos["q"] + cl * aq) / (pos["q"] + aq)
+            pos["q"] += aq
+            pos["adds"] += 1
+            pos["stop"] = max(pos["stop"], pos["e"])
+            ev.append(("PYRAMID", t, cl, aq))
+        if rmult >= P["trail_after_r"]:
+            a = atr(candles, i, P["atr_n"])
+            pos["stop"] = max(pos["stop"], cl - P["atr_mult"] * a)
+    if pos:
+        cl = candles[-1][4]
+        pos["pnl"] += pos["q"] * (cl - pos["e"])
+        ev.append(("OPEN_EOD", candles[-1][0], cl, pos["q"]))
+        return report(ev, pos, candles, idx0)
+    return {"error": "sin gatillo de entrada (momentum+volumen no se dio)"}
+
+def report(ev, pos, candles, idx0):
+    p0 = candles[idx0][4]
+    bh = (candles[-1][4] / p0 - 1) * 100
+    risk = P["equity"] * P["risk_pct"] / 100
+    return {"params": P,
+            "events": [[a[0], a[1], round(a[2], 6), round(a[3], 4)] for a in ev],
+            "pnl_usdt": round(pos["pnl"], 2),
+            "r_multiple": round(pos["pnl"] / risk, 2),
+### <redactado: posible secreto> ###
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("uso: python3 sim_ejecutor.py SYMBOL [conf YYYY-MM-DD]")
+        sys.exit(1)
+    sym = sys.argv[1]
+    f = os.path.join(ODIR, sym.replace("/", "_") + "_1h.json")
+    candles = json.load(open(f))
+    import time as _t
+    if len(sys.argv) > 2:
+        conf_ms = int(_t.mktime(_t.strptime(sys.argv[2], "%Y-%m-%d")) * 1000)
+    else:
+        import state as stmod
+        conf = stmod.load()["positions"][sym]["confirmed_at"]
+        conf_ms = int(_t.mktime(_t.strptime(conf[:10], "%Y-%m-%d")) * 1000)
+    print(json.dumps(sim(candles, conf_ms), indent=1))
+
+=====[ ganesha_ejecutor.py ]=====
+"""Ganesha-Ejecutor v2. Trend-bot corto plazo sobre semillas confirmadas.
+Scan de entrada en velas 15m, stops ATR gestionados en velas 4h (confirmados al cierre).
+Cron cada 4h. Modo por defecto: PAPER. Modo LIVE solo si existe ejecutor/LIVE
+(archivo que crea Agus a mano) y hay API keys. En live: ordenes market reales +
+stop-loss-limit NATIVO en Binance como red de seguridad."""
+import json, os, time
+import ccxt
+import notify
+
+BASE = os.path.dirname(os.path.abspath(__file__))
+GDIR = os.path.join(BASE, "ejecutor")
+GSTATE = os.path.join(GDIR, "state.json")
+GLOG = os.path.join(GDIR, "events.jsonl")
+SEM_STATE = os.path.join(BASE, "state.json")
+LIVEFLAG = os.path.join(GDIR, "LIVE")
+KEYS = os.path.join(GDIR, "keys.json")
+FT_CONFIG = "/opt/ganesha_bot/config.json"
+
+P = {"equity": 46.0, "risk_pct": 2.0, "min_notional": 5.0,
+     "vol_mult": 1.5, "vol_sma": 20, "mom_lookback": 96,
+     "atr_n": 14, "atr_mult": 2.5,
+     "scaleout_r": 2.0, "scaleout_frac": 0.30, "trail_after_r": 2.0}
+
+def load(p, d):
+    try:
+        return json.load(open(p))
+    except Exception:
+        return d
+
+def log(ev):
+    ev["ts"] = time.time()
+    ev["iso"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    with open(GLOG, "a") as f:
+        f.write(json.dumps(ev) + "\n")
+    print("[ejecutor]", json.dumps(ev))
+
+def atr(c, n):
+    trs = [max(c[i][2] - c[i][3], abs(c[i][2] - c[i-1][4]), abs(c[i][3] - c[i-1][4]))
+           for i in range(len(c) - n, len(c))]
+    return sum(trs) / len(trs)
+
+def confirmed_symbols():
+    st = load(SEM_STATE, {})
+    return [s for s, p in st.get("positions", {}).items()
+            if p.get("status") == "confirmed"]
+
+def scan_entry(c15):
+    last = c15[-1]
+    hh = max(x[4] for x in c15[-P["mom_lookback"] - 1:-1])
+    vs = sum(x[5] for x in c15[-P["vol_sma"] - 1:-1]) / P["vol_sma"]
+    return last[4] > hh and last[5] > P["vol_mult"] * vs
+
+def get_ex():
+    live = os.path.exists(LIVEFLAG)
+    creds = None
+    if live:
+        k = load(KEYS, {})
+        if not k.get("apiKey"):
+            try:
+                import importlib.util as iu
+                sp = iu.spec_from_file_location("gcfg", "/opt/ganesha_bot/config.py")
+                m = iu.module_from_spec(sp)
+                sp.loader.exec_module(m)
+                k = {"apiKey": getattr(m, "BINANCE_API_KEY", None),
+                     "secret": getattr(m, "BINANCE_API_SECRET", None)}
+            except Exception:
+                k = {}
+        if k.get("apiKey") and k.get("secret"):
+            creds = k
+        else:
+            live = False
+            log({"type": "warn", "msg": "LIVE presente pero sin keys; sigo en paper"})
+    cfg = {"enableRateLimit": True}
+    if creds:
+        cfg.update({"apiKey": creds["apiKey"], "secret": creds["secret"]})
+    return ccxt.binance(cfg), live
+
+def buy_market(ex, sym, qty, px):
+    bal = ex.fetch_balance()
+    free = bal.get("USDT", {}).get("free", 0)
+    if qty * px > free * 0.98:
+        qty = free * 0.98 / px
+    if qty * px < P["min_notional"]:
+        return None, 0
+    q = float(ex.amount_to_precision(sym, qty))
+    o = ex.create_order(sym, "market", "buy", q)
+    return o, q
+
+def sell_market(ex, sym, qty):
+    base = sym.split("/")[0]
+    free = ex.fetch_balance().get(base, {}).get("free", 0)
+    q = float(ex.amount_to_precision(sym, min(qty, free)))
+    if q <= 0:
+        return None
+    return ex.create_order(sym, "market", "sell", q)
+
+def place_stop(ex, sym, qty, stop):
+    try:
+        base = sym.split("/")[0]
+        free = ex.fetch_balance().get(base, {}).get("free", 0)
+        if free > 0:
+            qty = min(qty, free)
+        q = float(ex.amount_to_precision(sym, qty))
+        sp = float(ex.price_to_precision(sym, stop))
+        px = float(ex.price_to_precision(sym, stop * 0.99))
+        o = ex.create_order(sym, "limit", "sell", q, px, {"stopPrice": sp})
+        return o.get("id")
+    except Exception as e:
+        log({"type": "warn", "symbol": sym, "msg": "place_stop: " + str(e)[:100]})
+        return None
+
+def cancel_stop(ex, sym, oid):
+    try:
+        if oid:
+            ex.cancel_order(oid, sym)
+    except Exception as e:
+        log({"type": "warn", "symbol": sym, "msg": "cancel_stop: " + str(e)[:80]})
+
+def run():
+    os.makedirs(GDIR, exist_ok=True)
+    ex, live = get_ex()
+    mode = "LIVE" if live else "PAPER"
+    gs = load(GSTATE, {"positions": {}, "paper_pnl": 0.0})
+    if live:
+        try:
+            free = ex.fetch_balance().get("USDT", {}).get("free", 0)
+            inv = sum(q.get("entry", 0) * q.get("qty", 0)
+                      for q in gs.get("positions", {}).values())
+            if free + inv > 1:
+                P["equity"] = round(free + inv, 2)
+        except Exception as e:
+            log({"type": "warn", "msg": "equity fetch: " + str(e)[:80]})
+    gs["equity_base"] = P["equity"]
+    syms = confirmed_symbols()
+    log({"type": "scan", "mode": mode, "confirmed": syms,
+         "open": list(gs["positions"].keys())})
+    for sym in set(syms) | set(gs["positions"].keys()):
+        try:
+            c15 = ex.fetch_ohlcv(sym, "15m", limit=120)[:-1]
+            c4h = ex.fetch_ohlcv(sym, "4h", limit=60)[:-1]
+        except Exception as e:
+            log({"type": "error", "symbol": sym, "msg": str(e)[:120]})
+            continue
+        pos = gs["positions"].get(sym)
+        px = c15[-1][4]
+        a4 = atr(c4h, P["atr_n"])
+        if pos is None:
+            if sym in syms and scan_entry(c15):
+                stop = px - P["atr_mult"] * a4
+                if stop <= 0 or stop >= px:
+                    continue
+                risk = P["equity"] * P["risk_pct"] / 100
+                qty = risk / (px - stop)
+                if qty * px < P["min_notional"]:
+                    log({"type": "skip_min_notional", "symbol": sym,
+                         "notional": round(qty * px, 2)})
+                    continue
+                oid = None
+                if live:
+                    try:
+                        o, qty = buy_market(ex, sym, qty, px)
+                        if o is None:
+                            log({"type": "skip_no_balance", "symbol": sym})
+                            continue
+                        px = o.get("average") or px
+                        oid = place_stop(ex, sym, qty, stop)
+                    except Exception as e:
+                        log({"type": "error", "symbol": sym,
+                             "msg": "entry live: " + str(e)[:120]})
+                        continue
+                gs["positions"][sym] = {"entry": px, "qty": qty, "stop": stop,
+                                        "r": px - stop, "so": False, "stop_oid": oid,
+                                        "mode": mode,
+                                        "opened": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+                log({"type": mode + "_ENTRY", "symbol": sym, "px": px,
+                     "qty": round(qty, 6), "stop": round(stop, 6),
+                     "stop_oid": oid, "atr4h_pct": round(a4 / px * 100, 2)})
+                try:
+                    notify.exec_alert(sym, mode + "_ENTRY", f"Ejecutor {mode}: entrada {sym} @ {px:.6g}, qty {qty:.6g}, stop {stop:.6g}")
+                except Exception:
+                    pass
+            continue
+        close4 = c4h[-1][4]
+        rmult = (px - pos["entry"]) / pos["r"]
+        if close4 < pos["stop"]:
+            if live and pos.get("mode") == "LIVE":
+                cancel_stop(ex, sym, pos.get("stop_oid"))
+                try:
+                    sell_market(ex, sym, pos["qty"])
+                except Exception as e:
+                    log({"type": "error", "symbol": sym,
+                         "msg": "stop live: " + str(e)[:120]})
+                    continue
+            pnl = pos["qty"] * (close4 - pos["entry"])
+            gs["paper_pnl"] += pnl
+            log({"type": mode + "_STOP_OUT", "symbol": sym, "px": close4,
+                 "pnl": round(pnl, 2),
+                 "r": round((close4 - pos["entry"]) / pos["r"], 2)})
+            try:
+                notify.exec_alert(sym, mode + "_STOP_OUT", f"Ejecutor {mode}: STOP {sym} @ {close4:.6g}, pnl {pnl:.2f} USDT")
+            except Exception:
+                pass
+            del gs["positions"][sym]
+            continue
+        if live and pos.get("mode") == "LIVE" and not pos.get("stop_oid"):
+            pos["stop_oid"] = place_stop(ex, sym, pos["qty"], pos["stop"])
+            if pos["stop_oid"]:
+                log({"type": "STOP_REPAIR", "symbol": sym,
+                     "stop": round(pos["stop"], 6), "oid": pos["stop_oid"]})
+        if not pos["so"] and rmult >= P["scaleout_r"]:
+            sq = pos["qty"] * P["scaleout_frac"]
+            if not live or sq * px >= P["min_notional"]:
+                if live and pos.get("mode") == "LIVE":
+                    cancel_stop(ex, sym, pos.get("stop_oid"))
+                    try:
+                        sell_market(ex, sym, sq)
+                    except Exception as e:
+                        log({"type": "error", "symbol": sym,
+                             "msg": "scaleout live: " + str(e)[:120]})
+                        continue
+                pnl = sq * (px - pos["entry"])
+                gs["paper_pnl"] += pnl
+                pos["qty"] -= sq
+                pos["so"] = True
+                pos["stop"] = max(pos["stop"], pos["entry"])
+                if live and pos.get("mode") == "LIVE":
+                    pos["stop_oid"] = place_stop(ex, sym, pos["qty"], pos["stop"])
+                log({"type": mode + "_SCALE_OUT", "symbol": sym, "px": px,
+                     "pnl": round(pnl, 2)})
+                try:
+                    notify.exec_alert(sym, mode + "_SCALE_OUT", f"Ejecutor {mode}: TP parcial {sym} @ {px:.6g}")
+                except Exception:
+                    pass
+        if rmult >= P["trail_after_r"]:
+            ns = close4 - P["atr_mult"] * a4
+            if ns > pos["stop"]:
+                pos["stop"] = ns
+                if live and pos.get("mode") == "LIVE":
+                    cancel_stop(ex, sym, pos.get("stop_oid"))
+                    pos["stop_oid"] = place_stop(ex, sym, pos["qty"], ns)
+                log({"type": "TRAIL", "symbol": sym, "stop": round(ns, 6)})
+        if sym not in syms:
+            log({"type": "note_unconfirmed", "symbol": sym})
+    json.dump(gs, open(GSTATE, "w"), indent=1)
+    try:
+        import ejecutor_dash
+        ejecutor_dash.publish()
+    except Exception as e:
+        log({"type": "warn", "msg": "dash: " + str(e)[:100]})
+    print("[ejecutor] ok (%s). abiertas: %s pnl: %s" %
+          (mode, list(gs["positions"].keys()), round(gs["paper_pnl"], 2)))
+
+if __name__ == "__main__":
+    run()
+
+=====[ ejecutor_dash.py ]=====
+"""Publica ganesha_data.json (Ejecutor) al dashboard via GitHub Contents API."""
+import json, os, time
+import dashboard
+
+BASE = os.path.dirname(os.path.abspath(__file__))
+GDIR = os.path.join(BASE, "ejecutor")
+
+def _events():
+    out = []
+    try:
+        for ln in open(os.path.join(GDIR, "events.jsonl")):
+            try:
+                out.append(json.loads(ln))
+            except Exception:
+                pass
+    except Exception:
+        pass
+    return out
+
+
+def _real_equity(gs):
+    """Balance real de la sub-cuenta si hay keys; None si no se puede."""
+    import json as _j, os as _o
+    try:
+        k = _j.load(open(_o.path.join(GDIR, "keys.json")))
+        import ccxt as _c
+        ex = _c.binance({"apiKey": k["apiKey"], "secret": k["secret"], "enableRateLimit": True})
+        bal = ex.fetch_balance()
+        eq = float(bal["USDT"]["free"] or 0)
+        for sym, p in (gs.get("positions") or {}).items():
+            try:
+                t = ex.fetch_ticker(sym)
+                eq += p.get("qty", 0) * (t["last"] or 0)
+            except Exception:
+                pass
+        return round(eq, 2)
+    except Exception:
+        return None
+
+
+def build():
+    try:
+        gs = json.load(open(os.path.join(GDIR, "state.json")))
+    except Exception:
+        gs = {"positions": {}, "paper_pnl": 0.0}
+    live = os.path.exists(os.path.join(GDIR, "LIVE"))
+    entries, closed = {}, []
+    for e in _events():
+        t = e.get("type", "")
+        if t.endswith("_ENTRY"):
+            entries[e["symbol"]] = e
+        elif t.endswith("_SCALE_OUT"):
+            en = entries.get(e["symbol"], {})
+            closed.append({"symbol": e["symbol"], "entry": en.get("px", 0),
+                           "exit": e.get("px", 0), "qty_total": e.get("qty", 0),
+                           "pnl_net": e.get("pnl", 0), "action": "tp",
+                           "closed_ts": e.get("ts", 0)})
+        elif t.endswith("_STOP_OUT"):
+            en = entries.pop(e["symbol"], {})
+            closed.append({"symbol": e["symbol"], "entry": en.get("px", 0),
+                           "exit": e.get("px", 0), "qty_total": en.get("qty", 0),
+                           "pnl_net": e.get("pnl", 0), "action": "stop",
+                           "closed_ts": e.get("ts", 0)})
+    pnl = gs.get("paper_pnl", 0.0)
+    wins = [c for c in closed if c["pnl_net"] > 0]
+    gw = sum(c["pnl_net"] for c in wins)
+    gl = -sum(c["pnl_net"] for c in closed if c["pnl_net"] < 0)
+    day0 = time.time() - (time.time() % 86400)
+    today = [c for c in closed if c["closed_ts"] >= day0]
+    return {"dry_run": not live, "equity_now": (_real_equity(gs) if live else None) or (gs.get("equity_base", 46.0) + (0 if live else pnl)),
+            "deposits_total": 0,
+            "pnl_today": round(sum(c["pnl_net"] for c in today), 2),
+            "trades_today": len(today), "realized_pnl": round(pnl, 2),
+            "trades_total": len(closed),
+            "win_rate": round(100.0 * len(wins) / len(closed)) if closed else 0,
+            "profit_factor": round(gw / gl, 2) if gl > 0 else round(gw, 2),
+            "open_positions": [{"symbol": s, "entry": p.get("entry"),
+                                "qty": p.get("qty"), "stop": p.get("stop"),
+                                "tp1_done": p.get("so", False)}
+                               for s, p in gs.get("positions", {}).items()],
+            "recent_closed": closed[-40:]}
+
+def publish():
+    payload = build()
+    dashboard.gh_put("docs/ganesha_data.json",
+                     json.dumps(payload, indent=1).encode(),
+                     "ganesha_data (ejecutor)")
+    print("[ejecutor-dash] publicado.", len(payload["recent_closed"]), "cerradas.")
+
+if __name__ == "__main__":
+    publish()
+
+=====[ tokenomics.py ]=====
+import requests
+
+CG = "https://api.coingecko.com/api/v3"
+HDRS = {"User-Agent": "semillas-bot"}
+
+def _base(sym):
+    return (sym or "").split("/")[0].strip().lower()
+
+def fetch_tokenomics(symbols):
+    """Best-effort FDV/MCAP + float% via CoinGecko. base_lower -> dict. Nunca rompe."""
+    out = {}
+    bases = sorted({_base(s) for s in symbols if s})
+    if not bases:
+        return out
+    try:
+        url = CG + "/coins/markets"
+        params = {"vs_currency": "usd", "symbols": ",".join(bases),
+                  "order": "market_cap_desc", "per_page": 250, "page": 1}
+        data = requests.get(url, params=params, headers=HDRS, timeout=15).json()
+    except Exception as e:
+        print("[tokenomics] coingecko fallo:", str(e)[:120])
+        return out
+    if not isinstance(data, list):
+        print("[tokenomics] respuesta inesperada:", str(data)[:120])
+        return out
+    best = {}
+    for c in data:
+        s = (c.get("symbol") or "").lower()
+        if s not in bases:
+            continue
+        mc = c.get("market_cap") or 0
+        if s not in best or mc > (best[s].get("market_cap") or 0):
+            best[s] = c
+    for s, c in best.items():
+        mc = c.get("market_cap") or 0
+        fdv = c.get("fully_diluted_valuation")
+        circ = c.get("circulating_supply") or 0
+        maxs = c.get("max_supply") or c.get("total_supply") or 0
+        ratio = round(fdv / mc, 2) if (fdv and mc) else None
+        floatp = round(100.0 * circ / maxs, 1) if (circ and maxs) else None
+        flags = []
+        if ratio is not None and ratio >= 5:
+            flags.append("FDV/MCAP %sx (dilucion alta)" % ratio)
+        if floatp is not None and floatp < 25:
+            flags.append("float %s%% (poco supply circulando)" % floatp)
+        penalty = 2 if (ratio is not None and ratio >= 10) else (1 if flags else 0)
+        out[s] = {"mcap": mc, "fdv": fdv, "fdv_mcap": ratio, "float_pct": floatp,
+                  "cg_id": c.get("id"), "warning": "; ".join(flags), "penalty": penalty}
+    return out
+
+def annotate_shortlist(shortlist):
+    """Enriquece cada item con 'tokenomics', suma warning a 'risk' y reordena por penalty (sin descartar). Nunca rompe ni vacia."""
+    if not isinstance(shortlist, list) or not shortlist:
+        return shortlist
+    try:
+        tk = fetch_tokenomics([it.get("symbol") for it in shortlist])
+        for it in shortlist:
+            info = tk.get(_base(it.get("symbol", "")))
+            if not info:
+                it["tokenomics"] = {"status": "sin_datos"}
+                continue
+            it["tokenomics"] = info
+            if info.get("warning"):
+                br = it.get("risk", "") or ""
+                it["risk"] = (br + " | TOKENOMICS: " + info["warning"]).strip(" |")
+        shortlist.sort(key=lambda it: (it.get("tokenomics") or {}).get("penalty", 0))
+    except Exception as e:
+        print("[tokenomics] annotate fallo:", str(e)[:140])
+    return shortlist
+
+=====[ CRONTAB.txt ]=====
+15 0 * * * cd /home/opc/bot_semillas && /home/opc/bot_semillas/venv/bin/python main.py >> /home/opc/bot_semillas/cron.log 2>&1
+7 0,4,8,12,16,20 * * * cd /home/opc/bot_semillas && /home/opc/bot_semillas/venv/bin/python ganesha_ejecutor.py >> /home/opc/bot_semillas/ejecutor/cron.log 2>&1
