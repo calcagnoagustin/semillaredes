@@ -407,5 +407,27 @@ window.scrollTo(0,0);
   });
 </script>
   
+<script>
+/* Meta Pixel: evento Lead al completar la auditoria (agregado 2026-07-15) */
+(function(){
+  var of = window.fetch;
+  window.fetch = function(){
+    var args = arguments;
+    var p = of.apply(this, args);
+    try {
+      var u = String((args[0] && args[0].url) || args[0] || "");
+      if (u.indexOf("/functions/v1/auditoria") !== -1) {
+        p.then(function(r){
+          if (r && r.ok && typeof fbq === "function" && !window.__leadFired) {
+            window.__leadFired = true;
+            fbq("track", "Lead");
+          }
+        }).catch(function(){});
+      }
+    } catch(e){}
+    return p;
+  };
+})();
+</script>
 </body>
 </html>
