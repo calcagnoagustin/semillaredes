@@ -1,0 +1,24 @@
+name: Supabase keep-alive
+
+# Mantiene despierto el proyecto free de Supabase (auditoria-artistas)
+# consultando la base cada 12 horas. Sin este ping, Supabase pausa el
+# proyecto por inactividad y la auditoria SemillaIA deja de funcionar.
+
+on:
+  schedule:
+    - cron: '17 3,15 * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Consultar la base via REST
+        run: |
+          KEY=$(curl -s https://landing.semillaredes.com/semillaIA.html | grep -o 'sb_publishable_[A-Za-z0-9_-]*' | head -1)
+          if [ -z "$KEY" ]; then echo "No encontre la publishable key en la landing"; exit 1; fi
+          CODE=$(curl -s -o resp.txt -w '%{http_code}' "https://fdrxsjphlvvwwknnrjtx.supabase.co/rest/v1/playbook_rules?select=id&limit=1" -H "apikey: $KEY" -H "Authorization: Bearer $KEY")
+          echo "HTTP $CODE"
+          cat resp.txt || true
+          test "$CODE" = "200"
+
