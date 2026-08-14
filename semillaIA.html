@@ -3,7 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SemillaIA · Diagnosticá tu proyecto artístico con la inteligencia artificial del Método Semilla</title>
+<title>SemillaIA · La inteligencia artificial del Método Semilla para artistas</title>
+<meta name="description" content="Dos herramientas gratuitas para artistas: diagnosticá tu proyecto con el Método Semilla, o encontrá curadores de playlists de Spotify con su contacto.">
+<link rel="canonical" href="https://landing.semillaredes.com/semillaIA.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SemillaIA · Herramientas gratuitas para artistas">
+<meta property="og:description" content="Diagnosticá tu proyecto artístico o encontrá curadores de playlists para tu música. Gratis, por Semilla Redes.">
+<meta property="og:url" content="https://landing.semillaredes.com/semillaIA.html">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2044%2044%27%3E%3Cg%20stroke%3D%27%23C97080%27%20stroke-width%3D%272%27%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%274%27%20y2%3D%2722%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2740%27%20y2%3D%2722%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2722%27%20y2%3D%274%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2722%27%20y2%3D%2740%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%278%27%20y2%3D%278%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2736%27%20y2%3D%2736%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2736%27%20y2%3D%278%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%278%27%20y2%3D%2736%27/%3E%3C/g%3E%3Cpath%20d%3D%27M22%2C10%20C26%2C14%2028%2C18%2028%2C22%20C28%2C26%2026%2C30%2022%2C34%20C18%2C30%2016%2C26%2016%2C22%20C16%2C18%2018%2C14%2022%2C10Z%27%20fill%3D%27%237A8A42%27/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="/icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,7 +25,6 @@
 html{scroll-behavior:smooth}
 body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--navy);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
-/* NAV */
 nav{display:flex;justify-content:space-between;align-items:center;padding:24px 48px;position:sticky;top:0;background:var(--cream);z-index:100;border-bottom:1px solid var(--navy-soft)}
 .logo{display:flex;align-items:center;gap:12px;text-decoration:none}
 .logo-icon{width:44px;height:44px;flex:none}
@@ -26,87 +32,56 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:24px 4
 .btn-nav{background:var(--navy);color:var(--white);text-decoration:none;padding:10px 22px;border-radius:4px;font-size:14px;font-weight:700;transition:background .2s}
 .btn-nav:hover{background:var(--wine)}
 
-/* WRAP */
-.wrap{max-width:1180px;margin:0 auto;padding:64px 48px 90px}
-
-/* HERO */
-.hero{max-width:900px}
+.wrap{max-width:1180px;margin:0 auto;padding:70px 48px 90px}
+.hero{max-width:880px}
 .kicker{font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--wine);margin-bottom:22px}
-h1{font-size:clamp(40px,7vw,80px);line-height:1.04;font-weight:900;letter-spacing:-.02em;color:var(--navy)}
+h1{font-size:clamp(40px,7vw,78px);line-height:1.04;font-weight:900;letter-spacing:-.02em}
 h1 em{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;color:var(--wine)}
 .rule{width:64px;height:3px;background:var(--wine);margin:30px 0}
 .sub{font-size:clamp(17px,2.2vw,20px);line-height:1.6;max-width:640px;color:rgba(26,36,86,.8)}
-.cta-main{margin-top:34px;display:inline-flex;align-items:center;gap:10px;background:var(--navy);color:var(--white);border:none;font-family:inherit;font-weight:700;font-size:17px;padding:17px 36px;border-radius:4px;cursor:pointer;transition:background .2s,transform .15s}
-.cta-main:hover{background:var(--wine);transform:translateY(-2px)}
-.note{margin-top:16px;font-size:14px;color:rgba(26,36,86,.55)}
 
-/* CARD (form / loading / result) */
-.card{background:var(--white);border:1px solid rgba(26,36,86,.1);border-radius:12px;padding:clamp(28px,4vw,48px);max-width:840px;margin:0 auto}
-.progress{height:8px;background:var(--navy-soft);border-radius:99px;overflow:hidden;margin-bottom:30px}
-.bar{height:100%;width:0;background:var(--oliva);border-radius:99px;transition:width .35s ease}
-.step-tag{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--oliva);margin-bottom:10px}
-.q{font-size:clamp(24px,3.2vw,32px);font-weight:900;letter-spacing:-.02em;line-height:1.2;color:var(--navy)}
-.q em{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;color:var(--wine)}
-.hint{font-size:15px;color:rgba(26,36,86,.6);margin-top:12px;line-height:1.5}
-.fields{margin-top:26px;display:flex;flex-direction:column;gap:18px}
-label{font-size:14px;font-weight:700;display:block;margin-bottom:7px}
-.req{color:var(--wine)}
-input,select,textarea{width:100%;font-family:inherit;font-size:16px;color:var(--navy);background:var(--cream);border:1px solid var(--navy-line);border-radius:8px;padding:15px 16px;outline:none;transition:border .15s}
-input:focus,select:focus,textarea:focus{border-color:var(--oliva)}
-textarea{resize:vertical;min-height:120px}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.checks{display:flex;flex-direction:column;gap:10px;margin-top:4px}
-.check{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:500;cursor:pointer;background:var(--cream);border:1px solid var(--navy-line);border-radius:8px;padding:14px 16px}
-.check input{width:20px;height:20px;flex:none;margin:0}
-.consent{display:flex;gap:12px;align-items:flex-start;margin-top:26px;border-top:1px solid var(--navy-line);background:var(--cream);border:1px solid var(--navy-line);border-radius:8px;padding:16px;font-size:14px;line-height:1.5;color:rgba(26,36,86,.8)}
-.consent input{width:20px;height:20px;flex:none;margin-top:2px}
-.nav-btns{display:flex;justify-content:space-between;align-items:center;margin-top:32px;gap:14px}
-.btn{font-family:inherit;font-weight:700;font-size:16px;border-radius:4px;cursor:pointer;border:1px solid transparent;padding:15px 32px;transition:background .2s,transform .15s}
-.btn-prev{background:transparent;color:rgba(26,36,86,.6);border-color:var(--navy-line)}
-.btn-prev:hover{color:var(--navy)}
-.btn-next{background:var(--navy);color:var(--white)}
-.btn-next:hover{background:var(--wine);transform:translateY(-2px)}
-.err{color:var(--wine);font-size:14px;font-weight:600;margin-top:14px;min-height:20px}
+/* DOS PRODUCTOS */
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:56px}
+.tool{background:var(--white);border:1px solid rgba(26,36,86,.1);border-radius:12px;padding:clamp(26px,3.4vw,40px);display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:transform .18s,border-color .18s,box-shadow .18s}
+.tool:hover{transform:translateY(-4px);border-color:var(--oliva);box-shadow:0 12px 30px rgba(26,36,86,.09)}
+.tool:focus-visible{outline:2px solid var(--oliva);outline-offset:3px}
+.tool-mark{width:44px;height:44px;margin-bottom:22px}
+.tool-tag{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--oliva);margin-bottom:12px}
+.tool h2{font-size:clamp(24px,2.8vw,31px);font-weight:900;letter-spacing:-.02em;line-height:1.15}
+.tool h2 em{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;color:var(--wine)}
+.tool p{margin-top:14px;font-size:16px;line-height:1.6;color:rgba(26,36,86,.78)}
+.tool ul{list-style:none;margin-top:20px;display:flex;flex-direction:column;gap:9px}
+.tool li{display:flex;gap:11px;font-size:15px;line-height:1.45;color:rgba(26,36,86,.72)}
+.tool li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--rosa);flex:none;margin-top:6px}
+.tool-go{margin-top:auto;padding-top:26px;font-weight:700;font-size:16px;color:var(--navy);display:flex;align-items:center;gap:9px}
+.tool:hover .tool-go{color:var(--wine)}
+.tool-go span{transition:transform .18s}
+.tool:hover .tool-go span{transform:translateX(5px)}
+.para{font-size:13px;color:rgba(26,36,86,.5);margin-top:16px;padding-top:14px;border-top:1px solid var(--navy-line)}
 
-/* LOADING */
-.loader{text-align:center;padding:50px 10px}
-.seed{width:54px;height:54px;margin:0 auto 24px;animation:pulse 1.4s ease-in-out infinite}
-@keyframes pulse{0%,100%{transform:scale(.9);opacity:.6}50%{transform:scale(1.08);opacity:1}}
-.loader p{font-size:18px;font-weight:700}
-.loader .lp{font-weight:400;color:rgba(26,36,86,.6);margin-top:10px;font-size:15px}
+.metodo{margin-top:70px;background:var(--navy);color:var(--white);border-radius:12px;padding:clamp(28px,4vw,48px)}
+.metodo .ct{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(22px,3vw,28px);font-weight:500;line-height:1.25}
+.metodo p{margin-top:16px;line-height:1.65;color:rgba(253,250,246,.85);font-size:16px;max-width:720px}
+.cta-btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.cta-btn{display:inline-block;background:var(--cream);color:var(--navy);text-decoration:none;font-weight:700;font-size:15px;padding:14px 26px;border-radius:4px;transition:background .2s}
+.cta-btn:hover{background:var(--rosa);color:var(--white)}
+.cta-btn.ghost{background:transparent;color:var(--cream);border:1px solid rgba(253,250,246,.4)}
+.cta-btn.ghost:hover{background:rgba(253,250,246,.12);color:var(--cream)}
 
-/* RESULT */
-.result h2{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--oliva);margin:34px 0 14px}
-.result h2:first-child{margin-top:0}
-.badges{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
-.estado{display:inline-block;background:var(--navy);color:var(--white);font-weight:700;font-size:14px;padding:9px 18px;border-radius:6px}
-.etapa{display:inline-block;background:var(--oliva);color:#fff;font-weight:700;font-size:14px;padding:9px 18px;border-radius:6px}
-.diag{font-size:clamp(18px,2.4vw,21px);line-height:1.55;margin-top:6px}
-.diag em{font-family:'Playfair Display',serif;font-style:italic;color:var(--wine)}
-.perfiles{margin-top:8px;font-size:16px;line-height:1.55;background:var(--cream);border:1px solid var(--navy-line);border-radius:8px;padding:16px}
-.ejes{display:flex;flex-direction:column;gap:12px}
-.eje{background:var(--cream);border:1px solid var(--navy-line);border-radius:8px;padding:15px 16px;font-size:15px;line-height:1.5}
-.eje b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--wine);margin-bottom:4px}
-ul.list{list-style:none;display:flex;flex-direction:column;gap:12px}
-ul.list li{display:flex;gap:14px;font-size:16px;line-height:1.5;align-items:flex-start}
-ul.list li::before{content:"";width:10px;height:10px;border-radius:50%;flex:none;margin-top:7px}
-.forta li::before{background:var(--oliva)}
-.oport li::before{background:var(--rosa)}
-.prio li::before{background:var(--wine)}
-.cta-box{margin-top:38px;background:var(--navy);color:var(--white);border-radius:12px;padding:clamp(28px,4vw,40px)}
-.cta-box .ct{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(22px,3vw,26px);font-weight:500;line-height:1.2}
-.cta-box .cx{margin-top:14px;font-size:16px;line-height:1.6;color:rgba(253,250,246,.85)}
-.cta-box a{display:inline-block;margin-top:22px;background:var(--white);color:var(--navy);text-decoration:none;font-weight:700;font-size:16px;padding:15px 30px;border-radius:4px}
-.cta-box a.sec{background:transparent;color:var(--white);border:1px solid rgba(253,250,246,.5);margin-left:10px}
-.upsell{margin-top:22px;font-size:14px;line-height:1.55;color:rgba(26,36,86,.6)}
+footer{border-top:1px solid var(--navy-soft);padding:30px 48px;text-align:center;font-size:14px;color:rgba(26,36,86,.55)}
+footer a{color:var(--wine);text-decoration:none}
 
-.hidden{display:none}
-
-@media(max-width:680px){
-nav{padding:18px 20px}
-.wrap{padding:36px 20px 64px}
-.rule{margin:24px 0}
-.row2{grid-template-columns:1fr}
+@media(max-width:860px){
+.tools{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+nav{padding:16px 20px}
+.wrap{padding:44px 20px 64px}
+footer{padding:24px 20px}
+}
+@media(prefers-reduced-motion:reduce){
+*{animation:none!important;transition:none!important}
+.tool:hover{transform:none}
 }
 </style>
 </head>
@@ -131,303 +106,80 @@ nav{padding:18px 20px}
 </svg>
 <span class="logo-text">Semilla<br>Redes</span>
 </a>
-<a class="btn-nav" href="https://wa.me/5492665242011?text=Hola%20Agus.%20Quiero%20m%C3%A1s%20sobre%20el%20Setup%20inicial" target="_blank">Hablemos</a>
+<a class="btn-nav" href="https://wa.me/5492665242011?text=Hola%20Agus.%20Te%20escribo%20por%20SemillaIA" target="_blank" rel="noopener">Hablemos</a>
 </nav>
 
 <div class="wrap">
 
-<!-- HERO -->
-<section id="hero" class="hero">
-<div class="kicker">Evaluación gratuita · Método Semilla</div>
-<h1>SemillaIA: diagnosticá tu proyecto artístico con la <em>inteligencia artificial</em> del Método Semilla.</h1>
+<section class="hero">
+<p class="kicker">SemillaIA</p>
+<h1>Dos herramientas para <em>impulsar</em> tu proyecto artístico.</h1>
 <div class="rule"></div>
-<p class="sub">Gratis: analizamos tu comunicación, redes, modelo de negocio, contenido y publicidad, entramos a tus perfiles y te decimos en qué etapa estás y qué hacer para crecer. Toma 3-4 minutos.</p>
-<button class="cta-main" onclick="start()">Evaluar mi proyecto →</button>
-<p class="note">Gratis. Recibís un diagnóstico al instante.</p>
+<p class="sub">La inteligencia artificial del Método Semilla, el mismo que usamos con los artistas que acompañamos. Las dos son gratis y no necesitás registrarte.</p>
 </section>
 
-<!-- FORM -->
-<section id="form" class="card hidden">
-<div class="progress"><div class="bar" id="bar"></div></div>
-<div id="step"></div>
-<div class="err" id="err"></div>
-<div class="nav-btns">
-<button class="btn btn-prev" id="prev" onclick="prev()">Atrás</button>
-<button class="btn btn-next" id="next" onclick="next()">Continuar</button>
-</div>
+<section class="tools">
+
+  <a class="tool" href="/diagnostico.html">
+    <svg class="tool-mark" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <line x1="22" y1="22" x2="4" y2="22" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="40" y2="22" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="22" y2="4" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="22" y2="40" stroke="#C97080" stroke-width="1.5"/>
+      <circle cx="4" cy="22" r="2.5" fill="#C97080"/><circle cx="40" cy="22" r="2.5" fill="#C97080"/>
+      <circle cx="22" cy="4" r="2.5" fill="#C97080"/><circle cx="22" cy="40" r="2.5" fill="#C97080"/>
+      <path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/>
+    </svg>
+    <p class="tool-tag">Herramienta 01</p>
+    <h2>Diagnosticá tu <em>proyecto</em></h2>
+    <p>Contanos qué hacés y en qué punto estás. Te devolvemos una lectura de tu proyecto según los tres ejes del Método.</p>
+    <ul>
+      <li>En qué etapa está tu proyecto hoy</li>
+      <li>Tus tres fortalezas y tus tres puntos flojos</li>
+      <li>Qué conviene hacer primero</li>
+    </ul>
+    <p class="para">Para cualquier disciplina: música, artes visuales, teatro, escritura, danza.</p>
+    <p class="tool-go">Empezar el diagnóstico <span>→</span></p>
+  </a>
+
+  <a class="tool" href="/curadores.html">
+    <svg class="tool-mark" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <line x1="22" y1="22" x2="8" y2="8" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="36" y2="36" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="36" y2="8" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="8" y2="36" stroke="#C97080" stroke-width="1.5"/>
+      <circle cx="8" cy="8" r="2.5" fill="#C97080"/><circle cx="36" cy="36" r="2.5" fill="#C97080"/>
+      <circle cx="36" cy="8" r="2.5" fill="#C97080"/><circle cx="8" cy="36" r="2.5" fill="#C97080"/>
+      <path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/>
+    </svg>
+    <p class="tool-tag">Herramienta 02</p>
+    <h2>Encontrá <em>curadores</em> de playlists</h2>
+    <p>Decinos qué música hacés y te damos playlists de Spotify que están vivas, con el contacto de quien las arma.</p>
+    <ul>
+      <li>Playlists activas, no abandonadas</li>
+      <li>Sin las que inflan seguidores</li>
+      <li>Con el Instagram o el mail del curador</li>
+    </ul>
+    <p class="para">Solo para músicos: es una herramienta de Spotify.</p>
+    <p class="tool-go">Buscar curadores <span>→</span></p>
+  </a>
+
 </section>
 
-<!-- LOADING -->
-<section id="loading" class="card hidden">
-<div class="loader">
-<svg class="seed" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-<line x1="22" y1="22" x2="4" y2="22" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="40" y2="22" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="22" y2="4" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="22" y2="40" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="8" y2="8" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="36" y2="36" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="36" y2="8" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="8" y2="36" stroke="#C97080" stroke-width="1.5"/>
-<circle cx="4" cy="22" r="2.5" fill="#C97080"/><circle cx="40" cy="22" r="2.5" fill="#C97080"/>
-<circle cx="22" cy="4" r="2.5" fill="#C97080"/><circle cx="22" cy="40" r="2.5" fill="#C97080"/>
-<circle cx="8" cy="8" r="2.5" fill="#C97080"/><circle cx="36" cy="36" r="2.5" fill="#C97080"/>
-<circle cx="36" cy="8" r="2.5" fill="#C97080"/><circle cx="8" cy="36" r="2.5" fill="#C97080"/>
-<path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/>
-</svg>
-<p>Evaluando tu proyecto…</p>
-<p class="lp" id="lp">Leyendo tus respuestas</p>
-</div>
+<section class="metodo">
+  <p class="ct">Semilla Redes trabaja con artistas todos los días.</p>
+  <p>Estas herramientas son una parte de lo que hacemos. Si querés ver cómo acompañamos proyectos artísticos —formación, setup y campañas— entrá al sitio.</p>
+  <div class="cta-btns">
+    <a class="cta-btn" href="https://semillaredes.com">Ver todos los servicios</a>
+    <a class="cta-btn ghost" href="https://wa.me/5492665242011?text=Hola%20Agus.%20Te%20escribo%20por%20SemillaIA" target="_blank" rel="noopener">Hablar con Agus</a>
+  </div>
 </section>
 
-<!-- RESULT -->
-<section id="result" class="card result hidden"></section>
-
 </div>
 
-<script>
-const SUPABASE_FUNCTION_URL = "https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/auditoria";
-const SUPABASE_ANON_KEY = "sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17";
-const WHATSAPP_SEMILLA = "https://wa.me/5492665242011?text=Hola%20Agus.%20Quiero%20m%C3%A1s%20sobre%20el%20Setup%20inicial";
-const AUDITORIA_URL = "https://aguscalcagno.com/s/auditoria-inicial-con-agus";
-const MEMBRESIA_URL = "https://chat.whatsapp.com/ChPARJAjr0BA8OUBGFIK1K";
+<footer>
+Una herramienta de <a href="https://semillaredes.com">Semilla Redes</a> · Método Semilla
+</footer>
 
-const TIPOS = ["Músico/a solista","Banda","Productor/a musical","Actor / actriz","Artista visual","Escritor/a","Fotógrafo/a","Comediante","Podcast","Proyecto escénico","Gestor cultural","Docente artístico","Profesor/a de yoga","Música medicina","Proyecto holístico / bienestar","Terapeuta / coach","Otro"];
-
-function objetivoOptions(tipo){
-  const t = (tipo||"").toLowerCase();
-  if(/músico|musico|banda|productor/.test(t)) return ["Crecer en redes","Aumentar oyentes en Spotify","Crecer en YouTube","Conseguir shows","Vender entradas / merch","Conseguir prensa","Conseguir contactos de la industria","Construir comunidad","Lanzar un proyecto nuevo","Profesionalizar la comunicación"];
-  if(/actor|actriz/.test(t)) return ["Conseguir castings","Conseguir representante / agente","Crecer en redes","Conseguir prensa","Conseguir contactos de la industria","Construir comunidad","Profesionalizar la comunicación"];
-  if(/visual|fotógraf|fotograf/.test(t)) return ["Vender obras","Conseguir exposiciones","Conseguir comisiones / encargos","Crecer en redes","Conseguir prensa","Construir comunidad","Profesionalizar la comunicación"];
-  if(/escritor/.test(t)) return ["Vender libros","Conseguir editorial","Crecer en redes","Construir comunidad","Conseguir prensa","Profesionalizar la comunicación"];
-  if(/comediante|podcast|escénico|escenico/.test(t)) return ["Crecer en redes","Conseguir shows / fechas","Vender entradas","Construir comunidad","Conseguir prensa","Conseguir contactos de la industria","Profesionalizar la comunicación"];
-  if(/yoga|medicina|holístic|holistic|terapeuta|coach|docente/.test(t)) return ["Conseguir más alumnos / clientes","Vender cursos / talleres","Llenar retiros / eventos","Crecer en redes","Construir comunidad","Profesionalizar la comunicación"];
-  if(/gestor/.test(t)) return ["Conseguir financiamiento","Construir comunidad","Conseguir contactos de la industria","Crecer en redes","Profesionalizar la comunicación"];
-  return ["Crecer en seguidores","Vender más","Escalar mi proyecto","Conseguir contactos de la industria","Construir comunidad","Conseguir prensa","Lanzar un proyecto nuevo","Profesionalizar la comunicación"];
-}
-
-function nivelesOptions(tipo){
-  const t = (tipo||"").toLowerCase();
-  if(/músico|musico|banda|productor/.test(t)) return ["Temas en Spotify","Shows en vivo","Merch","Videoclips","Produzco para otros","Clases / enseñanza","No vendo aún"];
-  if(/visual|fotógraf|fotograf/.test(t)) return ["Obra pequeño formato","Formato medio","Fine art","Impresiones","Objetos","Comisiones","Clases / enseñanza","No vendo aún"];
-  if(/actor|actriz/.test(t)) return ["Obras en cartel","Castings","Publicidad","Doblaje","Clases / enseñanza","No trabajo de esto aún"];
-  if(/escritor/.test(t)) return ["Libros publicados","Autoedición","Talleres","Colaboraciones","Clases / enseñanza","No publico aún"];
-  if(/yoga|medicina|holístic|holistic|terapeuta|coach/.test(t)) return ["Clases","Cursos online","Retiros","Sesiones 1-a-1","Formación de otros","No vendo aún"];
-  if(/comediante|podcast|escénico|escenico/.test(t)) return ["Shows / fechas","Entradas","Contenido por suscripción","Marca / auspicios","Clases / enseñanza","No vendo aún"];
-  return ["Servicios","Proyectos propios","Talleres","Clases / enseñanza","No vendo aún"];
-}
-
-const STEPS = [
-{ tag:"Sobre vos", q:"Empecemos por lo básico", hint:"Te mandamos el diagnóstico por mail y WhatsApp, así que los dos son obligatorios.", fields:[
-{k:"nombre", label:"Tu nombre", req:true},
-{k:"proyecto", label:"Nombre artístico / proyecto", req:true},
-{k:"email", label:"Email", type:"email", req:true},
-{k:"whatsapp", label:"WhatsApp (con código de país)", req:true, placeholder:"+54 9 ..."},
-{k:"pais", label:"País", req:true, half:true},
-{k:"ciudad", label:"Ciudad", half:true},
-]},
-{ tag:"Tu disciplina", q:"¿Qué tipo de proyecto querés evaluar?", fields:[
-{k:"tipo_proyecto", type:"select", req:true, options:TIPOS},
-]},
-{ tag:"Tus perfiles", q:"Pegá tus links", hint:"El link principal es obligatorio para poder analizarte. Sumá todos los que tengas: cuantos más, mejor leemos tu proyecto.", fields:[
-{k:"link_principal", label:"Link principal (el que más usás)", req:true, placeholder:"https://..."},
-{k:"instagram", label:"Instagram", placeholder:"https://instagram.com/..."},
-{k:"tiktok", label:"TikTok", placeholder:"https://..."},
-{k:"youtube", label:"YouTube", placeholder:"https://..."},
-{k:"spotify", label:"Spotify", placeholder:"https://..."},
-{k:"web", label:"Web", placeholder:"https://..."},
-{k:"tienda", label:"Tienda online", placeholder:"https://..."},
-]},
-{ tag:"Tu proyecto", q:"¿Cómo describirías tu proyecto en pocas líneas?", hint:"Qué hacés y qué te gustaría que entiendan apenas entran a tus redes.", fields:[
-{k:"descripcion", type:"textarea", req:true},
-]},
-{ tag:"Tu objetivo", q:"¿Qué resultado querés lograr en los próximos 12 meses?", fields:[
-{k:"objetivo", type:"select", req:true, options:[]},
-]},
-{ tag:"Qué ofrecés", q:"¿Qué <em>vendés u ofrecés</em> hoy?", hint:"Marcá todo lo que tengas, aunque recién empieces. Nos sirve para leer tu modelo de negocio.", fields:[
-{k:"niveles_producto", type:"multiselect", req:true, options:[]},
-]},
-{ tag:"Números", q:"Hablemos de plata (rangos, sin precisión)", hint:"Pueden ser ventas esporádicas: sumá lo de todo el año. Queda interno y nos ayuda a entender tu nivel de profesionalización.", fields:[
-{k:"inversion_ads", label:"¿Cuánto invertís en publicidad por mes?", type:"select", req:true, options:["Nada","Menos de USD 50","USD 50-100","USD 100-300","USD 300-500","USD 500-1000","Más de USD 1000"]},
-{k:"ingresos_arte", label:"¿Cuánto vendés con tu arte por año?", type:"select", req:true, options:["Nada","Menos de USD 500","USD 500-2.000","USD 2.000-5.000","USD 5.000-15.000","USD 15.000-50.000","Más de USD 50.000"]},
-]},
-{ tag:"Inversión y foco", q:"Para cerrar, dos cosas", hint:"Definen cuál es tu próximo paso. Quedan internas.", consent:true, fields:[
-{k:"inversion_pauta", label:"¿Cuánto podrías invertir por mes en publicidad para construir una comunidad de ~10.000 seguidores de calidad, segmentados y con potencial de volverse clientes?", type:"select", req:true, options:["Por ahora no puedo invertir en pauta","USD 30 a 60","USD 60 a 150","USD 150 a 500","USD 500 a 1.000","Más de USD 1.000"]},
-{k:"punto_debil", label:"¿Cuál sentís que es el punto débil de tu proyecto? (podés marcar más de uno)", type:"multiselect", req:true, options:["Modelo de negocio","Comunicación","Publicidad"]},
-]},
-];
-
-const LOADING_MSGS = ["Leyendo tus respuestas","Entrando a tus perfiles","Mirando seguidores y contenidos","Cruzando con el Método Semilla","Definiendo tu etapa y tus prioridades"];
-
-let cur = 0;
-const data = {};
-
-function el(id){return document.getElementById(id)}
-function start(){ el('hero').classList.add('hidden'); el('form').classList.remove('hidden'); render(); window.scrollTo(0,0); }
-
-function render(){
-const s = STEPS[cur];
-el('bar').style.width = ((cur)/(STEPS.length-1)*100)+'%';
-let html = `<div class="step-tag">${s.tag}</div><div class="q">${s.q}</div>`;
-if(s.hint) html += `<p class="hint">${s.hint}</p>`;
-html += `<div class="fields">`;
-for(const f of s.fields){
-const val = data[f.k] || "";
-const lbl = f.label ? `<label>${f.label} ${f.req?'<span class="req">*</span>':''}</label>` : "";
-if(f.type==="select"){
-let optList = f.k==="objetivo" ? objetivoOptions(data.tipo_proyecto) : f.options;
-let opts = `<option value="" disabled ${val?'':'selected'}>Elegí una opción…</option>`;
-opts += optList.map(o=>`<option ${val===o?'selected':''}>${o}</option>`).join("");
-html += `<div>${lbl}<select data-k="${f.k}">${opts}</select></div>`;
-} else if(f.type==="multiselect"){
-var mopts = f.k==="niveles_producto" ? nivelesOptions(data.tipo_proyecto) : f.options;
-var sel=(data[f.k]||"").split(", ").filter(Boolean);
-var boxes="";
-for(var bi=0;bi<mopts.length;bi++){var o=mopts[bi];boxes+='<label class="check"><input type="checkbox" data-mk="'+f.k+'" value="'+o.replace(/"/g,'&quot;')+'"'+(sel.indexOf(o)>=0?' checked':'')+'> '+o+'</label>';}
-html += `<div>${lbl}<div class="checks">${boxes}</div></div>`;
-} else if(f.type==="textarea"){
-html += `<div>${lbl}<textarea data-k="${f.k}" placeholder="${f.placeholder||''}">${val}</textarea></div>`;
-} else {
-html += `<div class="${f.half?'__half':''}">${lbl}<input type="${f.type||'text'}" data-k="${f.k}" value="${val.replace(/"/g,'&quot;')}" placeholder="${f.placeholder||''}"></div>`;
-}
-}
-html += `</div>`;
-if(s.consent){
-html += `<div class="consent"><input type="checkbox" id="cons" ${data.consentimiento?'checked':''}>
-<span>Al completar esta evaluación gratuita acepto recibir el resultado por email/WhatsApp y que Semilla Redes pueda contactarme con recomendaciones, recursos o propuestas relacionadas con mi proyecto.</span></div>`;
-}
-el('step').innerHTML = html;
-const halfDivs = el('step').querySelectorAll('.__half');
-if(halfDivs.length===2){
-const grid=document.createElement('div'); grid.className='row2';
-halfDivs[0].parentNode.insertBefore(grid, halfDivs[0]);
-grid.appendChild(halfDivs[0]); grid.appendChild(halfDivs[1]);
-}
-el('err').textContent="";
-el('prev').style.visibility = cur===0 ? 'hidden':'visible';
-el('next').textContent = cur===STEPS.length-1 ? 'Ver mi evaluación →' : 'Continuar';
-}
-
-function collect(){
-el('step').querySelectorAll('[data-k]').forEach(i=>{ data[i.dataset.k]=i.value.trim(); });
-const mkeys = new Set([...el('step').querySelectorAll('[data-mk]')].map(i=>i.dataset.mk));
-mkeys.forEach(k=>{ data[k] = [...el('step').querySelectorAll('[data-mk="'+k+'"]:checked')].map(i=>i.value).join(", "); });
-const c = el('cons'); if(c) data.consentimiento = c.checked;
-}
-
-function validate(){
-const s = STEPS[cur];
-for(const f of s.fields){
-if(f.req && !data[f.k]){ return "Completá los campos obligatorios (*)."; }
-if(f.type==="email" && data[f.k] && !/^[^@]+@[^@]+\.[^@]+$/.test(data[f.k])) return "Revisá el email.";
-}
-if(s.consent && !data.consentimiento) return "Necesitamos tu consentimiento para enviarte el resultado.";
-return null;
-}
-
-function next(){
-collect();
-const e = validate();
-if(e){ el('err').textContent=e; return; }
-if(cur===STEPS.length-1){ submit(); return; }
-cur++; render(); window.scrollTo(0,0);
-}
-function prev(){ collect(); if(cur>0){cur--; render(); window.scrollTo(0,0);} }
-
-async function submit(){
-el('form').classList.add('hidden');
-el('loading').classList.remove('hidden');
-window.scrollTo(0,0);
-let i=0; const t=setInterval(()=>{ i=(i+1)%LOADING_MSGS.length; el('lp').textContent=LOADING_MSGS[i]; },1600);
-try{
-const r = await fetch(SUPABASE_FUNCTION_URL,{
-method:"POST",
-headers:{ "Content-Type":"application/json", "Authorization":"Bearer "+SUPABASE_ANON_KEY, "apikey":SUPABASE_ANON_KEY },
-body: JSON.stringify(data)
-});
-if(!r.ok) throw new Error("HTTP "+r.status);
-const res = await r.json();
-clearInterval(t);
-showResult(res);
-}catch(err){
-clearInterval(t);
-el('loading').innerHTML = `<div class="loader"><p>Ups, algo falló al generar tu evaluación.</p><p class="lp">${err.message}. Probá de nuevo en un momento.</p></div>`;
-}
-}
-
-function showResult(res){
-el('loading').classList.add('hidden');
-const r = el('result'); r.classList.remove('hidden');
-const li = arr => (arr||[]).map(x=>`<li>${x}</li>`).join("");
-const ejes = res.ejes ? `
-<h2>Los 3 ejes del Método</h2>
-<div class="ejes">
-<div class="eje"><b>Modelo de negocio</b>${res.ejes.negocio||""}</div>
-<div class="eje"><b>Comunicación</b>${res.ejes.comunicacion||""}</div>
-<div class="eje"><b>Publicidad</b>${res.ejes.publicidad||""}</div>
-</div>` : "";
-const perfiles = res.perfiles ? `<h2>Lo que vimos en tus perfiles</h2><div class="perfiles">${res.perfiles}</div>` : "";
-r.innerHTML = `
-<div class="badges">
-${res.estado_general?`<span class="estado">${res.estado_general}</span>`:''}
-${res.etapa?`<span class="etapa">Etapa: ${res.etapa}</span>`:''}
-</div>
-<p class="diag">${res.diagnostico||""}</p>
-${perfiles}
-${ejes}
-<h2>Tus fortalezas</h2><ul class="list forta">${li(res.fortalezas)}</ul>
-<h2>Oportunidades de mejora</h2><ul class="list oport">${li(res.oportunidades)}</ul>
-<h2>Tus prioridades ahora</h2><ul class="list prio">${li(res.prioridades)}</ul>
-<div class="cta-box">
-<div class="ct">${res.cta?.titulo||"Tu próximo paso"}</div>
-<div class="cx">${(res.cta?.texto||"").replace(/https?:\/\/\S+/g,"").trim()}</div>
-<a href="${(data.inversion_pauta||"").startsWith("Por ahora no puedo") ? MEMBRESIA_URL : AUDITORIA_URL}" target="_blank">${(data.inversion_pauta||"").startsWith("Por ahora no puedo") ? "Sumate a la Membresía gratuita →" : "Reservá tu Auditoría inicial →"}</a>
-<a class="sec" href="${WHATSAPP_SEMILLA}" target="_blank">Hablar por WhatsApp →</a>
-</div>
-<p class="upsell">Esta es una versión inicial del análisis. En el informe completo revisamos en profundidad tu naming, ecosistema digital, navegabilidad, publicidad, conversión, creatividad, nicho, comunidad y plan de acción.</p>
-`;
-window.scrollTo(0,0);
-}
-</script>
-<!-- Meta Pixel + evento Contact en clicks a WhatsApp -->
-<script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-   if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-   n.queue=[];t=b.createElement(e);t.async=!0;
-   t.src=v;s=b.getElementsByTagName(e)[0];
-   s.parentNode.insertBefore(t,s)}(window, document,'script',
-                                   'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '953367820005998');
-  fbq('track', 'PageView');
-  document.addEventListener('click', function(e){
-      var a = e.target.closest && e.target.closest('a[href*="wa.me"], a[href*="whatsapp"]');
-      if(a && typeof fbq === 'function'){ fbq('track','Contact'); }
-  });
-</script>
-  
-<script>
-/* Meta Pixel: evento Lead al completar la auditoria (agregado 2026-07-15) */
-(function(){
-  var of = window.fetch;
-  window.fetch = function(){
-    var args = arguments;
-    var p = of.apply(this, args);
-    try {
-      var u = String((args[0] && args[0].url) || args[0] || "");
-      if (u.indexOf("/functions/v1/auditoria") !== -1) {
-        p.then(function(r){
-          if (r && r.ok && typeof fbq === "function" && !window.__leadFired) {
-            window.__leadFired = true;
-            fbq("track", "Lead");
-          }
-        }).catch(function(){});
-      }
-    } catch(e){}
-    return p;
-  };
-})();
-</script>
 </body>
 </html>
