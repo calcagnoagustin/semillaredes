@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SemillaIA · Encontrá curadores de playlists a tu medida</title>
+<meta name="description" content="Encontrá playlists de Spotify reales para tu música, con el contacto del curador. Filtradas por actividad, seguidores y calidad. Gratis, por Semilla Redes.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2044%2044%27%3E%3Cg%20stroke%3D%27%23C97080%27%20stroke-width%3D%272%27%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%274%27%20y2%3D%2722%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2740%27%20y2%3D%2722%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2722%27%20y2%3D%274%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2722%27%20y2%3D%2740%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%278%27%20y2%3D%278%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2736%27%20y2%3D%2736%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2736%27%20y2%3D%278%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%278%27%20y2%3D%2736%27/%3E%3C/g%3E%3Cpath%20d%3D%27M22%2C10%20C26%2C14%2028%2C18%2028%2C22%20C28%2C26%2026%2C30%2022%2C34%20C18%2C30%2016%2C26%2016%2C22%20C16%2C18%2018%2C14%2022%2C10Z%27%20fill%3D%27%237A8A42%27/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=Playfair+Display:ital,wght@1,500;1,700&display=swap" rel="stylesheet">
+<style>
+:root{
+--cream:#F2EDE4; --navy:#1A2456; --wine:#7A1F3A; --rosa:#C97080; --oliva:#7A8A42; --white:#FDFAF6;
+--navy-soft:rgba(26,36,86,.08); --navy-line:rgba(26,36,86,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--navy);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* NAV */
+nav{display:flex;justify-content:space-between;align-items:center;padding:24px 48px;position:sticky;top:0;background:var(--cream);z-index:100;border-bottom:1px solid var(--navy-soft)}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo-icon{width:44px;height:44px;flex:none}
+.logo-text{font-weight:800;font-size:16px;line-height:1.1;letter-spacing:.14em;text-transform:uppercase;color:var(--navy)}
+.btn-nav{background:var(--navy);color:var(--white);text-decoration:none;padding:10px 22px;border-radius:4px;font-size:14px;font-weight:700;transition:background .2s}
+.btn-nav:hover{background:var(--wine)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:56px 48px 90px}
+
+/* HERO */
+.hero{max-width:900px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--wine);margin-bottom:22px}
+h1{font-size:clamp(38px,6.4vw,72px);line-height:1.04;font-weight:900;letter-spacing:-.02em;color:var(--navy)}
+h1 em{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;color:var(--wine)}
+.rule{width:64px;height:3px;background:var(--wine);margin:28px 0}
+.sub{font-size:clamp(17px,2.2vw,20px);line-height:1.6;max-width:660px;color:rgba(26,36,86,.8)}
+.note{margin-top:16px;font-size:14px;color:rgba(26,36,86,.55)}
+
+/* CARD */
+.card{background:var(--white);border:1px solid rgba(26,36,86,.1);border-radius:12px;padding:clamp(26px,4vw,44px);max-width:880px;margin:40px auto 0}
+.step-tag{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--oliva);margin-bottom:10px}
+.q{font-size:clamp(22px,3vw,29px);font-weight:900;letter-spacing:-.02em;line-height:1.2;color:var(--navy)}
+.q em{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;color:var(--wine)}
+.hint{font-size:15px;color:rgba(26,36,86,.6);margin-top:12px;line-height:1.5}
+label{font-size:14px;font-weight:700;display:block;margin-bottom:7px}
+.req{color:var(--wine)}
+input[type=text],input[type=email],input[type=url]{width:100%;font-family:inherit;font-size:16px;color:var(--navy);background:var(--cream);border:1px solid var(--navy-line);border-radius:8px;padding:15px 16px;outline:none;transition:border .15s}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--oliva);outline-offset:2px}
+input[type=text]:focus,input[type=email]:focus,input[type=url]:focus{border-color:var(--oliva)}
+.fields{margin-top:26px;display:flex;flex-direction:column;gap:18px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+
+/* GENEROS */
+.gen-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:6px}
+.gen{display:flex;align-items:center;gap:11px;font-size:15px;font-weight:500;cursor:pointer;background:var(--cream);border:1px solid var(--navy-line);border-radius:8px;padding:13px 15px;transition:border-color .15s,background .15s}
+.gen:hover{border-color:var(--oliva)}
+.gen input{width:19px;height:19px;flex:none;margin:0;accent-color:var(--oliva)}
+.gen.on{border-color:var(--oliva);background:rgba(122,138,66,.08)}
+
+.consent{display:flex;gap:12px;align-items:flex-start;margin-top:24px;background:var(--cream);border:1px solid var(--navy-line);border-radius:8px;padding:16px;font-size:14px;line-height:1.5;color:rgba(26,36,86,.8)}
+.consent input{width:20px;height:20px;flex:none;margin-top:2px;accent-color:var(--oliva)}
+
+.btn{font-family:inherit;font-weight:700;font-size:16px;border-radius:4px;cursor:pointer;border:1px solid transparent;padding:16px 34px;transition:background .2s,transform .15s}
+.btn-next{background:var(--navy);color:var(--white)}
+.btn-next:hover{background:var(--wine);transform:translateY(-2px)}
+.btn-next:disabled{background:rgba(26,36,86,.25);cursor:not-allowed;transform:none}
+.actions{display:flex;justify-content:flex-end;margin-top:30px}
+.err{color:var(--wine);font-size:14px;font-weight:600;margin-top:14px;min-height:20px}
+
+/* LOADING */
+.loader{text-align:center;padding:50px 10px}
+.seed{width:54px;height:54px;margin:0 auto 24px;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(.9);opacity:.6}50%{transform:scale(1.08);opacity:1}}
+.loader p{font-size:18px;font-weight:700}
+.loader .lp{font-weight:400;color:rgba(26,36,86,.6);margin-top:10px;font-size:15px}
+
+/* RESULTADOS */
+.res-head h2{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--oliva);margin-bottom:12px}
+.res-intro{font-size:clamp(17px,2.2vw,20px);line-height:1.55}
+.res-intro em{font-family:'Playfair Display',serif;font-style:italic;color:var(--wine)}
+.pl{border:1px solid var(--navy-line);border-radius:10px;padding:20px;margin-top:14px;background:var(--cream)}
+.pl-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.pl-name{font-size:18px;font-weight:800;line-height:1.25}
+.pl-name a{color:var(--navy);text-decoration:none;border-bottom:2px solid rgba(122,138,66,.45)}
+.pl-name a:hover{color:var(--wine)}
+.pl-owner{font-size:13px;color:rgba(26,36,86,.6);margin-top:3px}
+/* Nodos: gramática del isologo. Oliva = activo. */
+.nodos{display:flex;gap:5px;flex:none;padding-top:6px}
+.nodo{width:9px;height:9px;border-radius:50%;background:var(--navy-soft)}
+.nodo.on{background:var(--oliva)}
+.pl-datos{display:flex;flex-wrap:wrap;gap:22px;margin-top:16px}
+.dato{min-width:88px}
+.dato b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(26,36,86,.5);font-weight:700;margin-bottom:3px}
+.dato span{font-size:17px;font-weight:800}
+.contacto{margin-top:16px;padding-top:15px;border-top:1px solid var(--navy-line);display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.ctag{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(26,36,86,.5);font-weight:700}
+.cval{font-size:16px;font-weight:700}
+.cval a{color:var(--wine);text-decoration:none;border-bottom:1px solid rgba(122,31,58,.35)}
+
+.cta-box{margin-top:38px;background:var(--navy);color:var(--white);border-radius:12px;padding:clamp(26px,4vw,38px)}
+.cta-box .ct{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(21px,3vw,25px);font-weight:500;line-height:1.25}
+.cta-box p{margin-top:14px;line-height:1.6;color:rgba(253,250,246,.85);font-size:16px}
+.cta-btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.cta-btn{display:inline-block;background:var(--cream);color:var(--navy);text-decoration:none;font-weight:700;font-size:15px;padding:14px 26px;border-radius:4px;transition:background .2s}
+.cta-btn:hover{background:var(--rosa);color:var(--white)}
+.cta-btn.ghost{background:transparent;color:var(--cream);border:1px solid rgba(253,250,246,.4)}
+.cta-btn.ghost:hover{background:rgba(253,250,246,.12);color:var(--cream)}
+
+.hidden{display:none}
+footer{border-top:1px solid var(--navy-soft);padding:30px 48px;text-align:center;font-size:14px;color:rgba(26,36,86,.55)}
+footer a{color:var(--wine);text-decoration:none}
+
+@media(max-width:720px){
+nav{padding:16px 20px}
+.wrap{padding:36px 20px 64px}
+.row2{grid-template-columns:1fr}
+.gen-grid{grid-template-columns:1fr 1fr}
+footer{padding:24px 20px}
+}
+@media(prefers-reduced-motion:reduce){
+*{animation:none!important;transition:none!important}
+.btn-next:hover{transform:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+<a class="logo" href="https://semillaredes.com">
+<svg class="logo-icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<line x1="22" y1="22" x2="4" y2="22" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="40" y2="22" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="22" y2="4" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="22" y2="40" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="8" y2="8" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="36" y2="36" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="36" y2="8" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="8" y2="36" stroke="#C97080" stroke-width="1.5"/>
+<circle cx="4" cy="22" r="2.5" fill="#C97080"/><circle cx="40" cy="22" r="2.5" fill="#C97080"/>
+<circle cx="22" cy="4" r="2.5" fill="#C97080"/><circle cx="22" cy="40" r="2.5" fill="#C97080"/>
+<circle cx="8" cy="8" r="2.5" fill="#C97080"/><circle cx="36" cy="36" r="2.5" fill="#C97080"/>
+<circle cx="36" cy="8" r="2.5" fill="#C97080"/><circle cx="8" cy="36" r="2.5" fill="#C97080"/>
+<path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/>
+</svg>
+<span class="logo-text">Semilla<br>Redes</span>
+</a>
+<a class="btn-nav" href="https://wa.me/5492665242011?text=Hola%20Agus.%20Te%20escribo%20por%20SemillaIA" target="_blank" rel="noopener">Hablemos</a>
+</nav>
+
+<div class="wrap">
+
+<section class="hero" id="hero">
+<p class="kicker">SemillaIA · Curadores</p>
+<h1>Encontrá <em>playlists reales</em> para tu música.</h1>
+<div class="rule"></div>
+<p class="sub">Decinos qué hacés y te devolvemos playlists de Spotify que están activas, tienen audiencia real y tienen a quién escribirle. Con el contacto del curador, no solo el link.</p>
+<p class="note">Gratis. Un minuto. No hace falta que te registres.</p>
+</section>
+
+<!-- FORMULARIO -->
+<section class="card" id="form">
+<p class="step-tag">Tu proyecto</p>
+<h2 class="q">¿Dónde te <em>escuchamos</em>?</h2>
+<p class="hint">El link nos sirve para entender tu proyecto. Si todavía no tenés Spotify, dejalo vacío y seguí.</p>
+
+<div class="fields">
+  <div>
+    <label for="spotify">Tu perfil de Spotify</label>
+    <input type="url" id="spotify" placeholder="https://open.spotify.com/artist/..." autocomplete="url">
+  </div>
+  <div class="row2">
+    <div>
+      <label for="nombre">Nombre artístico <span class="req">*</span></label>
+      <input type="text" id="nombre" placeholder="Cómo te presentás" autocomplete="name">
+    </div>
+    <div>
+      <label for="email">Email <span class="req">*</span></label>
+      <input type="email" id="email" placeholder="para mandarte la lista" autocomplete="email">
+    </div>
+  </div>
+
+  <div>
+    <label>¿Qué hacés? <span class="req">*</span></label>
+    <p class="hint" style="margin-top:0;margin-bottom:12px">Marcá todo lo que te represente. Cuantos más marques, más amplia la búsqueda.</p>
+    <div class="gen-grid" id="gens"></div>
+  </div>
+</div>
+
+<label class="consent" for="ok">
+  <input type="checkbox" id="ok">
+  <span>Quiero recibir la lista por email y que Semilla Redes me escriba con recomendaciones para mi proyecto.</span>
+</label>
+
+<div class="actions">
+  <button class="btn btn-next" id="go">Buscar curadores</button>
+</div>
+<p class="err" id="err"></p>
+</section>
+
+<!-- CARGANDO -->
+<section class="card hidden" id="loading">
+<div class="loader">
+<svg class="seed" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<line x1="22" y1="22" x2="4" y2="22" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="40" y2="22" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="22" y2="4" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="22" y2="40" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="8" y2="8" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="36" y2="36" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="36" y2="8" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="8" y2="36" stroke="#C97080" stroke-width="1.5"/>
+<path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/>
+</svg>
+<p>Buscando entre miles de playlists</p>
+<p class="lp" id="lp">Descartando las que están abandonadas…</p>
+</div>
+</section>
+
+<!-- RESULTADOS -->
+<section class="card hidden" id="result"></section>
+
+</div>
+
+<footer>
+Una herramienta de <a href="https://semillaredes.com">Semilla Redes</a> · Método Semilla
+</footer>
+
+<script>
+const ENDPOINT = "https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/curadores";
+
+const CATEGORIAS = ["Folclore y raíz","Tango","Cumbia y tropical","Cuarteto","Rock","Pop",
+"Indie y alternativo","Canción de autor","Urbano","Electrónica","Jazz y soul","Latino y world"];
+
+const MSGS = ["Descartando las que están abandonadas…","Revisando que tengan audiencia real…",
+"Filtrando las que compran seguidores…","Buscando el contacto de cada curador…","Ordenando por afinidad con tu proyecto…"];
+
+const el = id => document.getElementById(id);
+
+// Pintar categorías
+el("gens").innerHTML = CATEGORIAS.map((c,i)=>
+ `<label class="gen" for="g${i}"><input type="checkbox" id="g${i}" value="${c}"><span>${c}</span></label>`).join("");
+document.querySelectorAll(".gen input").forEach(inp=>{
+  inp.addEventListener("change", e => e.target.closest(".gen").classList.toggle("on", e.target.checked));
+});
+
+const elegidas = () => [...document.querySelectorAll(".gen input:checked")].map(i=>i.value);
+
+function validar(){
+  if(!el("nombre").value.trim()) return "Poné tu nombre artístico.";
+  const m = el("email").value.trim();
+  if(!m || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m)) return "Revisá el email: parece incompleto.";
+  if(!elegidas().length) return "Marcá al menos un género.";
+  if(!el("ok").checked) return "Necesitamos tu confirmación para mandarte la lista.";
+  return "";
+}
+
+el("go").addEventListener("click", buscar);
+
+async function buscar(){
+  const e = validar();
+  if(e){ el("err").textContent = e; return; }
+  el("err").textContent = "";
+  el("form").classList.add("hidden");
+  el("hero").classList.add("hidden");
+  el("loading").classList.remove("hidden");
+  window.scrollTo(0,0);
+  let i=0; const t=setInterval(()=>{ i=(i+1)%MSGS.length; el("lp").textContent=MSGS[i]; },1700);
+
+  try{
+    const r = await fetch(ENDPOINT,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        nombre: el("nombre").value.trim(),
+        email: el("email").value.trim(),
+        spotify: el("spotify").value.trim(),
+        categorias: elegidas()
+      })
+    });
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const data = await r.json();
+    clearInterval(t);
+    mostrar(data);
+  }catch(err){
+    clearInterval(t);
+    el("loading").innerHTML = `<div class="loader"><p>No pudimos completar la búsqueda.</p>
+      <p class="lp">${err.message}. Recargá la página y probá de nuevo.</p></div>`;
+  }
+}
+
+const miles = n => (n||0).toLocaleString("es-AR");
+
+function nodos(oy){
+  const n = oy>=2000?4 : oy>=500?3 : oy>=100?2 : 1;
+  return `<div class="nodos" title="Actividad estimada" aria-label="Actividad ${n} de 4">`+
+    [0,1,2,3].map(i=>`<span class="nodo${i<n?" on":""}"></span>`).join("")+`</div>`;
+}
+
+function contacto(p){
+  if(p.instagram) return `<span class="ctag">Instagram</span>
+    <span class="cval"><a href="https://instagram.com/${p.instagram.replace(/^@/,'')}" target="_blank" rel="noopener">@${p.instagram.replace(/^@/,'')}</a></span>`;
+  if(p.email) return `<span class="ctag">Email</span><span class="cval">${p.email}</span>`;
+  return `<span class="ctag">Sin contacto directo</span>`;
+}
+
+function mostrar(d){
+  el("loading").classList.add("hidden");
+  const r = el("result");
+  r.classList.remove("hidden");
+  const lista = d.playlists || [];
+
+  if(!lista.length){
+    r.innerHTML = `<div class="res-head"><h2>Sin resultados</h2>
+      <p class="res-intro">Todavía no tenemos playlists activas para esa combinación de géneros.
+      Probá marcando alguna categoría más amplia.</p></div>`;
+    return;
+  }
+
+  r.innerHTML = `
+  <div class="res-head">
+    <h2>Tus curadores</h2>
+    <p class="res-intro">Encontramos <em>${lista.length} playlists</em> que van con lo que hacés.
+    Todas están activas, tienen audiencia real y tienen a quién escribirle.</p>
+  </div>
+  ${lista.map(p=>`
+    <article class="pl">
+      <div class="pl-top">
+        <div>
+          <p class="pl-name"><a href="${p.spotify_url}" target="_blank" rel="noopener">${p.name}</a></p>
+          <p class="pl-owner">${p.owner||""}</p>
+        </div>
+        ${nodos(p.listeners)}
+      </div>
+      <div class="pl-datos">
+        <div class="dato"><b>Seguidores</b><span>${miles(p.followers)}</span></div>
+        <div class="dato"><b>Oyentes/mes</b><span>${miles(p.listeners)}</span></div>
+        <div class="dato"><b>Último tema</b><span>${p.newest_track_added_at||"—"}</span></div>
+      </div>
+      <div class="contacto">${contacto(p)}</div>
+    </article>`).join("")}
+
+  <div class="cta-box">
+    <p class="ct">Tener la lista es el principio. Que te respondan es otra cosa.</p>
+    <p>Un curador recibe decenas de mensajes por semana y abre los que dicen algo.
+    Antes de escribirles, conviene saber qué mostrás cuando entran a tu perfil.</p>
+    <div class="cta-btns">
+      <a class="cta-btn" href="/diagnostico.html">Diagnosticá tu proyecto</a>
+      <a class="cta-btn ghost" href="https://wa.me/5492665242011?text=Hola%20Agus.%20Us%C3%A9%20el%20buscador%20de%20curadores%20y%20quiero%20avanzar" target="_blank" rel="noopener">Hablar con Agus</a>
+    </div>
+  </div>`;
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
