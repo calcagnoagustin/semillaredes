@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SemillaIA · Herramientas gratuitas para artistas</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Dos herramientas gratuitas para artistas: diagnosticá tu proyecto con el Método Semilla, o encontrá curadores de playlists de Spotify con su contacto.">
+<link rel="canonical" href="https://landing.semillaredes.com/hub.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SemillaIA · Herramientas gratuitas para artistas">
+<meta property="og:description" content="Diagnosticá tu proyecto artístico o encontrá curadores de playlists para tu música. Gratis, por Semilla Redes.">
+<meta property="og:url" content="https://landing.semillaredes.com/hub.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2044%2044%27%3E%3Cg%20stroke%3D%27%23C97080%27%20stroke-width%3D%272%27%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%274%27%20y2%3D%2722%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2740%27%20y2%3D%2722%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2722%27%20y2%3D%274%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2722%27%20y2%3D%2740%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%278%27%20y2%3D%278%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2736%27%20y2%3D%2736%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%2736%27%20y2%3D%278%27/%3E%3Cline%20x1%3D%2722%27%20y1%3D%2722%27%20x2%3D%278%27%20y2%3D%2736%27/%3E%3C/g%3E%3Cpath%20d%3D%27M22%2C10%20C26%2C14%2028%2C18%2028%2C22%20C28%2C26%2026%2C30%2022%2C34%20C18%2C30%2016%2C26%2016%2C22%20C16%2C18%2018%2C14%2022%2C10Z%27%20fill%3D%27%237A8A42%27/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=Playfair+Display:ital,wght@1,500;1,700&display=swap" rel="stylesheet">
+<style>
+:root{
+--cream:#F2EDE4; --navy:#1A2456; --wine:#7A1F3A; --rosa:#C97080; --oliva:#7A8A42; --white:#FDFAF6;
+--navy-soft:rgba(26,36,86,.08); --navy-line:rgba(26,36,86,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--navy);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+nav{display:flex;justify-content:space-between;align-items:center;padding:24px 48px;position:sticky;top:0;background:var(--cream);z-index:100;border-bottom:1px solid var(--navy-soft)}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo-icon{width:44px;height:44px;flex:none}
+.logo-text{font-weight:800;font-size:16px;line-height:1.1;letter-spacing:.14em;text-transform:uppercase;color:var(--navy)}
+.btn-nav{background:var(--navy);color:var(--white);text-decoration:none;padding:10px 22px;border-radius:4px;font-size:14px;font-weight:700;transition:background .2s}
+.btn-nav:hover{background:var(--wine)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:70px 48px 90px}
+.hero{max-width:880px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--wine);margin-bottom:22px}
+h1{font-size:clamp(40px,7vw,78px);line-height:1.04;font-weight:900;letter-spacing:-.02em}
+h1 em{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;color:var(--wine)}
+.rule{width:64px;height:3px;background:var(--wine);margin:30px 0}
+.sub{font-size:clamp(17px,2.2vw,20px);line-height:1.6;max-width:640px;color:rgba(26,36,86,.8)}
+
+/* DOS PRODUCTOS */
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:56px}
+.tool{background:var(--white);border:1px solid rgba(26,36,86,.1);border-radius:12px;padding:clamp(26px,3.4vw,40px);display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:transform .18s,border-color .18s,box-shadow .18s}
+.tool:hover{transform:translateY(-4px);border-color:var(--oliva);box-shadow:0 12px 30px rgba(26,36,86,.09)}
+.tool:focus-visible{outline:2px solid var(--oliva);outline-offset:3px}
+.tool-mark{width:44px;height:44px;margin-bottom:22px}
+.tool-tag{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--oliva);margin-bottom:12px}
+.tool h2{font-size:clamp(24px,2.8vw,31px);font-weight:900;letter-spacing:-.02em;line-height:1.15}
+.tool h2 em{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;color:var(--wine)}
+.tool p{margin-top:14px;font-size:16px;line-height:1.6;color:rgba(26,36,86,.78)}
+.tool ul{list-style:none;margin-top:20px;display:flex;flex-direction:column;gap:9px}
+.tool li{display:flex;gap:11px;font-size:15px;line-height:1.45;color:rgba(26,36,86,.72)}
+.tool li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--rosa);flex:none;margin-top:6px}
+.tool-go{margin-top:auto;padding-top:26px;font-weight:700;font-size:16px;color:var(--navy);display:flex;align-items:center;gap:9px}
+.tool:hover .tool-go{color:var(--wine)}
+.tool-go span{transition:transform .18s}
+.tool:hover .tool-go span{transform:translateX(5px)}
+.para{font-size:13px;color:rgba(26,36,86,.5);margin-top:16px;padding-top:14px;border-top:1px solid var(--navy-line)}
+
+.metodo{margin-top:70px;background:var(--navy);color:var(--white);border-radius:12px;padding:clamp(28px,4vw,48px)}
+.metodo .ct{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(22px,3vw,28px);font-weight:500;line-height:1.25}
+.metodo p{margin-top:16px;line-height:1.65;color:rgba(253,250,246,.85);font-size:16px;max-width:720px}
+.cta-btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.cta-btn{display:inline-block;background:var(--cream);color:var(--navy);text-decoration:none;font-weight:700;font-size:15px;padding:14px 26px;border-radius:4px;transition:background .2s}
+.cta-btn:hover{background:var(--rosa);color:var(--white)}
+.cta-btn.ghost{background:transparent;color:var(--cream);border:1px solid rgba(253,250,246,.4)}
+.cta-btn.ghost:hover{background:rgba(253,250,246,.12);color:var(--cream)}
+
+footer{border-top:1px solid var(--navy-soft);padding:30px 48px;text-align:center;font-size:14px;color:rgba(26,36,86,.55)}
+footer a{color:var(--wine);text-decoration:none}
+
+@media(max-width:860px){
+.tools{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+nav{padding:16px 20px}
+.wrap{padding:44px 20px 64px}
+footer{padding:24px 20px}
+}
+@media(prefers-reduced-motion:reduce){
+*{animation:none!important;transition:none!important}
+.tool:hover{transform:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+<a class="logo" href="https://semillaredes.com">
+<svg class="logo-icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<line x1="22" y1="22" x2="4" y2="22" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="40" y2="22" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="22" y2="4" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="22" y2="40" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="8" y2="8" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="36" y2="36" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="36" y2="8" stroke="#C97080" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="8" y2="36" stroke="#C97080" stroke-width="1.5"/>
+<circle cx="4" cy="22" r="2.5" fill="#C97080"/><circle cx="40" cy="22" r="2.5" fill="#C97080"/>
+<circle cx="22" cy="4" r="2.5" fill="#C97080"/><circle cx="22" cy="40" r="2.5" fill="#C97080"/>
+<circle cx="8" cy="8" r="2.5" fill="#C97080"/><circle cx="36" cy="36" r="2.5" fill="#C97080"/>
+<circle cx="36" cy="8" r="2.5" fill="#C97080"/><circle cx="8" cy="36" r="2.5" fill="#C97080"/>
+<path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/>
+</svg>
+<span class="logo-text">Semilla<br>Redes</span>
+</a>
+<a class="btn-nav" href="https://wa.me/5492665242011?text=Hola%20Agus.%20Te%20escribo%20por%20SemillaIA" target="_blank" rel="noopener">Hablemos</a>
+</nav>
+
+<div class="wrap">
+
+<section class="hero">
+<p class="kicker">SemillaIA</p>
+<h1>Dos herramientas para <em>impulsar</em> tu proyecto artístico.</h1>
+<div class="rule"></div>
+<p class="sub">La inteligencia artificial del Método Semilla, el mismo que usamos con los artistas que acompañamos. Las dos son gratis y no necesitás registrarte.</p>
+</section>
+
+<section class="tools">
+
+  <a class="tool" href="/diagnostico.html">
+    <svg class="tool-mark" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <line x1="22" y1="22" x2="4" y2="22" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="40" y2="22" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="22" y2="4" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="22" y2="40" stroke="#C97080" stroke-width="1.5"/>
+      <circle cx="4" cy="22" r="2.5" fill="#C97080"/><circle cx="40" cy="22" r="2.5" fill="#C97080"/>
+      <circle cx="22" cy="4" r="2.5" fill="#C97080"/><circle cx="22" cy="40" r="2.5" fill="#C97080"/>
+      <path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/>
+    </svg>
+    <p class="tool-tag">Herramienta 01</p>
+    <h2>Diagnosticá tu <em>proyecto</em></h2>
+    <p>Contanos qué hacés y en qué punto estás. Te devolvemos una lectura de tu proyecto según los tres ejes del Método.</p>
+    <ul>
+      <li>En qué etapa está tu proyecto hoy</li>
+      <li>Tus tres fortalezas y tus tres puntos flojos</li>
+      <li>Qué conviene hacer primero</li>
+    </ul>
+    <p class="para">Para cualquier disciplina: música, artes visuales, teatro, escritura, danza.</p>
+    <p class="tool-go">Empezar el diagnóstico <span>→</span></p>
+  </a>
+
+  <a class="tool" href="/curadores.html">
+    <svg class="tool-mark" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <line x1="22" y1="22" x2="8" y2="8" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="36" y2="36" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="36" y2="8" stroke="#C97080" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="8" y2="36" stroke="#C97080" stroke-width="1.5"/>
+      <circle cx="8" cy="8" r="2.5" fill="#C97080"/><circle cx="36" cy="36" r="2.5" fill="#C97080"/>
+      <circle cx="36" cy="8" r="2.5" fill="#C97080"/><circle cx="8" cy="36" r="2.5" fill="#C97080"/>
+      <path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/>
+    </svg>
+    <p class="tool-tag">Herramienta 02</p>
+    <h2>Encontrá <em>curadores</em> de playlists</h2>
+    <p>Decinos qué música hacés y te damos playlists de Spotify que están vivas, con el contacto de quien las arma.</p>
+    <ul>
+      <li>Playlists activas, no abandonadas</li>
+      <li>Sin las que inflan seguidores</li>
+      <li>Con el Instagram o el mail del curador</li>
+    </ul>
+    <p class="para">Solo para músicos: es una herramienta de Spotify.</p>
+    <p class="tool-go">Buscar curadores <span>→</span></p>
+  </a>
+
+</section>
+
+<section class="metodo">
+  <p class="ct">Semilla Redes trabaja con artistas todos los días.</p>
+  <p>Estas herramientas son una parte de lo que hacemos. Si querés ver cómo acompañamos proyectos artísticos —formación, setup y campañas— entrá al sitio.</p>
+  <div class="cta-btns">
+    <a class="cta-btn" href="https://semillaredes.com">Ver todos los servicios</a>
+    <a class="cta-btn ghost" href="https://wa.me/5492665242011?text=Hola%20Agus.%20Te%20escribo%20por%20SemillaIA" target="_blank" rel="noopener">Hablar con Agus</a>
+  </div>
+</section>
+
+</div>
+
+<footer>
+Una herramienta de <a href="https://semillaredes.com">Semilla Redes</a> · Método Semilla
+</footer>
+
+</body>
+</html>
