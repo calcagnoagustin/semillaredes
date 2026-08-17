@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Semilla Redes · Estado de bots</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Playfair+Display:ital,wght@1,500&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crema:#F2EDE4;--navy:#1A2456;--wine:#7A1F3A;--rosa:#C97080;--oliva:#7A8A42;
+  --papel:#FBF9F5;--linea:rgba(26,36,86,.14);--tenue:rgba(26,36,86,.62);
+  --sans:'Inter',system-ui,sans-serif;--serif:'Playfair Display',Georgia,serif;--mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:78px}
+body{margin:0;background:var(--crema);color:var(--navy);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+a{color:var(--wine)}
+:focus-visible{outline:2px solid var(--wine);outline-offset:2px}
+
+header.top{padding:44px 0 24px;border-bottom:2px solid var(--navy)}
+.eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:var(--wine);margin:0}
+h1{font-weight:900;font-size:clamp(32px,6vw,54px);line-height:.98;letter-spacing:-.03em;margin:12px 0 8px}
+h1 em{font-family:var(--serif);font-style:italic;font-weight:500}
+.sub{max-width:64ch;color:var(--tenue);font-size:16px;margin:0}
+.stamp{margin-top:16px;font-family:var(--mono);font-size:11.5px;color:var(--tenue)}
+.campo{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}
+.brote{display:flex;align-items:center;gap:8px;border:1px solid var(--linea);background:var(--papel);padding:8px 13px}
+.brote b{font-size:19px;font-weight:900;line-height:1}
+.brote span{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--tenue)}
+.brote i{width:9px;height:9px;border-radius:50%;display:block}
+.i-on{background:var(--oliva)}.i-wip{background:var(--rosa)}.i-hold{background:var(--wine)}
+
+nav.anclas{position:sticky;top:0;z-index:20;background:var(--crema);border-bottom:1px solid var(--linea);margin-top:24px}
+nav.anclas .wrap{display:flex;gap:3px;overflow-x:auto;padding-top:9px;padding-bottom:9px}
+nav.anclas a{font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;color:var(--tenue);white-space:nowrap;padding:6px 10px}
+nav.anclas a:hover{background:var(--navy);color:var(--crema)}
+
+section{padding:52px 0 10px;border-bottom:1px solid var(--linea)}
+section:last-of-type{border-bottom:0}
+h2{font-weight:900;font-size:26px;letter-spacing:-.02em;margin:0 0 4px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+h2 .num{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--rosa)}
+.rev{font-family:var(--mono);font-size:10.5px;color:var(--tenue);font-weight:400;letter-spacing:0}
+.lead{color:var(--tenue);margin:0 0 22px;max-width:72ch}
+h3.sub-h{font-size:17px;font-weight:900;margin:30px 0 10px}
+
+/* arranque en frio */
+.frio{background:var(--navy);color:var(--crema);padding:28px}
+.frio p{color:rgba(242,237,228,.78);max-width:70ch}
+.frio ol{counter-reset:f;list-style:none;padding:0;margin:18px 0 0}
+.frio ol li{counter-increment:f;position:relative;padding:12px 0 12px 44px;border-top:1px solid rgba(242,237,228,.2)}
+.frio ol li::before{content:counter(f);position:absolute;left:0;top:13px;font-family:var(--mono);font-size:12px;font-weight:700;color:var(--rosa)}
+.frio b{display:block;font-size:14.5px}
+.frio span{color:rgba(242,237,228,.72);font-size:13.5px}
+.frio code{background:rgba(242,237,228,.16);color:#fff}
+
+/* mapa */
+.mapa{background:var(--papel);border:1px solid var(--linea);padding:22px;font-family:var(--mono);font-size:12.5px;line-height:1.85;overflow-x:auto;white-space:pre}
+.mapa b{color:var(--wine)}
+.mapa i{color:var(--tenue);font-style:normal}
+
+/* fichas de bot */
+.ficha{background:var(--papel);border:1px solid var(--linea);border-top:5px solid var(--oliva);padding:24px;margin-bottom:18px}
+.ficha.wip{border-top-color:var(--rosa)}
+.ficha-head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:flex-start;margin-bottom:6px}
+.ficha h3{margin:0;font-size:22px;font-weight:900;letter-spacing:-.02em}
+.ficha .que{color:var(--tenue);margin:0 0 18px;max-width:66ch}
+.tag{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 9px;white-space:nowrap}
+.t-on{background:rgba(122,138,66,.18);color:#4a561d}
+.t-wip{background:rgba(201,112,128,.2);color:var(--wine)}
+.ficha dl{display:grid;grid-template-columns:auto 1fr;gap:0;margin:0;border-top:1px solid var(--linea)}
+.ficha dt{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;font-weight:700;color:var(--tenue);padding:11px 18px 11px 0;border-bottom:1px solid var(--linea);white-space:nowrap}
+.ficha dd{margin:0;padding:11px 0;border-bottom:1px solid var(--linea);font-size:13.5px}
+.ficha dd ul{margin:0;padding-left:17px}
+.ficha dd li{margin-bottom:4px}
+@media (max-width:640px){.ficha dl{grid-template-columns:1fr}.ficha dt{border-bottom:0;padding-bottom:2px}.ficha dd{padding-top:0}}
+
+code,.k{font-family:var(--mono);font-size:.86em;background:rgba(26,36,86,.07);padding:1px 5px;word-break:break-word}
+
+/* tablas */
+.tabla-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--papel);border:1px solid var(--linea)}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--linea);vertical-align:top}
+th{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--tenue);font-weight:700}
+tr:last-child td{border-bottom:0}
+td.fecha{font-family:var(--mono);font-size:12px;white-space:nowrap;color:var(--wine);font-weight:700}
+td.sf{color:var(--tenue);font-weight:400}
+
+/* listas numeradas */
+ol.reglas{counter-reset:r;list-style:none;padding:0;margin:0}
+ol.reglas li{counter-increment:r;position:relative;padding:13px 0 13px 46px;border-top:1px solid var(--linea)}
+ol.reglas li::before{content:counter(r,decimal-leading-zero);position:absolute;left:0;top:14px;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--rosa)}
+ol.reglas li b{display:block;font-size:14.5px}
+ol.reglas li span{color:var(--tenue);font-size:13.5px}
+
+.pend{background:var(--papel);border:1px solid var(--linea);padding:4px 20px}
+.pend div{padding:13px 0;border-bottom:1px dashed var(--linea);display:flex;gap:12px;align-items:flex-start;font-size:14px}
+.pend div:last-child{border-bottom:0}
+.pend .box{flex:0 0 auto;width:13px;height:13px;border:1.5px solid var(--wine);margin-top:4px}
+.pend .quien{font-family:var(--mono);font-size:10.5px;color:var(--wine);border:1px solid var(--linea);padding:1px 6px;margin-left:auto;white-space:nowrap;align-self:center}
+
+.roja{background:var(--wine);color:var(--crema);padding:26px}
+.roja h3{margin:0 0 8px;font-size:18px;font-weight:900}
+.roja code{background:rgba(242,237,228,.16);color:#fff}
+.roja ul{margin:10px 0 0;padding-left:18px}
+.roja li{margin-bottom:5px;font-size:14px}
+.roja .aviso{font-family:var(--serif);font-style:italic;font-size:20px;display:block;margin-bottom:12px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+.card{background:var(--papel);border:1px solid var(--linea);border-left:4px solid var(--linea);padding:17px}
+.card h4{margin:0 0 6px;font-size:15px;font-weight:900}
+.card p{margin:0;font-size:13.5px;color:var(--tenue)}
+
+.fases{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));border:1px solid var(--linea);background:var(--papel)}
+.fase{padding:18px;border-right:1px solid var(--linea)}
+.fase:last-child{border-right:0}
+.fase .n{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--rosa)}
+.fase h4{margin:4px 0 8px;font-size:15px;font-weight:900}
+.fase p{margin:0;font-size:13px;color:var(--tenue)}
+.fase.now{background:rgba(122,138,66,.1)}
+@media (max-width:760px){.fase{border-right:0;border-bottom:1px solid var(--linea)}.fase:last-child{border-bottom:0}}
+
+footer{padding:38px 0 60px;color:var(--tenue);font-size:12.5px;font-family:var(--mono)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Semilla Redes · documento vivo</p>
+    <h1>Estado de los <em>bots</em></h1>
+    <p class="sub">Copia de seguridad del proyecto en texto. Si mañana se borra todo, acá está lo necesario para reconstruir los bots: qué existe, dónde vive, qué falta y qué no se toca. Escrita para que la lea Claude en frío.</p>
+    <p class="sub" style="margin-top:12px"><b>Esta página cubre lo técnico.</b> El negocio (identidad, oferta, precios, clientes, números, estrategia) vive en <a href="/status.html">status.html</a>. Son complementarias: si algo es de plata o de posicionamiento, va allá; si es de código, infra o bots, va acá.</p>
+    <p class="stamp">Última edición: 17 ago 2026 · landing.semillaredes.com/bots.status.html</p>
+    <div class="campo">
+      <div class="brote"><i class="i-on"></i><b>1</b><span>Bot en producción</span></div>
+      <div class="brote"><i class="i-wip"></i><b>1</b><span>Bot en desarrollo</span></div>
+      <div class="brote"><i class="i-wip"></i><b>2</b><span>Bots diseñados</span></div>
+      <div class="brote"><i class="i-hold"></i><b>1</b><span>Zona roja</span></div>
+    </div>
+  </div>
+</header>
+
+<nav class="anclas">
+  <div class="wrap">
+    <a href="#frio">Arranque en frío</a>
+    <a href="#mapa">Mapa</a>
+    <a href="#bots">Los bots</a>
+    <a href="#log">Últimas modificaciones</a>
+    <a href="#pendientes">Qué falta</a>
+    <a href="#zona-roja">Zona roja</a>
+    <a href="#metodo">Método</a>
+    <a href="#aprendizajes">Aprendizajes</a>
+    <a href="#patrones">Patrones</a>
+    <a href="#stack">Stack</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="#marca">Marca</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section id="frio">
+  <h2><span class="num">00</span>Arranque en frío <span class="rev">rev. 17 ago 2026</span></h2>
+  <p class="lead">Si perdiste el contexto, empezá por acá y seguí el orden.</p>
+  <div class="frio">
+    <p><b style="display:inline">Contexto en una línea:</b> Semilla Redes es la agencia de estrategia digital para artistas de Agus Calcagno (~150 artistas). SemillaIA es la línea de herramientas web que prequalifican leads con el Método Semilla y los rutean a los servicios pagos. Son apps con usuarios reales, no agentes que corren solos.</p>
+    <ol>
+      <li><b>Leé el mapa de acá abajo</b><span>Un hub y dos herramientas independientes, todas en el mismo repo estático. Ahí ves qué archivo es qué.</span></li>
+      <li><b>Abrí el repo <code>calcagnoagustin/semillaredes</code>, branch <code>main</code></b><span>Es la única fuente del frontend. GitHub Pages sirve directo desde ahí.</span></li>
+      <li><b>Abrí Supabase, proyecto <code>auditoria-artistas</code></b><span>Ahí está la Edge Function <code>auditoria</code> y las tablas <code>leads</code> y <code>playbook_rules</code>. El código de la función es todo el backend.</span></li>
+      <li><b>Leé la tabla <code>playbook_rules</code></b><span>Son las reglas del Método Semilla que usan todos los bots. Es el criterio, no la lógica. Sin eso, el bot no sabe pensar como Agus.</span></li>
+      <li><b>Mirá "Últimas modificaciones"</b><span>Te dice en qué quedó la última sesión de trabajo.</span></li>
+      <li><b>Antes de tocar nada, leé "Zona roja" y "Método"</b><span>La VM tiene bots de trading con plata real. Y el método de trabajo con Agus es fijo, no se renegocia.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section id="mapa">
+  <h2><span class="num">01</span>Mapa de la app <span class="rev">rev. 17 ago 2026</span></h2>
+  <p class="lead">Un hub y dos herramientas <b>independientes</b>: cada una es su propia página, con su propio flujo. El hub solo presenta y rutea. El backend es compartido. Verificado contra el repo el 17 ago 2026.</p>
+
+<div class="mapa"><b>FRONTEND</b> — repo <b>calcagnoagustin/semillaredes</b> · branch <b>main</b> · GitHub Pages
+   CNAME: <b>landing.semillaredes.com</b>   <i>(el apex y www redirigen acá)</i>
+
+   PUBLICO — SemillaIA
+   /hub.html              <b>EL HUB</b> · reúne los dos bots públicos. noindex, URL de prueba.
+      │
+      ├── /diagnostico.html   <b>BOT AUDITOR</b>          terminado
+      │                       herramienta independiente, flujo propio
+      │
+      └── /curadores.html     <b>BOT DE PLAYLISTS</b>     en desarrollo
+                              herramienta independiente, flujo propio
+
+   /semillaIA.html        copia del diagnóstico <i>(se revirtió acá; el hub se mudó a hub.html)</i>
+   /auditoria.html        vacío (0 kb) · candidato a limpieza
+   /panel.html            panel del playbook, conectado a datos reales
+   /bots.status.html      esta página
+   /status.html           fuente de verdad del negocio
+
+   RESTO DEL SITIO
+   /index.html · /landing.html · /formacion.html · /formacion-cm.html · /setup.html · /drops/
+
+   <b>OJO:</b> la carpeta <b>/bots</b> del repo es código de TRADING, no de Semilla.
+        Ver zona roja.
+
+<b>BACKEND</b> — Supabase · proyecto <b>auditoria-artistas</b> · ref <b>fdrxsjphlvvwwknnrjtx</b>
+
+   Edge Function <b>auditoria</b>   GET + POST
+      auth: header <b>x-playbook-key</b> contra el secreto <b>PLAYBOOK_TOKEN</b>
+      │
+      ├── tabla <b>leads</b>            respuestas + clasificación + ficha del artista
+      └── tabla <b>playbook_rules</b>   reglas del Método Semilla · 32 activas
+                                 <i>cerebro compartido de todos los bots</i>
+
+<b>SERVICIOS EXTERNOS</b>
+   Grok (xAI) con web search  →  razona las auditorías
+   Resend                     →  manda los 2 mails de cada auditoría
+   GPT "Semilla" (ChatGPT)    →  lee y escribe el playbook por Action
+   ManyChat                   →  remarketing en Instagram (sin integración directa)</div>
+
+  <p class="lead" style="margin-top:18px">Las dos herramientas comparten el playbook y la Edge Function, pero <b>no comparten pantalla ni estado</b>. Se pueden romper o deployar por separado.</p>
+</section>
+
+<section id="bots">
+  <h2><span class="num">02</span>Los bots, uno por uno <span class="rev">rev. 17 ago 2026</span></h2>
+  <p class="lead">Ficha completa de cada uno: qué hace, dónde vive, en qué estado está y qué le falta.</p>
+
+  <div class="ficha">
+    <div class="ficha-head">
+      <h3>Bot Auditor · "Auditoría para artistas"</h3>
+      <span class="tag t-on">Terminado · en producción</span>
+    </div>
+    <p class="que">El artista completa un formulario sobre su proyecto y recibe un diagnóstico con devolución, clasificación interna de lead y un CTA ruteado al servicio que le corresponde. Es el embudo gratuito de entrada a los servicios pagos de Semilla.</p>
+    <dl>
+      <dt>URL</dt><dd><code>landing.semillaredes.com/diagnostico.html</code></dd>
+      <dt>Entrada</dt><dd>Desde el hub <code>hub.html</code></dd>
+      <dt>Frontend</dt><dd><code>diagnostico.html</code> (~28 kb) — página autónoma, todo el flujo adentro. Hay una copia en <code>semillaIA.html</code>: si se edita una, revisar la otra.</dd>
+      <dt>Alcance</dt><dd>Cualquier disciplina. Sin registro. Devuelve etapa según los tres ejes del Método, 3 fortalezas, 3 puntos flojos y qué hacer primero.</dd>
+      <dt>Backend</dt><dd>Edge Function <code>auditoria</code> (POST) → guarda en <code>leads</code></dd>
+      <dt>Cerebro</dt><dd>Grok (xAI) con web search + las reglas de <code>playbook_rules</code> leídas en runtime, con fallback si la consulta falla</dd>
+      <dt>Salidas</dt><dd>
+        <ul>
+          <li>Mail al artista: informe con skin Semilla, CTA ruteado, reply-to a <code>agus@</code></li>
+          <li>Mail interno a <code>agus@</code>: clasificación, pauta, ficha completa</li>
+        </ul>
+      </dd>
+      <dt>Diseño</dt><dd><b>Nada de lógica rígida "si A entonces B".</b> El LLM razona sobre las respuestas usando el Método Semilla como criterio.</dd>
+      <dt>Última edición</dt><dd><b>14 ago 2026</b> — "Mover diagnostico a su propia landing". El 16 ago se revirtió <code>semillaIA.html</code> al diagnóstico y el hub se mudó a <code>hub.html</code>.</dd>
+      <dt>Qué falta</dt><dd>
+        <ul>
+          <li>Confirmar si las columnas <code>inversion_pauta</code>, <code>punto_debil</code> y <code>feedback_agus</code> existen en <code>leads</code></li>
+          <li>Decidir el post-auditoría: <b>A)</b> link a servicio existente (MVP) o <b>B)</b> micro-producto pago (Fase 2)</li>
+          <li>Email de abandono (empieza y no termina) — sigue pendiente de la Fase 1</li>
+          <li>Panel interno / CRM básico y exportación</li>
+        </ul>
+      </dd>
+    </dl>
+  </div>
+
+  <div class="ficha wip">
+    <div class="ficha-head">
+      <h3>Bot de Playlists · "Descubridor de curadores"</h3>
+      <span class="tag t-wip">En desarrollo</span>
+    </div>
+    <p class="que">Para músicos que necesitan contactar curadores de playlists de Spotify. Devuelve curadores relevantes por género con su vía de contacto. La unidad de valor es el <b>curador</b>, no la playlist.</p>
+    <dl>
+      <dt>URL</dt><dd><code>landing.semillaredes.com/curadores.html</code></dd>
+      <dt>Entrada</dt><dd>Desde el hub <code>hub.html</code></dd>
+      <dt>Frontend</dt><dd><code>curadores.html</code> (~19 kb) — página autónoma, en obra</dd>
+      <dt>Promesa</dt><dd>El músico dice qué música hace y recibe playlists de Spotify vivas, sin las que inflan seguidores, con la vía de contacto del curador.</dd>
+      <dt>Datos</dt><dd>Proyecto en la VM: <code>/home/opc/semilla_playlists/</code><br><code>CRITERIOS.md</code> y <code>busquedas.json</code> son las referencias canónicas</dd>
+      <dt>Fuente</dt><dd>artist.tools — cuenta Industry Access compartida (Pancake Records / Dan Hammond). El input de búsqueda es el segundo <code>input</code> del DOM.</dd>
+      <dt>Regla dura</dt><dd><b>No filtrar por <code>hasContact=true</code>:</b> excluye las playlists más valiosas. El contacto es un campo a enriquecer, no un filtro.</dd>
+      <dt>Naming</dt><dd>Se descartó "Playlist Music Booster". "Booster" es vocabulario de servicios de streams falsos que Spotify penaliza.</dd>
+      <dt>Última edición</dt><dd><b>14 ago 2026</b> — "Agregar buscador de curadores de playlists (SemillaIA)"</dd>
+      <dt>Qué falta</dt><dd>
+        <ul>
+          <li>Relanzar la extracción completa sin el filtro <code>hasContact=true</code></li>
+          <li>Enriquecer a mano los contactos de los curadores top por género (queda como activo propietario)</li>
+          <li>Definir qué muestra la página al músico y con qué límite freemium</li>
+          <li>Conectar el frontend a los datos</li>
+        </ul>
+      </dd>
+    </dl>
+  </div>
+
+  <div class="ficha wip">
+    <div class="ficha-head">
+      <h3>Radar Semilla · content bot</h3>
+      <span class="tag t-wip">Diseñado, sin construir</span>
+    </div>
+    <p class="que">Bot semanal: busca noticias de marketing relevantes para artistas, arma carruseles con la marca Semilla y los publica en Instagram con aprobación humana en el medio. No tiene página propia: es un proceso, no una herramienta de usuario.</p>
+    <dl>
+      <dt>Arquitectura</dt><dd>Edge Function <code>radar</code> + Satori/resvg para render PNG en Deno + bucket de Supabase + aprobación por email (Resend) → Meta Graph API</dd>
+      <dt>Bloqueante</dt><dd>Agus tiene que crear una app en Meta for Developers y autorizar <code>instagram_content_publish</code></dd>
+      <dt>Orden de build</dt><dd>Radar + pipeline de render + aprobación por mail primero. Meta Graph API recién después, con la calidad del contenido ya validada.</dd>
+      <dt>Última edición</dt><dd class="sf">s/f — solo diseño acordado, sin código</dd>
+    </dl>
+  </div>
+
+  <div class="ficha wip">
+    <div class="ficha-head">
+      <h3>Memoria del bot</h3>
+      <span class="tag t-wip">Diseñado, sin construir</span>
+    </div>
+    <p class="que">Cómo el sistema mejora solo: el criterio de Agus se destila en reglas y vuelve al playbook. Es lo que convierte al Método Semilla en un sistema progresivo.</p>
+    <dl>
+      <dt>Ciclo</dt><dd>Feedback 👍/👎 en el mail interno → columna <code>feedback_agus</code> → destilado a reglas de <code>playbook_rules</code></dd>
+      <dt>Ejemplos "oro"</dt><dd>Salen de las sesiones del Grupo Semilla. Son ocultas: no pasan por Gemini, se procesan vía transcripción.</dd>
+      <dt>Control</dt><dd>Canarios para detectar degradación de criterio</dd>
+      <dt>Última edición</dt><dd class="sf">s/f — solo diseño acordado, sin código</dd>
+    </dl>
+  </div>
+
+  <h3 class="sub-h">Piezas que ya funcionan y no son bots de cara al usuario</h3>
+  <div class="grid">
+    <div class="card"><h4>GPT "Semilla" · ChatGPT privado</h4><p>Lee el playbook con la Action <code>getPlaybook</code> (GET) y guarda reglas con <code>addRule</code> (POST). Siempre pide confirmación de Agus antes de escribir. Ambas contra la Edge Function <code>auditoria</code>.</p></div>
+    <div class="card"><h4>Emails · Resend</h4><p>Dominio <code>semillaredes.com</code> verificado con DKIM + SPF en el subdominio <code>send</code>. Secretos cargados: <code>RESEND_API_KEY</code> y <code>MAIL_FROM</code> (<code>ia@semillaredes.com</code>). Todo responde a <code>agus@semillaredes.com</code>.</p></div>
+    <div class="card"><h4>Playbook · <code>playbook_rules</code></h4><p>Campos: id, regla, disciplina, activa, ámbito. 32 reglas activas destiladas de los videos del canal con Gemini de YouTube. Ejemplo, regla #43: el conteo de posts nunca es indicador de fortaleza.</p></div>
+    <div class="card"><h4>ManyChat · remarketing IG</h4><p>4 automatizaciones activas: 3 por comentario, 1 por seguidor nuevo, todas hacia la secuencia "Remarketing 24h - WhatsApp Agus". <b>No tocar sin instrucción explícita.</b></p></div>
+  </div>
+</section>
+
+<section id="log">
+  <h2><span class="num">03</span>Últimas modificaciones</h2>
+  <p class="lead"><b>Regla de esta página:</b> cada cambio del proyecto agrega una fila arriba de todo, con fecha, qué cambió y dónde. Las fechas de archivos salen del historial de commits del repo. Lo que no tiene fecha registrada queda como "s/f".</p>
+  <div class="tabla-scroll">
+  <table>
+    <thead><tr><th style="width:100px">Fecha</th><th>Qué cambió</th><th style="width:190px">Dónde</th></tr></thead>
+    <tbody>
+      <tr><td class="fecha">17 ago 2026</td><td>Se crea esta página: estado técnico de los bots, complementaria de <code>status.html</code>. Se verifica el mapa real contra el repo.</td><td><code>bots.status.html</code></td></tr>
+      <tr><td class="fecha">17 ago 2026</td><td>Actualización de la fuente de verdad del negocio: desarrollo continuo interno, Tiendup activado</td><td><code>status.html</code></td></tr>
+      <tr><td class="fecha">16 ago 2026</td><td>El hub se muda a <code>hub.html</code> (noindex, URL de prueba) y <code>semillaIA.html</code> se revierte al diagnóstico</td><td><code>hub.html</code> · <code>semillaIA.html</code></td></tr>
+      <tr><td class="fecha">14 ago 2026</td><td>El diagnóstico se mueve a su propia landing</td><td><code>diagnostico.html</code></td></tr>
+      <tr><td class="fecha">14 ago 2026</td><td>Se agrega el buscador de curadores de playlists</td><td><code>curadores.html</code></td></tr>
+      <tr><td class="fecha">15 jul 2026</td><td>El panel del playbook se conecta a datos reales</td><td><code>panel.html</code></td></tr>
+      <tr><td class="fecha">1 jul 2026</td><td>Última edición del home institucional</td><td><code>index.html</code></td></tr>
+      <tr><td class="fecha sf">s/f</td><td>Descubrimiento: <code>hasContact=true</code> excluye las playlists más valiosas. Se redefine la unidad de valor: el curador, no la playlist.</td><td>Bot de Playlists</td></tr>
+      <tr><td class="fecha sf">s/f</td><td>GPT "Semilla" conectado al playbook por Actions; emails en producción por Resend; playbook poblado con 32 reglas</td><td>Supabase · Resend · ChatGPT</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="pendientes">
+  <h2><span class="num">04</span>Qué queda por hacer <span class="rev">rev. 17 ago 2026</span></h2>
+  <p class="lead">Lo abierto hoy, con quién lo destraba.</p>
+  <div class="pend">
+    <div><span class="box"></span><span>Confirmar si las columnas <code>inversion_pauta</code>, <code>punto_debil</code> y <code>feedback_agus</code> existen en la tabla <code>leads</code>.</span><span class="quien">Claude</span></div>
+    <div><span class="box"></span><span>Decidir el post-auditoría: <b>A)</b> link a servicio existente (MVP) o <b>B)</b> micro-producto pago (Fase 2).</span><span class="quien">Agus</span></div>
+    <div><span class="box"></span><span>Relanzar la extracción de playlists sin el filtro <code>hasContact=true</code>.</span><span class="quien">Claude</span></div>
+    <div><span class="box"></span><span>Enriquecer contactos de los curadores top por género.</span><span class="quien">Claude</span></div>
+    <div><span class="box"></span><span>Conectar <code>curadores.html</code> a los datos y definir el corte freemium.</span><span class="quien">Claude</span></div>
+    <div><span class="box"></span><span>Email de abandono del auditor: si empieza y no termina, retomar por mail.</span><span class="quien">Claude</span></div>
+    <div><span class="box"></span><span>Panel interno / CRM básico con exportación de leads.</span><span class="quien">Claude</span></div>
+    <div><span class="box"></span><span>Crear la app en Meta for Developers y autorizar <code>instagram_content_publish</code> (destraba Radar Semilla).</span><span class="quien">Agus</span></div>
+    <div><span class="box"></span><span>Definir qué pasa con <code>auditoria.html</code> (archivo vacío, 0 kb) y con la copia del diagnóstico en <code>semillaIA.html</code>.</span><span class="quien">Claude</span></div>
+  </div>
+</section>
+
+<section id="zona-roja">
+  <h2><span class="num">05</span>Zona roja <span class="rev">rev. 17 ago 2026</span></h2>
+  <p class="lead">La VM tiene plata real corriendo. Esto no se toca nunca.</p>
+  <div class="roja">
+    <span class="aviso">La VM no es de Semilla Redes: es de trading.</span>
+    <h3>VM <code>semillas-bot</code> · Oracle Cloud · <code>vm.semillaredes.com</code></h3>
+    <p>Python 3.9, sin Node, sin Docker, 945 MB de RAM, 19 GB de disco libre. Los crons activos son todos de trading: <code>main.py</code> (00:15), <code>ganesha_ejecutor.py</code> (cada 4 h), <code>pescador.py</code> (horaria).</p>
+    <p style="margin-top:12px"><b>Nunca tocar:</b></p>
+    <ul>
+      <li><code>bot_semillas/</code> · <code>ganesha_bot/</code> · <code>freqtrade/</code></li>
+      <li><code>acciones/</code> · <code>ejecutor/</code> · <code>gdash/</code></li>
+    </ul>
+    <p style="margin-top:12px"><b>Y ojo con el repo:</b> la carpeta <code>/bots</code> de <code>calcagnoagustin/semillaredes</code> también es trading — <code>bots/src/main.py</code>, <code>ganesha_ejecutor.py</code>, <code>strategy.py</code>, <code>ledger.py</code> y compañía. Está en el mismo repo que la landing, pero no tiene nada que ver con Semilla Redes. No editar.</p>
+    <p style="margin-top:12px">Está documentado con README y un archivo de advertencia adentro de <code>bot_semillas/</code>. Lo único de Semilla Redes que vive ahí es <code>/home/opc/semilla_playlists/</code>.</p>
+  </div>
+</section>
+
+<section id="metodo">
+  <h2><span class="num">06</span>Método de trabajo <span class="rev">rev. 17 ago 2026</span></h2>
+  <p class="lead">Fijo. No se renegocia por conversación.</p>
+  <ol class="reglas">
+    <li><b>Claude opera solo</b><span>Chrome, GitHub y Supabase con autonomía total. Se pausa únicamente para logins, aceptar términos y pegar claves secretas: eso es de Agus.</span></li>
+    <li><b>Agus no ejecuta a mano ni contrata gente</b><span>Solo plataformas digitales. Se hace el máximo posible por él.</span></li>
+    <li><b>Respuestas sintéticas</b><span>Una línea por paso en los procesos. Nada de explicar de más.</span></li>
+    <li><b>Agus testea en producción</b><span>Claude no auto-testea. Se itera en real: construir, probar de verdad, mirar el resultado, ajustar.</span></li>
+    <li><b>Frontend aprobado primero, backend después</b><span>Y un commit por cambio.</span></li>
+    <li><b>Emails siempre por API HTTPS</b><span>Resend o SendGrid. Nunca SMTP, nunca el conector de Gmail: solo crea borradores y el SMTP saliente está bloqueado.</span></li>
+    <li><b>Separar lo barato de lo caro</b><span>Reglas y scoring simple para el tier gratis; modelos potentes y búsquedas web reservados para lo pago. Freemium según costo de cómputo.</span></li>
+    <li><b>Español rioplatense con voseo</b><span>En todo: interfaz, mails, informes y conversación.</span></li>
+  </ol>
+</section>
+
+<section id="aprendizajes">
+  <h2><span class="num">07</span>Aprendizajes ganados a los golpes <span class="rev">rev. 17 ago 2026</span></h2>
+  <p class="lead">Cada uno costó una sesión. No repetirlos.</p>
+  <ol class="reglas">
+    <li><b>Reutilizar activos reales, nunca reconstruirlos</b><span>Si hay un logo o SVG en el repo, se usa ese. Reconstruir introduce errores.</span></li>
+    <li><b>La unidad de valor tiene que ser la correcta</b><span>En Radar de Playlists el curador es la unidad, no la playlist. El contacto es un dato a enriquecer, no un filtro de exclusión.</span></li>
+    <li><b><code>hasContact=true</code> en artist.tools excluye las playlists más valiosas</b><span>No usarlo nunca como filtro de búsqueda.</span></li>
+    <li><b>Meta bloquea botones en el primer contacto fuera de la ventana de 24 h</b><span>El primer DM tiene que llevar el link en el texto, no solo en botón. Verificado con caso real.</span></li>
+    <li><b>El conteo de posts nunca es indicador de fortaleza</b><span>Regla #43 del playbook. Solo importan calidad, claridad y curación de los posts recientes.</span></li>
+    <li><b>Google OAuth está bloqueado en la cuenta de Agus</b><span>Permanente. Mató Apps Script y cualquier app no verificada. No insistir por ese lado.</span></li>
+    <li><b>Instagram no es scrapeable</b><span>Ni por fetch ni por web_fetch. Datos públicos confiables por búsqueda: handle, bio, followers/following, post count. El resto es revisión manual o herramientas nativas.</span></li>
+    <li><b>Spotify no da oyentes mensuales por API pública</b><span>Están renderizados por JS. Por API solo salen followers y popularity.</span></li>
+    <li><b>Cuidado con el vocabulario penalizado</b><span>"Booster", "streams garantizados" y familia son lenguaje de servicios que Spotify castiga. No usarlos en naming ni en copy.</span></li>
+  </ol>
+</section>
+
+<section id="patrones">
+  <h2><span class="num">08</span>Patrones técnicos que funcionan <span class="rev">rev. 17 ago 2026</span></h2>
+  <p class="lead">Recetas concretas, para no redescubrirlas cada vez.</p>
+  <div class="grid">
+    <div class="card"><h4>Editar archivos en GitHub</h4><p>CodeMirror 6 vía <code>document.querySelector('.cm-content').cmTile.view</code>; despachar con <code>view.dispatch({changes:{from:0,to:view.state.doc.length,insert:src}})</code>. Archivos grandes: base64 en chunks de ~6000 chars acumulados en <code>window.__b64</code>, decode con <code>DecompressionStream</code> o <code>TextDecoder</code>. El commit son dos clicks: "Commit changes" abre el diálogo y después se confirma.</p></div>
+    <div class="card"><h4>Subir binarios a GitHub</h4><p>Vía <code>&lt;file-attachment&gt;</code> con DragEvent + DataTransfer; base64 en chunks de ~1800 chars en <code>window.__p</code>. Cuando falla, Agus hace el drag-and-drop a mano.</p></div>
+    <div class="card"><h4>Supabase · editor Monaco</h4><p>Navegar por la lista de funciones → click en la fila <code>auditoria</code> → tab Code. La URL directa falla seguido. Editar con <code>window.monaco.editor.getModels()[0].getValue()/.setValue()</code>. Deploy con "Deploy updates", abajo a la derecha, que aparece solo si hay cambios sin guardar.</p></div>
+    <div class="card"><h4>ManyChat</h4><p>Automatizaciones de comentario desde "Nueva Automatización → Comenzar Desde Cero → hoja en blanco". Desde plantillas no sirve: el Easy Builder no expone opciones de secuencia. El canvas pide clicks por coordenadas + screenshot. Cada keyword se carga individualmente con ~2 s de pausa antes de Enter.</p></div>
+    <div class="card"><h4>Gmail</h4><p><code>agus@semillaredes.com</code> es la cuenta <b>u/1</b>, no u/0 (u/0 es <code>calcagnoagustin@gmail.com</code>). Se entra por el selector de cuentas, no por URL directa.</p></div>
+    <div class="card"><h4>WhatsApp Web</h4><p>Para enumerar destinatarios de una campaña, buscar una frase distintiva del mensaje anterior. Enviar en lotes chicos a ritmo humano, priorizando contactos con historial. Proteger el número principal por encima de la velocidad.</p></div>
+    <div class="card"><h4>MercadoPago</h4><p>Navegación por URL con número de página: <code>/invoices-list/?page=N&amp;period=last_year</code>. <code>get_page_text</code> anda bien; la página 10 se cuelga, ahí el fallback es extracción por DOM con JS.</p></div>
+    <div class="card"><h4>Google Sheets</h4><p>Es canvas: <code>get_page_text</code> no sirve. Usar <code>read_file_content</code> de Drive con el fileId, o el endpoint <code>gviz/tq</code> con <code>{credentials:'include'}</code>.</p></div>
+  </div>
+</section>
+
+<section id="stack">
+  <h2><span class="num">09</span>Stack y accesos <span class="rev">rev. 17 ago 2026</span></h2>
+  <p class="lead">Dónde vive cada cosa. Las claves no están acá: viven en los secretos de Supabase.</p>
+  <div class="tabla-scroll">
+  <table>
+    <thead><tr><th>Pieza</th><th>Servicio</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td>Hosting</td><td>GitHub Pages</td><td><code>calcagnoagustin/semillaredes</code>, branch <code>main</code></td></tr>
+      <tr><td>DNS y dominio</td><td>Hostinger</td><td>ALIAS <code>@</code> y CNAME <code>www</code> → <code>calcagnoagustin.github.io</code>. <b>No tocar el MX raíz.</b></td></tr>
+      <tr><td>Backend</td><td>Supabase (Free)</td><td>Org "Semilla Redes" · proyecto <code>auditoria-artistas</code> · Edge Function <code>auditoria</code></td></tr>
+      <tr><td>LLM de auditoría</td><td>Grok (xAI)</td><td>Con web search</td></tr>
+      <tr><td>Destilación de contenido</td><td>Gemini en YouTube Studio</td><td>Convierte videos del canal en reglas de playbook</td></tr>
+      <tr><td>Email transaccional</td><td>Resend</td><td><code>ia@semillaredes.com</code>, dominio verificado</td></tr>
+      <tr><td>Automatización IG</td><td>ManyChat</td><td>4 automatizaciones activas</td></tr>
+      <tr><td>Research de curadores</td><td>artist.tools</td><td>Cuenta Industry Access (Dan Hammond / Pancake Records)</td></tr>
+      <tr><td>VM</td><td>Oracle Cloud</td><td><code>semillas-bot</code> vía MCP "VM Semillas". Casi todo es trading: ver zona roja.</td></tr>
+      <tr><td>Navegación</td><td>Chrome MCP</td><td>"Claude in Chrome"</td></tr>
+      <tr><td>Pagos de clientes</td><td>MercadoPago</td><td>Suscripciones + Google Sheet de reconciliación</td></tr>
+      <tr><td>Contenido fuente</td><td>YouTube @semillaredes</td><td>69+ videos, masterclasses del Método Semilla</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 class="sub-h">Servicios que se venden</h3>
+  <p class="lead" style="margin-top:0">SemillaIA es el embudo gratuito de entrada a todo esto. El CTA del auditor rutea acá.</p>
+  <div class="tabla-scroll">
+  <table>
+    <thead><tr><th>Servicio</th><th>Para quién</th></tr></thead>
+    <tbody>
+      <tr><td>Auditoría inicial con Agus</td><td>Proyecto activo con dudas estratégicas · <code>aguscalcagno.com/s/auditoria-inicial-con-agus</code></td></tr>
+      <tr><td>Formación Semilla</td><td>Necesita método y estructura antes de contratar</td></tr>
+      <tr><td>Setup inicial</td><td>Buen activo artístico, falta ecosistema digital</td></tr>
+      <tr><td>Mentoría mensual</td><td>Acompañamiento sostenido</td></tr>
+      <tr><td>Campañas avanzadas</td><td>Audiencia + producto claro + presupuesto</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="roadmap">
+  <h2><span class="num">10</span>Roadmap <span class="rev">rev. 17 ago 2026</span></h2>
+  <p class="lead">Las fases de la spec, con la posición real de hoy.</p>
+  <div class="fases">
+    <div class="fase now"><span class="n">Fase 1 · acá estamos</span><h4>MVP del embudo</h4><p>Formulario, base de datos, resultado gratuito, lead scoring, CTA dinámico, email de abandono, CRM básico.</p></div>
+    <div class="fase"><span class="n">Fase 2</span><h4>Pagos y profundidad</h4><p>Checkout, reportes pagos, PDF, análisis IA más profundo, upload de archivos. Acá también se decide si se compran datos reales por API.</p></div>
+    <div class="fase"><span class="n">Fase 3</span><h4>Descubribilidad</h4><p>Búsquedas en Google y YouTube, naming, SEO, evaluación de links, benchmark.</p></div>
+    <div class="fase"><span class="n">Fase 4</span><h4>Premium y escala</h4><p>Informes premium, roadmap de 180 días, dashboard interno, automatizaciones comerciales.</p></div>
+  </div>
+  <h3 class="sub-h">Datos reales por API · decisión de Fase 2</h3>
+  <p class="lead" style="margin-top:0">No hay opción gratis a escala. Spotify no expone oyentes mensuales por API pública; las alternativas pagas son Chartmetric, Soundcharts o Songstats (~USD 10–30/mes en web, bastante más por API). Instagram solo da API oficial para cuentas propias; para perfiles ajenos hay scrapers de terceros (HikerAPI, EnsembleData, RapidAPI).</p>
+</section>
+
+<section id="marca">
+  <h2><span class="num">11</span>Marca <span class="rev">rev. 17 ago 2026</span></h2>
+  <p class="lead">El skin que usan la landing, los informes y los carruseles.</p>
+  <div class="tabla-scroll">
+  <table>
+    <thead><tr><th>Color</th><th>Hex</th><th>Uso</th></tr></thead>
+    <tbody>
+      <tr><td>Crema</td><td><code>#F2EDE4</code></td><td>Fondo</td></tr>
+      <tr><td>Navy</td><td><code>#1A2456</code></td><td>Texto y estructura</td></tr>
+      <tr><td>Wine</td><td><code>#7A1F3A</code></td><td>Acento fuerte, alertas</td></tr>
+      <tr><td>Rosa</td><td><code>#C97080</code></td><td>Acento suave, marcadores</td></tr>
+      <tr><td>Oliva</td><td><code>#7A8A42</code></td><td>Estado activo, crecimiento</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="margin-top:18px">Tipografía: <b>Inter 900</b> para títulos, <b>Playfair Display itálica</b> para el gesto de marca. Logo: SVG de 8 líneas radiantes con puntos en rosa y una forma de semilla central en oliva — <b>usar siempre el archivo del repo</b>, nunca reconstruirlo.</p>
+  <p style="margin-top:14px">Tono de los informes: profesional, claro, humano, directo. Nunca humillante. Se dice "detectamos oportunidades", no "tu proyecto es débil". Las etiquetas internas de lead jamás se le muestran al artista.</p>
+</section>
+
+</main>
+
+<footer class="wrap">
+  Documento vivo · se actualiza en cada cambio del proyecto · noindex · última edición 17 ago 2026
+</footer>
+
+</body>
+</html>
