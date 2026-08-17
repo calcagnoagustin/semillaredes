@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Estado del proyecto · Semilla Redes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+--cream:#F2EDE4; --cream-dark:#E6DFD2; --white:#FDFAF6;
+--navy:#1A2456; --wine:#7A1F3A; --rosa:#E2767C; --oliva:#87863A;
+--ink:#24242C; --mute:#8A8698;
+--line:rgba(26,36,86,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--wine)}
+
+/* ---------- layout ---------- */
+.top{position:sticky;top:0;z-index:50;background:var(--cream);border-bottom:1px solid var(--line);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brandline{display:flex;align-items:center;gap:11px}
+.brandline svg{width:30px;height:30px;flex:none}
+.brandline b{font-size:13px;font-weight:800;letter-spacing:.18em;color:var(--navy);display:block;line-height:1.1}
+.brandline span{font-size:10.5px;letter-spacing:.22em;color:var(--rosa);font-weight:600}
+.stamp{font-size:11.5px;color:var(--mute);letter-spacing:.04em}
+.stamp b{color:var(--navy)}
+
+.shell{max-width:1180px;margin:0 auto;padding:38px 28px 100px;display:grid;grid-template-columns:216px 1fr;gap:46px;align-items:start}
+nav.toc{position:sticky;top:86px}
+nav.toc p{font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--oliva);margin-bottom:12px}
+nav.toc a{display:block;font-size:13.2px;color:var(--navy);text-decoration:none;padding:5px 0 5px 12px;border-left:2px solid var(--line);transition:.15s}
+nav.toc a:hover{border-left-color:var(--rosa);color:var(--wine);padding-left:16px}
+
+/* ---------- typography ---------- */
+.hero{margin-bottom:44px}
+.kicker{font-size:11.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--rosa);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.kicker::before{content:"";width:13px;height:13px;flex:none;background:var(--rosa);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3 C18 7 18 17 12 21 C6 17 6 7 12 3 Z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3 C18 7 18 17 12 21 C6 17 6 7 12 3 Z'/%3E%3C/svg%3E") center/contain no-repeat}
+h1{font-family:'Playfair Display',serif;font-size:clamp(34px,5vw,52px);line-height:1.08;color:var(--navy);font-weight:700;letter-spacing:-.01em}
+h1 em{font-style:italic;color:var(--wine)}
+.lede{font-size:17px;color:#4A4756;max-width:62ch;margin-top:16px}
+
+section{margin-bottom:56px;scroll-margin-top:96px}
+h2{font-family:'Playfair Display',serif;font-size:27px;color:var(--navy);font-weight:700;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:22px}
+h3{font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:var(--navy);margin:26px 0 10px;letter-spacing:-.01em}
+p{margin-bottom:12px;max-width:76ch}
+.small{font-size:13px;color:var(--mute)}
+
+ul{list-style:none;margin:0 0 14px}
+ul li{position:relative;padding-left:22px;margin-bottom:7px;max-width:76ch}
+ul li::before{content:"";position:absolute;left:0;top:.55em;width:11px;height:11px;background:var(--oliva);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3 C18 7 18 17 12 21 C6 17 6 7 12 3 Z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3 C18 7 18 17 12 21 C6 17 6 7 12 3 Z'/%3E%3C/svg%3E") center/contain no-repeat}
+ul.wine li::before{background:var(--wine)}
+ul.rosa li::before{background:var(--rosa)}
+
+/* ---------- components ---------- */
+.card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:14px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.card h4{font-size:15px;color:var(--navy);margin-bottom:6px;font-weight:700}
+.card .tag{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:9px;display:block}
+.t-oliva{color:var(--oliva)} .t-wine{color:var(--wine)} .t-rosa{color:var(--rosa)}
+.card p{font-size:14px;margin-bottom:0;color:#4A4756}
+
+.punch{background:var(--navy);color:var(--cream);border-radius:16px;padding:30px 32px;margin:22px 0}
+.punch p{color:var(--cream);max-width:64ch}
+.punch .q{font-family:'Playfair Display',serif;font-style:italic;font-size:24px;line-height:1.35}
+.punch b{color:var(--rosa)}
+
+table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:14px;background:var(--white);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+th{background:var(--navy);color:var(--cream);text-align:left;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:11px 14px;font-weight:700}
+td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top}
+td b{color:var(--navy)}
+tr:nth-child(even) td{background:rgba(242,237,228,.5)}
+
+.chip{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.ok{background:rgba(135,134,58,.16);color:var(--oliva)}
+.wip{background:rgba(226,118,124,.18);color:var(--wine)}
+.todo{background:rgba(26,36,86,.09);color:var(--navy)}
+.warn{background:rgba(122,31,58,.12);color:var(--wine)}
+
+.funnel{max-width:560px;margin:18px 0}
+.funnel div{background:var(--white);border:1px solid var(--line);border-left:5px solid;border-radius:10px;padding:12px 18px;margin:0 auto 8px;font-size:14px}
+.funnel div b{display:block;font-size:14.5px;color:var(--navy)}
+.f1{width:100%;border-left-color:var(--oliva)}
+.f2{width:88%;border-left-color:#D8A93A}
+.f3{width:76%;border-left-color:var(--rosa)}
+.f4{width:64%;border-left-color:var(--navy)}
+
+.swatches{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.sw{width:110px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--white)}
+.sw i{display:block;height:52px}
+.sw span{display:block;padding:7px 9px;font-size:11px;line-height:1.35;color:var(--navy)}
+.sw span b{display:block;font-size:12px}
+
+.rule{background:rgba(226,118,124,.09);border:1px solid rgba(226,118,124,.35);border-radius:12px;padding:18px 22px;margin-bottom:14px}
+.rule h4{color:var(--wine);font-size:14px;margin-bottom:6px;font-weight:700}
+
+footer{border-top:1px solid var(--line);padding:26px 28px 60px;text-align:center;color:var(--mute);font-size:12px;letter-spacing:.1em}
+
+@media(max-width:900px){
+.shell{grid-template-columns:1fr;gap:0;padding:26px 20px 80px}
+nav.toc{position:static;margin-bottom:34px;display:flex;flex-wrap:wrap;gap:6px}
+nav.toc p{width:100%}
+nav.toc a{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12px}
+.g2,.g3{grid-template-columns:1fr}
+table{font-size:13px}
+}
+@media print{.top,nav.toc{display:none}.shell{display:block}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="brandline">
+    <svg viewBox="0 0 44 44" aria-hidden="true"><g stroke="#E2767C" stroke-width="2.4" stroke-linecap="round"><line x1="22" y1="22" x2="5" y2="22"/><line x1="22" y1="22" x2="39" y2="22"/><line x1="22" y1="22" x2="22" y2="5"/><line x1="22" y1="22" x2="22" y2="39"/><line x1="22" y1="22" x2="10" y2="10"/><line x1="22" y1="22" x2="34" y2="34"/><line x1="22" y1="22" x2="34" y2="10"/><line x1="22" y1="22" x2="10" y2="34"/></g><g fill="#E2767C"><circle cx="5" cy="22" r="3.4"/><circle cx="39" cy="22" r="3.4"/><circle cx="22" cy="5" r="3.4"/><circle cx="22" cy="39" r="3.4"/><circle cx="10" cy="10" r="3.4"/><circle cx="34" cy="34" r="3.4"/><circle cx="34" cy="10" r="3.4"/><circle cx="10" cy="34" r="3.4"/></g><ellipse cx="22" cy="22" rx="6.6" ry="10.5" fill="#87863A"/></svg>
+    <div><b>SEMILLA</b><span>REDES</span></div>
+  </div>
+  <div class="stamp">Documento interno · <b>Última actualización: 16/08/2026</b></div>
+</div>
+
+<div class="shell">
+
+<nav class="toc">
+  <p>Índice</p>
+  <a href="#identidad">01 · Identidad</a>
+  <a href="#metodo">02 · El Método</a>
+  <a href="#oferta">03 · Oferta y precios</a>
+  <a href="#formacion">04 · Formación Semilla</a>
+  <a href="#embudo">05 · Embudo Semilla</a>
+  <a href="#drops">06 · Los Drops</a>
+  <a href="#clientes">07 · Clientes</a>
+  <a href="#estrategia">08 · Estrategia</a>
+  <a href="#pipeline">09 · Pipeline</a>
+  <a href="#visual">10 · Sistema visual</a>
+  <a href="#stack">11 · Stack técnico</a>
+  <a href="#mantenimiento">12 · Mantenimiento</a>
+  <a href="#registro">13 · Registro</a>
+</nav>
+
+<main>
+
+<div class="hero">
+  <div class="kicker">Estado del proyecto</div>
+  <h1>Semilla Redes,<br><em>fuente de verdad.</em></h1>
+  <p class="lede">Todo el proyecto en una sola página: identidad, método, oferta, productos en desarrollo, sistema visual y stack técnico. Se actualiza cada vez que se guarda información nueva del proyecto.</p>
+</div>
+
+<!-- 01 -->
+<section id="identidad">
+<h2>01 · Identidad</h2>
+<p><b>Agus Calcagno</b> es estratega digital argentino. Desde el año 2000 ayuda a músicos, artistas y proyectos culturales a desarrollar proyectos digitales. Creador de <b>Semilla Redes</b> y de <b>Escorpio</b> (desarrollo digital para artistas musicales). Su identidad profesional está en la intersección de estrategia cultural, redes sociales, publicidad digital, desarrollo de negocios, IA y educación.</p>
+
+<div class="punch">
+  <p class="q">"El árbol ya está en la semilla."</p>
+  <p style="margin-top:12px;font-size:14.5px">El potencial ya existe en el proyecto artístico. Lo que falta es <b>ordenarlo, estructurarlo y hacerlo crecer</b>.</p>
+</div>
+
+<table>
+<tr><th>Dato</th><th>Valor</th></tr>
+<tr><td><b>Base</b></td><td>Merlo, San Luis, Argentina</td></tr>
+<tr><td><b>Mail</b></td><td>agus@semillaredes.com</td></tr>
+<tr><td><b>Teléfono</b></td><td>+54 9 2665 24 2011</td></tr>
+<tr><td><b>Sitios</b></td><td>semillaredes.com · aguscalcagno.com (plataforma) · landing.semillaredes.com (landings)</td></tr>
+<tr><td><b>Instagram</b></td><td>@semillaredes — 12.8k seguidores, cuenta verificada</td></tr>
+<tr><td><b>Tono</b></td><td>Editorial, cultural, cálido pero premium. Orgánico + estructurado. Español rioplatense.</td></tr>
+</table>
+
+<h3>Diferenciador clave</h3>
+<p>A diferencia de los consultores de redes que se enfocan en posteos, reels y estética, Semilla Redes pregunta primero: ¿qué vendés?, ¿a quién?, ¿por qué alguien pagaría?, ¿cuál es tu ecosistema?, ¿qué verticales de ingreso tenés?, ¿cuál es tu CAC y tu LTV? La publicidad no es "boostear publicaciones": es una herramienta estratégica dentro de un método completo de crecimiento digital y económico.</p>
+</section>
+
+<!-- 02 -->
+<section id="metodo">
+<h2>02 · El Método Semilla</h2>
+<p>Tres pilares. Se arranca siempre por el negocio, no por los posteos.</p>
+<div class="grid g3">
+  <div class="card"><span class="tag t-oliva">Pilar 01</span><h4>Modelo de negocio</h4><p>Productos, objetivos, verticales de ingreso, precios, CAC, LTV. Qué vendés y a quién.</p></div>
+  <div class="card"><span class="tag t-wine">Pilar 02</span><h4>Comunicación</h4><p>Identidad, contenido, voz, audiencia. Cómo se cuenta lo que hacés.</p></div>
+  <div class="card"><span class="tag t-rosa">Pilar 03</span><h4>Publicidad</h4><p>Meta Ads, YouTube Ads y Spotify Ads con criterio estratégico: públicos, embudos, optimización.</p></div>
+</div>
+
+<h3>Principios de trabajo</h3>
+<ul>
+  <li>El rol del artista es hacer arte, no contenido. La estrategia de contenido matchea obra con audiencia con mentalidad publicitaria; no impone calendarios rígidos de "lunes, martes, miércoles".</li>
+  <li>Cinco tipologías de producto artístico, cada una con su lógica de comunicación: lanzamientos musicales · shows y entradas · formaciones y talleres · libros y editorial · obra física y merch.</li>
+  <li>Tres niveles de audiencia: audiencia fresca · seguidores pagos segmentados (siempre de mayor calidad que los orgánicos) · activo de datos para lookalikes y públicos personalizados.</li>
+  <li>La marca a construir es el método: que el cliente y el alumno digan "yo estoy con el Método".</li>
+</ul>
+</section>
+
+<!-- 03 -->
+<section id="oferta">
+<h2>03 · Oferta y precios</h2>
+
+<h3>Escalera de valor</h3>
+<p class="small">Membresía gratuita → Formación Semilla (grupo) → Mentoría individual → Setup Inicial → Anuncios profesionales → Desarrollo continuo</p>
+
+<table>
+<tr><th>Producto</th><th>Qué es</th><th>Precio</th><th>Estado</th></tr>
+<tr>
+  <td><b>Membresía gratuita</b></td>
+  <td>Entrada al ecosistema: newsletter semanal (Los Drops), charla y laboratorio mensual, materiales descargables, comunidad de WhatsApp.</td>
+  <td>Gratis</td>
+  <td><span class="chip ok">Activo</span></td>
+</tr>
+<tr>
+  <td><b>Formación Semilla</b><br><span class="small">(ex Grupo Semilla)</span></td>
+  <td>Programa grupal insignia: 13 clases en vivo (1 presentación + 12 de contenido en 3 módulos), Grupos Semilla de seguimiento y el curso grabado de Meta Ads.</td>
+  <td>~USD 65/mes o equivalente en ARS<br><span class="chip warn">Revisar: figura también $90.000 ARS / USD 60</span></td>
+  <td><span class="chip wip">Prioridad máxima</span></td>
+</tr>
+<tr>
+  <td><b>Curso de Anuncios Avanzados en Meta</b></td>
+  <td>Curso grabado de publicidad en Meta para arte y cultura. Producto accesible, entra también dentro de la Formación.</td>
+  <td>Producto standalone</td>
+  <td><span class="chip ok">Activo</span></td>
+</tr>
+<tr>
+  <td><b>Mentorías individuales</b></td>
+  <td>Encuentros 1:1 para resolver foco, estrategia, comunicación, pauta y toma de decisiones.</td>
+  <td>$60.000 ARS la hora (en aguscalcagno.com)</td>
+  <td><span class="chip ok">Activo</span></td>
+</tr>
+<tr>
+  <td><b>Setup Inicial</b></td>
+  <td>Solución integral de 0 a 100 en 180 días: identidad visual, web/landing, contenidos de redes, pauta, activos comerciales y planificación. Se entrega con un briefing de artista branded.</td>
+  <td>A definir en la campaña</td>
+  <td><span class="chip wip">Posicionamiento abierto</span></td>
+</tr>
+<tr>
+  <td><b>Anuncios profesionales</b></td>
+  <td>Servicio de agencia: Meta, YouTube y Spotify Ads para proyectos culturales, sellos, museos, galerías, ONGs y artistas. +10 años, clientes en Iberoamérica y EE.UU.</td>
+  <td>Presupuesto por proyecto</td>
+  <td><span class="chip ok">Activo</span></td>
+</tr>
+<tr>
+  <td><b>Desarrollo continuo mensual</b></td>
+  <td>Retención interna, no público: 1 encuentro 1:1 mensual + revisión estratégica completa (negocio, campañas, comunicación, próximos pasos). Para proyectos en marcha, no para empezar de cero.</td>
+  <td>$90.000 ARS/mes</td>
+  <td><span class="chip wip">A estructurar</span></td>
+</tr>
+</table>
+
+<div class="rule">
+<h4>Decisión abierta · Setup Inicial</h4>
+<p style="font-size:14px;margin:0">Dos caminos: <b>(a) solo método</b> — más liviano, apunta a artistas avanzados; o <b>(b) setup con diseño mínimo estandarizado</b> — menor barrera de entrada. También está sobre la mesa si conviene rebautizar el nombre del producto.</p>
+</div>
+</section>
+
+<!-- 04 -->
+<section id="formacion">
+<h2>04 · Formación Semilla</h2>
+<p>El programa insignia. 13 encuentros: Clase 1 de presentación + 12 clases de contenido repartidas en 3 módulos, alineadas con los tres pilares del Método.</p>
+
+<table>
+<tr><th>Componente</th><th>Detalle</th></tr>
+<tr><td><b>Teoría en vivo</b></td><td>Miércoles de 17:00 a 18:15 hs (ART), semanal</td></tr>
+<tr><td><b>Grupos Semilla</b></td><td>Martes 11:00–12:00 hs o jueves 15:00–16:00 hs (ART) — seguimiento en grupo reducido, cupos limitados</td></tr>
+<tr><td><b>Curso incluido</b></td><td>Anuncios Avanzados en Meta para Arte y Cultura (grabado)</td></tr>
+<tr><td><b>Inscripción</b></td><td>aguscalcagno.com/p/formacion-semilla-grupo · pagos y suscripción por Tiendup</td></tr>
+</table>
+
+<h3>Estado de las presentaciones</h3>
+<table>
+<tr><th>Deck</th><th>Estado</th></tr>
+<tr><td>PowerPoint maestro (base estética, hecho con pptxgenjs)</td><td><span class="chip ok">Listo</span></td></tr>
+<tr><td>Clases 3 a 9 — Módulo 2 completo</td><td><span class="chip ok">Listas</span></td></tr>
+<tr><td>Clases 10, 11 y 12 + huecos de Módulo 1</td><td><span class="chip todo">Pendientes</span></td></tr>
+</table>
+<p class="small">Todos los decks usan el sistema de diseño canónico (ver sección 10), formato 16:9, e incluyen las slides "Cómo anotarte" y "Una suscripción. Acceso completo." con QR.</p>
+</section>
+
+<!-- 05 -->
+<section id="embudo">
+<h2>05 · Embudo Semilla</h2>
+<p>Nomenclatura única y obligatoria para drops, clases y campañas. Siempre se llama <b>embudo de conversión</b> (nunca "recorrido") y se grafica como un embudo que se angosta de verdad. Son <b>4 niveles</b> (nunca "etapas", nunca 5).</p>
+
+<div class="funnel">
+  <div class="f1"><b>🟢 1 · Descubrimiento</b>Te ve por primera vez. Reels, publicidad, colaboraciones, prensa, playlists, SEO.</div>
+  <div class="f2"><b>🟡 2 · Interacción</b>Te sigue, comenta, guarda, responde una historia. Puente entre descubrir y convertir.</div>
+  <div class="f3"><b>🟠 3 · Conversión</b>Da el paso: deja el mail, escribe, compra, se anota. Cada proyecto define cuál es.</div>
+  <div class="f4"><b>🔵 4 · Fidelización</b>Vuelve, recompra y recomienda. El nivel más olvidado y uno de los más importantes.</div>
+</div>
+<p class="small">La fidelización vuelve al principio: quien ya está te recomienda y trae gente nueva.</p>
+
+<h3>Diagnóstico: dónde se corta</h3>
+<ul class="wine">
+  <li>Nadie te descubre → no hay quien alimente la parte de arriba.</li>
+  <li>Te descubren pero no interactúan → el contenido no conecta ni da razón para quedarse.</li>
+  <li>Interactúan pero no convierten → no hay propuesta clara ni próximo paso.</li>
+  <li>Convierten una vez y no vuelven → no hay fidelización para quien ya está.</li>
+</ul>
+</section>
+
+<!-- 06 -->
+<section id="drops">
+<h2>06 · Los Drops</h2>
+<p>Newsletter semanal de la membresía. Estructura fija: siempre arranca con <b>"Buenas semanas, artistas."</b> y cierra con "Abrazo." Textos escritos en el proyecto DROPS y consolidados por número.</p>
+
+<h3>Serie El Embudo (91–96)</h3>
+<table>
+<tr><th>Nº</th><th>Tema</th><th>Semana</th></tr>
+<tr><td><b>91</b></td><td>El embudo de conversión para artistas (mapa completo)</td><td>24/07/2026</td></tr>
+<tr><td><b>92</b></td><td>Nivel 1: Descubrimiento</td><td>Semana 2</td></tr>
+<tr><td><b>93</b></td><td>Nivel 2: Interacción</td><td>Semana 3</td></tr>
+<tr><td><b>94</b></td><td>Nivel 3: Conversión</td><td>Semana 4</td></tr>
+<tr><td><b>95</b></td><td>Nivel 4: Fidelización</td><td>Semana 5</td></tr>
+<tr><td><b>96</b></td><td>¿Dónde está roto tu embudo? (diagnóstico)</td><td>Semana 6</td></tr>
+</table>
+<p class="small">Archivo completo de la serie: <code>claude/serie-embudo-drops-y-clase4.md</code></p>
+</section>
+
+<!-- 07 -->
+<section id="clientes">
+<h2>07 · Clientes</h2>
+<p>Más de 150 artistas acompañados. Destacados:</p>
+<div class="grid g3">
+  <div class="card"><span class="tag t-oliva">Autores y músicos</span><p>Federico Andahazi · Alan Sutton y las Criaturitas · Luis Gamarra · Lara Fichera · María Marta Crespo · Manu Durañona</p></div>
+  <div class="card"><span class="tag t-wine">Sellos y productoras</span><p>Pancake Records</p></div>
+  <div class="card"><span class="tag t-rosa">Instituciones</span><p>Unicef Argentina · Construir TV</p></div>
+</div>
+</section>
+
+<!-- 08 -->
+<section id="estrategia">
+<h2>08 · Estrategia</h2>
+<div class="grid g3">
+  <div class="card"><span class="tag t-oliva">Corto plazo · &lt;6 meses</span><h4>Ordenar y empaquetar</h4><p>Definir con claridad qué es gratis, qué es mentoría, qué es grupo y qué es setup. Escalera de valor legible y CTAs consistentes.</p></div>
+  <div class="card"><span class="tag t-wine">Mediano plazo · 6m a 2 años</span><h4>Método replicable</h4><p>Convertir el conocimiento en clases, plantillas, ejercicios y automatizaciones que escalen sin perder profundidad.</p></div>
+  <div class="card"><span class="tag t-rosa">Largo plazo · 2 a 5 años</span><h4>Escuela / ecosistema</h4><p>Semilla como plataforma, escuela y forma de pensar proyectos artísticos.</p></div>
+</div>
+<div class="punch"><p class="q">Objetivos posibles + iteración: éxito asegurado.</p><p style="margin-top:10px;font-size:14px">El objetivo se define primero; la estrategia se alinea a ese objetivo, no al revés; la inversión se mide con hitos en cada plazo.</p></div>
+</section>
+
+<!-- 09 -->
+<section id="pipeline">
+<h2>09 · Pipeline y pendientes</h2>
+<table>
+<tr><th>Tema</th><th>Estado</th></tr>
+<tr><td>Relanzamiento de la Formación Semilla como programa estructurado de 12 clases</td><td><span class="chip wip">En curso · prioridad máxima</span></td></tr>
+<tr><td>Decks de las clases 10, 11 y 12</td><td><span class="chip todo">Pendiente</span></td></tr>
+<tr><td>Campaña específica del Setup Inicial + decisión de posicionamiento</td><td><span class="chip todo">Pendiente</span></td></tr>
+<tr><td>Estructuración final del Desarrollo Continuo mensual</td><td><span class="chip todo">Pendiente</span></td></tr>
+<tr><td>Sistema de producción escalable por cliente (landing + 12 piezas de Instagram) sobre Canva</td><td><span class="chip wip">En diseño</span></td></tr>
+<tr><td>Sistema de bots/agentes IA internos: agencia, project manager, comunicación, research, drops, tendencias IG, reportes</td><td><span class="chip wip">En desarrollo</span></td></tr>
+<tr><td>Link "Formulario" del footer en formacion.html y formacion-cm.html apunta a un Google Form viejo</td><td><span class="chip warn">Decidir: repuntar o eliminar</span></td></tr>
+<tr><td>Board de referencia: 4 URLs reales de sitios de artistas abstractos</td><td><span class="chip todo">Pendiente</span></td></tr>
+<tr><td>Automatización del newsletter (envío autónomo los viernes)</td><td><span class="chip todo">Sin resolver</span></td></tr>
+<tr><td>Activación de la suscripción de la Formación en Tiendup</td><td><span class="chip todo">Quedó a medias</span></td></tr>
+<tr><td>Mejora y actualización de semillaredes.com (escalera de valor, textos, CTAs)</td><td><span class="chip todo">Pendiente</span></td></tr>
+</table>
+</section>
+
+<!-- 10 -->
+<section id="visual">
+<h2>10 · Sistema visual</h2>
+<p>Aplica a todo material de Semilla Redes y de la Formación Semilla. Los hex son exactos y están unificados con los colores reales del logo.</p>
+
+<div class="swatches">
+  <div class="sw"><i style="background:#F2EDE4;border-bottom:1px solid var(--line)"></i><span><b>Crema</b>#F2EDE4</span></div>
+  <div class="sw"><i style="background:#1A2456"></i><span><b>Navy</b>#1A2456</span></div>
+  <div class="sw"><i style="background:#7A1F3A"></i><span><b>Vino</b>#7A1F3A</span></div>
+  <div class="sw"><i style="background:#E2767C"></i><span><b>Rosa</b>#E2767C</span></div>
+  <div class="sw"><i style="background:#87863A"></i><span><b>Oliva</b>#87863A</span></div>
+  <div class="sw"><i style="background:#24242C"></i><span><b>Tinta</b>#24242C</span></div>
+  <div class="sw"><i style="background:#B9B4C4"></i><span><b>Mute</b>#B9B4C4</span></div>
+</div>
+<p class="small">Rosa y oliva reemplazaron a los viejos #C97080 y #7A8A42. Sobre navy: texto crema, acentos rosa y vino. Kickers color-coded por pilar: oliva = negocio, vino = comunicación, rosa = publicidad.</p>
+
+<h3>Tipografía</h3>
+<ul>
+  <li><b>Títulos:</b> Playfair Display (display 48–60 / H1 40 / H2 24–28)</li>
+  <li><b>Cuerpo y UI:</b> Inter (16–21)</li>
+  <li><b>Kicker:</b> Inter 700, mayúsculas, tracking ~+2.5px, 12–13px, oliva o rosa, precedido por semillita</li>
+  <li><b>Logotipo (no se toca):</b> "SEMILLA" en Anton · "REDES" en Oswald 200 con tracking amplio, ambos navy, texto pegado al iso</li>
+</ul>
+
+<h3>Reglas de layout</h3>
+<ul class="rosa">
+  <li>Mucho aire. Jerarquía por tipografía y espacio, no por adornos.</li>
+  <li>Estructura: kicker (semillita + etiqueta) → título Playfair → contenido.</li>
+  <li>Viñetas siempre semillita SVG (<code>M12 3 C18 7 18 17 12 21 C6 17 6 7 12 3 Z</code>), color-coded por pilar. Nunca bullets redondos.</li>
+  <li>Prohibido: líneas de acento bajo los títulos, degradés chillones, sombras pesadas, emoji decorativo.</li>
+  <li>Cards redondeadas 12–16px para precio y CTAs; chips pill para etiquetas.</li>
+  <li>Footer discreto: semillita + "SEMILLA REDES" en Inter espaciada.</li>
+</ul>
+
+<h3>Formatos y assets</h3>
+<ul>
+  <li>Decks 16:9 landscape · carruseles de Instagram 1080×1350px</li>
+  <li>QR: navy sobre blanco, semilla al centro, error correction H, apuntando a aguscalcagno.com/p/formacion-semilla-grupo</li>
+  <li>Vectores (usar siempre, nunca PNG): <code>assets/logo-semilla.svg</code> (isologo 1:1, gap central transparente para fondo navy) y <code>assets/semillita.svg</code> (trazos engrosados para 13–16px)</li>
+  <li>Archivo maestro: "Identidad Semilla Redes.dc.html" — brand board, componentes, plantillas 9:16, feed + story, newsletter, hero de landing</li>
+</ul>
+</section>
+
+<!-- 11 -->
+<section id="stack">
+<h2>11 · Stack técnico</h2>
+<table>
+<tr><th>Sistema</th><th>Detalle</th></tr>
+<tr><td><b>Repositorio</b></td><td><code>calcagnoagustin/semillaredes</code> · GitHub Pages · branch <code>main</code> · CNAME <code>landing.semillaredes.com</code>. Esta página vive en la raíz.</td></tr>
+<tr><td><b>Plataforma</b></td><td>aguscalcagno.com (cursos y membresía) · landing.semillaredes.com (landings) · semillaredes.com (sitio institucional)</td></tr>
+<tr><td><b>Meta Pixel</b></td><td>ID 953367820005998 ("aguscalcagno"). Clicks a WhatsApp disparan <code>fbq('track','Contact')</code> en cualquier anchor con "wa.me" o "whatsapp".</td></tr>
+<tr><td><b>Tiendup</b></td><td>Pagos y suscripciones. Envía eventos de compra server-side por Conversions API. El panel admin es distinto de <code>payments.tiendup.com</code> (checkout público), que ya está en la lista de dominios autorizados del pixel.</td></tr>
+<tr><td><b>ManyChat</b></td><td>Sin integración directa: se arman flujos estructurados para importar a mano. Soporta triggers por palabra clave → DM, historias → WhatsApp, y tráfico desde Spotify.</td></tr>
+<tr><td><b>Canva</b></td><td>Entorno de producción y entrega para clientes. El cliente es dueño de su cuenta Canva Pro y su dominio; Agus entra como colaborador "can edit". Sin brand kits ni asientos por cliente. <code>search-designs</code> con <code>ownership: shared</code> lista los assets del cliente.</td></tr>
+<tr><td><b>Claude in Chrome</b></td><td>Herramienta principal para editar GitHub, automatizar WhatsApp Business e interactuar con el navegador. Pestañas intocables: Binance, Oracle Cloud, API Keys y Dashboard de Claude Platform, Resend.</td></tr>
+<tr><td><b>pptxgenjs</b></td><td>Pipeline de decks: build → PDF con <code>soffice --headless</code> → rasterizar con <code>pdftoppm</code> para QA. Las fuentes se instalan en <code>~/.fonts/</code> + <code>fc-cache -f</code> antes de renderizar.</td></tr>
+<tr><td><b>VM Semillas</b></td><td>Servidor propio con MCP (<code>vm.semillaredes.com</code>): bots, playlists, scripts, backups y publicación al repo por API.</td></tr>
+<tr><td><b>Google Drive</b></td><td>Docs branded creados por HTML (<code>contentMimeType: text/html</code>), no DOCX, para conservar colores de tabla, fuentes y estilos. Briefing de artista (Setup Inicial): <code>1oVuiAWWM6CqEaqe70qyOa0IM2xcuDmP5sZgtJ6dNi5w</code></td></tr>
+</table>
+
+<h3>Páginas del repo</h3>
+<p class="small">index.html · landing.html · formacion.html · formacion-cm.html · setup.html · diagnostico.html · curadores.html · semillaIA.html · hub.html · panel.html · auditoria.html · status.html (esta) · /drops · /bots</p>
+</section>
+
+<!-- 12 -->
+<section id="mantenimiento">
+<h2>12 · Cómo se mantiene esta página</h2>
+<div class="rule">
+<h4>Regla permanente</h4>
+<p style="font-size:14px;margin:0">Cada vez que Claude guarde información nueva sobre Semilla Redes en su memoria, debe además: (1) actualizar la sección correspondiente de este <code>status.html</code>, (2) agregar una fila nueva en el Registro de actualizaciones con la fecha, y (3) publicar el cambio en el repo. Sin excepciones y sin pedir confirmación.</p>
+</div>
+<ul>
+  <li>Esta página es <code>noindex, nofollow</code>: es documento interno, no se linkea públicamente.</li>
+  <li>Si un dato de acá contradice a otro documento, gana esta página.</li>
+  <li>Los datos marcados con chip <span class="chip warn">a revisar</span> están en conflicto y necesitan una definición de Agus.</li>
+</ul>
+</section>
+
+<!-- 13 -->
+<section id="registro">
+<h2>13 · Registro de actualizaciones</h2>
+<table>
+<tr><th>Fecha</th><th>Cambio</th></tr>
+<tr><td><b>16/08/2026</b></td><td>Se crea status.html como fuente de verdad única del proyecto: identidad, Método, oferta y precios, Formación Semilla, Embudo Semilla, Drops, clientes, estrategia, pipeline, sistema visual, stack técnico y esta bitácora.</td></tr>
+<tr><td><b>23/07/2026</b></td><td>Se unifica el Embudo Semilla en 4 niveles (Descubrimiento, Interacción, Conversión, Fidelización) en drops, campañas y Clase 4. Se agregan al deck las páginas "Tus objetivos, en tres plazos" y "¿Qué va primero?".</td></tr>
+<tr><td><b>—</b></td><td>Rosa y oliva se actualizan a los colores reales del logo: #E2767C y #87863A (reemplazan #C97080 y #7A8A42).</td></tr>
+</table>
+</section>
+
+</main>
+</div>
+
+<footer>✳ SEMILLA REDES · Documento interno</footer>
+
+</body>
+</html>
