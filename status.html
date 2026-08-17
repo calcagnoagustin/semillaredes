@@ -414,12 +414,17 @@ table{font-size:13px}
 <tr><td>Board de referencia: 4 URLs reales de sitios de artistas abstractos</td><td><span class="chip todo">Pendiente</span></td></tr>
 </table>
 
-<h3>Bots públicos · SemillaIA</h3>
-<p>Dos herramientas gratuitas y sin registro, reunidas en el hub <b>landing.semillaredes.com/hub.html</b>. Son la cara pública de la IA del Método: entrada al ecosistema y generación de leads.</p>
+<h3>Bots y apps · SemillaIA</h3>
+<div class="rule">
+<h4>El estado de los bots vive en otra página</h4>
+<p style="font-size:14px;margin:0">Todo lo técnico —bots, apps, infra, backend, código— se documenta y se actualiza en <b><a href="bots.status.html">bots.status.html</a></b>, no acá. Esta página es el negocio; aquella es el sistema. Si es de plata o posicionamiento va acá; si es de código o infra, va allá.</p>
+</div>
+<p>Resumen comercial: las herramientas de SemillaIA son gratuitas, sin registro, y se reúnen en el hub <b>landing.semillaredes.com/hub.html</b>. Son la cara pública de la IA del Método: entrada al ecosistema y generación de leads que rutean a los servicios pagos.</p>
 <table>
 <tr><th>Bot</th><th>Qué hace</th><th>Estado</th></tr>
-<tr><td><b>Auditoría para artistas</b><br><span class="small">Diagnosticá tu proyecto</span></td><td>El artista cuenta qué hace y en qué punto está; devuelve una lectura según los tres ejes del Método: en qué etapa está, tres fortalezas y tres puntos flojos, y qué conviene hacer primero. Para cualquier disciplina. Genera lead y alimenta el playbook de reglas.</td><td><span class="chip ok">Terminado</span></td></tr>
-<tr><td><b>Descubridor / curador de playlists</b><br><span class="small">Encontrá curadores</span></td><td>El músico dice qué música hace y devuelve playlists de Spotify vivas —sin las que inflan seguidores— con el Instagram o el mail de quien las arma. Solo para músicos.</td><td><span class="chip wip">En proceso</span></td></tr>
+<tr><td><b>Auditoría para artistas</b><br><span class="small">Diagnosticá tu proyecto</span></td><td>El artista cuenta qué hace y en qué punto está; devuelve una lectura según los tres ejes del Método: en qué etapa está, tres fortalezas y tres puntos flojos, y qué conviene hacer primero. Para cualquier disciplina. Genera lead y alimenta el playbook de reglas.</td><td><span class="chip ok">En producción</span></td></tr>
+<tr><td><b>Descubridor de curadores de playlists</b><br><span class="small">Encontrá curadores</span></td><td>El músico dice qué música hace y devuelve playlists de Spotify vivas —sin las que inflan seguidores— con la vía de contacto del curador. Solo para músicos. La unidad de valor es el curador, no la playlist.</td><td><span class="chip wip">En desarrollo</span></td></tr>
+<tr><td><b>Radar Semilla</b> · content bot<br><span class="small">Memoria del bot</span></td><td>Dos piezas diseñadas y todavía sin construir: el bot semanal de contenido para Instagram, y el ciclo de memoria que destila el criterio de Agus en reglas del playbook. Detalle en bots.status.html.</td><td><span class="chip todo">Diseñados</span></td></tr>
 </table>
 
 <h3>Ideas en trabajo</h3>
@@ -494,7 +499,7 @@ table{font-size:13px}
 </table>
 
 <h3>Páginas del repo</h3>
-<p class="small">index.html · landing.html · formacion.html · formacion-cm.html · setup.html · <b>hub.html</b> (SemillaIA: los dos bots públicos) · diagnostico.html (bot de auditoría) · curadores.html (bot de playlists) · semillaIA.html · panel.html · auditoria.html · status.html (esta) · /drops · /bots</p>
+<p class="small">index.html · landing.html · formacion.html · formacion-cm.html · setup.html · <b>hub.html</b> (SemillaIA: los dos bots públicos) · diagnostico.html (bot de auditoría) · curadores.html (bot de playlists) · semillaIA.html · panel.html · auditoria.html · status.html (esta) · <b>bots.status.html</b> (estado técnico de los bots) · /drops · /bots (⚠ código de trading, no de Semilla)</p>
 </section>
 
 <!-- 13 -->
@@ -510,6 +515,7 @@ table{font-size:13px}
   <li>Los datos marcados con chip <span class="chip warn">a revisar</span> están en conflicto y necesitan una definición de Agus.</li>
   <li>La sección <b>08 · Números clave</b> la actualiza una tarea automática el 22 de cada mes: lee el sheet financiero de Google, calcula facturación, ganancia y clientes del mes cerrado, y publica el cambio en el repo.</li>
   <li>Canva no se usa como referencia de contenido: el 90% del material que hay ahí es viejo. Fuentes de verdad: esta página, las webs y el sheet financiero.</li>
+  <li><b>Los bots y apps se actualizan en <a href="bots.status.html">bots.status.html</a></b>, no acá. Esta página es el negocio; aquella es el sistema técnico. Son complementarias.</li>
   <li><b>Proyectos de Claude:</b> SEMILLAREDES 2 (Cowork, escritorio) es el proyecto de <b>trabajo</b>; SEMILLAREDES 1 (claude.ai Chat) queda como <b>archivo</b> de chats — no se mueven conversaciones entre proyectos. Ambos comparten la misma memoria local. BOTS SEMILLAREDES y CLIENTES siguen como proyectos aparte; el puente entre todos es esta página.</li>
 </ul>
 </section>
@@ -520,6 +526,7 @@ table{font-size:13px}
 <table>
 <tr><th>Fecha</th><th>Cambio</th></tr>
 <tr><td><b>17/08/2026</b></td><td>Estructura de proyectos de Claude: SEMILLAREDES 2 (Cowork) queda como proyecto de trabajo y SEMILLAREDES 1 (Chat) como archivo; no se mueven chats. Se agrega la regla a Mantenimiento.</td></tr>
+<tr><td><b>17/08/2026</b></td><td>Se establece la división con <b>bots.status.html</b>: los bots y apps se documentan y actualizan allá (lo técnico); esta página queda para el negocio. Se agrega Radar Semilla y Memoria del bot al resumen, y se marca que /bots del repo es código de trading.</td></tr>
 <tr><td><b>17/08/2026</b></td><td>Stack: las suscripciones individuales mensuales se cobran por Mercado Pago (Tiendup queda para la plataforma: cursos y Formación).</td></tr>
 <tr><td><b>17/08/2026</b></td><td>Se documentan los dos bots públicos de SemillaIA en el hub: Auditoría para artistas (terminado) y Descubridor de curadores de playlists (en proceso).</td></tr>
 <tr><td><b>17/08/2026</b></td><td>La suscripción de la Formación en Tiendup queda activada: sale de pendientes.</td></tr>
