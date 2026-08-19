@@ -83,8 +83,6 @@ input[type=text]:focus,input[type=email]:focus,input[type=url]:focus{border-colo
 .pl{border:1px solid var(--navy-line);border-radius:10px;padding:20px;margin-top:14px;background:var(--cream)}
 .pl-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
 .pl-name{font-size:18px;font-weight:800;line-height:1.25}
-.pl-name a{color:var(--navy);text-decoration:none;border-bottom:2px solid rgba(122,138,66,.45)}
-.pl-name a:hover{color:var(--wine)}
 .pl-owner{font-size:13px;color:rgba(26,36,86,.6);margin-top:3px}
 /* Nodos: gramática del isologo. Oliva = activo. */
 .nodos{display:flex;gap:5px;flex:none;padding-top:6px}
@@ -95,6 +93,10 @@ input[type=text]:focus,input[type=email]:focus,input[type=url]:focus{border-colo
 .dato b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(26,36,86,.5);font-weight:700;margin-bottom:3px}
 .dato span{font-size:17px;font-weight:800}
 .contacto{margin-top:16px;padding-top:15px;border-top:1px solid var(--navy-line);display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.pl-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pl-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;text-decoration:none;padding:8px 13px;border-radius:4px;border:1px solid var(--navy-line);color:var(--navy);background:var(--white);transition:background .15s,border-color .15s}
+.pl-link:hover{border-color:var(--oliva);background:rgba(122,138,66,.08)}
+.pl-link svg{width:14px;height:14px;flex:none}
 .ctag{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(26,36,86,.5);font-weight:700}
 .cval{font-size:16px;font-weight:700}
 .cval a{color:var(--wine);text-decoration:none;border-bottom:1px solid rgba(122,31,58,.35)}
@@ -328,7 +330,7 @@ function mostrar(d){
     <article class="pl">
       <div class="pl-top">
         <div>
-          <p class="pl-name"><a href="${p.spotify_url}" target="_blank" rel="noopener">${p.name}</a></p>
+          <p class="pl-name">${p.name}</p>
           <p class="pl-owner">${p.owner||""}</p>
         </div>
         ${nodos(p.listeners)}
@@ -337,6 +339,10 @@ function mostrar(d){
         <div class="dato"><b>Seguidores</b><span>${miles(p.followers)}</span></div>
         <div class="dato"><b>Oyentes/mes</b><span>${miles(p.listeners)}</span></div>
         <div class="dato"><b>Último tema</b><span>${p.newest_track_added_at||"—"}</span></div>
+      </div>
+      <div class="pl-links">
+        <a class="pl-link" href="${p.spotify_url||('https://open.spotify.com/playlist/'+p.spotify_id)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.6 14.4a.6.6 0 0 1-.85.2c-2.3-1.4-5.2-1.7-8.6-.95a.62.62 0 0 1-.28-1.2c3.7-.85 6.9-.5 9.5 1.1.3.18.4.56.22.86zm1.2-2.7a.78.78 0 0 1-1.07.26c-2.65-1.63-6.7-2.1-9.8-1.15a.78.78 0 0 1-.45-1.5c3.6-1.1 8.05-.57 11.1 1.3.37.23.48.7.25 1.1zm.1-2.8C14.7 9 9.5 8.8 6.5 9.7a.94.94 0 1 1-.55-1.8c3.5-1.05 9.2-.85 12.8 1.3a.94.94 0 0 1-.95 1.62z"/></svg>Abrir en Spotify</a>
+        <a class="pl-link" href="https://app.artist.tools/playlist/${p.spotify_id}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-7"/></svg>Ver en artist.tools</a>
       </div>
       <div class="contacto">${contacto(p)}</div>
     </article>`).join("")}
