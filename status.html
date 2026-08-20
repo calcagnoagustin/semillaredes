@@ -349,7 +349,12 @@ table{font-size:13px}
 <tr><td>Sistema de producción escalable por cliente (landing + 12 piezas de Instagram) sobre Canva</td><td><span class="chip wip">En diseño</span></td></tr>
 <tr><td>Sistema de bots/agentes IA internos: agencia, project manager, comunicación, research, drops, tendencias IG, reportes</td><td><span class="chip wip">En desarrollo</span></td></tr>
 <tr><td>Link "Formulario" del footer en formacion.html y formacion-cm.html apunta a un Google Form viejo</td><td><span class="chip warn">Decidir: repuntar o eliminar</span></td></tr>
-<tr><td>Board de referencia: 4 URLs reales de sitios de artistas abstractos</td><td><span class="chip todo">Pendiente</span></td></tr>
+<tr><td>Landing del Método Semilla en <b>metodo.semillaredes.com</b> — repo propio, GitHub Pages, CNAME en Hostinger, HTTPS activo</td><td><span class="chip ok">Publicada</span></td></tr>
+        <tr><td>Archivo de Drops al día (87 Marca y producto de artista · 88 ManyChat) + botón "Conocer más sobre Semilla Redes" y CTA al grupo de WhatsApp en el header</td><td><span class="chip ok">Publicado</span></td></tr>
+        <tr><td>Precios del Setup unificados (mensuales x 6 meses) en status, deck PDF y setup.html — se elimina "pago único" y el valor USD 215</td><td><span class="chip ok">Corregido</span></td></tr>
+        <tr><td>Clase 2 de la Formación: "Cómo pensar un proyecto artístico como un negocio digital"</td><td><span class="chip ok">Lista</span></td></tr>
+        <tr><td>Sadhana Comunicación (agencia institucional) vive en un proyecto de Claude separado, no se mezcla con Semilla</td><td><span class="chip ok">Creado</span></td></tr>
+        <tr><td>Board de referencia: 4 URLs reales de sitios de artistas abstractos</td><td><span class="chip todo">Pendiente</span></td></tr>
 <tr><td>Automatización del newsletter (envío autónomo los viernes)</td><td><span class="chip todo">Sin resolver</span></td></tr>
 <tr><td>Activación de la suscripción de la Formación en Tiendup</td><td><span class="chip todo">Quedó a medias</span></td></tr>
 <tr><td>Mejora y actualización de semillaredes.com (escalera de valor, textos, CTAs)</td><td><span class="chip todo">Pendiente</span></td></tr>
@@ -385,7 +390,8 @@ table{font-size:13px}
   <li>Mucho aire. Jerarquía por tipografía y espacio, no por adornos.</li>
   <li>Estructura: kicker (semillita + etiqueta) → título Playfair → contenido.</li>
   <li>Viñetas siempre semillita SVG (<code>M12 3 C18 7 18 17 12 21 C6 17 6 7 12 3 Z</code>), color-coded por pilar. Nunca bullets redondos.</li>
-  <li>Prohibido: líneas de acento bajo los títulos, degradés chillones, sombras pesadas, emoji decorativo.</li>
+  <li><b>Nada desalineado.</b> En pptxgenjs las cajas de texto se anclan al centro vertical, no arriba. Ícono junto a texto centrado: <code>y + alto/2 + 0.02 − altoIcono/2</code>. Con <code>valign:"top"</code>, el centro de la primera línea cae en <code>y + (0.0175 × fontSize − 0.038)</code>. Las viñetas se alinean siempre con la primera línea, nunca con el centro del bloque. Verificar midiendo en píxeles antes de entregar: desvío máximo 3 px.</li>
+        <li>Prohibido: líneas de acento bajo los títulos, degradés chillones, sombras pesadas, emoji decorativo.</li>
   <li>Cards redondeadas 12–16px para precio y CTAs; chips pill para etiquetas.</li>
   <li>Footer discreto: semillita + "SEMILLA REDES" en Inter espaciada.</li>
 </ul>
@@ -417,7 +423,7 @@ table{font-size:13px}
 </table>
 
 <h3>Páginas del repo</h3>
-<p class="small">index.html · landing.html · formacion.html · formacion-cm.html · setup.html · diagnostico.html · curadores.html · semillaIA.html · hub.html · panel.html · auditoria.html · status.html (esta) · /drops · /bots</p>
+<p class="small">index.html · landing.html · formacion.html · formacion-cm.html · setup.html · diagnostico.html · curadores.html · semillaIA.html · hub.html · panel.html · auditoria.html · status.html (esta) · <b>metodo.semillaredes.com</b> (repo aparte <code>calcagnoagustin/metodo-semilla</code>, landing del Método) · /drops · /bots</p>
 </section>
 
 <!-- 12 -->
@@ -493,7 +499,8 @@ table{font-size:13px}
 <h2>13 · Registro de actualizaciones</h2>
 <table>
 <tr><th>Fecha</th><th>Cambio</th></tr>
-<tr><td><b>20/08/2026</b></td><td>Se agrega la sección 14 · Setup Inicial con planes, entregables, etapas y proyecciones del deck. Se documenta el circuito probado de producción de piezas (HTML anotado con data-document-role, raw.githubusercontent, import a Canva) y el estilo de ilustración. Se crean en Supabase las tablas del briefing web y se migra el primer proyecto (Betsy Grinblat).</td></tr>
+<tr><td><b>20/08/2026</b></td><td>Se publican los Drops 87 y 88 (archivo en 88 viernes consecutivos) y se suma al header el botón a la landing general y el CTA al grupo de WhatsApp de la membresía gratuita, ahora en +180 artistas. Se publica la landing del Método Semilla en metodo.semillaredes.com. Se entrega el presupuesto de Setup de la Lic. Yamila Beraja. Se arma el PDF vertical del Setup Inicial para celular y se corrigen los precios en el deck y en setup.html: son mensuales por 6 meses (Estratégico ARS 250.000 / USD 180 · Estratégico + Diseño ARS 350.000 / USD 230). Se incorpora a las reglas de layout la regla de alineación medida en píxeles.</td></tr>
+        <tr><td><b>20/08/2026</b></td><td>Se agrega la sección 14 · Setup Inicial con planes, entregables, etapas y proyecciones del deck. Se documenta el circuito probado de producción de piezas (HTML anotado con data-document-role, raw.githubusercontent, import a Canva) y el estilo de ilustración. Se crean en Supabase las tablas del briefing web y se migra el primer proyecto (Betsy Grinblat).</td></tr>
 <tr><td><b>16/08/2026</b></td><td>Se crea status.html como fuente de verdad única del proyecto: identidad, Método, oferta y precios, Formación Semilla, Embudo Semilla, Drops, clientes, estrategia, pipeline, sistema visual, stack técnico y esta bitácora.</td></tr>
 <tr><td><b>23/07/2026</b></td><td>Se unifica el Embudo Semilla en 4 niveles (Descubrimiento, Interacción, Conversión, Fidelización) en drops, campañas y Clase 4. Se agregan al deck las páginas "Tus objetivos, en tres plazos" y "¿Qué va primero?".</td></tr>
 <tr><td><b>—</b></td><td>Rosa y oliva se actualizan a los colores reales del logo: #E2767C y #87863A (reemplazan #C97080 y #7A8A42).</td></tr>
