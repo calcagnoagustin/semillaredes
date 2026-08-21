@@ -7,73 +7,184 @@
 <title>Panel Setup · Semilla Redes</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--crema:#F2EDE4;--navy:#1A2456;--vino:#7A1F3A;--rosa:#E2767C;--oliva:#87863A;--tinta:#24242C;--mute:#8A8697}
+:root{--crema:#F2EDE4;--navy:#1A2456;--vino:#7A1F3A;--rosa:#E2767C;--oliva:#87863A;--mute:#B9B4C4}
 *{box-sizing:border-box}
-body{margin:0;background:var(--navy);color:var(--crema);font-family:Inter,system-ui,sans-serif;line-height:1.5;padding:34px 18px 80px}
-.wrap{max-width:900px;margin:0 auto}
-h1{font-family:'Playfair Display',serif;font-size:34px;margin:0 0 4px}
-.lede{color:#B9B4C4;font-size:14.5px;margin:0 0 26px}
+body{margin:0;background:var(--navy);color:var(--crema);font-family:Inter,system-ui,sans-serif;line-height:1.5;padding:30px 18px 90px}
+.wrap{max-width:940px;margin:0 auto}
+h1{font-family:'Playfair Display',serif;font-size:34px;margin:0 0 2px}
+.lede{color:var(--mute);font-size:14.5px;margin:0 0 22px}
+.tabs{display:flex;gap:6px;margin:0 0 18px;border-bottom:1px solid #2E3970}
+.tab{padding:10px 16px;font-size:14px;font-weight:600;color:var(--mute);cursor:pointer;border-bottom:2px solid transparent}
+.tab.on{color:var(--crema);border-bottom-color:var(--rosa)}
 .card{background:#212B60;border:1px solid #2E3970;border-radius:14px;padding:20px;margin:14px 0}
-.card h2{font-family:'Playfair Display',serif;font-size:22px;margin:0 0 2px;color:var(--crema)}
-.meta{font-size:12.5px;color:#B9B4C4;margin-bottom:12px}
+.card h2{font-family:'Playfair Display',serif;font-size:22px;margin:0 0 2px}
+.meta{font-size:12.5px;color:var(--mute);margin-bottom:10px}
 .bar{height:6px;background:#2E3970;border-radius:99px;overflow:hidden;margin:10px 0 4px}
 .fill{height:100%;background:var(--rosa)}
-.link{font-size:12.5px;color:var(--rosa);word-break:break-all}
+.acc{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+button{border:0;background:var(--vino);color:#fff;font:inherit;font-size:13px;font-weight:600;border-radius:9px;padding:9px 14px;cursor:pointer}
+button.sec{background:#2E3970}
+button.ok{background:var(--oliva)}
+input,select{border:1px solid #2E3970;background:#1A2456;color:var(--crema);border-radius:9px;padding:10px 12px;font:inherit;font-size:14px}
+input{width:100%;margin-bottom:10px}
+label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mute);display:block;margin-bottom:4px}
 details{margin-top:12px}
-summary{cursor:pointer;font-size:13.5px;color:#B9B4C4}
+summary{cursor:pointer;font-size:13.5px;color:var(--mute)}
 .resp{font-size:13.5px;margin:10px 0;padding-left:12px;border-left:2px solid var(--oliva)}
-.resp b{color:var(--rosa);display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase}
+.resp b{color:var(--rosa);display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px}
 .resp a{color:var(--rosa)}
-.chip{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:var(--oliva);color:var(--crema);border-radius:99px;padding:3px 10px;margin-left:8px;vertical-align:middle}
-input{border:1px solid #2E3970;background:#1A2456;color:var(--crema);border-radius:10px;padding:11px 13px;font:inherit;width:240px}
-button{border:0;background:var(--vino);color:#fff;font:inherit;font-weight:600;border-radius:10px;padding:11px 18px;cursor:pointer;margin-left:8px}
+.chip{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:var(--oliva);border-radius:99px;padding:3px 10px;margin-left:8px;vertical-align:middle}
+.chip.gris{background:#2E3970;color:var(--mute)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid #2E3970}
+th{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mute)}
+.mini{height:5px;background:#2E3970;border-radius:99px;overflow:hidden;width:110px}
+.mini i{display:block;height:100%;background:var(--oliva)}
 .oculto{display:none}
+.aviso{font-size:12.5px;color:var(--mute);margin-top:10px}
+textarea{width:100%;min-height:120px;background:#1A2456;color:var(--crema);border:1px solid #2E3970;border-radius:9px;padding:12px;font:inherit;font-size:12.5px}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Panel Setup</h1>
-  <p class="lede">Todos los briefings, su avance y sus respuestas.</p>
+  <p class="lede">Alta de proyectos, seguimiento de briefings y patrones.</p>
 
   <div id="gate">
-    <input type="password" id="tok" placeholder="Token de admin">
+    <label>Token de admin</label>
+    <input type="password" id="tok" style="max-width:280px">
     <button onclick="entrar()">Entrar</button>
   </div>
 
-  <div id="lista" class="oculto"></div>
+  <div id="app" class="oculto">
+    <div class="tabs">
+      <div class="tab on" data-t="proyectos">Proyectos</div>
+      <div class="tab" data-t="nuevo">Nuevo setup</div>
+      <div class="tab" data-t="patrones">Patrones</div>
+    </div>
+
+    <div id="v_proyectos"></div>
+
+    <div id="v_nuevo" class="oculto">
+      <div class="card">
+        <h2>Dar de alta un proyecto</h2>
+        <p class="meta">Se genera el link solo. Si cargás el WhatsApp, los últimos 4 dígitos quedan como llave del bloque de plata.</p>
+        <label>Nombre del artista o proyecto</label>
+        <input id="n_nombre" placeholder="Paola Terenzio">
+        <label>Disciplina</label>
+        <input id="n_disc" placeholder="Cantautora / Artista visual / Banda">
+        <label>WhatsApp</label>
+        <input id="n_wa" placeholder="+54 9 11 5555 4471">
+        <label>Plan</label>
+        <select id="n_plan"><option value="02">02 · Estratégico + Diseño</option><option value="01">01 · Estratégico</option></select>
+        <div class="acc"><button onclick="crear()">Crear y generar link</button></div>
+        <div id="n_out" class="oculto card" style="background:#1A2456;margin-top:16px"></div>
+      </div>
+    </div>
+
+    <div id="v_patrones" class="oculto"></div>
+  </div>
 </div>
 
 <script>
 const API='https://fdrxsjphlvvwwknnrjtx.supabase.co';
 const KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
+const BASE='https://landing.semillaredes.com/proyecto.html';
+const BL={identidad:'Quién es',obra:'Su obra',plata:'Negocio y plata',publico:'Público',objetivos:'Objetivos',cuentas:'Cuentas y accesos',material:'Material'};
+let admin='';
+const $=id=>document.getElementById(id);
 const rpc=(fn,args)=>fetch(`${API}/rest/v1/rpc/${fn}`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(args)}).then(r=>r.json());
-const BL={identidad:'Quién es',obra:'Su obra',plata:'Negocio',publico:'Público',objetivos:'Objetivos',cuentas:'Cuentas',material:'Material',prueba:'—'};
+
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on')); t.classList.add('on');
+  ['proyectos','nuevo','patrones'].forEach(v=>$('v_'+v).classList.toggle('oculto', v!==t.dataset.t));
+  if(t.dataset.t==='patrones') patrones();
+});
 
 async function entrar(){
-  const t=document.getElementById('tok').value.trim()||sessionStorage.getItem('sr_admin')||'';
+  const t=$('tok').value.trim()||sessionStorage.getItem('sr_admin')||'';
   const r=await rpc('briefing_admin',{p_admin:t});
   if(r.error){ alert('Token incorrecto'); return; }
-  sessionStorage.setItem('sr_admin',t);
-  document.getElementById('gate').classList.add('oculto');
-  const cont=document.getElementById('lista'); cont.classList.remove('oculto'); cont.innerHTML='';
-  (r.proyectos||[]).forEach(p=>{
-    const total=20;
-    const pct=Math.min(100,Math.round(p.completadas/total*100));
-    const porBloque={};
-    (p.respuestas||[]).forEach(x=>{ (porBloque[x.bloque]=porBloque[x.bloque]||[]).push(x); });
-    const detalle=Object.entries(porBloque).map(([b,rs])=>
-      `<div class="resp"><b>${BL[b]||b}</b>`+rs.filter(x=>x.valor&&x.valor.trim()).map(x=>
-        `${x.campo.replace(/_/g,' ')}: ${x.valor}${x.audio_url?` — <a href="${x.audio_url}" target="_blank">escuchar audio</a>`:''}`
-      ).join('<br>')+`</div>`).join('');
-    const card=document.createElement('div'); card.className='card';
-    card.innerHTML=`<h2>${p.nombre}<span class="chip">Plan ${p.plan}</span></h2>
-      <div class="meta">${p.estado} · ${p.completadas} respuestas · ${p.archivos} archivos · última actividad ${new Date(p.actualizado_en).toLocaleString('es-AR')}</div>
+  admin=t; sessionStorage.setItem('sr_admin',t);
+  $('gate').classList.add('oculto'); $('app').classList.remove('oculto');
+  pintar(r.proyectos||[]);
+}
+
+function textoPlano(p){
+  const porB={};
+  (p.respuestas||[]).forEach(x=>{ if(x.valor&&x.valor.trim()) (porB[x.bloque]=porB[x.bloque]||[]).push(x); });
+  let s=`BRIEFING — ${p.nombre} (plan ${p.plan}, ${p.estado})\n\n`;
+  Object.entries(porB).forEach(([b,rs])=>{
+    s+=`## ${BL[b]||b}\n`;
+    rs.forEach(x=>{ s+=`- ${x.campo.replace(/_/g,' ')}: ${x.valor}${x.audio_url?` [audio: ${x.audio_url}]`:''}\n`; });
+    s+='\n';
+  });
+  const faltan=[];
+  Object.keys(BL).forEach(b=>{ if(!porB[b]) faltan.push(BL[b]); });
+  if(faltan.length) s+=`## Todavía sin completar\n${faltan.join(', ')}\n`;
+  return s;
+}
+
+function pintar(proys){
+  const cont=$('v_proyectos'); cont.innerHTML='';
+  if(!proys.length){ cont.innerHTML='<div class="card"><p class="meta">Todavía no hay proyectos. Creá el primero en la pestaña de al lado.</p></div>'; return; }
+  proys.forEach(p=>{
+    const total=20, pct=Math.min(100,Math.round(p.completadas/total*100));
+    const link=`${BASE}?p=${p.slug}&k=${p.token}`;
+    const porB={};
+    (p.respuestas||[]).forEach(x=>{ (porB[x.bloque]=porB[x.bloque]||[]).push(x); });
+    const detalle=Object.entries(porB).map(([b,rs])=>{
+      const items=rs.filter(x=>x.valor&&x.valor.trim());
+      if(!items.length) return '';
+      return `<div class="resp"><b>${BL[b]||b}</b>`+items.map(x=>`${x.campo.replace(/_/g,' ')}: ${x.valor}${x.audio_url?` — <a href="${x.audio_url}" target="_blank">audio</a>`:''}`).join('<br>')+`</div>`;
+    }).join('');
+    const c=document.createElement('div'); c.className='card';
+    c.innerHTML=`<h2>${p.nombre}<span class="chip">Plan ${p.plan}</span><span class="chip gris">${p.estado}</span></h2>
+      <div class="meta">${p.completadas} respuestas · ${p.archivos} archivos · última actividad ${new Date(p.actualizado_en).toLocaleString('es-AR')}</div>
       <div class="bar"><div class="fill" style="width:${pct}%"></div></div>
-      <div class="link">landing.semillaredes.com/proyecto.html?p=${p.slug}&k=${p.token}</div>
+      <div class="acc">
+        <button class="sec" data-copy="${link}">Copiar link del artista</button>
+        <button class="ok" data-claude="${p.slug}">Copiar briefing para Claude</button>
+        <button class="sec" data-wa="${encodeURIComponent('Hola! Te dejo el espacio de tu proyecto en Semilla Redes. Entrá cuando puedas y completá lo que te salga, se guarda solo: '+link)}">Mandar por WhatsApp</button>
+      </div>
       <details><summary>Ver respuestas</summary>${detalle||'<p class="meta">Sin respuestas todavía.</p>'}</details>`;
-    cont.appendChild(card);
+    cont.appendChild(c);
+    c.querySelector('[data-copy]').onclick=e=>{navigator.clipboard.writeText(e.target.dataset.copy);e.target.textContent='Copiado ✓';};
+    c.querySelector('[data-claude]').onclick=e=>{navigator.clipboard.writeText(textoPlano(p));e.target.textContent='Copiado ✓';};
+    c.querySelector('[data-wa]').onclick=e=>window.open('https://wa.me/?text='+e.target.dataset.wa,'_blank');
   });
 }
+
+async function crear(){
+  const nombre=$('n_nombre').value.trim();
+  if(!nombre){ alert('Falta el nombre'); return; }
+  const r=await rpc('briefing_crear',{p_admin:admin,p_nombre:nombre,p_plan:$('n_plan').value,p_whatsapp:$('n_wa').value.trim()||null,p_disciplina:$('n_disc').value.trim()||null});
+  if(r.error){ alert('No se pudo crear'); return; }
+  const link=`${BASE}?p=${r.slug}&k=${r.token}`;
+  const out=$('n_out'); out.classList.remove('oculto');
+  out.innerHTML=`<b>${nombre}</b> creado.<div class="meta" style="margin-top:8px;word-break:break-all">${link}</div>
+    ${r.pin?`<div class="aviso">Llave del bloque de plata: <b>${r.pin}</b> (últimos 4 del WhatsApp)</div>`:'<div class="aviso">Sin WhatsApp cargado: el bloque de plata queda abierto.</div>'}
+    <div class="acc"><button class="sec" id="cp">Copiar link</button><button id="wa2">Mandar por WhatsApp</button></div>`;
+  $('cp').onclick=()=>{navigator.clipboard.writeText(link);$('cp').textContent='Copiado ✓';};
+  $('wa2').onclick=()=>window.open('https://wa.me/?text='+encodeURIComponent('Hola! Te dejo el espacio de tu proyecto en Semilla Redes. Entrá cuando puedas y completá lo que te salga, se guarda solo: '+link),'_blank');
+  $('n_nombre').value='';$('n_disc').value='';$('n_wa').value='';
+  entrar();
+}
+
+async function patrones(){
+  const r=await rpc('briefing_patrones',{p_admin:admin});
+  const cont=$('v_patrones');
+  const t=r.total_proyectos||1;
+  const filas=(r.campos||[]).map(c=>{
+    const pct=Math.round(c.completados/t*100);
+    return `<tr><td>${BL[c.bloque]||c.bloque}</td><td>${c.campo.replace(/_/g,' ')}</td>
+      <td><div class="mini"><i style="width:${pct}%"></i></div></td><td>${c.completados}/${t}</td></tr>`;
+  }).join('');
+  cont.innerHTML=`<div class="card"><h2>Qué se completa y qué se abandona</h2>
+    <p class="meta">Sobre ${t} proyecto(s). Ordenado de menos a más completado: lo de arriba es lo que hay que reformular o preguntar en la reunión.</p>
+    <table><tr><th>Bloque</th><th>Pregunta</th><th></th><th></th></tr>${filas||'<tr><td colspan=4 class="meta">Sin datos todavía.</td></tr>'}</table></div>`;
+}
+
 if(sessionStorage.getItem('sr_admin')) entrar();
 </script>
 </body>
