@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Tu proyecto · Semilla Redes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--crema:#F2EDE4;--navy:#1A2456;--vino:#7A1F3A;--rosa:#E2767C;--oliva:#87863A;--tinta:#24242C;--mute:#8A8697}
+*{box-sizing:border-box}
+body{margin:0;background:var(--crema);color:var(--tinta);font-family:Inter,system-ui,sans-serif;line-height:1.55}
+.wrap{max-width:680px;margin:0 auto;padding:34px 20px 120px}
+.logo{width:170px;display:block;margin-bottom:26px}
+h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(30px,6vw,42px);line-height:1.1;color:var(--navy);margin:0 0 10px}
+.lede{color:#55525F;font-size:16.5px;margin:0 0 6px}
+.chip{display:inline-block;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--oliva);margin-bottom:14px}
+.prog{position:sticky;top:0;background:var(--crema);padding:14px 0 10px;z-index:5}
+.prog .bar{height:6px;background:#E2DCCF;border-radius:99px;overflow:hidden}
+.prog .fill{height:100%;width:0%;background:var(--oliva);border-radius:99px;transition:width .4s}
+.prog .txt{font-size:12.5px;color:var(--mute);margin-top:6px;display:flex;justify-content:space-between}
+.saved{color:var(--oliva);opacity:0;transition:opacity .3s}
+.saved.on{opacity:1}
+details{background:#fff;border:1px solid #E5DFD2;border-radius:14px;margin:14px 0;overflow:hidden}
+summary{list-style:none;cursor:pointer;padding:18px 20px;display:flex;align-items:center;gap:12px}
+summary::-webkit-details-marker{display:none}
+.seed{width:15px;height:15px;flex:none}
+summary .tit{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--navy);flex:1}
+summary .n{font-size:12px;color:var(--mute)}
+.body{padding:2px 20px 20px}
+label{display:block;font-size:14px;font-weight:600;color:var(--navy);margin:16px 0 6px}
+label small{display:block;font-weight:400;color:var(--mute);font-size:12.5px;margin-top:2px}
+input[type=text],textarea{width:100%;border:1px solid #DDD6C7;border-radius:10px;background:#FDFCF9;padding:12px 13px;font:inherit;font-size:15px;color:var(--tinta)}
+textarea{min-height:88px;resize:vertical}
+input:focus,textarea:focus{outline:2px solid var(--oliva);border-color:transparent}
+.fila{display:flex;gap:8px;align-items:flex-start}
+.mic{flex:none;margin-top:0;border:1px solid #DDD6C7;background:#fff;border-radius:10px;width:46px;height:46px;font-size:19px;cursor:pointer}
+.mic.rec{background:var(--vino);color:#fff;border-color:var(--vino);animation:pulso 1s infinite}
+@keyframes pulso{50%{opacity:.6}}
+.audio-ok{font-size:12.5px;color:var(--oliva);margin-top:4px}
+.pinbox{background:var(--navy);color:var(--crema);border-radius:14px;padding:20px;margin:14px 0}
+.pinbox p{margin:0 0 10px;font-size:14.5px;color:#B9B4C4}
+.pinbox input{width:130px;text-align:center;letter-spacing:6px;font-size:20px}
+.pinbox button,.subir{border:0;background:var(--vino);color:#fff;font:inherit;font-weight:600;border-radius:10px;padding:11px 18px;cursor:pointer}
+.subir{background:var(--oliva);display:inline-block;margin-top:8px}
+.files{list-style:none;padding:0;margin:8px 0 0;font-size:13.5px;color:#55525F}
+.files li{padding:4px 0;border-bottom:1px dashed #E5DFD2}
+.err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:30px}
+.gracias{font-size:14px;color:var(--mute);margin-top:34px}
+.oculto{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <img class="logo" src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semilla-logo-horizontal.png" alt="Semilla Redes">
+  <div id="cargando">Cargando tu espacio…</div>
+
+  <div id="app" class="oculto">
+    <span class="chip">Setup Inicial · Tu espacio</span>
+    <h1 id="saludo">Hola</h1>
+    <p class="lede">Este es el punto de partida de tu proyecto. Completá lo que puedas, como puedas: podés escribir o <b>grabar un audio</b> en cada pregunta, cortar cuando quieras y volver con este mismo link. Todo se guarda solo.</p>
+
+    <div class="prog">
+      <div class="bar"><div class="fill" id="fill"></div></div>
+      <div class="txt"><span id="ptxt">0 respuestas</span><span class="saved" id="saved">Guardado ✓</span></div>
+    </div>
+
+    <div id="bloques"></div>
+
+    <p class="gracias">Cuando termines no hace falta avisar: lo vemos de este lado y seguimos nosotros. Cualquier duda, escribile a Agus por WhatsApp.</p>
+  </div>
+
+  <div id="error" class="err oculto">Este link no es válido o venció. Pedile uno nuevo a Agus por WhatsApp y entrás de nuevo en un toque.</div>
+</div>
+
+<script>
+const API='https://fdrxsjphlvvwwknnrjtx.supabase.co';
+const KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
+const qs=new URLSearchParams(location.search);
+const slug=qs.get('p')||qs.get('slug')||'';
+const tok=qs.get('k')||'';
+let pin=sessionStorage.getItem('pin_'+slug)||'';
+let datos={}, plan='02';
+
+const BLOQUES=[
+ {id:'identidad',tit:'Quién sos',campos:[
+   {c:'nombre_artistico',l:'Tu nombre artístico o de proyecto'},
+   {c:'whatsapp',l:'Tu WhatsApp'},
+   {c:'instagram',l:'Tu Instagram',s:'Solo el usuario, sin @'},
+   {c:'otras_redes',l:'Otras redes o links que uses',s:'YouTube, web, TikTok, lo que tengas'},
+   {c:'bio_corta',l:'Contanos quién sos y qué hacés',s:'Como se lo contarías a alguien en un asado. Si te da fiaca escribir, grabalo.',t:1,a:1},
+ ]},
+ {id:'obra',tit:'Tu obra',campos:[
+   {c:'lineas_trabajo',l:'¿Qué líneas o series de trabajo tenés hoy?',t:1,a:1},
+   {c:'preguntas_frecuentes',l:'¿Qué tres cosas te preguntan siempre sobre tu obra?',s:'Las respuestas a esto son contenido listo para usar',t:1,a:1},
+   {c:'proceso',l:'¿Cómo es tu proceso? ¿Qué parte disfrutás más?',t:1,a:1},
+ ]},
+ {id:'plata',tit:'Tu negocio',pin:true,campos:[
+   {c:'que_vendes_precios',l:'¿Qué vendés hoy y a qué precio?',s:'Todo lo que genere plata: obra, clases, encargos. Con números aunque sean aproximados.',t:1,a:1},
+   {c:'facturacion_ultimo_mes',l:'¿Cuánto facturaste el mes pasado con tu obra?',s:'Aproximado. Esto queda entre nosotros.'},
+   {c:'meta_mensual',l:'¿Cuánto necesitás facturar por mes para estar tranquila/o?'},
+   {c:'obra_cara_accesible',l:'¿Cuál es tu obra más cara y cuál la más accesible?',s:'Con precios',t:1},
+ ]},
+ {id:'publico',tit:'Tu público',campos:[
+   {c:'a_quien',l:'¿Quién compra (o querés que compre) tu obra?',t:1,a:1},
+   {c:'tono_deseado',l:'¿Cómo querés que se sienta tu marca?',s:'Elegante, cercana, académica, juguetona…',t:1},
+   {c:'referentes',l:'Dos o tres artistas cuya comunicación te guste',s:'Con links si los tenés a mano',t:1},
+ ]},
+ {id:'objetivos',tit:'Objetivos y agenda',campos:[
+   {c:'objetivo_corto',l:'¿Qué querés lograr en los próximos 6 meses?',t:1,a:1},
+   {c:'hitos_fechas',l:'¿Tenés muestras, ferias o lanzamientos con fecha?',s:'Cuáles y cuándo',t:1},
+ ]},
+ {id:'cuentas',tit:'Tus cuentas y accesos',campos:[
+   {c:'cuentas_estado',l:'¿Qué cuentas ya tenés?',s:'Instagram, YouTube, página de Facebook, dominio web, correo profesional. Anotá cuáles existen y cuáles no.',t:1},
+   {c:'presupuesto_pauta',l:'¿Cuánto podés invertir por día en publicidad?',s:'La referencia del Setup es desde USD 2 por día'},
+ ]},
+ {id:'material',tit:'Tu material',solo02:true,campos:[
+   {c:'referencias_links',l:'Links a fotos de tu obra o carpetas que ya tengas',s:'Drive, web, lo que sea',t:1},
+ ],archivos:true},
+];
+
+const $=id=>document.getElementById(id);
+const rpc=(fn,args)=>fetch(`${API}/rest/v1/rpc/${fn}`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(args)}).then(r=>r.json());
+
+function campoHTML(b,f){
+  const v=(datos[f.c]??'');
+  const inp=f.t?`<textarea data-b="${b.id}" data-c="${f.c}">${v}</textarea>`:`<input type="text" data-b="${b.id}" data-c="${f.c}" value="${v.replace(/"/g,'&quot;')}">`;
+  const mic=f.a?`<button class="mic" data-b="${b.id}" data-c="${f.c}" title="Grabar audio">🎙</button>`:'';
+  const tieneAudio=datos['__audio_'+f.c]?`<div class="audio-ok">Ya grabaste un audio para esta pregunta ✓</div>`:'';
+  return `<label>${f.l}${f.s?`<small>${f.s}</small>`:''}</label><div class="fila">${inp}${mic}</div>${tieneAudio}`;
+}
+
+function pintar(){
+  const cont=$('bloques'); cont.innerHTML='';
+  let total=0, hechas=0;
+  BLOQUES.forEach((b,i)=>{
+    if(b.solo02 && plan!=='02') return;
+    const visibles=b.campos;
+    total+=visibles.length;
+    hechas+=visibles.filter(f=>(datos[f.c]??'').trim()).length;
+    const d=document.createElement('details');
+    if(i===0)d.open=true;
+    let inner='';
+    if(b.pin && window.plataBloqueada){
+      inner=`<div class="pinbox"><p>Esta parte habla de plata, así que le pusimos una llave extra: los <b>últimos 4 números de tu WhatsApp</b>.</p>
+      <input type="text" inputmode="numeric" maxlength="4" id="pin_in"> <button id="pin_btn">Abrir</button></div>`;
+    } else {
+      inner=visibles.map(f=>campoHTML(b,f)).join('');
+      if(b.archivos){
+        inner+=`<label>Fotos de tu obra<small>Las mejores que tengas, de a varias. JPG o PNG.</small></label>
+        <input type="file" id="fotos" multiple accept="image/*" class="oculto">
+        <button class="subir" onclick="document.getElementById('fotos').click()">Subir fotos</button>
+        <ul class="files" id="lista_fotos">${(window.archivos||[]).map(a=>`<li>${a.nombre}</li>`).join('')}</ul>`;
+      }
+    }
+    d.innerHTML=`<summary><svg class="seed" viewBox="0 0 24 24"><path d="M12 3 C18 7 18 17 12 21 C6 17 6 7 12 3 Z" fill="#87863A"/></svg><span class="tit">${b.tit}</span><span class="n">${visibles.filter(f=>(datos[f.c]??'').trim()).length}/${visibles.length}</span></summary><div class="body">${inner}</div>`;
+    cont.appendChild(d);
+  });
+  $('fill').style.width=(total?Math.round(hechas/total*100):0)+'%';
+  $('ptxt').textContent=`${hechas} de ${total} respuestas`;
+  enganchar();
+}
+
+let timers={};
+function guardar(b,c,valor,tipo='texto',audio=null){
+  rpc('briefing_save',{p_slug:slug,p_k:tok,p_bloque:b,p_campo:c,p_valor:valor,p_tipo:tipo,p_audio_url:audio,p_pin:pin})
+  .then(r=>{ if(r.ok){ datos[c]=valor; $('saved').classList.add('on'); setTimeout(()=>$('saved').classList.remove('on'),1600);
+    const total=[...document.querySelectorAll('[data-c]')].length; }});
+}
+function enganchar(){
+  document.querySelectorAll('input[data-c],textarea[data-c]').forEach(el=>{
+    el.oninput=()=>{ clearTimeout(timers[el.dataset.c]); timers[el.dataset.c]=setTimeout(()=>guardar(el.dataset.b,el.dataset.c,el.value),900); };
+    el.onblur=()=>guardar(el.dataset.b,el.dataset.c,el.value);
+  });
+  document.querySelectorAll('.mic').forEach(btn=>{ btn.onclick=(e)=>{e.preventDefault();grabar(btn);} });
+  const pb=$('pin_btn'); if(pb) pb.onclick=async()=>{
+    const v=$('pin_in').value.trim();
+    const r=await rpc('briefing_get',{p_slug:slug,p_k:tok,p_pin:v});
+    if(r.plata_bloqueada){ alert('Ese no es. Probá con los últimos 4 de tu WhatsApp.'); return; }
+    pin=v; sessionStorage.setItem('pin_'+slug,v); cargarDatos(r);
+  };
+  const fi=$('fotos'); if(fi) fi.onchange=subirFotos;
+}
+
+let recorder=null, recBtn=null;
+async function grabar(btn){
+  if(recorder && recorder.state==='recording'){ recorder.stop(); return; }
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    recorder=new MediaRecorder(stream); recBtn=btn; const chunks=[];
+    recorder.ondataavailable=e=>chunks.push(e.data);
+    recorder.onstop=async()=>{
+      btn.classList.remove('rec'); btn.textContent='🎙';
+      stream.getTracks().forEach(t=>t.stop());
+      const blob=new Blob(chunks,{type:'audio/webm'});
+      const nombre=`${btn.dataset.c}_${Date.now()}.webm`;
+      const path=`${slug}/${nombre}`;
+      const up=await fetch(`${API}/storage/v1/object/setup/${path}`,{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'audio/webm'},body:blob});
+      if(up.ok){
+        const url=`${API}/storage/v1/object/public/setup/${path}`;
+        guardar(btn.dataset.b,btn.dataset.c,(datos[btn.dataset.c]||'')+' [audio grabado]', 'audio', url);
+        datos['__audio_'+btn.dataset.c]=url; pintar();
+      } else alert('No se pudo subir el audio. Probá de nuevo.');
+    };
+    recorder.start(); btn.classList.add('rec'); btn.textContent='■';
+  }catch(e){ alert('Necesito permiso del micrófono para grabar.'); }
+}
+
+async function subirFotos(ev){
+  for(const f of ev.target.files){
+    const limpio=f.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+    const path=`${slug}/${Date.now()}_${limpio}`;
+    const up=await fetch(`${API}/storage/v1/object/setup/${path}`,{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':f.type||'application/octet-stream'},body:f});
+    if(up.ok){
+      const url=`${API}/storage/v1/object/public/setup/${path}`;
+      await rpc('briefing_archivo',{p_slug:slug,p_k:tok,p_tipo:'obra',p_nombre:f.name,p_url:url});
+      const li=document.createElement('li'); li.textContent=f.name+' ✓'; $('lista_fotos').appendChild(li);
+    } else { const li=document.createElement('li'); li.textContent=f.name+' — falló, reintentá'; $('lista_fotos').appendChild(li); }
+  }
+}
+
+function cargarDatos(r){
+  window.plataBloqueada=r.plata_bloqueada;
+  window.archivos=r.archivos||[];
+  plan=r.proyecto.plan||'02';
+  datos={};
+  (r.respuestas||[]).forEach(x=>{ datos[x.campo]=x.valor||''; if(x.audio_url) datos['__audio_'+x.campo]=x.audio_url; });
+  $('saludo').textContent='Hola, '+(r.proyecto.nombre.split(' ')[0]);
+  $('cargando').classList.add('oculto'); $('app').classList.remove('oculto');
+  pintar();
+}
+
+rpc('briefing_get',{p_slug:slug,p_k:tok,p_pin:pin}).then(r=>{
+  if(r.error){ $('cargando').classList.add('oculto'); $('error').classList.remove('oculto'); return; }
+  cargarDatos(r);
+}).catch(()=>{ $('cargando').classList.add('oculto'); $('error').classList.remove('oculto'); });
+</script>
+</body>
+</html>
