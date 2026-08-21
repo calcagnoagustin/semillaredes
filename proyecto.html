@@ -48,6 +48,20 @@ input:focus,textarea:focus{outline:2px solid var(--oliva);border-color:transpare
 .err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:30px}
 .gracias{font-size:14px;color:var(--mute);margin-top:34px}
 .oculto{display:none}
+.proceso{background:#fff;border:1px solid #E5DFD2;border-radius:14px;padding:20px;margin:18px 0}
+.proceso h2{font-family:'Playfair Display',serif;font-size:21px;color:var(--navy);margin:0 0 2px}
+.proceso .sub{font-size:13.5px;color:var(--mute);margin:0 0 14px}
+.etapa{margin-top:16px}
+.etapa h3{font-size:11.5px;letter-spacing:2px;text-transform:uppercase;color:var(--oliva);margin:0 0 8px}
+.ent{display:flex;align-items:flex-start;gap:10px;padding:7px 0;font-size:14.5px;border-bottom:1px dashed #EFEADF}
+.ent:last-child{border-bottom:0}
+.est{flex:none;width:17px;height:17px;border-radius:50%;margin-top:3px;border:2px solid #DDD6C7}
+.est.listo{background:var(--oliva);border-color:var(--oliva)}
+.est.en_curso{border-color:var(--rosa);background:repeating-linear-gradient(45deg,var(--rosa),var(--rosa) 3px,#fff 3px,#fff 6px)}
+.ent .t{flex:1}
+.ent .t small{display:block;color:var(--mute);font-size:12.5px}
+.ent a{color:var(--vino);font-size:12.5px;font-weight:600}
+.ent.pend .t{color:var(--mute)}
 </style>
 </head>
 <body>
@@ -65,6 +79,9 @@ input:focus,textarea:focus{outline:2px solid var(--oliva);border-color:transpare
       <div class="txt"><span id="ptxt">0 respuestas</span><span class="saved" id="saved">Guardado ✓</span></div>
     </div>
 
+    <div id="proceso"></div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin:30px 0 0">Tu briefing</h2>
+    <p class="lede" style="margin-bottom:0">Esto es lo que necesitamos de tu lado para arrancar.</p>
     <div id="bloques"></div>
 
     <p class="gracias">Cuando termines no hace falta avisar: lo vemos de este lado y seguimos nosotros. Cualquier duda, escribile a Agus por WhatsApp.</p>
@@ -130,6 +147,26 @@ function campoHTML(b,f){
   return `<label>${f.l}${f.s?`<small>${f.s}</small>`:''}</label><div class="fila">${inp}${mic}</div>${tieneAudio}`;
 }
 
+const ETAPAS={1:['Meses 1 y 2 · Descubrimiento','Diagnóstico, modelo de negocio, identidad y primera campaña'],2:['Meses 3 y 4 · Desarrollo','Contenido activo, campañas midiendo y primer reporte'],3:['Meses 5 y 6 · Escalabilidad','Iteración con datos y validación del modelo']};
+function pintarProceso(){
+  const ents=window.entregables||[];
+  if(!ents.length){ $('proceso').innerHTML=''; return; }
+  const listos=ents.filter(e=>e.estado==='listo').length;
+  let html=`<div class="proceso"><h2>Tu proceso</h2><p class="sub">${listos} de ${ents.length} entregables listos. Esto es todo lo que se construye en los 180 días.</p>
+    <div class="bar" style="height:6px;background:#E2DCCF;border-radius:99px;overflow:hidden"><div style="height:100%;width:${Math.round(listos/ents.length*100)}%;background:var(--oliva)"></div></div>`;
+  [1,2,3].forEach(et=>{
+    const grupo=ents.filter(e=>e.etapa===et);
+    if(!grupo.length) return;
+    html+=`<div class="etapa"><h3>${ETAPAS[et][0]}</h3>`;
+    grupo.forEach(e=>{
+      html+=`<div class="ent ${e.estado==='pendiente'?'pend':''}"><span class="est ${e.estado}"></span>
+        <span class="t">${e.titulo}${e.detalle?`<small>${e.detalle}</small>`:''}${e.nota?`<small>${e.nota}</small>`:''}</span>
+        ${e.link?`<a href="${e.link}" target="_blank">Ver →</a>`:''}</div>`;
+    });
+    html+='</div>';
+  });
+  $('proceso').innerHTML=html+'</div>';
+}
 function pintar(){
   const cont=$('bloques'); cont.innerHTML='';
   let total=0, hechas=0;
@@ -159,6 +196,7 @@ function pintar(){
   $('fill').style.width=(total?Math.round(hechas/total*100):0)+'%';
   $('ptxt').textContent=`${hechas} de ${total} respuestas`;
   enganchar();
+  pintarProceso();
 }
 
 let timers={};
@@ -222,6 +260,7 @@ async function subirFotos(ev){
 function cargarDatos(r){
   window.plataBloqueada=r.plata_bloqueada;
   window.archivos=r.archivos||[];
+  window.entregables=r.entregables||[];
   plan=r.proyecto.plan||'02';
   datos={};
   (r.respuestas||[]).forEach(x=>{ datos[x.campo]=x.valor||''; if(x.audio_url) datos['__audio_'+x.campo]=x.audio_url; });
