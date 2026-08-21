@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel Setup · Semilla Redes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--crema:#F2EDE4;--navy:#1A2456;--vino:#7A1F3A;--rosa:#E2767C;--oliva:#87863A;--tinta:#24242C;--mute:#8A8697}
+*{box-sizing:border-box}
+body{margin:0;background:var(--navy);color:var(--crema);font-family:Inter,system-ui,sans-serif;line-height:1.5;padding:34px 18px 80px}
+.wrap{max-width:900px;margin:0 auto}
+h1{font-family:'Playfair Display',serif;font-size:34px;margin:0 0 4px}
+.lede{color:#B9B4C4;font-size:14.5px;margin:0 0 26px}
+.card{background:#212B60;border:1px solid #2E3970;border-radius:14px;padding:20px;margin:14px 0}
+.card h2{font-family:'Playfair Display',serif;font-size:22px;margin:0 0 2px;color:var(--crema)}
+.meta{font-size:12.5px;color:#B9B4C4;margin-bottom:12px}
+.bar{height:6px;background:#2E3970;border-radius:99px;overflow:hidden;margin:10px 0 4px}
+.fill{height:100%;background:var(--rosa)}
+.link{font-size:12.5px;color:var(--rosa);word-break:break-all}
+details{margin-top:12px}
+summary{cursor:pointer;font-size:13.5px;color:#B9B4C4}
+.resp{font-size:13.5px;margin:10px 0;padding-left:12px;border-left:2px solid var(--oliva)}
+.resp b{color:var(--rosa);display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase}
+.resp a{color:var(--rosa)}
+.chip{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:var(--oliva);color:var(--crema);border-radius:99px;padding:3px 10px;margin-left:8px;vertical-align:middle}
+input{border:1px solid #2E3970;background:#1A2456;color:var(--crema);border-radius:10px;padding:11px 13px;font:inherit;width:240px}
+button{border:0;background:var(--vino);color:#fff;font:inherit;font-weight:600;border-radius:10px;padding:11px 18px;cursor:pointer;margin-left:8px}
+.oculto{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Panel Setup</h1>
+  <p class="lede">Todos los briefings, su avance y sus respuestas.</p>
+
+  <div id="gate">
+    <input type="password" id="tok" placeholder="Token de admin">
+    <button onclick="entrar()">Entrar</button>
+  </div>
+
+  <div id="lista" class="oculto"></div>
+</div>
+
+<script>
+const API='https://fdrxsjphlvvwwknnrjtx.supabase.co';
+const KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
+const rpc=(fn,args)=>fetch(`${API}/rest/v1/rpc/${fn}`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(args)}).then(r=>r.json());
+const BL={identidad:'Quién es',obra:'Su obra',plata:'Negocio',publico:'Público',objetivos:'Objetivos',cuentas:'Cuentas',material:'Material',prueba:'—'};
+
+async function entrar(){
+  const t=document.getElementById('tok').value.trim()||sessionStorage.getItem('sr_admin')||'';
+  const r=await rpc('briefing_admin',{p_admin:t});
+  if(r.error){ alert('Token incorrecto'); return; }
+  sessionStorage.setItem('sr_admin',t);
+  document.getElementById('gate').classList.add('oculto');
+  const cont=document.getElementById('lista'); cont.classList.remove('oculto'); cont.innerHTML='';
+  (r.proyectos||[]).forEach(p=>{
+    const total=20;
+    const pct=Math.min(100,Math.round(p.completadas/total*100));
+    const porBloque={};
+    (p.respuestas||[]).forEach(x=>{ (porBloque[x.bloque]=porBloque[x.bloque]||[]).push(x); });
+    const detalle=Object.entries(porBloque).map(([b,rs])=>
+      `<div class="resp"><b>${BL[b]||b}</b>`+rs.filter(x=>x.valor&&x.valor.trim()).map(x=>
+        `${x.campo.replace(/_/g,' ')}: ${x.valor}${x.audio_url?` — <a href="${x.audio_url}" target="_blank">escuchar audio</a>`:''}`
+      ).join('<br>')+`</div>`).join('');
+    const card=document.createElement('div'); card.className='card';
+    card.innerHTML=`<h2>${p.nombre}<span class="chip">Plan ${p.plan}</span></h2>
+      <div class="meta">${p.estado} · ${p.completadas} respuestas · ${p.archivos} archivos · última actividad ${new Date(p.actualizado_en).toLocaleString('es-AR')}</div>
+      <div class="bar"><div class="fill" style="width:${pct}%"></div></div>
+      <div class="link">landing.semillaredes.com/proyecto.html?p=${p.slug}&k=${p.token}</div>
+      <details><summary>Ver respuestas</summary>${detalle||'<p class="meta">Sin respuestas todavía.</p>'}</details>`;
+    cont.appendChild(card);
+  });
+}
+if(sessionStorage.getItem('sr_admin')) entrar();
+</script>
+</body>
+</html>
