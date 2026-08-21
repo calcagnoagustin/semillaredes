@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SemillaIA · La inteligencia artificial del Método Semilla para artistas</title>
-<meta name="description" content="Dos herramientas gratuitas para artistas: diagnosticá tu proyecto con el Método Semilla, o encontrá curadores de playlists de Spotify con su contacto.">
+<meta name="description" content="Inteligencia artificial entrenada con el Metodo Semilla. Dos herramientas gratis para artistas: diagnostica tu proyecto o encontra curadores de playlists de Spotify con su contacto.">
 <link rel="canonical" href="https://landing.semillaredes.com/semillaIA.html">
 <meta property="og:type" content="website">
 <meta property="og:title" content="SemillaIA · Herramientas gratuitas para artistas">
@@ -18,7 +18,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=Playfair+Display:ital,wght@1,500;1,700&display=swap" rel="stylesheet">
 <style>
 :root{
---cream:#F2EDE4; --navy:#1A2456; --wine:#7A1F3A; --rosa:#C97080; --oliva:#7A8A42; --white:#FDFAF6;
+--cream:#F2EDE4; --navy:#1A2456; --wine:#7A1F3A; --rosa:#E2767C; --oliva:#87863A; --white:#FDFAF6;
 --navy-soft:rgba(26,36,86,.08); --navy-line:rgba(26,36,86,.12);
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -57,7 +57,21 @@ h1 em{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;col
 .tool:hover .tool-go{color:var(--wine)}
 .tool-go span{transition:transform .18s}
 .tool:hover .tool-go span{transform:translateX(5px)}
-.para{font-size:13px;color:rgba(26,36,86,.5);margin-top:16px;padding-top:14px;border-top:1px solid var(--navy-line)}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+    .chip{font-size:12.5px;font-weight:600;letter-spacing:.04em;padding:7px 14px;border-radius:999px;background:rgba(26,36,86,.06);color:rgba(26,36,86,.72)}
+    .chip.ia{background:var(--wine);color:var(--cream)}
+    .como{margin-top:70px}
+    .como h2{font-size:clamp(26px,3.4vw,38px);font-weight:900;letter-spacing:-.02em;line-height:1.15}
+    .como h2 em{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;color:var(--wine)}
+    .como .lead{margin-top:14px;font-size:16px;line-height:1.65;color:rgba(26,36,86,.78);max-width:680px}
+    .pasos{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:34px}
+    @media(max-width:760px){.pasos{grid-template-columns:1fr}}
+    .paso{background:var(--white);border:1px solid var(--navy-line);border-radius:12px;padding:24px}
+    .paso .n{font-family:'Playfair Display',serif;font-size:26px;font-style:italic;color:var(--rosa);line-height:1}
+    .paso h3{margin-top:10px;font-size:18px;font-weight:800;letter-spacing:-.01em}
+    .paso p{margin-top:8px;font-size:14.5px;line-height:1.55;color:rgba(26,36,86,.72)}
+    .nota{margin-top:26px;font-size:14.5px;line-height:1.6;color:rgba(26,36,86,.6);max-width:680px;padding-left:16px;border-left:2px solid var(--oliva)}
+    .para{font-size:13px;color:rgba(26,36,86,.5);margin-top:16px;padding-top:14px;border-top:1px solid var(--navy-line)}
 
 .metodo{margin-top:70px;background:var(--navy);color:var(--white);border-radius:12px;padding:clamp(28px,4vw,48px)}
 .metodo .ct{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(22px,3vw,28px);font-weight:500;line-height:1.25}
@@ -90,19 +104,19 @@ footer{padding:24px 20px}
 <nav>
 <a class="logo" href="https://semillaredes.com">
 <svg class="logo-icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-<line x1="22" y1="22" x2="4" y2="22" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="40" y2="22" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="22" y2="4" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="22" y2="40" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="8" y2="8" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="36" y2="36" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="36" y2="8" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="8" y2="36" stroke="#C97080" stroke-width="1.5"/>
-<circle cx="4" cy="22" r="2.5" fill="#C97080"/><circle cx="40" cy="22" r="2.5" fill="#C97080"/>
-<circle cx="22" cy="4" r="2.5" fill="#C97080"/><circle cx="22" cy="40" r="2.5" fill="#C97080"/>
-<circle cx="8" cy="8" r="2.5" fill="#C97080"/><circle cx="36" cy="36" r="2.5" fill="#C97080"/>
-<circle cx="36" cy="8" r="2.5" fill="#C97080"/><circle cx="8" cy="36" r="2.5" fill="#C97080"/>
-<path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/>
+<line x1="22" y1="22" x2="4" y2="22" stroke="#E2767C" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="40" y2="22" stroke="#E2767C" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="22" y2="4" stroke="#E2767C" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="22" y2="40" stroke="#E2767C" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="8" y2="8" stroke="#E2767C" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="36" y2="36" stroke="#E2767C" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="36" y2="8" stroke="#E2767C" stroke-width="1.5"/>
+<line x1="22" y1="22" x2="8" y2="36" stroke="#E2767C" stroke-width="1.5"/>
+<circle cx="4" cy="22" r="2.5" fill="#E2767C"/><circle cx="40" cy="22" r="2.5" fill="#E2767C"/>
+<circle cx="22" cy="4" r="2.5" fill="#E2767C"/><circle cx="22" cy="40" r="2.5" fill="#E2767C"/>
+<circle cx="8" cy="8" r="2.5" fill="#E2767C"/><circle cx="36" cy="36" r="2.5" fill="#E2767C"/>
+<circle cx="36" cy="8" r="2.5" fill="#E2767C"/><circle cx="8" cy="36" r="2.5" fill="#E2767C"/>
+<path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#87863A"/>
 </svg>
 <span class="logo-text">Semilla<br>Redes</span>
 </a>
@@ -112,27 +126,28 @@ footer{padding:24px 20px}
 <div class="wrap">
 
 <section class="hero">
-<p class="kicker">SemillaIA</p>
-<h1>Dos herramientas para <em>impulsar</em> tu proyecto artístico.</h1>
+<p class="kicker">SemillaIA · Inteligencia artificial para artistas</p>
+<h1>Inteligencia artificial <em>entrenada</em> con el Método Semilla.</h1>
 <div class="rule"></div>
-<p class="sub">La inteligencia artificial del Método Semilla, el mismo que usamos con los artistas que acompañamos. Las dos son gratis y no necesitás registrarte.</p>
+<p class="sub">Dos herramientas que analizan tu proyecto artístico con el mismo criterio que usamos con los artistas que acompañamos. No es un chat genérico: la IA razona con los tres pilares del Método.</p>
+        <div class="chips"><span class="chip ia">Con inteligencia artificial</span><span class="chip">Gratis</span><span class="chip">Sin registro</span><span class="chip">Responde en minutos</span></div>
 </section>
 
 <section class="tools">
 
   <a class="tool" href="/diagnostico.html">
     <svg class="tool-mark" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <line x1="22" y1="22" x2="4" y2="22" stroke="#C97080" stroke-width="1.5"/>
-      <line x1="22" y1="22" x2="40" y2="22" stroke="#C97080" stroke-width="1.5"/>
-      <line x1="22" y1="22" x2="22" y2="4" stroke="#C97080" stroke-width="1.5"/>
-      <line x1="22" y1="22" x2="22" y2="40" stroke="#C97080" stroke-width="1.5"/>
-      <circle cx="4" cy="22" r="2.5" fill="#C97080"/><circle cx="40" cy="22" r="2.5" fill="#C97080"/>
-      <circle cx="22" cy="4" r="2.5" fill="#C97080"/><circle cx="22" cy="40" r="2.5" fill="#C97080"/>
-      <path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/>
+      <line x1="22" y1="22" x2="4" y2="22" stroke="#E2767C" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="40" y2="22" stroke="#E2767C" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="22" y2="4" stroke="#E2767C" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="22" y2="40" stroke="#E2767C" stroke-width="1.5"/>
+      <circle cx="4" cy="22" r="2.5" fill="#E2767C"/><circle cx="40" cy="22" r="2.5" fill="#E2767C"/>
+      <circle cx="22" cy="4" r="2.5" fill="#E2767C"/><circle cx="22" cy="40" r="2.5" fill="#E2767C"/>
+      <path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#87863A"/>
     </svg>
-    <p class="tool-tag">Herramienta 01</p>
+    <p class="tool-tag">Herramienta 01 · IA de diagnóstico</p>
     <h2>Diagnosticá tu <em>proyecto</em></h2>
-    <p>Contanos qué hacés y en qué punto estás. Te devolvemos una lectura de tu proyecto según los tres ejes del Método.</p>
+    <p>Contás qué hacés y en qué punto estás. La IA lee tu proyecto, lo cruza con los tres pilares del Método y te devuelve una lectura concreta.</p>
     <ul>
       <li>En qué etapa está tu proyecto hoy</li>
       <li>Tus tres fortalezas y tus tres puntos flojos</li>
@@ -144,17 +159,17 @@ footer{padding:24px 20px}
 
   <a class="tool" href="/curadores.html">
     <svg class="tool-mark" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <line x1="22" y1="22" x2="8" y2="8" stroke="#C97080" stroke-width="1.5"/>
-      <line x1="22" y1="22" x2="36" y2="36" stroke="#C97080" stroke-width="1.5"/>
-      <line x1="22" y1="22" x2="36" y2="8" stroke="#C97080" stroke-width="1.5"/>
-      <line x1="22" y1="22" x2="8" y2="36" stroke="#C97080" stroke-width="1.5"/>
-      <circle cx="8" cy="8" r="2.5" fill="#C97080"/><circle cx="36" cy="36" r="2.5" fill="#C97080"/>
-      <circle cx="36" cy="8" r="2.5" fill="#C97080"/><circle cx="8" cy="36" r="2.5" fill="#C97080"/>
-      <path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/>
+      <line x1="22" y1="22" x2="8" y2="8" stroke="#E2767C" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="36" y2="36" stroke="#E2767C" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="36" y2="8" stroke="#E2767C" stroke-width="1.5"/>
+      <line x1="22" y1="22" x2="8" y2="36" stroke="#E2767C" stroke-width="1.5"/>
+      <circle cx="8" cy="8" r="2.5" fill="#E2767C"/><circle cx="36" cy="36" r="2.5" fill="#E2767C"/>
+      <circle cx="36" cy="8" r="2.5" fill="#E2767C"/><circle cx="8" cy="36" r="2.5" fill="#E2767C"/>
+      <path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#87863A"/>
     </svg>
-    <p class="tool-tag">Herramienta 02</p>
+    <p class="tool-tag">Herramienta 02 · IA de búsqueda</p>
     <h2>Encontrá <em>curadores</em> de playlists</h2>
-    <p>Decinos qué música hacés y te damos playlists de Spotify que están vivas, con el contacto de quien las arma.</p>
+    <p>Decís qué música hacés y la IA rastrea playlists de Spotify que están vivas, descarta las infladas y te trae el contacto de quien las arma.</p>
     <ul>
       <li>Playlists activas, no abandonadas</li>
       <li>Sin las que inflan seguidores</li>
@@ -166,7 +181,18 @@ footer{padding:24px 20px}
 
 </section>
 
-<section class="metodo">
+<section class="como">
+        <h2>Cómo funciona <em>la inteligencia artificial</em></h2>
+        <p class="lead">Los modelos generales te dan consejos de manual. Estas herramientas están construidas sobre el Método Semilla, así que responden como respondería alguien que trabaja con artistas todos los días.</p>
+        <div class="pasos">
+          <div class="paso"><div class="n">01</div><h3>Contás tu proyecto</h3><p>En texto libre, como se lo explicarías a alguien. Sin formularios largos ni casilleros que no aplican a lo tuyo.</p></div>
+          <div class="paso"><div class="n">02</div><h3>La IA lo analiza</h3><p>Cruza lo que contaste con los tres pilares del Método: modelo de negocio, comunicación y publicidad.</p></div>
+          <div class="paso"><div class="n">03</div><h3>Recibís algo accionable</h3><p>Un diagnóstico con prioridades concretas, o una lista de curadores con nombre y contacto. Nada de generalidades.</p></div>
+        </div>
+        <p class="nota">La inteligencia artificial acelera el diagnóstico, no reemplaza el criterio. Es un buen primer paso: el acompañamiento real de un proyecto lo hace Agus, con reuniones y decisiones tomadas sobre datos propios.</p>
+      </section>
+
+      <section class="metodo">
   <p class="ct">Semilla Redes trabaja con artistas todos los días.</p>
   <p>Estas herramientas son una parte de lo que hacemos. Si querés ver cómo acompañamos proyectos artísticos —formación, setup y campañas— entrá al sitio.</p>
   <div class="cta-btns">
