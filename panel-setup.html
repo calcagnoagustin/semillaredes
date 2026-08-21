@@ -186,8 +186,8 @@ function pintar(proys){
         <button class="ok" data-claude="${p.slug}">Copiar briefing para Claude</button>
         <button class="sec" data-wa="${encodeURIComponent('Hola! Te dejo el espacio de tu proyecto en Semilla Redes. Entrá cuando puedas y completá lo que te salga, se guarda solo: '+link)}">Mandar por WhatsApp</button>
       </div>
-      <details><summary>Ver respuestas</summary>${detalle||'<p class="meta">Sin respuestas todavía.</p>'}</details>
-      <details open><summary>Entregables y avance</summary><div id="ent_${p.slug}">${entregablesHTML(p)}</div></details>`;
+      <details><summary>Ver briefing · ${p.completadas} respuestas</summary>${detalle||'<p class="meta">Sin respuestas todavía.</p>'}</details>
+      <details><summary>Ver estado del proyecto · ${(p.entregables||[]).filter(e=>e.estado==='listo').length}/${(p.entregables||[]).length}</summary><div id="ent_${p.slug}">${entregablesHTML(p)}</div></details>`;
     cont.appendChild(c);
     c.querySelector('[data-copy]').onclick=e=>{navigator.clipboard.writeText(e.target.dataset.copy);e.target.textContent='Copiado ✓';};
     c.querySelector('[data-claude]').onclick=e=>{navigator.clipboard.writeText(textoPlano(p));e.target.textContent='Copiado ✓';};
