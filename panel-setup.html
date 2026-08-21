@@ -42,6 +42,11 @@ th{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mute
 .mini i{display:block;height:100%;background:var(--oliva)}
 .oculto{display:none}
 .aviso{font-size:12.5px;color:var(--mute);margin-top:10px}
+select.est{width:auto;margin:0;font-size:12.5px;padding:6px 8px}
+.entfila{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid #2E3970;font-size:13px;flex-wrap:wrap}
+.entfila .tt{flex:1;min-width:150px}
+.entfila input{width:190px;margin:0;font-size:12.5px;padding:6px 8px}
+.et{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mute);margin:12px 0 4px}
 textarea{width:100%;min-height:120px;background:#1A2456;color:var(--crema);border:1px solid #2E3970;border-radius:9px;padding:12px;font:inherit;font-size:12.5px}
 </style>
 </head>
@@ -125,6 +130,38 @@ function textoPlano(p){
   return s;
 }
 
+const ETAPAS={1:'Meses 1 y 2 · Descubrimiento',2:'Meses 3 y 4 · Desarrollo',3:'Meses 5 y 6 · Escalabilidad'};
+function entregablesHTML(p){
+  const ents=p.entregables||[];
+  if(!ents.length) return '<p class="meta">Sin entregables cargados.</p>';
+  let h='';
+  [1,2,3].forEach(et=>{
+    const g=ents.filter(e=>e.etapa===et); if(!g.length) return;
+    h+=`<div class="et">${ETAPAS[et]}</div>`;
+    g.forEach(e=>{
+      h+=`<div class="entfila"><span class="tt">${e.titulo}</span>
+        <select class="est" data-slug="${p.slug}" data-clave="${e.clave}">
+          <option value="pendiente"${e.estado==='pendiente'?' selected':''}>Pendiente</option>
+          <option value="en_curso"${e.estado==='en_curso'?' selected':''}>En curso</option>
+          <option value="listo"${e.estado==='listo'?' selected':''}>Listo</option>
+        </select>
+        <input placeholder="Link (Canva, dominio…)" value="${e.link||''}" data-slug="${p.slug}" data-clave="${e.clave}" data-campo="link">
+        ${e.link?`<a href="${e.link}" target="_blank" style="color:var(--rosa);font-size:12px">abrir</a>`:''}</div>`;
+    });
+  });
+  return h;
+}
+function engancharEnt(c){
+  c.querySelectorAll('select.est').forEach(sel=>sel.onchange=async()=>{
+    await rpc('briefing_entregable',{p_admin:admin,p_slug:sel.dataset.slug,p_clave:sel.dataset.clave,p_estado:sel.value});
+    sel.style.borderColor='#87863A'; setTimeout(()=>sel.style.borderColor='#2E3970',900);
+  });
+  c.querySelectorAll('input[data-campo=link]').forEach(inp=>inp.onblur=async()=>{
+    const sel=c.querySelector(`select[data-clave="${inp.dataset.clave}"]`);
+    await rpc('briefing_entregable',{p_admin:admin,p_slug:inp.dataset.slug,p_clave:inp.dataset.clave,p_estado:sel?sel.value:'en_curso',p_link:inp.value});
+    inp.style.borderColor='#87863A'; setTimeout(()=>inp.style.borderColor='#2E3970',900);
+  });
+}
 function pintar(proys){
   const cont=$('v_proyectos'); cont.innerHTML='';
   if(!proys.length){ cont.innerHTML='<div class="card"><p class="meta">Todavía no hay proyectos. Creá el primero en la pestaña de al lado.</p></div>'; return; }
@@ -141,17 +178,21 @@ function pintar(proys){
     const c=document.createElement('div'); c.className='card';
     c.innerHTML=`<h2>${p.nombre}<span class="chip">Plan ${p.plan}</span><span class="chip gris">${p.estado}</span></h2>
       <div class="meta">${p.completadas} respuestas · ${p.archivos} archivos · última actividad ${new Date(p.actualizado_en).toLocaleString('es-AR')}</div>
-      <div class="bar"><div class="fill" style="width:${pct}%"></div></div>
+      <div class="meta" style="margin-top:8px">Briefing</div><div class="bar"><div class="fill" style="width:${pct}%"></div></div>
+      <div class="meta" style="margin-top:8px">Entregables: ${(p.entregables||[]).filter(e=>e.estado==='listo').length} de ${(p.entregables||[]).length} listos</div>
+      <div class="bar"><div class="fill" style="width:${(p.entregables||[]).length?Math.round((p.entregables||[]).filter(e=>e.estado==='listo').length/(p.entregables||[]).length*100):0}%;background:var(--oliva)"></div></div>
       <div class="acc">
         <button class="sec" data-copy="${link}">Copiar link del artista</button>
         <button class="ok" data-claude="${p.slug}">Copiar briefing para Claude</button>
         <button class="sec" data-wa="${encodeURIComponent('Hola! Te dejo el espacio de tu proyecto en Semilla Redes. Entrá cuando puedas y completá lo que te salga, se guarda solo: '+link)}">Mandar por WhatsApp</button>
       </div>
-      <details><summary>Ver respuestas</summary>${detalle||'<p class="meta">Sin respuestas todavía.</p>'}</details>`;
+      <details><summary>Ver respuestas</summary>${detalle||'<p class="meta">Sin respuestas todavía.</p>'}</details>
+      <details open><summary>Entregables y avance</summary><div id="ent_${p.slug}">${entregablesHTML(p)}</div></details>`;
     cont.appendChild(c);
     c.querySelector('[data-copy]').onclick=e=>{navigator.clipboard.writeText(e.target.dataset.copy);e.target.textContent='Copiado ✓';};
     c.querySelector('[data-claude]').onclick=e=>{navigator.clipboard.writeText(textoPlano(p));e.target.textContent='Copiado ✓';};
     c.querySelector('[data-wa]').onclick=e=>window.open('https://wa.me/?text='+e.target.dataset.wa,'_blank');
+    engancharEnt(c);
   });
 }
 
