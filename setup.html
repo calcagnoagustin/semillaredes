@@ -173,7 +173,8 @@
       }
       .badge { margin-bottom: 18px; margin-top: 8px; }
 
-      .hero-col { width: 62%; }
+      .hero-col { width: 100%; }
+      .badge, .hero h1, .hero-divider, .hero-sub { max-width: 63%; }
       .hero h1 { font-size: clamp(34px, 9.4vw, 46px); line-height: 1.02; }
       .hero-divider { margin: 22px 0 18px; }
       .hero-sub { font-size: 15px; line-height: 1.7; max-width: none; margin-bottom: 26px; }
@@ -197,6 +198,7 @@
       .hero-meta {
         position: relative;
         z-index: 2;
+        width: 100%;
         grid-template-columns: 1fr;
         max-width: none;
         padding: 6px 16px;
@@ -232,7 +234,7 @@
       .hero-meta-label { grid-column: 3; grid-row: 1; }
       .hero-meta-value { grid-column: 3; grid-row: 2; font-size: 16px; }
 
-      .hero-ctas { position: relative; z-index: 2; margin-top: 26px !important; }
+      .hero-ctas { position: relative; z-index: 2; margin-top: 26px !important; width: 100%; }
       .hero-ctas .btn-primary, .hero-ctas .btn-secondary { width: 100%; justify-content: center; }
     }
 
