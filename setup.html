@@ -84,6 +84,23 @@
       padding: 80px 48px 100px;
       max-width: 960px;
       margin: 0 auto;
+      position: relative;
+    }
+
+    .hero-raiz {
+      position: absolute;
+      top: -40px;
+      right: -60px;
+      width: 380px;
+      height: auto;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero > *:not(.hero-raiz) { position: relative; z-index: 1; }
+
+    @media (max-width: 900px) {
+      .hero-raiz { width: 240px; right: -40px; top: -20px; opacity: .5; }
     }
 
     .badge {
@@ -1094,10 +1111,11 @@
 
   <!-- HERO -->
   <section class="hero">
+    <img class="hero-raiz" src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/ilu-raiz-tejida.png" alt="">
     <span class="badge">Setup Inicial</span>
     <h1>
-      Tu proyecto digital,
-      <span class="italic-line" style="color:var(--wine)">construido desde cero.</span>
+      Todo lo que necesitás,
+      <span class="italic-line" style="color:var(--wine)">armado desde la raíz.</span>
     </h1>
     <div class="hero-divider"></div>
     <p class="hero-sub">
