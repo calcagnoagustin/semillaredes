@@ -84,7 +84,7 @@
       position: relative;
       max-width: 1240px;
       margin: 0 auto;
-      padding: 46px 48px 120px;
+      padding: 46px 48px 80px;
       display: grid;
       grid-template-columns: minmax(0,1fr) minmax(0,0.95fr);
       gap: 20px;
@@ -166,10 +166,9 @@
       width: 190px; height: 190px; border: 1px solid var(--olive);
       border-radius: 50%; opacity: .45; z-index: 1;
     }
-    .hero-rasgado { position: absolute; left: 0; right: 0; bottom: -2px; width: 100%; height: 70px; z-index: 3; }
 
     @media (max-width: 980px) {
-      .hero { grid-template-columns: 1fr; padding: 34px 24px 90px; gap: 0; }
+      .hero { grid-template-columns: 1fr; padding: 34px 24px 60px; gap: 0; }
       .hero-art { min-height: 380px; order: 2; margin-top: 10px; }
       .hero-raiz { width: 72%; left: 22%; top: -10px; }
       .hero-disco { width: 52%; left: 20%; }
@@ -220,6 +219,16 @@
       background: var(--navy);
       color: var(--white);
       padding: 80px 48px;
+      position: relative;
+    }
+
+    .que-es-onda {
+      position: absolute;
+      top: -59px;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      display: block;
     }
 
     .que-es-inner {
@@ -1183,15 +1192,16 @@
       <div class="hero-circulo"></div>
     </div>
 
-    <svg class="hero-rasgado" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0,42 C90,60 150,24 240,34 C330,44 380,66 470,58 C560,50 610,22 700,30 C790,38 840,64 930,56 C1020,48 1080,20 1170,30 C1260,40 1320,62 1440,46 L1440,70 L0,70 Z" fill="#1C1B19"/>
-    </svg>
+
 
 
   </section>
 
   <!-- QUÉ ES -->
   <section class="que-es">
+    <svg class="que-es-onda" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,44 C120,12 240,10 360,30 C480,50 560,58 660,44 C780,27 880,6 1000,14 C1110,21 1200,44 1300,50 C1370,54 1410,50 1440,44 L1440,60 L0,60 Z" fill="#1A2456"/>
+    </svg>
     <div class="que-es-inner">
       <span class="section-label">¿Qué es el Setup Inicial?</span>
       <h2>La solución integral para ir de 0 a 100.</h2>
