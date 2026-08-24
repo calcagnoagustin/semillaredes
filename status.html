@@ -119,7 +119,7 @@ table{font-size:13px}
     <svg viewBox="0 0 44 44" aria-hidden="true"><g stroke="#E2767C" stroke-width="2.4" stroke-linecap="round"><line x1="22" y1="22" x2="5" y2="22"/><line x1="22" y1="22" x2="39" y2="22"/><line x1="22" y1="22" x2="22" y2="5"/><line x1="22" y1="22" x2="22" y2="39"/><line x1="22" y1="22" x2="10" y2="10"/><line x1="22" y1="22" x2="34" y2="34"/><line x1="22" y1="22" x2="34" y2="10"/><line x1="22" y1="22" x2="10" y2="34"/></g><g fill="#E2767C"><circle cx="5" cy="22" r="3.4"/><circle cx="39" cy="22" r="3.4"/><circle cx="22" cy="5" r="3.4"/><circle cx="22" cy="39" r="3.4"/><circle cx="10" cy="10" r="3.4"/><circle cx="34" cy="34" r="3.4"/><circle cx="34" cy="10" r="3.4"/><circle cx="10" cy="34" r="3.4"/></g><ellipse cx="22" cy="22" rx="6.6" ry="10.5" fill="#87863A"/></svg>
     <div><b>SEMILLA</b><span>REDES</span></div>
   </div>
-  <div class="stamp">Documento interno · <b>Última actualización: 22/08/2026</b></div>
+  <div class="stamp">Documento interno · <b>Última actualización: 24/08/2026</b></div>
 </div>
 
 <div class="shell">
@@ -140,6 +140,7 @@ table{font-size:13px}
   <a href="#stack">12 · Stack técnico</a>
   <a href="#mantenimiento">13 · Mantenimiento</a>
   <a href="#setup">15 · Setup Inicial</a>
+  <a href="#raiz">16 · Redes con raíz</a>
   <a href="#registro">14 · Registro</a>
 </nav>
 
@@ -381,6 +382,8 @@ table{font-size:13px}
         <tr><td>Board de referencia: 4 URLs reales de sitios de artistas abstractos</td><td><span class="chip todo">Pendiente</span></td></tr>
 <tr><td>Automatización del newsletter (envío autónomo los viernes)</td><td><span class="chip todo">Sin resolver</span></td></tr>
 <tr><td>Activación de la suscripción de la Formación en Tiendup</td><td><span class="chip todo">Quedó a medias</span></td></tr>
+<tr><td>Curso <b>Redes con raíz</b> (Semilla × Pikuyoga) — landing y formulario de preinscripción publicados</td><td><span class="chip ok">Publicado</span></td></tr>
+<tr><td>Redes con raíz: definir horario de las clases, link de pago y reparto con Pikuyoga</td><td><span class="chip todo">Pendiente</span></td></tr>
 <tr><td>Mejora y actualización de semillaredes.com (escalera de valor, textos, CTAs)</td><td><span class="chip todo">Pendiente</span></td></tr>
 </table>
 </section>
@@ -518,11 +521,31 @@ table{font-size:13px}
 <p><b>Aprendizaje del briefing en docx:</b> el formato largo se abandona a la mitad. La versión web va por bloques con barra de progreso, preguntas concretas en vez de consignas, y un bloque de plata (qué vende, a cuánto, cuánto factura, cuánto necesita facturar) que en el docx no existía y es lo que más falta.</p>
 </section>
 
+<!-- 16 -->
+<section id="raiz">
+<h2>16 · Redes con raíz — Semilla × Pikuyoga</h2>
+<p>Curso corto en co-producción con <b>Pikuyoga</b>, dirigido a proyectos holísticos (yoga, terapias, meditación, talleres, retiros). <b>Función estratégica:</b> es el nivel de conversión de un embudo cuya salida es la Formación Semilla — entra gente por la audiencia de Piku, se convierte en el curso y se fideliza vía membresía hasta la Formación.</p>
+<table>
+<tr><th>Dato</th><th>Definición</th></tr>
+<tr><td>Formato</td><td>2 encuentros de 3 h, en vivo por Zoom, con grabación. Tarea obligatoria entre clases.</td></tr>
+<tr><td>Fechas</td><td>Sábados <b>19 y 26 de septiembre de 2026</b>. Horario a confirmar.</td></tr>
+<tr><td>Precio</td><td><b>ARS 60.000</b>, pago único por las dos clases. Sin preventa ni escalonamiento (decisión de Agus).</td></tr>
+<tr><td>Cupo</td><td>Sin número público: se comunica solo como "cupos limitados".</td></tr>
+<tr><td>Incluye</td><td>Plantillas (grilla de productos, calendario de lanzamiento de 14 días, los 5 formatos, checklist de campaña, guion de respuesta de WhatsApp) + <b>1 mes de membresía gratuita</b>.</td></tr>
+<tr><td>Curso avanzado de Meta Ads</td><td><b>No se regala.</b> Es inclusión de la Formación Semilla y no puede entregarse acá sin vaciar el motivo de entrada a la Formación. Se ofrece aparte como opcional pago; en el formulario hay un checkbox que releva el interés.</td></tr>
+<tr><td>Landing</td><td><code>landing.semillaredes.com/redes-con-raiz.html</code> — formulario de preinscripción propio (sin costo, no compromete).</td></tr>
+<tr><td>Datos del formulario</td><td>Supabase: tabla <code>preinscripciones</code> + RPC <code>preinscripcion_crear</code> (security definer, RLS activo, la anon key nunca toca la tabla directo).</td></tr>
+</table>
+<p style="margin-top:14px"><b>Criterio del programa:</b> esquemático y procedimental, no conceptual. Cada bloque termina con algo hecho. <b>Clase 1 (Productos y contenido):</b> cómo pensar tus productos (grilla de 4) · cómo lanzar un producto (calendario de 14 días) · cómo hacer contenido que engancha (los 3 segundos, 5 formatos, qué NO hacer, producción en lote) · cómo pedir el siguiente paso. <b>Clase 2 (Publicidad paso a paso):</b> revisión de lo publicado · campaña de mensajes · campaña de seguidores · campaña de venta · políticas de atributos personales de Meta · las 4 métricas.</p>
+<p style="margin-top:10px"><b>Cierre de la Clase 2:</b> oferta cerrada con fecha de la Formación Semilla, con beneficio de ingreso solo para quienes hicieron el curso.</p>
+</section>
+
 <!-- 14 -->
 <section id="registro">
 <h2>14 · Registro de actualizaciones</h2>
 <table>
 <tr><th>Fecha</th><th>Cambio</th></tr>
+<tr><td><b>24/08/2026</b></td><td>Se define y publica el curso <b>Redes con raíz</b> (Semilla × Pikuyoga): 2 clases de 3 h los sábados 19 y 26 de septiembre, ARS 60.000 pago único, cupos limitados sin número público. Se decide <b>no regalar</b> el curso avanzado de Meta Ads —queda como inclusión exclusiva de la Formación— y se incluye en cambio 1 mes de membresía gratuita, que es el canal de fidelización hacia la Formación. Se publica la landing <code>redes-con-raiz.html</code> con formulario de preinscripción y se crean en Supabase la tabla <code>preinscripciones</code> y la RPC <code>preinscripcion_crear</code>. Se agrega la sección 16.</td></tr>
 <tr><td><b>22/08/2026</b></td><td>Se agrega la sección 08 · Números clave con los datos financieros reales del tablero: julio cerró con $6.260.000 facturados, $5.265.830 de ganancia y 27 clientes activos; acumulado enero–julio $38.555.000 facturados con margen promedio de 83,5%. Se renumeran las secciones siguientes. Actualización mensual automática.</td></tr>
 <tr><td><b>20/08/2026</b></td><td>Se publican los Drops 87 y 88 (archivo en 88 viernes consecutivos) y se suma al header el botón a la landing general y el CTA al grupo de WhatsApp de la membresía gratuita, ahora en +180 artistas. Se publica la landing del Método Semilla en metodo.semillaredes.com. Se entrega el presupuesto de Setup de la Lic. Yamila Beraja. Se arma el PDF vertical del Setup Inicial para celular y se corrigen los precios en el deck y en setup.html: son mensuales por 6 meses (Estratégico ARS 250.000 / USD 180 · Estratégico + Diseño ARS 350.000 / USD 230). Se incorpora a las reglas de layout la regla de alineación medida en píxeles.</td></tr>
         <tr><td><b>20/08/2026</b></td><td>Se agrega la sección 14 · Setup Inicial con planes, entregables, etapas y proyecciones del deck. Se documenta el circuito probado de producción de piezas (HTML anotado con data-document-role, raw.githubusercontent, import a Canva) y el estilo de ilustración. Se crean en Supabase las tablas del briefing web y se migra el primer proyecto (Betsy Grinblat).</td></tr>
