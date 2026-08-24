@@ -9,87 +9,97 @@
 <meta property="og:description" content="Cómo pensar tus productos, cómo lanzarlos, cómo hacer contenido que engancha y cómo armar campañas que funcionan. Dos clases de 3 horas."/>
 <meta property="og:type" content="website"/>
 <meta property="og:image" content="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/ilu-raiz-tejida.png"/>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png"/>
 <style>
 :root{
-  --cream:#F2EDE4; --cream-dark:#E8E0D4; --navy:#1A2456; --wine:#7A1F3A;
+  --cream:#F2EDE4; --cream-dark:#E5DCCC; --sand:#DFD3BE; --navy:#1A2456; --wine:#7A1F3A;
   --rose:#E2767C; --olive:#87863A; --ink:#24242C; --mute:#B9B4C4; --white:#FDFAF6;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased}
 img{max-width:100%;display:block}
-.wrap{max-width:1080px;margin:0 auto;padding:0 32px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 40px}
 
-/* NAV */
-nav{position:sticky;top:0;z-index:100;background:var(--cream);border-bottom:1px solid rgba(26,36,86,.08)}
-.nav-in{max-width:1080px;margin:0 auto;padding:16px 32px;display:flex;justify-content:space-between;align-items:center;gap:16px}
-.nav-logo img{height:34px;width:auto}
-.nav-cta{background:var(--navy);color:var(--white);padding:10px 20px;border-radius:6px;font-size:14px;font-weight:600;text-decoration:none;transition:background .2s;white-space:nowrap}
+/* ===== NAV ===== */
+nav{position:sticky;top:0;z-index:120;background:var(--cream);border-bottom:1px solid rgba(26,36,86,.07)}
+.nav-in{max-width:1160px;margin:0 auto;padding:16px 40px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.nav-logo img{height:38px;width:auto}
+.nav-links{display:flex;gap:30px;margin-left:auto;margin-right:26px}
+.nav-links a{font-size:12.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--navy);text-decoration:none;opacity:.82;transition:opacity .2s}
+.nav-links a:hover{opacity:1;color:var(--wine)}
+.nav-cta{background:var(--navy);color:var(--white);padding:12px 24px;border-radius:8px;font-size:14.5px;font-weight:700;text-decoration:none;transition:background .2s;white-space:nowrap}
 .nav-cta:hover{background:var(--wine)}
 
-/* KICKER */
-.kicker{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--olive);margin-bottom:18px}
-.kicker img{width:14px;height:14px}
-.kicker.rosa{color:var(--rose)}
-.kicker.crema{color:var(--rose)}
+/* ===== HERO ===== */
+.hero{position:relative;overflow:hidden;background:var(--cream)}
+.hero-in{position:relative;max-width:1160px;margin:0 auto;padding:78px 40px 122px;min-height:640px}
+.hero-art{position:absolute;top:-40px;right:-70px;width:660px;max-width:64%;z-index:0;pointer-events:none}
+.hero-art .disc{position:absolute;left:6%;top:16%;width:78%;padding-bottom:78%;background:var(--sand);border-radius:50%;opacity:.85}
+.hero-art img{position:relative;width:100%;height:auto}
+.hero-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(100deg,var(--cream) 0%,var(--cream) 34%,rgba(242,237,228,.86) 48%,rgba(242,237,228,0) 66%)}
+.hero-copy{position:relative;z-index:2;max-width:620px}
+.badge{display:inline-block;background:var(--olive);color:var(--white);font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:9px 20px;border-radius:99px;margin-bottom:26px}
+h1{font-family:'Playfair Display',serif;font-size:clamp(48px,6.6vw,86px);font-weight:900;color:var(--navy);line-height:.97;letter-spacing:-.01em}
+h1 .it{display:block;font-style:italic;font-weight:900;color:var(--wine);margin-top:4px}
+.h1-rule{width:52px;height:3px;background:var(--olive);margin:30px 0 26px;border-radius:2px}
+.hero-sub{font-size:19.5px;line-height:1.62;color:var(--ink);max-width:29em}
+.facts{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px;max-width:640px}
+.fact{display:flex;align-items:center;gap:9px;background:var(--white);border:1px solid rgba(26,36,86,.12);border-radius:12px;padding:12px 16px;font-size:13.5px;font-weight:600;color:var(--navy);line-height:1.3}
+.fact svg{width:17px;height:17px;flex:0 0 17px;stroke:var(--olive);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.hero-cta{display:inline-block;background:var(--navy);color:var(--white);padding:19px 42px;border-radius:10px;font-size:17px;font-weight:700;text-decoration:none;margin-top:36px;transition:background .2s}
+.hero-cta:hover{background:var(--wine)}
+.hero-price{font-size:15px;font-weight:500;color:var(--navy);opacity:.72;margin-top:16px}
 
-/* HERO */
-.hero{padding:56px 0 72px;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.8fr);gap:40px;align-items:center}
-.badge{display:inline-block;background:var(--olive);color:var(--white);font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:8px 16px;border-radius:99px;margin-bottom:22px}
-h1{font-family:'Playfair Display',serif;font-size:clamp(42px,5.6vw,68px);font-weight:900;color:var(--navy);line-height:1.02;margin-bottom:8px}
-h1 .it{display:block;font-style:italic;font-weight:700;color:var(--wine)}
-.hero-sub{font-size:19px;line-height:1.6;color:var(--ink);max-width:30em;margin-top:22px}
-.hero-facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
-.fact{background:var(--white);border:1px solid rgba(26,36,86,.12);border-radius:99px;padding:8px 16px;font-size:13.5px;font-weight:600;color:var(--navy)}
-.hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:30px}
-.btn{display:inline-block;background:var(--navy);color:var(--white);padding:15px 30px;border-radius:8px;font-size:15.5px;font-weight:700;text-decoration:none;transition:background .2s}
-.btn:hover{background:var(--wine)}
-.btn-price{font-size:14.5px;font-weight:600;color:var(--navy);opacity:.75}
-.hero-art img{width:100%;max-width:380px;margin-left:auto}
+/* borde rasgado */
+.tear{position:relative;line-height:0;margin-top:-1px}
+.tear svg{display:block;width:100%;height:58px}
+.tear.up svg{transform:scaleY(-1)}
 
-/* SECTIONS */
-section{padding:74px 0}
-.sec-navy{background:var(--navy);color:var(--cream)}
+/* ===== SECCIONES ===== */
+section{padding:80px 0}
+.sec-navy{background:var(--navy);color:var(--cream);padding-top:26px}
 .sec-navy h2,.sec-navy h3{color:var(--cream)}
-h2{font-family:'Playfair Display',serif;font-size:clamp(30px,3.6vw,44px);font-weight:900;color:var(--navy);line-height:1.1;margin-bottom:14px}
-.lead{font-size:17.5px;line-height:1.65;max-width:44em;color:var(--ink)}
+h2{font-family:'Playfair Display',serif;font-size:clamp(31px,3.7vw,46px);font-weight:900;color:var(--navy);line-height:1.08;margin-bottom:14px}
+.lead{font-size:17.5px;line-height:1.65;max-width:44em}
 .sec-navy .lead{color:var(--mute)}
 .rule{width:56px;height:2px;background:var(--olive);margin:26px 0 34px}
 .sec-navy .rule{background:var(--rose)}
+.kicker{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--olive);margin-bottom:16px}
+.kicker img{width:14px;height:14px}
+.kicker.crema{color:var(--rose)}
 
-/* LISTA SEMILLITA */
 ul.semillas{list-style:none;margin-top:6px}
 ul.semillas li{display:flex;gap:12px;align-items:flex-start;padding:9px 0;font-size:16.5px;line-height:1.55}
 ul.semillas li img{width:15px;height:15px;flex:0 0 15px;margin-top:5px}
 
-/* GRID PARA QUIEN */
-.cols2{display:grid;grid-template-columns:1fr 1fr;gap:44px}
-.card{background:var(--white);border:1px solid rgba(26,36,86,.1);border-radius:14px;padding:28px 30px}
-.card h3{font-family:'Playfair Display',serif;font-size:23px;color:var(--navy);margin-bottom:14px}
-.card.neg{background:rgba(122,31,58,.05);border-color:rgba(122,31,58,.18)}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.card{background:var(--white);border:1px solid rgba(26,36,86,.1);border-radius:16px;padding:30px 32px}
+.card h3{font-family:'Playfair Display',serif;font-size:23px;color:var(--navy);margin-bottom:12px}
+.card.neg{background:rgba(122,31,58,.05);border-color:rgba(122,31,58,.16)}
 
 /* PROGRAMA */
-.clase{border-top:1px solid rgba(242,237,228,.18);padding:34px 0}
-.clase:first-of-type{border-top:none;padding-top:6px}
-.clase-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
-.clase-num{font-family:'Playfair Display',serif;font-style:italic;font-size:19px;color:var(--rose)}
-.clase h3{font-family:'Playfair Display',serif;font-size:clamp(24px,3vw,32px);font-weight:900}
+.clase{border-top:1px solid rgba(242,237,228,.18);padding:36px 0}
+.clase:first-of-type{border-top:none;padding-top:8px}
+.clase-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:4px}
+.clase-num{font-family:'Playfair Display',serif;font-style:italic;font-size:20px;color:var(--rose)}
+.clase h3{font-family:'Playfair Display',serif;font-size:clamp(25px,3vw,34px);font-weight:900}
 .clase-date{font-size:13.5px;font-weight:600;letter-spacing:.05em;color:var(--mute)}
-.bloques{margin-top:24px;display:grid;gap:20px}
-.bloque{display:grid;grid-template-columns:34px 1fr;gap:16px;align-items:start}
-.bnum{font-family:'Inter',sans-serif;font-weight:800;font-size:13px;color:var(--navy);background:var(--rose);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:2px}
-.bloque h4{font-size:18px;font-weight:700;color:var(--cream);margin-bottom:8px;line-height:1.3}
-.bloque p{font-size:15.5px;line-height:1.6;color:var(--mute)}
-.llevas{display:inline-block;margin-top:10px;font-size:13.5px;font-weight:700;color:var(--olive);background:rgba(135,134,58,.16);border-radius:6px;padding:6px 12px}
-.tarea{margin-top:26px;background:rgba(226,118,124,.12);border-left:3px solid var(--rose);border-radius:0 8px 8px 0;padding:16px 20px;font-size:15.5px;line-height:1.55;color:var(--cream)}
+.bloques{margin-top:26px;display:grid;gap:22px}
+.bloque{display:grid;grid-template-columns:32px 1fr;gap:18px;align-items:start}
+.bnum{font-weight:800;font-size:13px;color:var(--navy);background:var(--rose);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.bloque h4{font-size:18.5px;font-weight:700;color:var(--cream);margin-bottom:8px;line-height:1.3}
+.bloque p{font-size:15.5px;line-height:1.62;color:var(--mute)}
+.llevas{display:inline-block;margin-top:11px;font-size:13.5px;font-weight:700;color:#C3C25E;background:rgba(135,134,58,.22);border-radius:7px;padding:7px 13px}
+.tarea{margin-top:28px;background:rgba(226,118,124,.12);border-left:3px solid var(--rose);border-radius:0 8px 8px 0;padding:16px 20px;font-size:15.5px;line-height:1.55;color:var(--cream)}
 
 /* INCLUYE */
-.incluye{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:10px}
-.inc{background:var(--white);border:1px solid rgba(26,36,86,.1);border-radius:12px;padding:20px 22px}
+.incluye{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:10px}
+.inc{background:var(--white);border:1px solid rgba(26,36,86,.1);border-radius:14px;padding:22px 24px}
 .inc strong{display:block;font-size:16.5px;color:var(--navy);margin-bottom:6px}
-.inc span{font-size:15px;line-height:1.55;color:var(--ink);opacity:.85}
+.inc span{font-size:15px;line-height:1.55;opacity:.85}
 
 /* EQUIPO */
 .equipo{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:10px}
@@ -98,55 +108,84 @@ ul.semillas li img{width:15px;height:15px;flex:0 0 15px;margin-top:5px}
 .persona p{font-size:16px;line-height:1.65}
 
 /* PRECIO */
-.precio-box{background:var(--white);border:1px solid rgba(26,36,86,.14);border-radius:18px;padding:38px 40px;max-width:520px}
-.precio-num{font-family:'Playfair Display',serif;font-size:56px;font-weight:900;color:var(--wine);line-height:1}
-.precio-det{font-size:15px;color:var(--ink);opacity:.8;margin-top:8px}
+.precio-box{background:rgba(253,250,246,.06);border:1px solid rgba(242,237,228,.2);border-radius:20px;padding:38px 40px;max-width:540px}
+.precio-num{font-family:'Playfair Display',serif;font-size:60px;font-weight:900;color:var(--rose);line-height:1}
+.precio-det{font-size:15.5px;line-height:1.6;color:var(--mute);margin-top:10px}
+.precio-box ul.semillas li{color:var(--cream);font-size:16px}
+.btn{display:inline-block;background:var(--cream);color:var(--navy);padding:16px 34px;border-radius:9px;font-size:16px;font-weight:700;text-decoration:none;transition:background .2s}
+.btn:hover{background:var(--rose);color:var(--white)}
 
 /* FORM */
-.form-box{background:var(--white);border:1px solid rgba(26,36,86,.12);border-radius:18px;padding:34px 34px 30px;max-width:680px}
-.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-box{background:var(--white);border:1px solid rgba(26,36,86,.12);border-radius:20px;padding:36px 36px 30px;max-width:700px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
 .field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
 .field.full{grid-column:1/-1}
 label{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--navy)}
 label .opt{font-weight:500;opacity:.55;letter-spacing:0}
-input,select,textarea{font-family:'Inter',sans-serif;font-size:15.5px;color:var(--ink);background:var(--cream);border:1px solid rgba(26,36,86,.16);border-radius:8px;padding:12px 14px;width:100%}
+input,select,textarea{font-family:'Inter',sans-serif;font-size:15.5px;color:var(--ink);background:var(--cream);border:1px solid rgba(26,36,86,.16);border-radius:9px;padding:13px 15px;width:100%}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--olive);background:var(--white)}
 textarea{resize:vertical;min-height:88px}
-.check{display:flex;gap:10px;align-items:flex-start;margin:4px 0 20px;font-size:15px;line-height:1.5}
+.check{display:flex;gap:10px;align-items:flex-start;margin:4px 0 22px;font-size:15px;line-height:1.5}
 .check input{width:18px;height:18px;flex:0 0 18px;margin-top:2px;accent-color:var(--olive)}
-button.send{background:var(--navy);color:var(--white);border:none;border-radius:8px;padding:15px 32px;font-size:16px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:background .2s}
+button.send{background:var(--navy);color:var(--white);border:none;border-radius:9px;padding:16px 34px;font-size:16px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:background .2s}
 button.send:hover{background:var(--wine)}
 button.send:disabled{opacity:.55;cursor:default}
 .form-note{font-size:13.5px;line-height:1.5;opacity:.7;margin-top:14px}
-.msg{margin-top:16px;font-size:15.5px;line-height:1.55;border-radius:8px;padding:14px 16px;display:none}
+.msg{margin-top:16px;font-size:15.5px;line-height:1.55;border-radius:9px;padding:14px 16px;display:none}
 .msg.ok{display:block;background:rgba(135,134,58,.14);border-left:3px solid var(--olive);color:var(--navy)}
 .msg.bad{display:block;background:rgba(122,31,58,.09);border-left:3px solid var(--wine);color:var(--wine)}
 
 /* FAQ */
-.faq{display:grid;gap:0;margin-top:10px;max-width:760px}
+.faq{max-width:760px;margin-top:10px}
 details{border-bottom:1px solid rgba(26,36,86,.12);padding:18px 0}
 summary{font-size:17px;font-weight:700;color:var(--navy);cursor:pointer;list-style:none;display:flex;gap:10px;align-items:center}
 summary::-webkit-details-marker{display:none}
-summary img{width:13px;height:13px}
+summary img{width:13px;height:13px;flex:0 0 13px}
 details p{font-size:15.5px;line-height:1.65;margin-top:12px;padding-left:23px;opacity:.88}
 
-/* FOOTER */
-footer{background:var(--navy);color:var(--mute);padding:44px 0 50px;text-align:center}
+footer{background:var(--navy);color:var(--mute);padding:44px 0 52px;text-align:center}
 footer img{height:44px;width:auto;margin:0 auto 16px}
 footer p{font-size:13.5px;line-height:1.7}
 footer a{color:var(--rose);text-decoration:none}
 
-@media (max-width:860px){
-  .hero{grid-template-columns:1fr;padding:40px 0 56px;gap:32px}
-  .hero-art{order:-1}
-  .hero-art img{max-width:230px;margin:0 auto}
-  .cols2,.equipo,.incluye,.fgrid{grid-template-columns:1fr}
-  .cols2{gap:20px}
-  section{padding:56px 0}
+/* ===== TABLET ===== */
+@media (max-width:1000px){
+  .nav-links{display:none}
+  .hero-in{padding:64px 36px 104px;min-height:0}
+  .hero-art{width:520px;max-width:66%;right:-90px;top:0}
+  .incluye{grid-template-columns:1fr 1fr}
+}
+
+/* ===== MOBILE ===== */
+@media (max-width:680px){
   .wrap,.nav-in{padding-left:22px;padding-right:22px}
-  .precio-box,.form-box{padding:26px 22px}
-  .bloque{grid-template-columns:26px 1fr;gap:12px}
+  .nav-logo img{height:32px}
+  .nav-cta{padding:11px 18px;font-size:13.5px}
+
+  .hero-in{padding:44px 22px 84px}
+  .hero-art{width:400px;max-width:none;right:-142px;top:-16px}
+  .hero-art .disc{opacity:.6}
+  .hero-scrim{background:linear-gradient(96deg,var(--cream) 0%,var(--cream) 40%,rgba(242,237,228,.9) 56%,rgba(242,237,228,.35) 78%,rgba(242,237,228,0) 100%)}
+  .hero-copy{max-width:none}
+  .badge{font-size:10.5px;letter-spacing:.13em;padding:8px 15px;margin-bottom:20px}
+  h1{font-size:clamp(42px,13.4vw,60px)}
+  .h1-rule{margin:22px 0 20px}
+  .hero-sub{font-size:16.5px;max-width:19em}
+  .facts{gap:9px;margin-top:26px}
+  .fact{font-size:12.5px;padding:10px 13px;gap:7px;border-radius:11px}
+  .fact svg{width:15px;height:15px;flex:0 0 15px}
+  .hero-cta{display:block;text-align:center;padding:17px 20px;font-size:16px;margin-top:28px}
+  .hero-price{font-size:14px;text-align:center}
+  .tear svg{height:34px}
+
+  section{padding:56px 0}
+  .cols2,.equipo,.incluye,.fgrid{grid-template-columns:1fr}
+  .card{padding:24px 22px}
+  .bloque{grid-template-columns:26px 1fr;gap:13px}
   .bnum{width:26px;height:26px;font-size:12px}
+  .precio-box,.form-box{padding:28px 22px}
+  .precio-num{font-size:48px}
+  .btn,button.send{display:block;width:100%;text-align:center}
 }
 </style>
 </head>
@@ -155,39 +194,48 @@ footer a{color:var(--rose);text-decoration:none}
 <nav>
   <div class="nav-in">
     <a class="nav-logo" href="https://semillaredes.com"><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semilla-logo-horizontal.png" alt="Semilla Redes"/></a>
+    <div class="nav-links">
+      <a href="#programa">Programa</a>
+      <a href="#incluye">Qué incluye</a>
+      <a href="#precio">Precio</a>
+      <a href="#preguntas">Preguntas</a>
+    </div>
     <a class="nav-cta" href="#preinscripcion">Preinscribirme</a>
   </div>
 </nav>
 
-<header class="wrap hero">
-  <div>
-    <span class="badge">Semilla Redes × Pikuyoga</span>
-    <h1>Redes<span class="it">con raíz</span></h1>
-    <p class="hero-sub">Un curso concreto de negocio, contenido y publicidad para proyectos holísticos. Nada de teoría de marca: salís con tus productos definidos, tu lanzamiento fechado y tus campañas armadas.</p>
-    <div class="hero-facts">
-      <span class="fact">2 encuentros de 3 h</span>
-      <span class="fact">Sábados 19 y 26 de septiembre</span>
-      <span class="fact">En vivo · queda grabado</span>
-      <span class="fact">Cupos limitados</span>
-    </div>
-    <div class="hero-actions">
-      <a class="btn" href="#preinscripcion">Quiero preinscribirme</a>
-      <span class="btn-price">$60.000 · incluye plantillas y 1 mes de membresía</span>
-    </div>
-  </div>
-  <div class="hero-art">
+<header class="hero">
+  <div class="hero-art" aria-hidden="true">
+    <div class="disc"></div>
     <img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/ilu-raiz-tejida.png" alt=""/>
+  </div>
+  <div class="hero-scrim" aria-hidden="true"></div>
+  <div class="hero-in">
+    <div class="hero-copy">
+      <span class="badge">Semilla Redes × Pikuyoga</span>
+      <h1>Redes<span class="it">con raíz.</span></h1>
+      <div class="h1-rule"></div>
+      <p class="hero-sub">Un curso concreto de negocio, contenido y publicidad para proyectos holísticos. Nada de teoría de marca: salís con tus productos definidos, tu lanzamiento fechado y tus campañas armadas.</p>
+      <div class="facts">
+        <span class="fact"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>2 encuentros de 3 h</span>
+        <span class="fact"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Sábados 19 y 26 de septiembre</span>
+        <span class="fact"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.2"/><path d="M7.8 7.8a6 6 0 000 8.4M16.2 7.8a6 6 0 010 8.4M4.9 4.9a10 10 0 000 14.2M19.1 4.9a10 10 0 010 14.2"/></svg>En vivo · queda grabado</span>
+        <span class="fact"><svg viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8-5.3-2.8-5.3 2.8 1-5.8L3.5 9.7l5.9-.9z"/></svg>Cupos limitados</span>
+      </div>
+      <a class="hero-cta" href="#preinscripcion">Quiero preinscribirme</a>
+      <p class="hero-price">$60.000 · incluye plantillas y 1 mes de membresía</p>
+    </div>
   </div>
 </header>
 
-<section class="wrap">
+<section class="wrap" style="padding-top:74px">
   <div class="kicker"><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>Por qué este curso</div>
   <h2>El problema no es el algoritmo.</h2>
   <p class="lead">Casi todos los proyectos holísticos que no crecen tienen el mismo diagnóstico: publican mucho y no tienen una oferta clara. Hay contenido, hay seguidores, hay ganas — y no hay un producto definido, ni un precio, ni un próximo paso que proponerle a la persona que te encontró.</p>
   <div class="rule"></div>
   <div class="cols2">
     <div class="card">
-      <h3>Este curso es para vos si…</h3>
+      <h3>Es para vos si…</h3>
       <ul class="semillas">
         <li><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>Das clases, sesiones, talleres o retiros y querés que eso sea tu ingreso principal.</li>
         <li><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>Publicás con constancia pero no se traduce en alumnos ni en ventas.</li>
@@ -198,7 +246,7 @@ footer a{color:var(--rose);text-decoration:none}
     <div class="card neg">
       <h3>No es para vos si…</h3>
       <ul class="semillas">
-        <li><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-vino.png" alt=""/>Buscás trucos para crecer rápido en seguidores sin vender nada.</li>
+        <li><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-vino.png" alt=""/>Buscás trucos para crecer en seguidores sin vender nada.</li>
         <li><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-vino.png" alt=""/>Querés que alguien te haga el contenido en vez de aprender a decidirlo.</li>
         <li><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-vino.png" alt=""/>No estás dispuesta a hacer la tarea entre las dos clases.</li>
       </ul>
@@ -206,7 +254,9 @@ footer a{color:var(--rose);text-decoration:none}
   </div>
 </section>
 
-<section class="sec-navy">
+<div class="tear" aria-hidden="true"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path fill="#1A2456" d="M0,44 L38,30 L74,41 L112,26 L152,38 L191,24 L233,36 L272,22 L310,34 L351,20 L392,33 L432,19 L474,31 L515,18 L556,30 L598,17 L640,29 L681,16 L722,28 L764,15 L805,27 L847,14 L888,26 L929,13 L970,25 L1011,12 L1052,24 L1093,11 L1134,23 L1175,12 L1200,20 L1200,60 L0,60 Z"/></svg></div>
+
+<section class="sec-navy" id="programa">
   <div class="wrap">
     <div class="kicker crema"><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-rosa.png" alt=""/>El programa</div>
     <h2>Dos clases. Todo aplicado.</h2>
@@ -220,37 +270,21 @@ footer a{color:var(--rose);text-decoration:none}
         <span class="clase-date">Sábado 19 de septiembre · 3 h</span>
       </div>
       <div class="bloques">
-        <div class="bloque">
-          <div class="bnum">1</div>
-          <div>
-            <h4>Cómo pensar tus productos</h4>
-            <p>La grilla de cuatro productos que funciona en el rubro: gancho gratuito, producto de entrada, producto principal y recurrente. Qué va en cada casilla, por qué la clase suelta no es un producto y el abono sí, y cómo se define un precio con piso, techo y número del medio.</p>
-            <span class="llevas">Te llevás tu grilla con 4 productos y 4 precios</span>
-          </div>
-        </div>
-        <div class="bloque">
-          <div class="bnum">2</div>
-          <div>
-            <h4>Cómo lanzar un producto</h4>
-            <p>El calendario de 14 días: qué se publica cada día, en qué orden, cuándo se abre y cuándo se cierra. Preventa, cupo y fecha de cierre — por qué sin fecha de cierre no hay lanzamiento. Los tres mensajes del cierre, escritos.</p>
-            <span class="llevas">Te llevás tu lanzamiento fechado en el calendario</span>
-          </div>
-        </div>
-        <div class="bloque">
-          <div class="bnum">3</div>
-          <div>
-            <h4>Cómo hacer contenido que engancha</h4>
-            <p>Los tres segundos: qué frena el scroll y qué no. Los cinco formatos que funcionan en proyectos holísticos y que vas a repetir siempre. Qué NO hacer: la frase sobre foto de atardecer, el "buenos días hermosa comunidad", el carrusel que define un concepto, el video de la clase entera sin contexto. Y cómo se produce en lote: un día al mes, doce piezas.</p>
-            <span class="llevas">Te llevás 5 ideas escritas con el gancho definido</span>
-          </div>
-        </div>
-        <div class="bloque">
-          <div class="bnum">4</div>
-          <div>
-            <h4>Cómo pedir el siguiente paso</h4>
-            <p>El llamado a la acción que no da vergüenza: dónde va, cuántas veces se repite y con qué palabras. El error más caro del rubro es tener atención y no proponer nada.</p>
-          </div>
-        </div>
+        <div class="bloque"><div class="bnum">1</div><div>
+          <h4>Cómo pensar tus productos</h4>
+          <p>La grilla de cuatro productos que funciona en el rubro: gancho gratuito, producto de entrada, producto principal y recurrente. Qué va en cada casilla, por qué la clase suelta no es un producto y el abono sí, y cómo se define un precio con piso, techo y número del medio.</p>
+          <span class="llevas">Te llevás tu grilla con 4 productos y 4 precios</span></div></div>
+        <div class="bloque"><div class="bnum">2</div><div>
+          <h4>Cómo lanzar un producto</h4>
+          <p>El calendario de 14 días: qué se publica cada día, en qué orden, cuándo se abre y cuándo se cierra. Preventa, cupo y fecha de cierre — por qué sin fecha de cierre no hay lanzamiento. Los tres mensajes del cierre, escritos.</p>
+          <span class="llevas">Te llevás tu lanzamiento fechado en el calendario</span></div></div>
+        <div class="bloque"><div class="bnum">3</div><div>
+          <h4>Cómo hacer contenido que engancha</h4>
+          <p>Los tres segundos: qué frena el scroll y qué no. Los cinco formatos que funcionan en proyectos holísticos y que vas a repetir siempre. Qué NO hacer: la frase sobre foto de atardecer, el "buenos días hermosa comunidad", el carrusel que define un concepto, el video de la clase entera sin contexto. Y cómo se produce en lote: un día al mes, doce piezas.</p>
+          <span class="llevas">Te llevás 5 ideas escritas con el gancho definido</span></div></div>
+        <div class="bloque"><div class="bnum">4</div><div>
+          <h4>Cómo pedir el siguiente paso</h4>
+          <p>El llamado a la acción que no da vergüenza: dónde va, cuántas veces se repite y con qué palabras. El error más caro del rubro es tener atención y no proponer nada.</p></div></div>
       </div>
       <div class="tarea"><strong>Tarea entre clases:</strong> producir y publicar tres piezas con lo visto. Se revisan en vivo al abrir la Clase 2.</div>
     </article>
@@ -262,57 +296,35 @@ footer a{color:var(--rose);text-decoration:none}
         <span class="clase-date">Sábado 26 de septiembre · 3 h</span>
       </div>
       <div class="bloques">
-        <div class="bloque">
-          <div class="bnum">1</div>
-          <div>
-            <h4>Revisión de lo publicado</h4>
-            <p>Cuatro casos del grupo, en vivo. Qué funcionó, qué no y por qué.</p>
-          </div>
-        </div>
-        <div class="bloque">
-          <div class="bnum">2</div>
-          <div>
-            <h4>Cómo armar una campaña de mensajes</h4>
-            <p>Objetivo, público, presupuesto, creativo y plantilla de texto. Qué contestar cuando llega el mensaje: el guion de las primeras tres respuestas. Cuánto sale un mensaje y en qué momento se pausa una campaña.</p>
-            <span class="llevas">Te llevás la campaña armada</span>
-          </div>
-        </div>
-        <div class="bloque">
-          <div class="bnum">3</div>
-          <div>
-            <h4>Cómo armar una campaña de seguidores</h4>
-            <p>Cuándo sirve y cuándo es plata tirada. Cómo se configura de verdad, porque el objetivo "seguidores" no existe: se resuelve con tráfico a perfil o interacción.</p>
-            <span class="llevas">Te llevás la campaña armada</span>
-          </div>
-        </div>
-        <div class="bloque">
-          <div class="bnum">4</div>
-          <div>
-            <h4>Cómo armar una campaña de venta</h4>
-            <p>Público frío y retargeting: qué anuncio ve cada uno. Presupuesto mínimo real y cuántos días antes del lanzamiento se prende.</p>
-          </div>
-        </div>
-        <div class="bloque">
-          <div class="bnum">5</div>
-          <div>
-            <h4>Qué te rechaza Meta y cómo se escribe igual</h4>
-            <p>Políticas de atributos personales: por qué "¿sufrís ansiedad?" te tira el anuncio abajo y cómo decir exactamente lo mismo de forma aprobable. Bloque crítico para este rubro.</p>
-            <span class="llevas">Te llevás tus textos corregidos</span>
-          </div>
-        </div>
-        <div class="bloque">
-          <div class="bnum">6</div>
-          <div>
-            <h4>Qué mirar cada semana</h4>
-            <p>Las cuatro métricas que importan y ninguna más. Cómo leerlas sin volverte loca.</p>
-          </div>
-        </div>
+        <div class="bloque"><div class="bnum">1</div><div>
+          <h4>Revisión de lo publicado</h4>
+          <p>Cuatro casos del grupo, en vivo. Qué funcionó, qué no y por qué.</p></div></div>
+        <div class="bloque"><div class="bnum">2</div><div>
+          <h4>Cómo armar una campaña de mensajes</h4>
+          <p>Objetivo, público, presupuesto, creativo y plantilla de texto. Qué contestar cuando llega el mensaje: el guion de las primeras tres respuestas. Cuánto sale un mensaje y en qué momento se pausa una campaña.</p>
+          <span class="llevas">Te llevás la campaña armada</span></div></div>
+        <div class="bloque"><div class="bnum">3</div><div>
+          <h4>Cómo armar una campaña de seguidores</h4>
+          <p>Cuándo sirve y cuándo es plata tirada. Cómo se configura de verdad, porque el objetivo "seguidores" no existe: se resuelve con tráfico a perfil o interacción.</p>
+          <span class="llevas">Te llevás la campaña armada</span></div></div>
+        <div class="bloque"><div class="bnum">4</div><div>
+          <h4>Cómo armar una campaña de venta</h4>
+          <p>Público frío y retargeting: qué anuncio ve cada uno. Presupuesto mínimo real y cuántos días antes del lanzamiento se prende.</p></div></div>
+        <div class="bloque"><div class="bnum">5</div><div>
+          <h4>Qué te rechaza Meta y cómo se escribe igual</h4>
+          <p>Políticas de atributos personales: por qué "¿sufrís ansiedad?" te tira el anuncio abajo y cómo decir exactamente lo mismo de forma aprobable. Bloque crítico para este rubro.</p>
+          <span class="llevas">Te llevás tus textos corregidos</span></div></div>
+        <div class="bloque"><div class="bnum">6</div><div>
+          <h4>Qué mirar cada semana</h4>
+          <p>Las cuatro métricas que importan y ninguna más. Cómo leerlas sin volverte loca.</p></div></div>
       </div>
     </article>
   </div>
 </section>
 
-<section class="wrap">
+<div class="tear up" aria-hidden="true"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path fill="#1A2456" d="M0,44 L41,31 L82,42 L123,28 L164,39 L205,26 L246,37 L287,24 L328,35 L369,22 L410,34 L451,21 L492,32 L533,19 L574,31 L615,18 L656,29 L697,17 L738,28 L779,15 L820,27 L861,14 L902,26 L943,13 L984,25 L1025,14 L1066,26 L1107,15 L1148,27 L1200,18 L1200,60 L0,60 Z"/></svg></div>
+
+<section class="wrap" id="incluye" style="padding-top:70px">
   <div class="kicker"><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>Qué incluye</div>
   <h2>Te vas con herramientas, no con apuntes.</h2>
   <div class="rule"></div>
@@ -320,7 +332,7 @@ footer a{color:var(--rose);text-decoration:none}
     <div class="inc"><strong>Grilla de productos</strong><span>La plantilla para ordenar tus cuatro productos y sus precios.</span></div>
     <div class="inc"><strong>Calendario de lanzamiento</strong><span>Los 14 días, día por día, listos para completar con tus fechas.</span></div>
     <div class="inc"><strong>Los 5 formatos</strong><span>Las estructuras de contenido que funcionan en el rubro, con ejemplos.</span></div>
-    <div class="inc"><strong>Checklist de campaña</strong><span>El paso a paso de configuración de mensajes, seguidores y venta.</span></div>
+    <div class="inc"><strong>Checklist de campaña</strong><span>El paso a paso de mensajes, seguidores y venta.</span></div>
     <div class="inc"><strong>Guion de respuesta</strong><span>Qué contestar en los primeros tres mensajes de WhatsApp.</span></div>
     <div class="inc"><strong>1 mes de membresía Semilla</strong><span>Newsletter semanal, comunidad de WhatsApp y laboratorio mensual.</span></div>
   </div>
@@ -342,7 +354,9 @@ footer a{color:var(--rose);text-decoration:none}
   </div>
 </section>
 
-<section class="sec-navy">
+<div class="tear" aria-hidden="true"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path fill="#1A2456" d="M0,40 L44,28 L88,39 L132,25 L176,36 L220,23 L264,34 L308,21 L352,33 L396,20 L440,31 L484,18 L528,30 L572,17 L616,29 L660,16 L704,28 L748,15 L792,27 L836,14 L880,26 L924,13 L968,25 L1012,14 L1056,26 L1100,15 L1144,27 L1200,17 L1200,60 L0,60 Z"/></svg></div>
+
+<section class="sec-navy" id="precio">
   <div class="wrap">
     <div class="kicker crema"><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-rosa.png" alt=""/>Inversión</div>
     <h2>Un pago. Los dos encuentros.</h2>
@@ -350,17 +364,19 @@ footer a{color:var(--rose);text-decoration:none}
     <div class="precio-box">
       <div class="precio-num">$60.000</div>
       <p class="precio-det">Pago único por las dos clases. Incluye todas las plantillas, la grabación de los encuentros y un mes de membresía Semilla.</p>
-      <ul class="semillas" style="margin-top:18px">
-        <li><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>Sábados 19 y 26 de septiembre</li>
-        <li><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>En vivo por Zoom, con grabación disponible después</li>
-        <li><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>Cupos limitados para poder revisar proyectos en vivo</li>
+      <ul class="semillas" style="margin-top:16px">
+        <li><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-rosa.png" alt=""/>Sábados 19 y 26 de septiembre</li>
+        <li><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-rosa.png" alt=""/>En vivo por Zoom, con grabación disponible después</li>
+        <li><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-rosa.png" alt=""/>Cupos limitados para poder revisar proyectos en vivo</li>
       </ul>
       <a class="btn" style="margin-top:26px" href="#preinscripcion">Quiero preinscribirme</a>
     </div>
   </div>
 </section>
 
-<section class="wrap" id="preinscripcion">
+<div class="tear up" aria-hidden="true"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path fill="#1A2456" d="M0,42 L40,29 L80,40 L120,27 L160,38 L200,25 L240,36 L280,23 L320,34 L360,21 L400,32 L440,19 L480,31 L520,18 L560,29 L600,16 L640,28 L680,15 L720,27 L760,14 L800,26 L840,13 L880,25 L920,14 L960,26 L1000,15 L1040,27 L1080,16 L1120,28 L1160,17 L1200,25 L1200,60 L0,60 Z"/></svg></div>
+
+<section class="wrap" id="preinscripcion" style="padding-top:70px">
   <div class="kicker"><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>Preinscripción</div>
   <h2>Reservá tu lugar.</h2>
   <p class="lead">Completá el formulario y te escribimos con el horario confirmado y el link de pago. La preinscripción no tiene costo y no te compromete.</p>
@@ -383,7 +399,7 @@ footer a{color:var(--rose);text-decoration:none}
           <option>Tengo un espacio o equipo a cargo</option>
         </select>
       </div>
-      <div class="field full"><label for="comentario">¿Qué te gustaría resolver? <span class="opt">(opcional)</span></label><textarea id="comentario" placeholder="Contanos brevemente en qué estás trabado."></textarea></div>
+      <div class="field full"><label for="comentario">¿Qué te gustaría resolver? <span class="opt">(opcional)</span></label><textarea id="comentario" placeholder="Contanos brevemente en qué estás trabada."></textarea></div>
     </div>
     <label class="check"><input id="avanzado" type="checkbox"/><span>Me interesa además el curso avanzado de anuncios en Meta (opcional, se ofrece aparte a quienes hagan el curso).</span></label>
     <button class="send" id="enviar" type="button">Enviar preinscripción</button>
@@ -392,29 +408,19 @@ footer a{color:var(--rose);text-decoration:none}
   </div>
 </section>
 
-<section class="wrap" style="padding-top:0">
+<section class="wrap" id="preguntas" style="padding-top:0">
   <div class="kicker"><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-rosa.png" alt=""/>Preguntas</div>
   <div class="faq">
-    <details>
-      <summary><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>¿Necesito saber algo de publicidad antes?</summary>
-      <p>No. Se arranca de cero y se llega a tener campañas configuradas. Lo único que hace falta es tener una cuenta de Instagram del proyecto.</p>
-    </details>
-    <details>
-      <summary><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>¿Y si no puedo estar en vivo?</summary>
-      <p>Los dos encuentros quedan grabados y podés verlos después. Igual conviene estar: se trabaja sobre proyectos del grupo y se revisan tareas en vivo.</p>
-    </details>
-    <details>
-      <summary><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>¿Sirve si mi proyecto es presencial?</summary>
-      <p>Sí. Buena parte de lo que se trabaja es cómo llenar clases, talleres y retiros presenciales usando redes y publicidad segmentada por zona.</p>
-    </details>
-    <details>
-      <summary><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>¿Cómo se paga?</summary>
-      <p>Te enviamos el link de pago después de la preinscripción. Se puede pagar desde Argentina y desde el exterior.</p>
-    </details>
-    <details>
-      <summary><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>¿Hay algo después del curso?</summary>
-      <p>Sí. Quien quiera seguir profundizando puede continuar en la Formación Semilla, el programa de varios meses donde se trabaja el método completo con seguimiento semanal. En el cierre de la Clase 2 contamos cómo es.</p>
-    </details>
+    <details><summary><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>¿Necesito saber algo de publicidad antes?</summary>
+      <p>No. Se arranca de cero y se llega a tener campañas configuradas. Lo único que hace falta es tener una cuenta de Instagram del proyecto.</p></details>
+    <details><summary><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>¿Y si no puedo estar en vivo?</summary>
+      <p>Los dos encuentros quedan grabados y podés verlos después. Igual conviene estar: se trabaja sobre proyectos del grupo y se revisan tareas en vivo.</p></details>
+    <details><summary><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>¿Sirve si mi proyecto es presencial?</summary>
+      <p>Sí. Buena parte de lo que se trabaja es cómo llenar clases, talleres y retiros presenciales usando redes y publicidad segmentada por zona.</p></details>
+    <details><summary><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>¿Cómo se paga?</summary>
+      <p>Te enviamos el link de pago después de la preinscripción. Se puede pagar desde Argentina y desde el exterior.</p></details>
+    <details><summary><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png" alt=""/>¿Hay algo después del curso?</summary>
+      <p>Sí. Quien quiera seguir profundizando puede continuar en la Formación Semilla, el programa donde se trabaja el método completo con seguimiento semanal. En el cierre de la Clase 2 contamos cómo es.</p></details>
   </div>
 </section>
 
@@ -430,46 +436,29 @@ const KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
 const $=id=>document.getElementById(id);
 const msg=$('msg');
 function show(t,cls){msg.textContent=t;msg.className='msg '+cls;}
-
 $('enviar').addEventListener('click',async()=>{
   const nombre=$('nombre').value.trim();
   const email=$('email').value.trim();
-  if(!nombre||!email||email.indexOf('@')<0){
-    show('Necesitamos al menos tu nombre y un email válido.','bad');return;
-  }
+  if(!nombre||!email||email.indexOf('@')<0){show('Necesitamos al menos tu nombre y un email válido.','bad');return;}
   let com=$('comentario').value.trim();
   if($('avanzado').checked){com=(com?com+' · ':'')+'[Le interesa el curso avanzado de Meta Ads]';}
-  const btn=$('enviar');
-  btn.disabled=true;btn.textContent='Enviando…';
+  const btn=$('enviar');btn.disabled=true;btn.textContent='Enviando…';
   try{
     const r=await fetch(API+'/rest/v1/rpc/preinscripcion_crear',{
       method:'POST',
       headers:{'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY},
-      body:JSON.stringify({
-        p_curso:'redes-con-raiz',
-        p_nombre:nombre,
-        p_email:email,
-        p_whatsapp:$('whatsapp').value.trim(),
-        p_proyecto:$('proyecto').value.trim(),
-        p_instagram:$('instagram').value.trim(),
-        p_momento:$('momento').value,
-        p_comentario:com,
-        p_origen:location.search||'directo'
-      })
+      body:JSON.stringify({p_curso:'redes-con-raiz',p_nombre:nombre,p_email:email,
+        p_whatsapp:$('whatsapp').value.trim(),p_proyecto:$('proyecto').value.trim(),
+        p_instagram:$('instagram').value.trim(),p_momento:$('momento').value,
+        p_comentario:com,p_origen:location.search||'directo'})
     });
     const d=await r.json();
     if(d&&d.ok){
       show('Listo. Quedaste preinscripta. Te escribimos por mail con el horario confirmado y el link de pago.','ok');
       btn.style.display='none';
       document.querySelectorAll('.form-box input,.form-box select,.form-box textarea').forEach(e=>e.disabled=true);
-    }else{
-      show('No pudimos registrar la preinscripción. Probá de nuevo en un momento.','bad');
-      btn.disabled=false;btn.textContent='Enviar preinscripción';
-    }
-  }catch(e){
-    show('Hubo un problema de conexión. Probá de nuevo en un momento.','bad');
-    btn.disabled=false;btn.textContent='Enviar preinscripción';
-  }
+    }else{show('No pudimos registrar la preinscripción. Probá de nuevo en un momento.','bad');btn.disabled=false;btn.textContent='Enviar preinscripción';}
+  }catch(e){show('Hubo un problema de conexión. Probá de nuevo en un momento.','bad');btn.disabled=false;btn.textContent='Enviar preinscripción';}
 });
 </script>
 </body>
