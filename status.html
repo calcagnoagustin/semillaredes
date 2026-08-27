@@ -119,7 +119,7 @@ table{font-size:13px}
     <svg viewBox="0 0 44 44" aria-hidden="true"><g stroke="#E2767C" stroke-width="2.4" stroke-linecap="round"><line x1="22" y1="22" x2="5" y2="22"/><line x1="22" y1="22" x2="39" y2="22"/><line x1="22" y1="22" x2="22" y2="5"/><line x1="22" y1="22" x2="22" y2="39"/><line x1="22" y1="22" x2="10" y2="10"/><line x1="22" y1="22" x2="34" y2="34"/><line x1="22" y1="22" x2="34" y2="10"/><line x1="22" y1="22" x2="10" y2="34"/></g><g fill="#E2767C"><circle cx="5" cy="22" r="3.4"/><circle cx="39" cy="22" r="3.4"/><circle cx="22" cy="5" r="3.4"/><circle cx="22" cy="39" r="3.4"/><circle cx="10" cy="10" r="3.4"/><circle cx="34" cy="34" r="3.4"/><circle cx="34" cy="10" r="3.4"/><circle cx="10" cy="34" r="3.4"/></g><ellipse cx="22" cy="22" rx="6.6" ry="10.5" fill="#87863A"/></svg>
     <div><b>SEMILLA</b><span>REDES</span></div>
   </div>
-  <div class="stamp">Documento interno · <b>Última actualización: 24/08/2026</b></div>
+  <div class="stamp">Documento interno · <b>Última actualización: 27/08/2026</b></div>
 </div>
 
 <div class="shell">
@@ -141,6 +141,7 @@ table{font-size:13px}
   <a href="#mantenimiento">13 · Mantenimiento</a>
   <a href="#setup">15 · Setup Inicial</a>
   <a href="#raiz">16 · Redes con raíz</a>
+  <a href="#lanzamiento">17 · Lanzamiento Oct 26</a>
   <a href="#registro">14 · Registro</a>
 </nav>
 
@@ -540,11 +541,45 @@ table{font-size:13px}
 <p style="margin-top:10px"><b>Cierre de la Clase 2:</b> oferta cerrada con fecha de la Formación Semilla, con beneficio de ingreso solo para quienes hicieron el curso.</p>
 </section>
 
+<!-- 17 -->
+<section id="lanzamiento">
+<h2>17 · Lanzamiento de la cohorte de octubre 2026</h2>
+<p>Objetivo declarado por Agus: <b>20 alumnos o más</b>. La capacidad operativa existe: dos Grupos Semilla de seguimiento (martes 11 y jueves 15) &times; 10-12 personas cada uno = 20-24 sin diluir el acompañamiento. A $90.000 por mes durante 3 meses, 20 alumnos son $1.800.000 mensuales.</p>
+
+<table>
+<tr><th>Hito</th><th>Fecha</th><th>Rol en el embudo</th></tr>
+<tr><td>Redes con raíz (Semilla × Pikuyoga)</td><td>Sábados 19 y 26 de septiembre</td><td>Feeder: la Clase 2 cierra con la oferta de la Formación</td></tr>
+<tr><td><b>Charla de presentación gratuita</b></td><td><b>Jueves 1 de octubre, 17 hs (ART)</b></td><td><b>Evento de conversión principal</b></td></tr>
+<tr><td>Arranca la cohorte</td><td>Miércoles 7 de octubre</td><td>Cierre de ventas</td></tr>
+</table>
+
+<p style="margin-top:14px"><b>La métrica que manda:</b> anotados a la charla. Una charla gratuita bien ejecutada convierte entre 20% y 30% de los asistentes. Para 20 alumnos hay que apuntar a <b>100-150 inscriptos a la charla</b>. Todo lo demás es secundario.</p>
+
+<table style="margin-top:14px">
+<tr><th>Activo</th><th>Estado</th></tr>
+<tr><td><code>landing.semillaredes.com/charla.html</code> — landing de la charla con formulario propio de inscripción</td><td>Publicada</td></tr>
+<tr><td>Captura en Supabase: RPC <code>preinscripcion_crear</code> con <code>curso = 'charla-formacion-oct26'</code></td><td>Probada de punta a punta</td></tr>
+<tr><td>Meta Pixel 953367820005998 en la landing + evento <code>Lead</code> al enviar el formulario</td><td>Activo</td></tr>
+<tr><td>Presupuesto de pauta definido para los 40 días hasta el 7/10</td><td>USD 300-600</td></tr>
+<tr><td>Secuencia de mails y de WhatsApp entre la inscripción y la charla</td><td>Pendiente</td></tr>
+<tr><td>Campañas de Meta Ads (retargeting de engagers, lookalike de los +180 miembros, video views del explicativo)</td><td>Pendiente</td></tr>
+<tr><td>Drops dedicados y contenidos de Instagram del lanzamiento</td><td>Pendiente</td></tr>
+<tr><td>SemillaIA como imán: el diagnóstico gratis debería terminar en la charla</td><td>Pendiente</td></tr>
+</table>
+
+<p style="margin-top:14px"><b>Decisiones tomadas el 27/08/2026:</b> el precio no se toca — quedan los $90.000 ARS / USD 65 por mes. Lo que sí se explicita en la landing es que son <b>3 meses de cursada, $270.000 ARS en total</b>, porque la ambigüedad de duración frenaba la decisión en las dos direcciones. Quedaron descartadas por ahora las tres palancas de ticket: pago único con descuento, escalón con mentoría 1:1 y beneficio de ingreso para los de Redes con raíz.</p>
+
+<p style="margin-top:10px"><b>Agujeros detectados en la auditoría:</b> (1) no existía captura de leads — los CTA eran "pagá" o "escribime por WhatsApp", sin paso intermedio para el interesado que todavía no decide; resuelto con <code>charla.html</code>. (2) No hay deadline: "cupos limitados" sin fecha ni número no genera urgencia, y con capacidad para 20+ la palanca no es la escasez sino la fecha de cierre. (3) La landing no mostraba la fecha de inicio en el hero.</p>
+
+<p style="margin-top:10px"><b>Nota de assets:</b> el archivo <code>assets/ilu-embudo-tejido.png</code> no es una ilustración, es una foto de Agus recortada (1024&times;1536). Se usa como arte del hero de <code>charla.html</code>. Conviene renombrarlo.</p>
+</section>
+
 <!-- 14 -->
 <section id="registro">
 <h2>14 · Registro de actualizaciones</h2>
 <table>
 <tr><th>Fecha</th><th>Cambio</th></tr>
+<tr><td><b>27/08/2026</b></td><td>Se abre el <b>lanzamiento de la cohorte de octubre</b> con objetivo de 20+ alumnos y se agrega la sección 17. Se publica <code>charla.html</code>, la landing de la charla gratuita del 1/10 con formulario propio de inscripción a Supabase (<code>curso = 'charla-formacion-oct26'</code>), Meta Pixel y evento <code>Lead</code>: era el activo que faltaba, porque hasta ahora no había ningún paso intermedio entre "pagá" y "escribime por WhatsApp". En <code>formacion.html</code> el hero pasa a mostrar la fecha de inicio (miércoles 7 de octubre) en lugar de un meta redundante, y se explicita que son 3 meses de cursada por $270.000 ARS en total. Los CTA de la charla en <code>formacion.html</code> y <code>formacion-cm.html</code> apuntan ahora a la landing en vez de a WhatsApp. Se define un presupuesto de pauta de USD 300-600 para los 40 días hasta el 7/10 y se decide no tocar el precio.</td></tr>
 <tr><td><b>24/08/2026</b></td><td>Se define y publica el curso <b>Redes con raíz</b> (Semilla × Pikuyoga): 2 clases de 3 h los sábados 19 y 26 de septiembre, ARS 60.000 pago único, cupos limitados sin número público. Se decide <b>no regalar</b> el curso avanzado de Meta Ads —queda como inclusión exclusiva de la Formación— y se incluye en cambio 1 mes de membresía gratuita, que es el canal de fidelización hacia la Formación. Se publica la landing <code>redes-con-raiz.html</code> con formulario de preinscripción y se crean en Supabase la tabla <code>preinscripciones</code> y la RPC <code>preinscripcion_crear</code>. Se agrega la sección 16.</td></tr>
 <tr><td><b>22/08/2026</b></td><td>Se agrega la sección 08 · Números clave con los datos financieros reales del tablero: julio cerró con $6.260.000 facturados, $5.265.830 de ganancia y 27 clientes activos; acumulado enero–julio $38.555.000 facturados con margen promedio de 83,5%. Se renumeran las secciones siguientes. Actualización mensual automática.</td></tr>
 <tr><td><b>20/08/2026</b></td><td>Se publican los Drops 87 y 88 (archivo en 88 viernes consecutivos) y se suma al header el botón a la landing general y el CTA al grupo de WhatsApp de la membresía gratuita, ahora en +180 artistas. Se publica la landing del Método Semilla en metodo.semillaredes.com. Se entrega el presupuesto de Setup de la Lic. Yamila Beraja. Se arma el PDF vertical del Setup Inicial para celular y se corrigen los precios en el deck y en setup.html: son mensuales por 6 meses (Estratégico ARS 250.000 / USD 180 · Estratégico + Diseño ARS 350.000 / USD 230). Se incorpora a las reglas de layout la regla de alineación medida en píxeles.</td></tr>
