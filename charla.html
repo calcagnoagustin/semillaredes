@@ -420,7 +420,7 @@ $('enviar').addEventListener('click',async()=>{
   const email=$('email').value.trim();
   if(!nombre||!email||email.indexOf('@')<0){show('Necesitamos al menos tu nombre y un email v&aacute;lido.','bad');return;}
   let com=$('comentario').value.trim();
-  if($('formacion').checked){com=(com?com+' &middot; ':'')+'[Quiere info de la Formaci&oacute;n 7/10]';}
+  if($('formacion').checked){com=(com?com+' \u00b7 ':'')+'[Quiere info de la Formaci\u00f3n 7/10]';}
   const btn=$('enviar');btn.disabled=true;btn.textContent='Enviando…';
   try{
     const r=await fetch(API+'/rest/v1/rpc/preinscripcion_crear',{
