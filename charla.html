@@ -9,7 +9,7 @@
 <meta property="og:description" content="Jueves 1 de octubre, 17 hs (ART). Una hora online con Agus Calcagno. Gratis, con inscripción."/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://landing.semillaredes.com/charla.html"/>
-<meta property="og:image" content="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/ilu-embudo-tejido.png"/>
+<meta property="og:image" content="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/agus-charla.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <link rel="canonical" href="https://landing.semillaredes.com/charla.html"/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -39,7 +39,7 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"/></n
 "eventAttendanceMode":"https://schema.org/OnlineEventAttendanceMode",
 "eventStatus":"https://schema.org/EventScheduled",
 "location":{"@type":"VirtualLocation","url":"https://landing.semillaredes.com/charla.html"},
-"image":"https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/ilu-embudo-tejido.png",
+"image":"https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/agus-charla.png",
 "organizer":{"@type":"Organization","name":"Semilla Redes","url":"https://semillaredes.com"},
 "performer":{"@type":"Person","name":"Agus Calcagno"},
 "offers":{"@type":"Offer","price":"0","priceCurrency":"ARS","availability":"https://schema.org/InStock","url":"https://landing.semillaredes.com/charla.html","validFrom":"2026-08-27T00:00:00-03:00"}}
@@ -70,8 +70,8 @@ nav{position:sticky;top:0;z-index:120;background:var(--cream);border-bottom:1px 
 /* ===== HERO ===== */
 .hero{position:relative;overflow:hidden;background:var(--cream)}
 .hero-in{position:relative;max-width:1160px;margin:0 auto;padding:78px 40px 118px;min-height:620px}
-.hero-art{position:absolute;top:-30px;right:-70px;width:640px;max-width:62%;z-index:0;pointer-events:none}
-.hero-art .disc{position:absolute;left:8%;top:16%;width:76%;padding-bottom:76%;background:var(--sand);border-radius:50%;opacity:.85}
+.hero-art{position:absolute;bottom:0;right:-30px;width:600px;max-width:56%;z-index:0;pointer-events:none}
+.hero-art .disc{position:absolute;left:10%;bottom:14%;width:80%;padding-bottom:80%;background:var(--sand);border-radius:50%;opacity:.8}
 .hero-art img{position:relative;width:100%;height:auto}
 .hero-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(100deg,var(--cream) 0%,var(--cream) 34%,rgba(242,237,228,.86) 48%,rgba(242,237,228,0) 66%)}
@@ -181,7 +181,7 @@ footer a{color:var(--rose);text-decoration:none}
 @media (max-width:1000px){
   .nav-links{display:none}
   .hero-in{padding:64px 36px 100px;min-height:0}
-  .hero-art{width:520px;max-width:66%;right:-90px;top:0}
+  .hero-art{width:500px;max-width:60%;right:-40px}
   .incluye{grid-template-columns:1fr 1fr}
 }
 @media (max-width:680px){
@@ -189,7 +189,7 @@ footer a{color:var(--rose);text-decoration:none}
   .nav-cta{padding:11px 18px;font-size:13.5px}
   .nav-lockup .sr{height:30px}
   .hero-in{padding:44px 22px 80px}
-  .hero-art{width:400px;max-width:none;right:-142px;top:-16px}
+  .hero-art{width:340px;max-width:none;right:-96px}
   .hero-art .disc{opacity:.6}
   .hero-scrim{background:linear-gradient(96deg,var(--cream) 0%,var(--cream) 40%,rgba(242,237,228,.9) 56%,rgba(242,237,228,.35) 78%,rgba(242,237,228,0) 100%)}
   .hero-copy{max-width:none}
@@ -234,7 +234,10 @@ footer a{color:var(--rose);text-decoration:none}
 <header class="hero">
   <div class="hero-art" aria-hidden="true">
     <div class="disc"></div>
-    <img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/ilu-embudo-tejido.png" alt=""/>
+    <picture>
+      <source srcset="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/agus-charla.webp" type="image/webp"/>
+      <img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/agus-charla.png" alt="" width="860" height="1028"/>
+    </picture>
   </div>
   <div class="hero-scrim"></div>
   <div class="hero-in">
