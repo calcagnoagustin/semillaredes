@@ -131,7 +131,8 @@ ul.semillas li img{width:15px;height:15px;flex:0 0 15px;margin-top:5px}
 /* AGUS */
 .persona{display:grid;grid-template-columns:96px 1fr;gap:24px;align-items:start;max-width:760px;margin-top:10px}
 .persona .mark{width:96px;height:96px;border-radius:50%;overflow:hidden;background:var(--sand)}
-.persona .mark img{width:100%;height:100%;object-fit:cover}
+.persona .mark picture{display:block;width:100%;height:100%}
+.persona .mark img{display:block;width:100%;height:100%;object-fit:cover}
 .persona h3{font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);margin-bottom:4px}
 .persona .rol{font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--olive);margin-bottom:14px}
 .persona p{font-size:16.5px;line-height:1.68}
@@ -323,7 +324,10 @@ footer a{color:var(--rose);text-decoration:none}
 <section class="wrap" style="padding-top:0">
   <div class="kicker"><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-vino.png" alt=""/>Qui&eacute;n da la charla</div>
   <div class="persona">
-    <div class="mark"><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/agus-2026.png" alt="Agus Calcagno"/></div>
+    <div class="mark"><picture>
+      <source srcset="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/agus-avatar.webp" type="image/webp"/>
+      <img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/agus-avatar.png" alt="Agus Calcagno" width="560" height="560"/>
+    </picture></div>
     <div>
       <h3>Agus Calcagno</h3>
       <div class="rol">Estratega digital &middot; Fundador de Semilla Redes</div>
