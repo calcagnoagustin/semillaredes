@@ -305,16 +305,25 @@ table{font-size:13px}
 <h2>06 · Los Drops</h2>
 <p>Newsletter semanal de la membresía. Estructura fija: siempre arranca con <b>"Buenas semanas, artistas."</b> y cierra con "Abrazo." Textos escritos en el proyecto DROPS y consolidados por número.</p>
 
-<h3>Serie El Embudo (91–96)</h3>
+<p>El archivo público está en <code>landing.semillaredes.com/drops</code> y va por el <b>número 97</b>. Cada entrada vive dentro del array <code>const DROPS</code> de <code>drops/index.html</code>: para sumar uno nuevo se agrega un objeto JSON antes del marcador <code>/*__NEXT_DROP__*/</code>, con coma <b>adelante</b> (la última entrada no lleva coma final). El HTML del drop va dentro de un string JSON, así que los atributos en línea tienen que ir con comillas simples: una comilla doble sin escapar rompe el array entero y la página queda en blanco. Validar parseando el array antes de publicar.</p>
+
+<h3>Publicados 89–97</h3>
 <table>
-<tr><th>Nº</th><th>Tema</th><th>Semana</th></tr>
-<tr><td><b>91</b></td><td>El embudo de conversión para artistas (mapa completo)</td><td>24/07/2026</td></tr>
-<tr><td><b>92</b></td><td>Nivel 1: Descubrimiento</td><td>Semana 2</td></tr>
-<tr><td><b>93</b></td><td>Nivel 2: Interacción</td><td>Semana 3</td></tr>
-<tr><td><b>94</b></td><td>Nivel 3: Conversión</td><td>Semana 4</td></tr>
-<tr><td><b>95</b></td><td>Nivel 4: Fidelización</td><td>Semana 5</td></tr>
-<tr><td><b>96</b></td><td>¿Dónde está roto tu embudo? (diagnóstico)</td><td>Semana 6</td></tr>
+<tr><th>Nº</th><th>Tema</th><th>Categoría</th><th>Fecha</th></tr>
+<tr><td><b>89</b></td><td>No todo contenido tiene que vender (identidad / prueba / conversión)</td><td>Comunicación</td><td>10/07/2026</td></tr>
+<tr><td><b>90</b></td><td>¿Qué es el píxel de Meta y por qué todos los artistas deberían tenerlo?</td><td>Publicidad y métricas</td><td>17/07/2026</td></tr>
+<tr><td><b>91</b></td><td>El embudo de conversión para artistas (mapa completo)</td><td>Estrategia</td><td>24/07/2026</td></tr>
+<tr><td><b>92</b></td><td>Nivel 1: Descubrimiento</td><td>Estrategia</td><td>31/07/2026</td></tr>
+<tr><td><b>93</b></td><td>Nivel 2: Interacción</td><td>Estrategia</td><td>07/08/2026</td></tr>
+<tr><td><b>94</b></td><td>Nivel 3: Conversión</td><td>Estrategia</td><td>14/08/2026</td></tr>
+<tr><td><b>95</b></td><td>Nivel 4: Fidelización</td><td>Estrategia</td><td>21/08/2026</td></tr>
+<tr><td><b>96</b></td><td>¿Dónde está roto tu embudo? (cierre de la serie)</td><td>Estrategia</td><td>28/08/2026</td></tr>
+<tr><td><b>97</b></td><td>Más reproducciones entrando en playlists (+ Curadores Semilla)</td><td>Herramientas</td><td>04/09/2026</td></tr>
 </table>
+<p class="small"><b>a revisar</b> — Las fechas del 89 al 97 son viernes corridos a partir del 88 (03/07). Pero el texto del 97 dice "mañana es el Laboratorio del mes de agosto, sábado 29/08", lo que lo ubicaría el viernes 28/08 y no el 04/09. O hubo una semana con dos drops, o alguna de las fechas anteriores está corrida. Falta que Agus lo defina.</p>
+
+<h3>El bloque del Embudo Semilla en los drops</h3>
+<p>Los drops 91 a 96 llevan el mapa de los cuatro niveles. Se renderiza como kicker "Embudo Semilla" más una lista sin viñetas: el nivel activo en negrita y mayúsculas, el resto en gris al 60%. No usar la viñeta por defecto del template: se suma al emoji del nivel y queda doble.</p>
 <p class="small">Archivo completo de la serie: <code>claude/serie-embudo-drops-y-clase4.md</code></p>
 </section>
 
@@ -581,6 +590,7 @@ table{font-size:13px}
 <h2>14 · Registro de actualizaciones</h2>
 <table>
 <tr><th>Fecha</th><th>Cambio</th></tr>
+<tr><td><b>29/08/2026</b></td><td>Se cargan al archivo los <b>Drops 89 a 97</b>: el píxel de Meta, los tres tipos de contenido, la serie completa del Embudo Semilla (91–96) y las playlists con la herramienta Curadores Semilla. El archivo pasa de 88 a 97. Se rehace el bloque del embudo dentro de los drops para que el nivel activo se distinga y no se dupliquen las viñetas. Queda pendiente definir la fecha real del 97. Se deja documentado en la sección 06 cómo se agrega un drop nuevo y por qué los atributos HTML van con comillas simples.</td></tr>
 <tr><td><b>27/08/2026</b></td><td>Se corrige un bug de CSS que afectaba a <code>charla.html</code> y <code>redes-con-raiz.html</code>: <code>.wrap{padding:0 40px}</code> le ganaba en especificidad a <code>section{padding:80px 0}</code>, así que todas las secciones cremas quedaban con padding-bottom cero y el ritmo vertical se venía tapando con paddings-top inline puestos a ojo. Ahora <code>.wrap</code> sólo define los laterales y el ritmo es 80 px parejo. También se cierra con <code>margin-bottom:-1px</code> la costura de 1 px entre el borde rasgado y las secciones navy. Se reemplaza la foto del hero de la charla por el retrato sentado recortado.</td></tr>
 <tr><td><b>27/08/2026</b></td><td>Se abre el <b>lanzamiento de la cohorte de octubre</b> con objetivo de 20+ alumnos y se agrega la sección 17. Se publica <code>charla.html</code>, la landing de la charla gratuita del 1/10 con formulario propio de inscripción a Supabase (<code>curso = 'charla-formacion-oct26'</code>), Meta Pixel y evento <code>Lead</code>: era el activo que faltaba, porque hasta ahora no había ningún paso intermedio entre "pagá" y "escribime por WhatsApp". En <code>formacion.html</code> el hero pasa a mostrar la fecha de inicio (miércoles 7 de octubre) en lugar de un meta redundante, y se explicita que son 3 meses de cursada por $270.000 ARS en total. Los CTA de la charla en <code>formacion.html</code> y <code>formacion-cm.html</code> apuntan ahora a la landing en vez de a WhatsApp. Se define un presupuesto de pauta de USD 300-600 para los 40 días hasta el 7/10 y se decide no tocar el precio.</td></tr>
 <tr><td><b>24/08/2026</b></td><td>Se define y publica el curso <b>Redes con raíz</b> (Semilla × Pikuyoga): 2 clases de 3 h los sábados 19 y 26 de septiembre, ARS 60.000 pago único, cupos limitados sin número público. Se decide <b>no regalar</b> el curso avanzado de Meta Ads —queda como inclusión exclusiva de la Formación— y se incluye en cambio 1 mes de membresía gratuita, que es el canal de fidelización hacia la Formación. Se publica la landing <code>redes-con-raiz.html</code> con formulario de preinscripción y se crean en Supabase la tabla <code>preinscripciones</code> y la RPC <code>preinscripcion_crear</code>. Se agrega la sección 16.</td></tr>
