@@ -121,13 +121,15 @@
 
     .hero h1 {
       font-family: 'Playfair Display', serif;
-      font-size: min(5.27vw, 81px);
+      font-size: min(4.5vw, 69px);
       font-weight: 900;
       color: var(--navy);
       line-height: 1.06;
       letter-spacing: -0.01em;
       margin-bottom: 0;
     }
+    .hero h1 .corte { display: none; }
+    @media (min-width: 901px) { .hero h1 .corte { display: inline; } }
     .hero h1 .italic-line {
       display: block;
       font-style: italic;
@@ -947,7 +949,7 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
     <div class="badge">Programa Grupal &middot; Cupos Limitados</div>
     <h1>
       Formaci&oacute;n Semilla:
-      <span class="italic-line">aprend&eacute; a transformar tu arte en un negocio digital.</span>
+      <span class="italic-line">aprend&eacute; a transformar<br class="corte">tu arte en un negocio digital.</span>
     </h1>
     <div class="hero-divider"></div>
 
