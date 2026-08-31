@@ -82,63 +82,104 @@
 
     /* HERO */
     .hero {
-      padding: 80px 48px 0;
-      max-width: 1240px;
+      padding: 64px 48px 0;
+      max-width: 1280px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 380px;
-      gap: 40px;
+      grid-template-columns: minmax(0, 1.06fr) minmax(0, .94fr);
+      gap: 32px;
       align-items: end;
     }
-    .hero-copy { padding-bottom: 100px; }
+    .hero-copy { padding-bottom: 86px; }
+
     .hero-art { position: relative; align-self: end; }
     .hero-art .disc {
-      position: absolute; left: 7%; bottom: 14%; width: 84%; padding-bottom: 84%;
-      background: var(--sand); border-radius: 50%; opacity: .8; z-index: 0;
+      position: absolute; left: 4%; bottom: 6%; width: 90%; padding-bottom: 90%;
+      background: var(--sand); border-radius: 50%; z-index: 0;
     }
     .hero-art picture, .hero-art img {
       position: relative; z-index: 1; display: block; width: 100%; height: auto;
     }
-    @media (max-width: 900px) {
-      .hero { grid-template-columns: 1fr; gap: 0; padding-bottom: 0; }
-      .hero-copy { padding-bottom: 24px; }
-      .hero-art { max-width: 330px; margin: 0 auto; }
+    .hero-chispa {
+      position: absolute; top: 4%; right: 2%; width: 96px; height: 96px; z-index: 2;
     }
 
     .badge {
       display: inline-block;
       background: var(--rose);
-      color: white;
-      font-size: 11px;
+      color: var(--white);
+      font-size: 13px;
       font-weight: 700;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.09em;
       text-transform: uppercase;
-      padding: 6px 14px;
-      border-radius: 2px;
-      margin-bottom: 32px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      margin-bottom: 28px;
     }
 
     .hero h1 {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(40px, 5vw, 62px);
+      font-size: clamp(38px, 4.6vw, 60px);
       font-weight: 900;
       color: var(--navy);
-      line-height: 1.05;
-      margin-bottom: 12px;
+      line-height: 1.08;
+      margin-bottom: 0;
+      letter-spacing: -0.005em;
     }
-
     .hero h1 .italic-line {
+      display: block;
       font-style: italic;
       font-weight: 700;
-      color: var(--rose);
-      display: block;
+      color: var(--olive);
+      margin-top: 2px;
     }
 
     .hero-divider {
-      width: 48px;
-      height: 3px;
+      width: 92px;
+      height: 4px;
       background: var(--olive);
-      margin: 32px 0;
+      border-radius: 2px;
+      margin: 30px 0 34px;
+    }
+
+    /* tres pilares */
+    .pilares-hero {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px 30px;
+      margin-bottom: 38px;
+    }
+    .pilar-h { display: flex; align-items: center; gap: 13px; }
+    .pilar-h .ico {
+      width: 54px; height: 54px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; flex: 0 0 54px;
+    }
+    .pilar-h .ico svg { width: 26px; height: 26px; }
+    .pilar-h span {
+      font-size: 16px; font-weight: 500; color: var(--text); line-height: 1.25;
+    }
+    .pilar-h.negocio .ico { background: var(--olive); }
+    .pilar-h.comunicacion .ico { background: var(--rose); }
+    .pilar-h.publicidad .ico { background: var(--navy); }
+
+    @media (max-width: 980px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding: 40px 24px 0;
+        text-align: left;
+      }
+      .hero-copy { padding-bottom: 22px; }
+      .hero-art { max-width: 420px; margin: 0 auto; }
+      .hero-chispa { width: 74px; height: 74px; }
+      .pilares-hero {
+        display: grid; grid-template-columns: repeat(3, 1fr);
+        gap: 12px; text-align: center; margin-bottom: 30px;
+      }
+      .pilar-h { flex-direction: column; gap: 10px; }
+      .pilar-h span { font-size: 14.5px; }
+      .hero .hero-ctas { flex-direction: column; }
+      .hero .hero-ctas a { justify-content: center; width: 100%; }
     }
 
     .hero-sub {
@@ -883,45 +924,50 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
   <!-- HERO -->
   <section class="hero">
    <div class="hero-copy">
-    <div class="badge">Programa Grupal · Cupos Limitados</div>
+    <div class="badge">Programa Grupal &middot; Cupos Limitados</div>
     <h1>
-      Transformá tu arte en
-      <span class="italic-line" style="color:var(--olive)">un negocio digital.</span>
+      Formaci&oacute;n Semilla:
+      <span class="italic-line">aprend&eacute; a transformar tu arte en un negocio digital.</span>
     </h1>
     <div class="hero-divider"></div>
-    <p class="hero-sub">
-      Formación Semilla es el programa grupal donde construís modelo de negocio, comunicación y publicidad — junto a otros artistas, con acompañamiento semanal de Agus Calcagno.
-    </p>
-    <div class="hero-meta">
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">Frecuencia</span>
-        <span class="hero-meta-value">Semanal · Online</span>
+
+    <div class="pilares-hero">
+      <div class="pilar-h negocio">
+        <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#FDFAF6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.6c5 3.4 5 15.4 0 18.8-5-3.4-5-15.4 0-18.8Z"/><path d="M12 4.2v15.6"/></svg></span>
+        <span>Modelo de<br>negocio</span>
       </div>
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">Inversión</span>
-        <span class="hero-meta-value">$90.000 ARS / mes · <span style="color:var(--olive)">USD 65</span> · 3 meses</span>
+      <div class="pilar-h comunicacion">
+        <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#FDFAF6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5a1.5 1.5 0 0 0 1.5 1.5H8l6 4V5.5L8 9.5H5.5A1.5 1.5 0 0 0 4 11Z"/><path d="M18 9.2a4 4 0 0 1 0 5.6"/><path d="M8 16v3.5"/></svg></span>
+        <span>Comunicaci&oacute;n</span>
       </div>
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">Comienza</span>
-        <span class="hero-meta-value">Miércoles 7 de octubre</span>
+      <div class="pilar-h publicidad">
+        <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#FDFAF6" stroke-width="1.9" stroke-linecap="round"><path d="M6 17.5v-4"/><path d="M12 17.5v-8"/><path d="M18 17.5v-11"/></svg></span>
+        <span>Publicidad</span>
       </div>
     </div>
+
     <div class="hero-ctas">
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLScCcE046UMn5iJs08cxpwGVhkwgKaOZA1QuxSpSzWkVY0cifQ/viewform" target="_blank" class="btn-primary">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLScCcE046UMn5iJs08cxpwGVhkwgKaOZA1QuxSpSzWkVY0cifQ/viewform" target="_blank" rel="noopener" class="btn-primary">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Pre inscripción
+        Pre inscripci&oacute;n
       </a>
-      <a href="https://api.whatsapp.com/send/?phone=5492665242011&amp;text=Hola+Agus%2C+quiero+saber+m%C3%A1s+sobre+la+Formaci%C3%B3n+Semilla&amp;type=phone_number&amp;app_absent=0" target="_blank" class="btn-secondary">
+      <a href="https://api.whatsapp.com/send/?phone=5492665242011&amp;text=Hola+Agus%2C+quiero+saber+m%C3%A1s+sobre+la+Formaci%C3%B3n+Semilla&amp;type=phone_number&amp;app_absent=0" target="_blank" rel="noopener" class="btn-secondary">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="currentColor"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.128.557 4.127 1.529 5.862L.057 23.486a.5.5 0 00.609.61l5.624-1.472A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.956 9.956 0 01-5.079-1.39l-.364-.214-3.774.988.988-3.774-.214-.364A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" fill="currentColor"/></svg>
-        Hablá con Agus ahora
+        Habl&aacute; con Agus ahora
       </a>
     </div>
    </div>
-   <div class="hero-art" aria-hidden="true">
-     <div class="disc"></div>
+
+   <div class="hero-art">
+     <div class="disc" aria-hidden="true"></div>
+     <svg class="hero-chispa" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+       <path d="M46 40 L34 12" stroke="#E2767C" stroke-width="8" stroke-linecap="round"/>
+       <path d="M62 40 L72 14" stroke="#E2767C" stroke-width="8" stroke-linecap="round"/>
+       <path d="M70 52 L94 42" stroke="#E2767C" stroke-width="8" stroke-linecap="round"/>
+     </svg>
      <picture>
-       <source srcset="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/agus-charla.webp" type="image/webp"/>
-       <img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/agus-charla.png" alt="Agus Calcagno" width="860" height="1028"/>
+       <source srcset="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/agus-hero.webp" type="image/webp"/>
+       <img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/agus-hero.png" alt="Agus Calcagno" width="900" height="1275"/>
      </picture>
    </div>
   </section>
