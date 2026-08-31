@@ -183,8 +183,10 @@
       .hero {
         display: flex;
         flex-direction: column;
+        align-items: stretch;
         padding: 28px 22px 34px;
       }
+      .badge { align-self: flex-start; }
       .hero-copy { display: contents; }
       .badge { order: 1; }
       .hero h1 { order: 2; }
@@ -199,7 +201,7 @@
         display: grid; grid-template-columns: repeat(3, 1fr);
         gap: 10px; margin-bottom: 26px; text-align: center;
       }
-      .pilar-h { flex-direction: column; gap: 9px; }
+      .pilar-h { flex-direction: column; justify-content: flex-start; gap: 9px; }
       .pilar-h .ico { width: 56px; height: 56px; flex: 0 0 56px; }
       .pilar-h .ico svg { width: 26px; height: 26px; }
       .pilar-h span { font-size: 14px; }
@@ -956,7 +958,7 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
     <div class="badge">Programa Grupal &middot; Cupos Limitados</div>
     <h1>
       Formaci&oacute;n Semilla:
-      <span class="italic-line">aprend&eacute; a transformar<br class="corte">tu arte en un negocio digital.</span>
+      <span class="italic-line">aprend&eacute; a transformar <br class="corte">tu arte en un negocio digital.</span>
     </h1>
     <div class="hero-divider"></div>
 
