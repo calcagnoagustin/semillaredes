@@ -84,8 +84,8 @@
        Cada medida va como min(Xvw, Ypx): Y es el valor del mock y X = Y/1536*100,
        asi abajo de 1536 escala parejo y arriba se congela. */
     .hero {
-      max-width: 1536px;
-      margin: 0 auto;
+      max-width: none;
+      margin: 0;
       padding: 0;
       display: grid;
       grid-template-columns: minmax(0, 1fr) 39%;
@@ -93,7 +93,7 @@
       align-items: end;
     }
     .hero-copy {
-      padding: min(14.6vw, 224px) min(2vw, 30px) min(7.1vw, 109px) min(5.08vw, 78px);
+      padding: min(8.1vw, 124px) min(2vw, 30px) min(7.1vw, 109px) min(5.08vw, 78px);
     }
 
     .hero-art { position: relative; align-self: end; }
@@ -121,7 +121,7 @@
 
     .hero h1 {
       font-family: 'Playfair Display', serif;
-      font-size: min(4.5vw, 69px);
+      font-size: min(calc(4.55vw - 8px), 84px);
       font-weight: 900;
       color: var(--navy);
       line-height: 1.06;
