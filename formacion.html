@@ -80,106 +80,126 @@
     }
     .nav-cta:hover { background: var(--wine); }
 
-    /* HERO */
+    /* HERO  ·  proporciones tomadas del mock de 1536x1024.
+       Cada medida va como min(Xvw, Ypx): Y es el valor del mock y X = Y/1536*100,
+       asi abajo de 1536 escala parejo y arriba se congela. */
     .hero {
-      padding: 64px 48px 0;
-      max-width: 1280px;
+      max-width: 1536px;
       margin: 0 auto;
+      padding: 0;
       display: grid;
-      grid-template-columns: minmax(0, 1.18fr) minmax(0, .82fr);
-      gap: 28px;
+      grid-template-columns: minmax(0, 1fr) 39%;
+      gap: 0;
       align-items: end;
     }
-    .hero-copy { padding-bottom: 86px; }
+    .hero-copy {
+      padding: min(14.6vw, 224px) min(2vw, 30px) min(7.1vw, 109px) min(5.08vw, 78px);
+    }
 
     .hero-art { position: relative; align-self: end; }
     .hero-art .disc {
-      position: absolute; left: -7%; bottom: -3%; width: 114%; padding-bottom: 114%;
+      position: absolute; left: -7.5%; top: 16%; width: 106%; padding-bottom: 106%;
       background: var(--sand); border-radius: 50%; z-index: 0;
     }
     .hero-art picture, .hero-art img {
       position: relative; z-index: 1; display: block; width: 100%; height: auto;
     }
-    .hero-chispa {
-      position: absolute; top: 3%; right: -3%; width: 110px; height: 110px; z-index: 2;
-    }
+    .hero-chispa { position: absolute; top: 0; right: 5%; width: 19%; z-index: 2; }
 
     .badge {
       display: inline-block;
       background: var(--rose);
       color: var(--white);
-      font-size: 13px;
+      font-size: min(1.30vw, 20px);
       font-weight: 700;
-      letter-spacing: 0.09em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: 10px 20px;
-      border-radius: 6px;
-      margin-bottom: 28px;
+      padding: min(0.78vw, 12px) min(1.56vw, 24px);
+      border-radius: min(0.52vw, 8px);
+      margin-bottom: min(2.7vw, 42px);
     }
 
     .hero h1 {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(38px, 4.4vw, 58px);
+      font-size: min(5.27vw, 81px);
       font-weight: 900;
       color: var(--navy);
-      line-height: 1.08;
+      line-height: 1.06;
+      letter-spacing: -0.01em;
       margin-bottom: 0;
-      letter-spacing: -0.005em;
     }
     .hero h1 .italic-line {
       display: block;
       font-style: italic;
       font-weight: 700;
       color: var(--olive);
-      margin-top: 2px;
     }
 
     .hero-divider {
-      width: 92px;
-      height: 4px;
+      width: min(6.1vw, 94px);
+      height: min(0.52vw, 8px);
       background: var(--olive);
-      border-radius: 2px;
-      margin: 30px 0 34px;
+      border-radius: 99px;
+      margin: min(3.1vw, 48px) 0 min(4.4vw, 68px);
     }
 
-    /* tres pilares */
     .pilares-hero {
       display: flex;
       flex-wrap: wrap;
-      gap: 14px 30px;
-      margin-bottom: 38px;
+      align-items: center;
+      gap: min(1.6vw, 24px) min(2.4vw, 37px);
+      margin-bottom: min(6.9vw, 106px);
     }
-    .pilar-h { display: flex; align-items: center; gap: 13px; }
+    .pilar-h { display: flex; align-items: center; gap: min(1.04vw, 16px); }
     .pilar-h .ico {
-      width: 54px; height: 54px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; flex: 0 0 54px;
+      width: min(4.23vw, 65px); height: min(4.23vw, 65px);
+      flex: 0 0 min(4.23vw, 65px);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
     }
-    .pilar-h .ico svg { width: 26px; height: 26px; }
+    .pilar-h .ico svg { width: min(1.95vw, 30px); height: min(1.95vw, 30px); }
     .pilar-h span {
-      font-size: 16px; font-weight: 500; color: var(--text); line-height: 1.25;
+      font-size: min(1.37vw, 21px); font-weight: 500;
+      color: var(--text); line-height: 1.3;
     }
     .pilar-h.negocio .ico { background: var(--olive); }
     .pilar-h.comunicacion .ico { background: var(--rose); }
     .pilar-h.publicidad .ico { background: var(--navy); }
 
-    @media (max-width: 980px) {
+    .hero .hero-ctas { gap: min(1.95vw, 30px); }
+    .hero .hero-ctas a {
+      padding: min(1.43vw, 22px) min(2.6vw, 40px);
+      font-size: min(1.37vw, 21px);
+      border-radius: min(0.52vw, 8px);
+      gap: min(0.85vw, 13px);
+    }
+    .hero .hero-ctas svg { width: min(1.43vw, 22px); height: min(1.43vw, 22px); }
+
+    @media (max-width: 900px) {
       .hero {
         grid-template-columns: 1fr;
-        gap: 0;
-        padding: 40px 24px 0;
-        text-align: left;
+        align-items: start;
       }
-      .hero-copy { padding-bottom: 22px; }
-      .hero-art { max-width: 420px; margin: 0 auto; }
-      .hero-chispa { width: 74px; height: 74px; }
+      .hero-copy { padding: 28px 22px 0; }
+      .hero-art { max-width: 460px; margin: 18px auto 0; }
+      .hero-chispa { width: 22%; right: 2%; }
+      .badge { font-size: 12.5px; padding: 9px 16px; border-radius: 6px; margin-bottom: 20px; }
+      .hero h1 { font-size: clamp(30px, 8.2vw, 44px); }
+      .hero-divider { width: 74px; height: 6px; margin: 20px 0 26px; }
       .pilares-hero {
         display: grid; grid-template-columns: repeat(3, 1fr);
-        gap: 12px; text-align: center; margin-bottom: 30px;
+        gap: 10px; margin-bottom: 26px; text-align: center;
       }
-      .pilar-h { flex-direction: column; gap: 10px; }
-      .pilar-h span { font-size: 14.5px; }
-      .hero .hero-ctas { flex-direction: column; }
-      .hero .hero-ctas a { justify-content: center; width: 100%; }
+      .pilar-h { flex-direction: column; gap: 9px; }
+      .pilar-h .ico { width: 56px; height: 56px; flex: 0 0 56px; }
+      .pilar-h .ico svg { width: 26px; height: 26px; }
+      .pilar-h span { font-size: 14px; }
+      .hero .hero-ctas { flex-direction: column; gap: 12px; order: 3; }
+      .hero .hero-ctas a {
+        width: 100%; justify-content: center;
+        padding: 17px 20px; font-size: 16px; border-radius: 8px;
+      }
+      .hero .hero-ctas svg { width: 18px; height: 18px; }
     }
 
     .hero-sub {
