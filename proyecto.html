@@ -48,6 +48,9 @@ input:focus,textarea:focus{outline:2px solid var(--oliva);border-color:transpare
 .err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:30px}
 .gracias{font-size:14px;color:var(--mute);margin-top:34px}
 .oculto{display:none}
+.mini{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-top:10px}
+.mini a{display:block;aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid #E5DFD2}
+.mini img{width:100%;height:100%;object-fit:cover;display:block}
 .proceso{background:#fff;border:1px solid #E5DFD2;border-radius:14px;padding:20px;margin:18px 0}
 .proceso h2{font-family:'Playfair Display',serif;font-size:21px;color:var(--navy);margin:0 0 2px}
 .proceso .sub{font-size:13.5px;color:var(--mute);margin:0 0 14px}
@@ -187,7 +190,8 @@ function pintar(){
         inner+=`<label>Fotos de tu obra<small>Las mejores que tengas, de a varias. JPG o PNG.</small></label>
         <input type="file" id="fotos" multiple accept="image/*" class="oculto">
         <button class="subir" onclick="document.getElementById('fotos').click()">Subir fotos</button>
-        <ul class="files" id="lista_fotos">${(window.archivos||[]).map(a=>`<li>${a.nombre}</li>`).join('')}</ul>`;
+        <div class="mini" id="lista_fotos">${(window.archivos||[]).map(a=>`<a href="${a.url}" target="_blank" title="${a.nombre}"><img src="${a.url}" loading="lazy" alt=""></a>`).join('')}</div>
+        <p class="audio-ok">${(window.archivos||[]).length?(window.archivos||[]).length+' archivos cargados':''}</p>`;
       }
     }
     d.innerHTML=`<summary><svg class="seed" viewBox="0 0 24 24"><path d="M12 3 C18 7 18 17 12 21 C6 17 6 7 12 3 Z" fill="#87863A"/></svg><span class="tit">${b.tit}</span><span class="n">${visibles.filter(f=>(datos[f.c]??'').trim()).length}/${visibles.length}</span></summary><div class="body">${inner}</div>`;
@@ -252,8 +256,9 @@ async function subirFotos(ev){
     if(up.ok){
       const url=`${API}/storage/v1/object/public/setup/${path}`;
       await rpc('briefing_archivo',{p_slug:slug,p_k:tok,p_tipo:'obra',p_nombre:f.name,p_url:url});
-      const li=document.createElement('li'); li.textContent=f.name+' ✓'; $('lista_fotos').appendChild(li);
-    } else { const li=document.createElement('li'); li.textContent=f.name+' — falló, reintentá'; $('lista_fotos').appendChild(li); }
+      const a=document.createElement('a'); a.href=url; a.target='_blank'; a.title=f.name;
+      const img=document.createElement('img'); img.src=url; a.appendChild(img); $('lista_fotos').appendChild(a);
+    } else { alert(f.name+': no se pudo subir, probá de nuevo'); }
   }
 }
 
