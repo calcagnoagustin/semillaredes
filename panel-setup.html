@@ -41,6 +41,9 @@ th{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mute
 .mini{height:5px;background:#2E3970;border-radius:99px;overflow:hidden;width:110px}
 .mini i{display:block;height:100%;background:var(--oliva)}
 .oculto{display:none}
+.galeria{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-top:12px}
+.galeria a{display:block;border-radius:8px;overflow:hidden;border:1px solid #2E3970;aspect-ratio:1;background:#1A2456}
+.galeria img{width:100%;height:100%;object-fit:cover;display:block}
 .aviso{font-size:12.5px;color:var(--mute);margin-top:10px}
 select.est{width:auto;margin:0;font-size:12.5px;padding:6px 8px}
 .entfila{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid #2E3970;font-size:13px;flex-wrap:wrap}
@@ -187,12 +190,15 @@ function pintar(proys){
         <button class="sec" data-wa="${encodeURIComponent('Hola! Te dejo el espacio de tu proyecto en Semilla Redes. Entrá cuando puedas y completá lo que te salga, se guarda solo: '+link)}">Mandar por WhatsApp</button>
       </div>
       <details><summary>Ver briefing · ${p.completadas} respuestas</summary>${detalle||'<p class="meta">Sin respuestas todavía.</p>'}</details>
+      ${(p.galeria||[]).length?`<details><summary>Ver ${p.galeria.length} archivos</summary><div class="galeria">${p.galeria.map(a=>`<a href="${a.url}" target="_blank" title="${a.nombre}"><img src="${a.url}" loading="lazy" alt=""></a>`).join('')}</div><div class="acc" style="margin-top:10px"><button class="sec" data-urls="1">Copiar todas las URLs</button></div></details>`:''}
       <details><summary>Ver estado del proyecto · ${(p.entregables||[]).filter(e=>e.estado==='listo').length}/${(p.entregables||[]).length}</summary><div id="ent_${p.slug}">${entregablesHTML(p)}</div></details>`;
     cont.appendChild(c);
     c.querySelector('[data-copy]').onclick=e=>{navigator.clipboard.writeText(e.target.dataset.copy);e.target.textContent='Copiado ✓';};
     c.querySelector('[data-claude]').onclick=e=>{navigator.clipboard.writeText(textoPlano(p));e.target.textContent='Copiado ✓';};
     c.querySelector('[data-wa]').onclick=e=>window.open('https://wa.me/?text='+e.target.dataset.wa,'_blank');
     engancharEnt(c);
+    const bu=c.querySelector('[data-urls]');
+    if(bu) bu.onclick=()=>{navigator.clipboard.writeText((p.galeria||[]).map(a=>a.url).join('\n'));bu.textContent='Copiado ✓';};
   });
 }
 
