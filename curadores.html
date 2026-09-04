@@ -149,206 +149,151 @@ footer{padding:24px 20px}
 
 <div class="wrap">
 
-<section class="hero" id="hero">
-<p class="kicker">SemillaIA · Curadores</p>
-<h1>Encontrá <em>playlists reales</em> para tu música.</h1>
-<div class="rule"></div>
-<p class="sub">Decinos qué hacés y te devolvemos playlists de Spotify que están activas, tienen audiencia real y tienen a quién escribirle. Con el contacto del curador, no solo el link.</p>
-<p class="note">Gratis. Un minuto. No hace falta que te registres.</p>
+<section class="hero">
+<h1>Decinos quién sos y la IA <em>encuentra</em> tus playlists.</h1>
+<p class="sub">Pegá tu Instagram y tu Spotify. La inteligencia artificial lee tus perfiles, entiende tu música y te devuelve 10 playlists activas de tu onda — <b>todas con el contacto del curador</b> y el porqué de cada una.</p>
 </section>
 
-<!-- FORMULARIO -->
-<section class="card" id="form">
-<p class="step-tag">Tu proyecto</p>
-<h2 class="q">¿Dónde te <em>escuchamos</em>?</h2>
-<p class="hint">El link nos sirve para entender tu proyecto. Si todavía no tenés Spotify, dejalo vacío y seguí.</p>
-
-<div class="fields">
-  <div>
-    <label for="spotify">Tu perfil de Spotify</label>
-    <input type="url" id="spotify" placeholder="https://open.spotify.com/artist/..." autocomplete="url">
-  </div>
-  <div class="row2">
-    <div>
-      <label for="nombre">Nombre artístico <span class="req">*</span></label>
-      <input type="text" id="nombre" placeholder="Cómo te presentás" autocomplete="name">
-    </div>
-    <div>
-      <label for="email">Email <span class="req">*</span></label>
-      <input type="email" id="email" placeholder="para mandarte la lista" autocomplete="email">
-    </div>
-  </div>
-
-  <div>
-    <label for="gen">¿Qué hacés? <span class="req">*</span></label>
-    <p class="hint" style="margin-top:0;margin-bottom:12px">Elegí el género que mejor te describe.</p>
-    <select id="gen" class="sel"><option value="">Elegí un género…</option></select>
-  </div>
-</div>
-
-<label class="consent" for="ok">
-  <input type="checkbox" id="ok">
-  <span>Quiero recibir la lista por email y que Semilla Redes me escriba con recomendaciones para mi proyecto.</span>
-</label>
-
-<div class="actions">
-  <button class="btn btn-next" id="go">Buscar curadores</button>
-</div>
-<p class="err" id="err"></p>
+<section class="card" id="form-card">
+<label for="nombre">Tu nombre o nombre artístico <span class="req">*</span></label>
+<input type="text" id="nombre" autocomplete="name">
+<label for="email">Tu email <span class="req">*</span></label>
+<input type="email" id="email" autocomplete="email">
+<p class="hint" style="margin-top:6px">Te mandamos la lista para que no la pierdas.</p>
+<label for="ig">Tu Instagram</label>
+<input type="url" id="ig" placeholder="https://www.instagram.com/tuartista/">
+<label for="sp">Tu Spotify</label>
+<input type="url" id="sp" placeholder="https://open.spotify.com/artist/...">
+<p class="hint" style="margin-top:6px">Con uno alcanza; con los dos, la lectura es mejor.</p>
+<div class="actions"><button class="btn" id="buscar">Buscar mis playlists</button></div>
+<p class="msg err" id="fmsg"></p>
 </section>
 
-<!-- CARGANDO -->
-<section class="card hidden" id="loading">
-<div class="loader">
-<svg class="seed" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-<line x1="22" y1="22" x2="4" y2="22" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="40" y2="22" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="22" y2="4" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="22" y2="40" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="8" y2="8" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="36" y2="36" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="36" y2="8" stroke="#C97080" stroke-width="1.5"/>
-<line x1="22" y1="22" x2="8" y2="36" stroke="#C97080" stroke-width="1.5"/>
-<path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/>
-</svg>
-<p>Buscando entre miles de playlists</p>
-<p class="lp" id="lp">Descartando las que están abandonadas…</p>
+<section class="card hidden" id="espera">
+<h2>Analizando</h2>
+<h3>La IA está <em>escuchando</em> tu proyecto…</h3>
+<p class="hint" id="paso" style="margin-top:14px">Entrando a tus perfiles…</p>
+<div class="barra"><div class="barra-in" id="barra"></div></div>
+<p class="hint">Tarda entre uno y dos minutos: lee tus perfiles en vivo, no usa plantillas.</p>
+</section>
+
+<section class="hidden" id="resultado">
+<div class="card" id="perfil-box">
+<h2>Lo que entendimos</h2>
+<p id="perfil-desc" style="margin-top:10px;line-height:1.6"></p>
+<p class="hint" id="perfil-refs"></p>
+</div>
+<div id="cards"></div>
+<div class="card" style="text-align:center">
+<h3>¿Querés que Semilla haga <em>la campaña</em> por vos?</h3>
+<p class="hint" style="margin:10px auto 18px;max-width:440px">Esto es la beta gratuita. El trabajo fino — el mensaje a cada curador, el seguimiento, la estrategia — lo hacemos con vos.</p>
+<a class="btn" href="https://wa.me/5492665242011?text=Hola%20Agus.%20Us%C3%A9%20el%20buscador%20de%20playlists%20y%20quiero%20ir%20por%20m%C3%A1s" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">Hablar con Agus</a>
 </div>
 </section>
 
-<!-- RESULTADOS -->
-<section class="card hidden" id="result"></section>
-
 </div>
 
-<footer>
-Una herramienta de <a href="https://semillaredes.com">Semilla Redes</a> · Método Semilla
-</footer>
+<style>
+.hero{padding:44px 0 6px}
+.hero h1{font-size:clamp(30px,4.6vw,48px);font-weight:900;letter-spacing:-.02em;line-height:1.05}
+.hero h1 em{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;color:var(--wine)}
+.sub{margin-top:14px;color:rgba(26,36,86,.72);font-size:16px;line-height:1.6;max-width:600px}
+.wrap{max-width:860px;margin:0 auto;padding:0 24px 80px}
+.card{background:var(--white);border:1px solid var(--navy-line);border-radius:12px;padding:clamp(22px,3.4vw,32px);margin-top:24px}
+.card h2{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--oliva);margin-bottom:6px}
+.card h3{font-size:clamp(19px,2.5vw,24px);font-weight:900;letter-spacing:-.02em}
+.card h3 em{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;color:var(--wine)}
+label{font-size:13px;font-weight:700;display:block;margin:16px 0 6px}
+.req{color:var(--wine)}
+input{width:100%;font-family:inherit;font-size:16px;color:var(--navy);background:var(--cream);border:1px solid var(--navy-line);border-radius:8px;padding:14px 15px;outline:none;box-sizing:border-box}
+input:focus{border-color:var(--oliva)}
+.hint{font-size:13px;color:rgba(26,36,86,.6);line-height:1.5}
+.actions{margin-top:22px}
+.btn{font-family:inherit;font-weight:700;font-size:15px;border-radius:4px;cursor:pointer;border:0;padding:15px 30px;background:var(--navy);color:var(--white);transition:background .2s}
+.btn:hover{background:var(--wine)}
+.btn:disabled{background:rgba(26,36,86,.3);cursor:not-allowed}
+.msg{font-size:14px;font-weight:600;margin-top:12px;min-height:18px}
+.msg.err{color:var(--wine)}
+.hidden{display:none}
+.barra{height:6px;background:var(--cream);border-radius:3px;margin:18px 0 10px;overflow:hidden}
+.barra-in{height:100%;width:4%;background:var(--oliva);border-radius:3px;transition:width 1.2s ease}
+.pl{background:var(--white);border:1px solid var(--navy-line);border-radius:12px;padding:clamp(20px,3vw,28px);margin-top:16px}
+.pl-name{font-size:18px;font-weight:800;line-height:1.3}
+.pl-cur{font-size:13px;color:rgba(26,36,86,.55);margin-top:2px}
+.razon{margin:12px 0 0;padding:12px 14px;background:rgba(122,138,66,.08);border-left:3px solid var(--oliva);border-radius:0 6px 6px 0;font-size:14px;line-height:1.55;color:var(--navy)}
+.mets{display:flex;gap:26px;margin-top:14px;flex-wrap:wrap}
+.met b{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(26,36,86,.5)}
+.met span{font-size:17px;font-weight:800}
+.pl-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pl-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;text-decoration:none;padding:8px 13px;border-radius:4px;border:1px solid var(--navy-line);color:var(--navy);background:var(--white)}
+.pl-link:hover{border-color:var(--oliva);background:rgba(122,138,66,.08)}
+.contacto{margin-top:14px;padding-top:13px;border-top:1px solid var(--navy-line);font-size:14px}
+.contacto a{color:var(--wine);font-weight:700;text-decoration:none}
+.chip-c{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:rgba(122,31,58,.08);color:var(--wine);margin-right:8px}
+</style>
 
 <script>
-const ENDPOINT = "https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/curadores";
+const API="https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/curadores-ia";
+const el=i=>document.getElementById(i);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const PASOS=["Entrando a tu Instagram…","Escuchando tu Spotify…","Entendiendo tu sonido y tus referencias…","Buscando en 43.000 playlists verificadas…","Descartando las infladas y las abandonadas…","Eligiendo las 10 con contacto que mejor te calzan…","Escribiendo por qué cada una…"];
+let timer=null;
 
-const CATEGORIAS = ["Folclore y raíz","Canción argentina","Tango","Cumbia y tropical","Cuarteto","Rock","Pop","Synthpop","Dreampop",
-"Indie y alternativo","Canción de autor","Urbano","Electrónica","Jazz y soul","Latino y world","Música medicina"];
-
-const MSGS = ["Descartando las que están abandonadas…","Revisando que tengan audiencia real…",
-"Filtrando las que compran seguidores…","Buscando el contacto de cada curador…","Ordenando por afinidad con tu proyecto…"];
-
-const el = id => document.getElementById(id);
-
-// Poblar desplegable (una sola categoría)
-el("gen").insertAdjacentHTML("beforeend", CATEGORIAS.map(c=>`<option value="${c}">${c}</option>`).join(""));
-
-const elegidas = () => { const v = el("gen").value; return v ? [v] : []; };
-
-function validar(){
-  if(!el("nombre").value.trim()) return "Poné tu nombre artístico.";
-  const m = el("email").value.trim();
-  if(!m || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m)) return "Revisá el email: parece incompleto.";
-  if(!elegidas().length) return "Elegí un género.";
-  if(!el("ok").checked) return "Necesitamos tu confirmación para mandarte la lista.";
-  return "";
-}
-
-el("go").addEventListener("click", buscar);
-
-async function buscar(){
-  const e = validar();
-  if(e){ el("err").textContent = e; return; }
-  el("err").textContent = "";
-  el("form").classList.add("hidden");
-  el("hero").classList.add("hidden");
-  el("loading").classList.remove("hidden");
-  window.scrollTo(0,0);
-  let i=0; const t=setInterval(()=>{ i=(i+1)%MSGS.length; el("lp").textContent=MSGS[i]; },1700);
-
+el("buscar").addEventListener("click",async()=>{
+  const nombre=el("nombre").value.trim(), email=el("email").value.trim(),
+        ig=el("ig").value.trim(), sp=el("sp").value.trim();
+  const m=el("fmsg"); m.textContent="";
+  if(!nombre) return m.textContent="Poné tu nombre.";
+  if(!email.includes("@")) return m.textContent="Poné un email válido.";
+  if(!ig && !sp) return m.textContent="Pegá al menos tu Instagram o tu Spotify.";
+  el("form-card").classList.add("hidden"); el("espera").classList.remove("hidden");
+  let i=0; el("paso").textContent=PASOS[0]; el("barra").style.width="6%";
+  timer=setInterval(()=>{ i=Math.min(i+1,PASOS.length-1); el("paso").textContent=PASOS[i];
+    el("barra").style.width=Math.min(8+i*13,92)+"%"; },11000);
   try{
-    const r = await fetch(ENDPOINT,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({
-        nombre: el("nombre").value.trim(),
-        email: el("email").value.trim(),
-        spotify: el("spotify").value.trim(),
-        categorias: elegidas()
-      })
-    });
-    if(!r.ok) throw new Error("HTTP "+r.status);
-    const data = await r.json();
-    clearInterval(t);
-    mostrar(data);
-  }catch(err){
-    clearInterval(t);
-    el("loading").innerHTML = `<div class="loader"><p>No pudimos completar la búsqueda.</p>
-      <p class="lp">${err.message}. Recargá la página y probá de nuevo.</p></div>`;
+    const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({nombre,email,instagram:ig,spotify:sp})});
+    const d=await r.json();
+    clearInterval(timer); el("barra").style.width="100%";
+    if(!r.ok||d.error) throw new Error(d.error||("HTTP "+r.status));
+    render(d);
+  }catch(e){
+    clearInterval(timer);
+    el("espera").classList.add("hidden"); el("form-card").classList.remove("hidden");
+    m.textContent=(e.message||"Algo falló.")+" Probá de nuevo en un rato.";
   }
-}
+});
 
-const miles = n => (n||0).toLocaleString("es-AR");
-
-function nodos(oy){
-  const n = oy>=2000?4 : oy>=500?3 : oy>=100?2 : 1;
-  return `<div class="nodos" title="Actividad estimada" aria-label="Actividad ${n} de 4">`+
-    [0,1,2,3].map(i=>`<span class="nodo${i<n?" on":""}"></span>`).join("")+`</div>`;
-}
-
-function contacto(p){
-  if(p.instagram) return `<span class="ctag">Instagram</span>
-    <span class="cval"><a href="https://instagram.com/${p.instagram.replace(/^@/,'')}" target="_blank" rel="noopener">@${p.instagram.replace(/^@/,'')}</a></span>`;
-  if(p.email) return `<span class="ctag">Email</span><span class="cval">${p.email}</span>`;
-  return `<span class="ctag">Sin contacto directo</span>`;
-}
-
-function mostrar(d){
-  el("loading").classList.add("hidden");
-  const r = el("result");
-  r.classList.remove("hidden");
-  const lista = d.playlists || [];
-
-  if(!lista.length){
-    r.innerHTML = `<div class="res-head"><h2>Sin resultados</h2>
-      <p class="res-intro">Todavía no tenemos playlists activas para esa combinación de géneros.
-      Probá con otro género.</p></div>`;
-    return;
-  }
-
-  r.innerHTML = `
-  <div class="res-head">
-    <h2>Tus curadores</h2>
-    <p class="res-intro">Encontramos <em>${lista.length} playlists</em> que van con lo que hacés.
-    Todas están activas, tienen audiencia real y tienen a quién escribirle.</p>
-  </div>
-  ${lista.map(p=>`
+function render(d){
+  el("espera").classList.add("hidden");
+  const p=d.perfil||{};
+  el("perfil-desc").textContent=p.descripcion||"";
+  el("perfil-refs").textContent=(p.referencias&&p.referencias.length)?("Vecindario sonoro: "+p.referencias.join(" · ")):"";
+  const pls=d.playlists||[];
+  if(!pls.length){
+    el("cards").innerHTML='<div class="card"><p style="line-height:1.6">'+esc(d.aviso||"No encontramos playlists con contacto para tu perfil todavía.")+'</p></div>';
+  }else{
+    el("cards").innerHTML=pls.map((x,i)=>`
     <article class="pl">
-      <div class="pl-top">
-        <div>
-          <p class="pl-name">${p.name}</p>
-          <p class="pl-owner">${p.owner||""}</p>
-        </div>
-        ${nodos(p.listeners)}
-      </div>
-      <div class="pl-datos">
-        <div class="dato"><b>Seguidores</b><span>${miles(p.followers)}</span></div>
-        <div class="dato"><b>Oyentes/mes</b><span>${miles(p.listeners)}</span></div>
-        <div class="dato"><b>Último tema</b><span>${p.newest_track_added_at||"—"}</span></div>
+      <p class="pl-name">${i+1}. ${esc(x.name)}</p>
+      <p class="pl-cur">Curada por ${esc(x.owner||"?")}</p>
+      ${x.razon?`<p class="razon">${esc(x.razon)}</p>`:""}
+      <div class="mets">
+        <div class="met"><b>Seguidores</b><span>${(x.followers??0).toLocaleString("es-AR")}</span></div>
+        <div class="met"><b>Oyentes/mes</b><span>${(x.listeners??0).toLocaleString("es-AR")}</span></div>
+        <div class="met"><b>Último tema</b><span>${esc(x.ultimo||"—")}</span></div>
       </div>
       <div class="pl-links">
-        <a class="pl-link" href="${p.spotify_url||('https://open.spotify.com/playlist/'+p.spotify_id)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.6 14.4a.6.6 0 0 1-.85.2c-2.3-1.4-5.2-1.7-8.6-.95a.62.62 0 0 1-.28-1.2c3.7-.85 6.9-.5 9.5 1.1.3.18.4.56.22.86zm1.2-2.7a.78.78 0 0 1-1.07.26c-2.65-1.63-6.7-2.1-9.8-1.15a.78.78 0 0 1-.45-1.5c3.6-1.1 8.05-.57 11.1 1.3.37.23.48.7.25 1.1zm.1-2.8C14.7 9 9.5 8.8 6.5 9.7a.94.94 0 1 1-.55-1.8c3.5-1.05 9.2-.85 12.8 1.3a.94.94 0 0 1-.95 1.62z"/></svg>Abrir en Spotify</a>
-        <a class="pl-link" href="https://app.artist.tools/playlist/${p.spotify_id}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-7"/></svg>Ver en artist.tools</a>
+        <a class="pl-link" href="${esc(x.spotify_url)}" target="_blank" rel="noopener">Abrir en Spotify</a>
+        <a class="pl-link" href="${esc(x.artisttools_url)}" target="_blank" rel="noopener">Ver en artist.tools</a>
       </div>
-      <div class="contacto">${contacto(p)}</div>
-    </article>`).join("")}
-
-  <div class="cta-box">
-    <p class="ct">Tener la lista es el principio. Que te respondan es otra cosa.</p>
-    <p>Un curador recibe decenas de mensajes por semana y abre los que dicen algo.
-    Antes de escribirles, conviene saber qué mostrás cuando entran a tu perfil.</p>
-    <div class="cta-btns">
-      <a class="cta-btn" href="/diagnostico.html">Diagnosticá tu proyecto</a>
-      <a class="cta-btn ghost" href="https://wa.me/5492665242011?text=Hola%20Agus.%20Us%C3%A9%20el%20buscador%20de%20curadores%20y%20quiero%20avanzar" target="_blank" rel="noopener">Hablar con Agus</a>
-    </div>
-  </div>`;
-  window.scrollTo(0,0);
+      <div class="contacto">${
+        x.instagram?`<span class="chip-c">Instagram</span><a href="https://instagram.com/${esc(x.instagram)}" target="_blank" rel="noopener">@${esc(x.instagram)}</a>`
+        :`<span class="chip-c">Email</span><a href="mailto:${esc(x.email)}">${esc(x.email)}</a>`}</div>
+    </article>`).join("");
+  }
+  el("resultado").classList.remove("hidden");
+  window.scrollTo({top:el("perfil-box").offsetTop-30,behavior:"smooth"});
 }
 </script>
 </body>
