@@ -28,8 +28,14 @@ button.sec{background:#2E3970}button.ok{background:var(--oliva)}
 .tab{padding:10px 15px;font-size:14px;font-weight:600;color:var(--mute);cursor:pointer;border-bottom:2px solid transparent}
 .tab.on{color:var(--crema);border-bottom-color:var(--rosa)}
 .plat{font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--rosa);margin:16px 0 6px;font-weight:700}
-.fila{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #2E3970;font-size:13.5px}
-.fila .t{flex:1}
+.fila{display:grid;grid-template-columns:1fr 170px;gap:14px;align-items:center;padding:11px 0;border-bottom:1px solid #2E3970;font-size:14px}
+.fila .t{min-width:0}
+.fila select,.fila input{width:100%;max-width:none;font-size:13px;padding:8px 10px}
+.fila.activo{grid-template-columns:minmax(0,240px) 1fr}
+@media(max-width:640px){.fila,.fila.activo{grid-template-columns:1fr;gap:7px;padding:13px 0}}
+.agregar{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin-top:4px}
+.agregar input{margin:0}
+@media(max-width:640px){.agregar{grid-template-columns:1fr}}
 .ok-msg{color:var(--oliva);font-size:13px;margin-top:8px}
 .oculto{display:none}
 table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px}
@@ -147,11 +153,11 @@ function pintar(){
   h+=`<div class="card"><h2>Tareas</h2>
     ${(c.tareas||[]).map(t=>`<div class="fila"><span class="t">${t.titulo}</span>
       <select data-tid="${t.id}"><option value="pendiente"${t.estado==='pendiente'?' selected':''}>Pendiente</option><option value="en_curso"${t.estado==='en_curso'?' selected':''}>En curso</option><option value="hecha"${t.estado==='hecha'?' selected':''}>Hecha</option></select></div>`).join('')||'<p class="meta">Sin tareas.</p>'}
-    <h3>Agregar</h3><input id="t_tit" placeholder="Título de la tarea"><div class="acc"><button class="sec" onclick="nuevaTarea()">Agregar tarea</button></div></div>`;
+    <h3>Agregar</h3><div class="agregar"><input id="t_tit" placeholder="Título de la tarea"><button class="sec" onclick="nuevaTarea()">Agregar</button></div></div>`;
 
   h+=`<div class="card"><h2>Activos</h2>
-    ${(c.activos||[]).map(a=>`<div class="fila"><span class="t">${a.titulo}</span><input data-aid="${a.id}" value="${a.url||''}" placeholder="Pegá el link acá" style="max-width:340px"></div>`).join('')||'<p class="meta">Sin activos.</p>'}
-    <h3>Agregar</h3><div class="grid"><input id="a_tit" placeholder="Título"><input id="a_url" placeholder="URL"></div>
+    ${(c.activos||[]).map(a=>`<div class="fila activo"><span class="t">${a.titulo}</span><input data-aid="${a.id}" value="${a.url||''}" placeholder="Pegá el link acá"></div>`).join('')||'<p class="meta">Sin activos.</p>'}
+    <h3>Agregar</h3><div class="fila activo" style="border:0;padding-top:0"><input id="a_tit" placeholder="Título"><input id="a_url" placeholder="https://..."></div>
     <div class="acc"><button class="sec" onclick="nuevoActivo()">Agregar activo</button></div></div>`;
 
   v.innerHTML=h;
