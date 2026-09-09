@@ -63,17 +63,17 @@ input:focus,textarea:focus{outline:2px solid var(--oliva);border-color:transpare
 .err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:26px}
 .gracias{font-size:14px;color:var(--mute);margin-top:30px}
 .oculto{display:none}
-.fb{background:var(--navy);color:var(--crema);border-radius:14px;padding:22px;margin:16px 0 0}
-.fb h3{font-family:'Playfair Display',serif;font-size:21px;margin:0 0 4px;color:var(--crema)}
-.fb .est{font-size:15px;color:var(--rosa);margin:0 0 16px;font-weight:600}
-.fb h4{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--oliva);margin:16px 0 6px}
-.fb ul{margin:0;padding-left:18px;font-size:14.5px;color:#DDD8CC}
-.fb li{margin-bottom:7px}
-.fb .cuentas{background:rgba(226,118,124,.12);border-left:2px solid var(--rosa);padding:12px 14px;border-radius:0 8px 8px 0;font-size:14.5px;margin-top:14px}
-.fb .prox{font-size:16px;font-weight:600;color:var(--crema);margin-top:16px}
-.fb .preg{font-size:14.5px;color:#B9B4C4;font-style:italic;margin-top:10px}
-.fbtn{border:0;background:var(--oliva);color:#fff;font:inherit;font-weight:600;border-radius:10px;padding:13px 20px;cursor:pointer;width:100%;font-size:15px}
-.fbtn:disabled{opacity:.6;cursor:default}
+.plazo{margin:16px 0 4px;font-size:11.5px;letter-spacing:2px;text-transform:uppercase;color:var(--oliva);font-weight:700}
+.plazo span{display:block;text-transform:none;letter-spacing:0;font-weight:400;font-size:12.5px;color:var(--mute);margin-top:2px}
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
+.opt{display:inline-flex;align-items:center;gap:7px;border:1px solid #DDD6C7;background:#FDFCF9;border-radius:99px;padding:8px 14px;font-size:14px;cursor:pointer;user-select:none}
+.opt input{display:none}
+.opt .tic{width:15px;height:15px;border:1.5px solid #CFC6B4;border-radius:4px;flex:none}
+.opt.on{border-color:var(--oliva);background:#F4F3E7;color:var(--navy);font-weight:600}
+.opt.on .tic{background:var(--oliva);border-color:var(--oliva)}
+.libre textarea{min-height:200px;line-height:1.7}
+.libre .ayuda{background:#F6F2E9;border-radius:10px;padding:12px 14px;font-size:13.5px;color:#5B5766;margin:6px 0 10px}
+.libre .ayuda b{color:var(--navy)}
 </style>
 </head>
 <body>
@@ -92,12 +92,6 @@ input:focus,textarea:focus{outline:2px solid var(--oliva);border-color:transpare
     </div>
 
     <div id="bloques"></div>
-    <div class="pilar p2" style="margin-top:34px">
-      <div class="pilar-cab"><span class="pilar-tit">Devolución</span></div>
-      <p class="pilar-sub">Una lectura de tu briefing con el criterio del Método Semilla. Podés pedirla las veces que quieras, a medida que completás.</p>
-      <button class="fbtn" id="pedir_fb">Pedir devolución</button>
-      <div id="fb_out"></div>
-    </div>
     <p class="gracias">Cuando termines no hace falta avisar: lo vemos de este lado y seguimos nosotros.</p>
   </div>
 
@@ -113,12 +107,22 @@ const tok=qs.get('k')||'';
 let pin=sessionStorage.getItem('pin_'+slug)||'';
 let datos={};
 
+const OBJETIVOS={
+ corto:['Ordenar mi presencia digital','Definir mis productos y precios','Tener web o landing','Primera campaña andando','Conseguir mis primeros clientes','Armar una lista de contactos','Lanzar algo nuevo','Vender más de lo que ya vendo'],
+ medio:['Vender de forma constante todos los meses','Tener una comunidad propia que compra','Sumar otra fuente de ingresos','Subir mis precios','Dejar de depender del boca a boca','Sumar a alguien al equipo','Llegar a otras ciudades o países'],
+ largo:['Vivir de este proyecto','Ser referente en lo mío','Que el proyecto funcione sin mí encima','Abrir un espacio propio','Escalar a otro nivel de facturación']
+};
+const PLAZOS=[['corto','Corto plazo','Menos de 6 meses'],['medio','Mediano plazo','De 6 meses a 2 años'],['largo','Largo plazo','De 2 a 5 años']];
+
 const PILARES=[
  {n:'',tit:'Tu proyecto',sub:'Lo básico, en dos minutos.',clase:'p0',bloques:[
    {id:'identidad',tit:'Quién sos y qué hacés',campos:[
      {c:'nombre_proyecto',l:'Nombre del proyecto o de la marca'},
      {c:'en_una_linea',l:'¿Qué hacés, en una sola línea?',s:'Como se lo explicarías a alguien en un ascensor. Sin vueltas.',t:1,a:1},
      {c:'links',l:'Tus links',s:'Instagram, web, YouTube, lo que tengas. Uno por línea.',t:1},
+   ]},
+   {id:'objetivos',tit:'Qué querés lograr',objetivos:true,campos:[
+     {c:'objetivo_propio',l:'¿Hay algo más que quieras lograr y no esté en la lista?',s:'Opcional.'},
    ]}
  ]},
  {n:'01',tit:'Modelo de negocio',sub:'Qué vendés, a cuánto y cuánto necesitás.',clase:'p1',bloques:[
@@ -142,6 +146,11 @@ const PILARES=[
      {c:'quien_ya_compro',l:'Contame de tres personas que ya te compraron',s:'Quiénes eran y por qué te eligieron. Esto vale oro para la pauta.',t:1,a:1},
      {c:'donde_esta',l:'¿En qué ciudades o países querés vender?'},
      {c:'presupuesto_pauta',l:'¿Cuánto podés invertir por día en publicidad?',s:'La referencia del Setup arranca en USD 2 por día.'},
+   ]}
+ ]},
+ {n:'',tit:'Contame más',sub:'El espacio para soltar todo lo que no entró arriba.',clase:'p0',bloques:[
+   {id:'libre',tit:'Hablame de tu proyecto',libre:true,campos:[
+     {c:'bio_ampliada',l:'Contame tu proyecto como si me lo estuvieras contando en un café',s:'Sin estructura, sin ordenarlo. Escribí de corrido o grabá un audio de tres minutos, que es más fácil.',t:1,a:1},
    ]}
  ]},
  {n:'',tit:'Material',sub:'Lo que necesitamos para producir.',clase:'p0',bloques:[
@@ -176,6 +185,22 @@ function productosHTML(){
     <button class="addprod" id="mas_prod">+ Agregar otro</button>`;
 }
 
+function objetivosHTML(){
+  let h='';
+  PLAZOS.forEach(([k,tit,sub])=>{
+    const sel=(datos['objetivos_'+k]||'').split('|').filter(Boolean);
+    h+=`<div class="plazo">${tit}<span>${sub}</span></div><div class="opts" data-plazo="${k}">`;
+    OBJETIVOS[k].forEach(o=>{
+      const on=sel.includes(o)?' on':'';
+      h+=`<label class="opt${on}" data-o="${o.replace(/"/g,'&quot;')}"><span class="tic"></span>${o}</label>`;
+    });
+    h+='</div>';
+  });
+  return h;
+}
+function ayudaLibre(){
+  return `<div class="ayuda">Si no sabés por dónde empezar, contestá esto sin pensarlo mucho: <b>cómo arrancó todo</b>, <b>qué es lo que más te gusta de lo que hacés</b>, <b>qué te frustra hoy</b> y <b>dónde te gustaría estar en dos años</b>. Cuanto más largo, mejor.</div>`;
+}
 function pintar(){
   const cont=$('bloques'); cont.innerHTML='';
   let total=0, hechas=0;
@@ -183,9 +208,10 @@ function pintar(){
     const wrap=document.createElement('div'); wrap.className='pilar '+P.clase;
     wrap.innerHTML=`<div class="pilar-cab">${P.n?`<span class="pilar-num">${P.n}</span>`:''}<span class="pilar-tit">${P.tit}</span></div><p class="pilar-sub">${P.sub}</p>`;
     P.bloques.forEach(b=>{
-      total+=b.campos.length + (b.productos?2:0);
+      total+=b.campos.length + (b.productos?2:0) + (b.objetivos?3:0);
       let hechasB=b.campos.filter(f=>(datos[f.c]??'').trim()).length;
       if(b.productos){ if((datos.producto_1||'').trim()) hechasB++; if((datos.precio_1||'').trim()) hechasB++; }
+      if(b.objetivos){ PLAZOS.forEach(([k])=>{ if((datos['objetivos_'+k]||'').trim()) hechasB++; }); }
       hechas+=hechasB;
       const d=document.createElement('details'); if(pi<=1)d.open=true;
       let inner='';
@@ -193,6 +219,8 @@ function pintar(){
         inner=`<div class="pinbox"><p>Esta parte habla de plata, así que le pusimos una llave: los <b>últimos 4 números de tu WhatsApp</b>.</p>
         <input type="text" inputmode="numeric" maxlength="4" id="pin_in"> <button id="pin_btn">Abrir</button></div>`;
       } else {
+        if(b.objetivos) inner+=objetivosHTML();
+        if(b.libre) inner+=ayudaLibre();
         if(b.productos) inner+=productosHTML();
         inner+=b.campos.map(f=>campoHTML(b,f)).join('');
         if(b.archivos){
@@ -202,7 +230,8 @@ function pintar(){
           <div class="mini" id="lista_fotos">${(window.archivos||[]).map(a=>`<a href="${a.url}" target="_blank" title="${a.nombre}"><img src="${a.url}" loading="lazy" alt=""></a>`).join('')}</div>`;
         }
       }
-      d.innerHTML=`<summary><svg class="seed" viewBox="0 0 24 24"><path d="M12 3 C18 7 18 17 12 21 C6 17 6 7 12 3 Z" fill="#87863A"/></svg><span class="tit">${b.tit}</span><span class="n">${hechasB}/${b.campos.length+(b.productos?2:0)}</span></summary><div class="body">${inner}</div>`;
+      d.className=b.libre?'libre':'';
+      d.innerHTML=`<summary><svg class="seed" viewBox="0 0 24 24"><path d="M12 3 C18 7 18 17 12 21 C6 17 6 7 12 3 Z" fill="#87863A"/></svg><span class="tit">${b.tit}</span><span class="n">${hechasB}/${b.campos.length+(b.productos?2:0)+(b.objetivos?3:0)}</span></summary><div class="body">${inner}</div>`;
       wrap.appendChild(d);
     });
     cont.appendChild(wrap);
@@ -223,6 +252,15 @@ function enganchar(){
     el.onblur=()=>guardar(el.dataset.b,el.dataset.c,el.value);
   });
   document.querySelectorAll('.mic').forEach(btn=>{ btn.onclick=e=>{e.preventDefault();grabar(btn);} });
+  document.querySelectorAll('.opts .opt').forEach(el=>{
+    el.onclick=e=>{
+      e.preventDefault();
+      el.classList.toggle('on');
+      const cont=el.parentElement, k=cont.dataset.plazo;
+      const sel=[...cont.querySelectorAll('.opt.on')].map(x=>x.dataset.o);
+      guardar('objetivos','objetivos_'+k, sel.join('|'));
+    };
+  });
   const mp=$('mas_prod'); if(mp) mp.onclick=e=>{
     e.preventDefault();
     const n=document.querySelectorAll('#prods .prod').length+1;
@@ -286,35 +324,6 @@ function cargar(r){
   $('saludo').textContent='Hola, '+(r.proyecto.nombre.split(' ')[0]);
   $('cargando').classList.add('oculto'); $('app').classList.remove('oculto');
   pintar();
-  engancharFB();
-  const guardado=(r.respuestas||[]).find(x=>x.campo==='feedback_ia');
-  if(guardado && guardado.valor){ try{ pintarFB(JSON.parse(guardado.valor)); }catch(e){} }
-}
-
-function pintarFB(f){
-  const L=(a)=>(a||[]).map(x=>`<li>${x}</li>`).join('');
-  $('fb_out').innerHTML=`<div class="fb">
-    <h3>Cómo viene tu proyecto</h3>
-    <p class="est">${f.estado||''}</p>
-    ${(f.fuerte||[]).length?`<h4>Lo que ya está</h4><ul>${L(f.fuerte)}</ul>`:''}
-    ${(f.flojo||[]).length?`<h4>Lo que falta</h4><ul>${L(f.flojo)}</ul>`:''}
-    ${f.cuentas?`<div class="cuentas">${f.cuentas}</div>`:''}
-    ${f.proxima?`<p class="prox">→ ${f.proxima}</p>`:''}
-    ${f.pregunta?`<p class="preg">${f.pregunta}</p>`:''}
-  </div>`;
-}
-function engancharFB(){
-  const b=$('pedir_fb'); if(!b) return;
-  b.onclick=async()=>{
-    b.disabled=true; b.textContent='Leyendo tu briefing…';
-    try{
-      const r=await fetch(`${API}/functions/v1/setup-feedback`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({slug:slug,k:tok})}).then(x=>x.json());
-      if(r.pocas){ $('fb_out').innerHTML=`<div class="fb"><p class="est">${r.mensaje}</p></div>`; }
-      else if(r.feedback){ pintarFB(r.feedback); }
-      else { $('fb_out').innerHTML=`<div class="fb"><p class="est">${r.error||'No salió. Probá de nuevo.'}</p></div>`; }
-    }catch(e){ $('fb_out').innerHTML=`<div class="fb"><p class="est">No salió. Probá de nuevo en un minuto.</p></div>`; }
-    b.disabled=false; b.textContent='Pedir devolución de nuevo';
-  };
 }
 
 rpc('briefing_get',{p_slug:slug,p_k:tok,p_pin:pin}).then(r=>{
