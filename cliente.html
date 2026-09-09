@@ -217,13 +217,19 @@ function pintar(d){
   </div>`;
   h+=grafico('Oyentes mensuales, semana a semana','Cuánta gente distinta te escucha por mes. Es el número que mira la industria.',R.map(r=>r.metricas.sp_monthly),et,'#87863A');
 
-  h+=`<h2>YouTube</h2><p class="sub">Canal y visualizaciones.</p><div class="tarj">
+  h+=`<h2>YouTube</h2><p class="sub">Tu canal: gente que llegó y se quedó.</p><div class="tarj">
     ${card('Suscriptores', fmt(m.yt_subs), [m.yt_subs, ma.yt_subs])}
     ${card('Nuevos en la semana', fmt(m.yt_subs_nuevos), [m.yt_subs_nuevos, ma.yt_subs_nuevos])}
-    ${card('Visualizaciones', fmt(m.yt_views), [m.yt_views, ma.yt_views])}
+    ${card('Visualizaciones del canal', fmt(m.yt_views), [m.yt_views, ma.yt_views])}
     ${card('Horas vistas', fmt(m.yt_horas), [m.yt_horas, ma.yt_horas])}
-    ${card('Costo por view', 'USD '+fmt(m.yt_costo_view,3), [m.yt_costo_view, ma.yt_costo_view],3,true,true)}
   </div>`;
+  if(m.yt_views_ads!=null || ma.yt_views_ads!=null){
+    h+=`<p class="sub" style="margin-top:18px">Aparte, lo que trajo la pauta en YouTube. Son visualizaciones del anuncio, no del canal.</p><div class="tarj">
+      ${card('Views del anuncio', fmt(m.yt_views_ads), [m.yt_views_ads, ma.yt_views_ads])}
+      ${card('Invertido', 'USD '+fmt(m.yt_inversion,2), [m.yt_inversion, ma.yt_inversion],2)}
+      ${card('Costo por view', 'USD '+fmt(m.yt_costo_view,3), [m.yt_costo_view, ma.yt_costo_view],3,true,true)}
+    </div>`;
+  }
 
   h+=grafico('Visualizaciones, semana a semana','Cuántas veces se vieron tus videos.',R.map(r=>r.metricas.yt_views),et,'#E2767C');
 
