@@ -63,6 +63,11 @@ input:focus,textarea:focus{outline:2px solid var(--oliva);border-color:transpare
 .err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:26px}
 .gracias{font-size:14px;color:var(--mute);margin-top:30px}
 .oculto{display:none}
+.viejo{background:#F6F2E9;border:1px dashed #D8CFBB;border-radius:11px;padding:14px 16px;margin-top:14px}
+.viejo h4{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--oliva);margin:0 0 8px}
+.viejo dl{margin:0;font-size:14px}
+.viejo dt{font-weight:600;color:var(--navy);margin-top:9px}
+.viejo dd{margin:2px 0 0;color:#55525F;white-space:pre-wrap}
 .plazo{margin:16px 0 4px;font-size:11.5px;letter-spacing:2px;text-transform:uppercase;color:var(--oliva);font-weight:700}
 .plazo span{display:block;text-transform:none;letter-spacing:0;font-weight:400;font-size:12.5px;color:var(--mute);margin-top:2px}
 .opts{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
@@ -160,6 +165,30 @@ const PILARES=[
  ]},
 ];
 
+const VIEJOS={
+  bio_corta:'Tu bio anterior', lineas_trabajo:'Líneas de trabajo', proceso:'Tu proceso',
+  objetivo_corto:'Objetivos que habías escrito', hitos_fechas:'Fechas que habías cargado',
+  tono_deseado:'Tono que pediste', referentes:'Referentes', a_quien:'A quién le vendés',
+  preguntas_frecuentes:'Lo que te preguntan', que_vendes_precios:'Qué vendés y a qué precio',
+  facturacion_ultimo_mes:'Lo que facturaste', obra_cara_accesible:'Producto más caro y más accesible',
+  referencias_links:'Links de referencia', otras_redes:'Otras redes', email:'Mail', whatsapp:'WhatsApp',
+  instagram:'Instagram', nombre_artistico:'Nombre'
+};
+const YA_EN_BETA=['nombre_proyecto','en_una_linea','links','producto_estrella','facturacion_hoy','meta_mensual',
+  'de_que_hablas','preguntas_frecuentes','tono','fechas_clave','a_quien','quien_ya_compro','donde_esta',
+  'presupuesto_pauta','cuentas_estado','bio_ampliada','objetivo_propio'];
+function viejosHTML(){
+  const items=[];
+  Object.entries(VIEJOS).forEach(([c,l])=>{
+    if(YA_EN_BETA.includes(c)) return;
+    const v=(datos[c]||'').trim();
+    if(!v) return;
+    if(Object.values(datos).filter(x=>typeof x==='string'&&x.includes(v)&&v.length>30).length>1) return;
+    items.push(`<dt>${l}</dt><dd>${v.length>600?v.slice(0,600)+'…':v}</dd>`);
+  });
+  if(!items.length) return '';
+  return `<div class="viejo"><h4>Lo que ya nos habías contado</h4><dl>${items.join('')}</dl></div>`;
+}
 const $=id=>document.getElementById(id);
 const rpc=(fn,args)=>fetch(`${API}/rest/v1/rpc/${fn}`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(args)}).then(r=>r.json());
 
@@ -236,6 +265,7 @@ function pintar(){
     });
     cont.appendChild(wrap);
   });
+  $('vieja').innerHTML=viejosHTML();
   $('fill').style.width=(total?Math.round(hechas/total*100):0)+'%';
   $('ptxt').textContent=`${hechas} de ${total} respuestas`;
   enganchar();
