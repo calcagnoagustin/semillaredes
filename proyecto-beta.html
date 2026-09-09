@@ -63,6 +63,17 @@ input:focus,textarea:focus{outline:2px solid var(--oliva);border-color:transpare
 .err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:26px}
 .gracias{font-size:14px;color:var(--mute);margin-top:30px}
 .oculto{display:none}
+.fb{background:var(--navy);color:var(--crema);border-radius:14px;padding:22px;margin:16px 0 0}
+.fb h3{font-family:'Playfair Display',serif;font-size:21px;margin:0 0 4px;color:var(--crema)}
+.fb .est{font-size:15px;color:var(--rosa);margin:0 0 16px;font-weight:600}
+.fb h4{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--oliva);margin:16px 0 6px}
+.fb ul{margin:0;padding-left:18px;font-size:14.5px;color:#DDD8CC}
+.fb li{margin-bottom:7px}
+.fb .cuentas{background:rgba(226,118,124,.12);border-left:2px solid var(--rosa);padding:12px 14px;border-radius:0 8px 8px 0;font-size:14.5px;margin-top:14px}
+.fb .prox{font-size:16px;font-weight:600;color:var(--crema);margin-top:16px}
+.fb .preg{font-size:14.5px;color:#B9B4C4;font-style:italic;margin-top:10px}
+.fbtn{border:0;background:var(--oliva);color:#fff;font:inherit;font-weight:600;border-radius:10px;padding:13px 20px;cursor:pointer;width:100%;font-size:15px}
+.fbtn:disabled{opacity:.6;cursor:default}
 </style>
 </head>
 <body>
@@ -81,6 +92,12 @@ input:focus,textarea:focus{outline:2px solid var(--oliva);border-color:transpare
     </div>
 
     <div id="bloques"></div>
+    <div class="pilar p2" style="margin-top:34px">
+      <div class="pilar-cab"><span class="pilar-tit">Devolución</span></div>
+      <p class="pilar-sub">Una lectura de tu briefing con el criterio del Método Semilla. Podés pedirla las veces que quieras, a medida que completás.</p>
+      <button class="fbtn" id="pedir_fb">Pedir devolución</button>
+      <div id="fb_out"></div>
+    </div>
     <p class="gracias">Cuando termines no hace falta avisar: lo vemos de este lado y seguimos nosotros.</p>
   </div>
 
@@ -269,6 +286,35 @@ function cargar(r){
   $('saludo').textContent='Hola, '+(r.proyecto.nombre.split(' ')[0]);
   $('cargando').classList.add('oculto'); $('app').classList.remove('oculto');
   pintar();
+  engancharFB();
+  const guardado=(r.respuestas||[]).find(x=>x.campo==='feedback_ia');
+  if(guardado && guardado.valor){ try{ pintarFB(JSON.parse(guardado.valor)); }catch(e){} }
+}
+
+function pintarFB(f){
+  const L=(a)=>(a||[]).map(x=>`<li>${x}</li>`).join('');
+  $('fb_out').innerHTML=`<div class="fb">
+    <h3>Cómo viene tu proyecto</h3>
+    <p class="est">${f.estado||''}</p>
+    ${(f.fuerte||[]).length?`<h4>Lo que ya está</h4><ul>${L(f.fuerte)}</ul>`:''}
+    ${(f.flojo||[]).length?`<h4>Lo que falta</h4><ul>${L(f.flojo)}</ul>`:''}
+    ${f.cuentas?`<div class="cuentas">${f.cuentas}</div>`:''}
+    ${f.proxima?`<p class="prox">→ ${f.proxima}</p>`:''}
+    ${f.pregunta?`<p class="preg">${f.pregunta}</p>`:''}
+  </div>`;
+}
+function engancharFB(){
+  const b=$('pedir_fb'); if(!b) return;
+  b.onclick=async()=>{
+    b.disabled=true; b.textContent='Leyendo tu briefing…';
+    try{
+      const r=await fetch(`${API}/functions/v1/setup-feedback`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({slug:slug,k:tok})}).then(x=>x.json());
+      if(r.pocas){ $('fb_out').innerHTML=`<div class="fb"><p class="est">${r.mensaje}</p></div>`; }
+      else if(r.feedback){ pintarFB(r.feedback); }
+      else { $('fb_out').innerHTML=`<div class="fb"><p class="est">${r.error||'No salió. Probá de nuevo.'}</p></div>`; }
+    }catch(e){ $('fb_out').innerHTML=`<div class="fb"><p class="est">No salió. Probá de nuevo en un minuto.</p></div>`; }
+    b.disabled=false; b.textContent='Pedir devolución de nuevo';
+  };
 }
 
 rpc('briefing_get',{p_slug:slug,p_k:tok,p_pin:pin}).then(r=>{
