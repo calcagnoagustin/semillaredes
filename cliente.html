@@ -105,6 +105,43 @@ function linea(datos, etiquetas, color, invertido){
   return `<svg class="linea" viewBox="0 0 ${W} ${H}"><path d="${d}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>${pts}${valsTxt}${labs}</svg>`;
 }
 
+function multi(R){
+  const series=[
+    {k:'ig_followers_total',lab:'Instagram',color:'#7A1F3A'},
+    {k:'sp_monthly',lab:'Spotify',color:'#87863A'},
+    {k:'yt_subs',lab:'YouTube',color:'#E2767C'}
+  ].map(x=>{
+    const vals=R.map(r=>r.metricas[x.k]??null);
+    const base=vals.find(v=>v!=null);
+    return {...x, vals, base, idx: base?vals.map(v=>v==null?null:Math.round(v/base*100)):[]};
+  }).filter(x=>x.base && x.idx.filter(v=>v!=null).length>1);
+
+  if(!series.length) return `<div class="graf"><h3>Curva de crecimiento</h3><p class="leyenda">Instagram, Spotify y YouTube en un mismo gráfico.</p>
+    <div class="aviso">Hace falta al menos dos semanas cargadas para dibujar la curva. Con una sola todavía no hay de dónde medir el crecimiento.</div></div>`;
+
+  const W=560,H=170,P=30;
+  const todos=series.flatMap(s=>s.idx).filter(v=>v!=null);
+  const min=Math.min(100,...todos), max=Math.max(...todos), rango=(max-min)||1;
+  const n=R.length;
+  const x=i=>P+(i*(W-P*2)/Math.max(1,n-1));
+  const y=v=>H-P-((v-min)/rango)*(H-P*2);
+  let cuerpo=`<line x1="${P}" y1="${y(100)}" x2="${W-P}" y2="${y(100)}" stroke="#E5DFD2" stroke-width="1" stroke-dasharray="3 3"/>`;
+  series.forEach(s=>{
+    let d='';
+    s.idx.forEach((v,i)=>{ if(v==null)return; d+=(d?' L ':'M ')+x(i)+' '+y(v); });
+    cuerpo+=`<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2.5" stroke-linejoin="round"/>`;
+    s.idx.forEach((v,i)=>{ if(v!=null) cuerpo+=`<circle cx="${x(i)}" cy="${y(v)}" r="3.5" fill="${s.color}"/>`; });
+    const ultimo=[...s.idx].reverse().find(v=>v!=null);
+    cuerpo+=`<text x="${W-P+5}" y="${y(ultimo)+4}" font-size="11" font-weight="700" fill="${s.color}">${ultimo}</text>`;
+  });
+  cuerpo+=R.map((r,i)=>`<text x="${x(i)}" y="${H-8}" font-size="10" fill="#8A8697" text-anchor="middle">${fecha(r.hasta)}</text>`).join('');
+  const ley=series.map(s=>`<span style="display:inline-flex;align-items:center;gap:6px;margin-right:14px"><span style="width:10px;height:10px;border-radius:50%;background:${s.color};display:inline-block"></span>${s.lab} <b style="color:${s.color}">${s.vals.filter(v=>v!=null).slice(-1)[0]}</b></span>`).join('');
+  return `<div class="graf"><h3>Curva de crecimiento</h3>
+    <p class="leyenda">Las tres plataformas arrancan en 100 la primera semana, así se ve cuál crece más rápido sin que los números grandes tapen a los chicos.</p>
+    <div style="font-size:12.5px;margin-bottom:8px">${ley}</div>
+    <svg class="linea" viewBox="0 0 ${W} ${H}">${cuerpo}</svg></div>`;
+}
+
 function grafico(titulo, leyenda, datos, etiquetas, color, invertido){
   const svg=linea(datos,etiquetas,color,invertido);
   return `<div class="graf"><h3>${titulo}</h3><p class="leyenda">${leyenda}</p>
@@ -140,11 +177,22 @@ function pintar(d){
   </div>`;
   h+=grafico('Costo por stream, semana a semana','Igual que arriba: cuanto más baja, más rinde cada dólar.',R.map(r=>r.metricas.sp_costo_stream),et,'#87863A',true);
 
+  h+=`<h2>YouTube</h2><p class="sub">Canal y visualizaciones.</p><div class="tarj">
+    ${card('Suscriptores', fmt(m.yt_subs), [m.yt_subs, ma.yt_subs])}
+    ${card('Nuevos en la semana', fmt(m.yt_subs_nuevos), [m.yt_subs_nuevos, ma.yt_subs_nuevos])}
+    ${card('Visualizaciones', fmt(m.yt_views), [m.yt_views, ma.yt_views])}
+    ${card('Horas vistas', fmt(m.yt_horas), [m.yt_horas, ma.yt_horas])}
+    ${card('Costo por view', 'USD '+fmt(m.yt_costo_view,3), [m.yt_costo_view, ma.yt_costo_view],3,true,true)}
+  </div>`;
+
+  h+=`<h2>Crecimiento</h2><p class="sub">Las tres plataformas juntas.</p>`+multi(R);
+
   h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta esta semana.</p><div class="tarj">
     ${card('En Instagram','USD '+fmt(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
     ${card('En Spotify','USD '+fmt(m.sp_inversion,2),[m.sp_inversion,ma.sp_inversion],2)}
+    ${card('En YouTube','USD '+fmt(m.yt_inversion,2),[m.yt_inversion,ma.yt_inversion],2)}
     ${card('Por día','USD '+fmt(m.ig_inversion_diaria,2),[m.ig_inversion_diaria,ma.ig_inversion_diaria],2)}
-    ${card('Total semana','USD '+fmt((m.ig_inversion||0)+(m.sp_inversion||0),2),null,2,true)}
+    ${card('Total semana','USD '+fmt((m.ig_inversion||0)+(m.sp_inversion||0)+(m.yt_inversion||0),2),null,2,true)}
   </div>`;
 
   if(R.length>1){
@@ -152,7 +200,7 @@ function pintar(d){
       <tr><th>Semana</th><th>Seguidores IG</th><th>Nuevos</th><th>Costo x seg.</th><th>Streams</th><th>Costo x stream</th><th>Inversión</th></tr>
       ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
         <td>${fmt(x.ig_followers_total)}</td><td>${fmt(x.ig_followers_nuevos)}</td><td>${fmt(x.ig_costo_follower,2)}</td>
-        <td>${fmt(x.sp_streams)}</td><td>${fmt(x.sp_costo_stream,3)}</td><td>${fmt((x.ig_inversion||0)+(x.sp_inversion||0),2)}</td></tr>`}).join('')}
+        <td>${fmt(x.sp_streams)}</td><td>${fmt(x.sp_costo_stream,3)}</td><td>${fmt((x.ig_inversion||0)+(x.sp_inversion||0)+(x.yt_inversion||0),2)}</td></tr>`}).join('')}
     </table>`;
   }
 
