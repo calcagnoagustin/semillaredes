@@ -59,6 +59,18 @@ th:first-child,td:first-child{text-align:left}
 th{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--oliva);background:#FBF8F2}
 .err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:26px}
 .oculto{display:none}
+.tar .it{cursor:pointer;transition:background .15s}
+.tar .it:hover{background:#FBF8F2}
+.mark{transition:all .15s}
+.pista{font-size:12.5px;color:var(--mute);margin:8px 0 0}
+.notas textarea{width:100%;min-height:96px;border:1px solid #DDD6C7;border-radius:11px;background:#fff;padding:12px 13px;font:inherit;font-size:15px;color:var(--tinta);resize:vertical}
+.notas textarea:focus{outline:2px solid var(--oliva);border-color:transparent}
+.notas button{border:0;background:var(--vino);color:#fff;font:inherit;font-weight:600;border-radius:10px;padding:11px 20px;cursor:pointer;margin-top:9px}
+.nota{background:#fff;border:1px solid var(--linea);border-radius:12px;padding:14px 16px;margin-top:10px}
+.nota .quien{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--oliva);font-weight:700}
+.nota .quien.semilla{color:var(--vino)}
+.nota .txt{font-size:14.5px;margin-top:5px;white-space:pre-wrap}
+.nota .cuando{font-size:12px;color:var(--mute);margin-top:6px}
 .pie{font-size:12.5px;color:var(--mute);margin-top:40px}
 </style>
 </head>
@@ -207,8 +219,8 @@ function pintar(d){
   const T=d.tareas||[];
   if(T.length){
     h+=`<h2>En qué estamos</h2><p class="sub">Lo que ya está hecho y lo que sigue.</p><div class="tar">
-      ${T.map(t=>`<div class="it ${t.estado}"><span class="mark ${t.estado}"></span><span class="tx"><span class="tt">${t.titulo}</span>${t.detalle?`<span class="de">${t.detalle}</span>`:''}</span></div>`).join('')}
-    </div>`;
+      ${T.map(t=>`<div class="it ${t.estado}" data-tid="${t.id}" data-est="${t.estado}"><span class="mark ${t.estado}"></span><span class="tx"><span class="tt">${t.titulo}</span>${t.detalle?`<span class="de">${t.detalle}</span>`:''}</span></div>`).join('')}
+    </div><p class="pista">Tocá cualquiera para cambiarle el estado: pendiente, en curso o hecha.</p>`;
   }
 
   const A=d.activos||[];
@@ -219,9 +231,36 @@ function pintar(d){
     </div>`;
   }
 
+  const N=d.notas||[];
+  h+=`<h2>Tus notas</h2><p class="sub">Dejanos cualquier cosa que quieras que tengamos en cuenta: una idea, una duda, algo que pasó esta semana.</p>
+    <div class="notas"><textarea id="nota_txt" placeholder="Escribí acá…"></textarea><br><button id="nota_btn">Guardar nota</button><div id="nota_out"></div>
+    ${N.map(n=>`<div class="nota"><div class="quien ${n.autor==='semilla'?'semilla':''}">${n.autor==='semilla'?'Semilla Redes':'Vos'}</div><div class="txt">${n.texto}</div><div class="cuando">${new Date(n.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</div></div>`).join('')}
+    </div>`;
+
   h+=`<p class="pie">Cualquier duda sobre estos números, escribile a Agus. Actualizamos todas las semanas.</p>`;
   $('app').innerHTML=h;
   $('cargando').classList.add('oculto'); $('app').classList.remove('oculto');
+
+  const ciclo={pendiente:'en_curso',en_curso:'hecha',hecha:'pendiente'};
+  document.querySelectorAll('.it[data-tid]').forEach(el=>{
+    el.onclick=async()=>{
+      const nuevo=ciclo[el.dataset.est]||'pendiente';
+      const r=await rpc('sub_tarea_cliente',{p_slug:slug,p_k:tok,p_id:el.dataset.tid,p_estado:nuevo});
+      if(r.ok){
+        el.dataset.est=nuevo;
+        el.className='it '+nuevo;
+        el.querySelector('.mark').className='mark '+nuevo;
+      }
+    };
+  });
+  const nb=$('nota_btn');
+  if(nb) nb.onclick=async()=>{
+    const t=$('nota_txt').value.trim(); if(!t) return;
+    nb.disabled=true; nb.textContent='Guardando…';
+    const r=await rpc('sub_nota_alta',{p_slug:slug,p_k:tok,p_texto:t});
+    if(r.ok){ $('nota_txt').value=''; rpc('sub_get',{p_slug:slug,p_k:tok}).then(pintar); }
+    else { $('nota_out').innerHTML='<p class="pista">No se pudo guardar, probá de nuevo.</p>'; nb.disabled=false; nb.textContent='Guardar nota'; }
+  };
 }
 
 rpc('sub_get',{p_slug:slug,p_k:tok}).then(d=>{
