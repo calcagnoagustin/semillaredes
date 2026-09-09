@@ -1,6 +1,23 @@
 User-agent: *
-Allow: /
+Allow: /$
+Allow: /index.html
+Allow: /semillaIA.html
+Allow: /formacion.html
+Allow: /setup.html
+Allow: /auditoria.html
+Allow: /curadores.html
+Allow: /diagnostico.html
+
+# Zona privada de clientes: no rastrear ni indexar
+Disallow: /clientes/
+Disallow: /panel
+Disallow: /status.html
+Disallow: /hub.html
+Disallow: /bots.status.html
+
+# Estas se dejan rastreables a propósito para que los buscadores
+# lean su etiqueta noindex y las excluyan de forma definitiva.
+# No tienen contenido sin el token del cliente.
+# /cliente.html  /proyecto.html  /proyecto-beta.html
 
 Sitemap: https://landing.semillaredes.com/sitemap.xml
-
-# redeploy 2026-07-03
