@@ -3,12 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex, notranslate, max-snippet:0, max-image-preview:none">
-<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
-<meta name="googlebot-news" content="noindex">
-<meta name="bingbot" content="noindex, nofollow, noarchive">
-<meta name="AdsBot-Google" content="noindex, nofollow">
-<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
 <title>Panel Clientes · Semilla Redes</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -46,6 +41,9 @@ button.sec{background:#2E3970}button.ok{background:var(--oliva)}
 table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px}
 th,td{padding:6px 8px;text-align:right;border-bottom:1px solid #2E3970}
 th:first-child,td:first-child{text-align:left}
+td.acciones{text-align:right;width:44px}
+.borrar{background:transparent;border:1px solid #3B2440;color:#E2767C;border-radius:7px;padding:4px 9px;font-size:12px;cursor:pointer;font-weight:600}
+.borrar:hover{background:#7A1F3A;border-color:#7A1F3A;color:#fff}
 th{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--oliva)}
 </style>
 </head>
@@ -150,8 +148,9 @@ function pintar(){
   h+=`<div class="acc"><button onclick="guardarReporte()">Guardar semana</button></div><div id="g_out"></div></div>`;
 
   if((c.reportes||[]).length){
-    h+=`<div class="card"><h2>Semanas cargadas</h2><table><tr><th>Semana</th><th>IG</th><th>SP oyentes</th><th>YT subs</th><th>Inversión</th></tr>
-      ${c.reportes.map(r=>{const m=r.metricas;return `<tr><td>${r.desde} a ${r.hasta}</td><td>${m.ig_followers_total??'—'}</td><td>${m.sp_monthly??'—'}</td><td>${m.yt_subs??'—'}</td><td>${((m.ig_inversion||0)+(m.sp_inversion||0)+(m.yt_inversion||0)).toFixed(2)}</td></tr>`}).join('')}
+    h+=`<div class="card"><h2>Semanas cargadas</h2><table><tr><th>Semana</th><th>IG</th><th>SP oyentes</th><th>YT subs</th><th>Inversión</th><th></th></tr>
+      ${c.reportes.map(r=>{const m=r.metricas;return `<tr><td>${r.desde} a ${r.hasta}</td><td>${m.ig_followers_total??'—'}</td><td>${m.sp_monthly??'—'}</td><td>${m.yt_subs??'—'}</td><td>${((m.ig_inversion||0)+(m.sp_inversion||0)+(m.yt_inversion||0)).toFixed(2)}</td>
+      <td class="acciones"><button class="borrar" data-del="${r.desde}|${r.hasta}" title="Borrar esta semana">Borrar</button></td></tr>`}).join('')}
     </table></div>`;
   }
 
@@ -169,6 +168,13 @@ function pintar(){
   const link=`https://landing.semillaredes.com/cliente.html?c=${c.slug}&k=${c.token}`;
   $('cp').onclick=()=>{navigator.clipboard.writeText(link);$('cp').textContent='Copiado ✓';};
   $('wa').onclick=()=>window.open('https://wa.me/?text='+encodeURIComponent('Te dejo el panel de tu proyecto, se actualiza todas las semanas: '+link),'_blank');
+  document.querySelectorAll('button[data-del]').forEach(b=>b.onclick=async()=>{
+    const [de,ha]=b.dataset.del.split('|');
+    if(!confirm(`¿Borrar la semana del ${de} al ${ha}?\n\nSe pierden todas las métricas de esa semana.`)) return;
+    b.disabled=true; b.textContent='…';
+    const r=await rpc('sub_reporte_borrar',{p_admin:admin,p_slug:sel,p_desde:de,p_hasta:ha});
+    if(r.ok) entrar(); else { alert('No se pudo borrar'); b.disabled=false; b.textContent='Borrar'; }
+  });
   document.querySelectorAll('select[data-tid]').forEach(s=>s.onchange=async()=>{
     await rpc('sub_tarea_set',{p_admin:admin,p_id:s.dataset.tid,p_estado:s.value});
     s.style.borderColor='#87863A'; setTimeout(()=>s.style.borderColor='#2E3970',900);
