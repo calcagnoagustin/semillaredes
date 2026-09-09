@@ -111,15 +111,24 @@ function notasHTML(c,seccion,expandido){
 }
 function parsear(txt){
   const d={}, L=txt.split('\n').map(x=>x.trim()).filter(Boolean);
-  const num=s=>{const m=(s||'').replace(/\./g,'').replace(',','.').match(/-?\d+(\.\d+)?/);return m?parseFloat(m[0]):null;};
+  const num=s=>{
+    const m=(s||'').match(/-?[\d.,]+/); if(!m) return null;
+    let t=m[0].replace(/[^\d.,-]/g,'').replace(/[.,]$/,'');
+    const hayC=t.includes(','), hayP=t.includes('.');
+    if(hayC&&hayP) t = t.lastIndexOf(',')>t.lastIndexOf('.') ? t.replace(/\./g,'').replace(',','.') : t.replace(/,/g,'');
+    else if(hayC) t = /,\d{3}(?!\d)/.test(t) ? t.replace(/,/g,'') : t.replace(',','.');
+    else if(hayP){ const par=t.split('.');
+      if(par.length>1 && par[par.length-1].length===3 && par[0]!=='0' && par[0].length<=3) t=par.join(''); }
+    const v=parseFloat(t); return isNaN(v)?null:v;
+  };
   let seccion='ig';
   L.forEach(l=>{
     const bajo=l.toLowerCase();
     if(bajo.startsWith('spotify')){seccion='sp';return;}
     if(bajo.startsWith('youtube')){seccion='yt';return;}
     if(bajo.startsWith('instagram')){seccion='ig';return;}
-    const f=l.match(/^(\d{1,2}\/\d{1,2}).*?(\d{1,2}\/\d{1,2})/);
-    if(f && bajo.includes('/')&&!bajo.includes(':')){d.__desde=f[1];d.__hasta=f[2];return;}
+    const f=l.match(/(\d{1,2}\/\d{1,2}(?:\/\d{2,4})?)\s*(?:al|a|-|hasta)\s*(\d{1,2}\/\d{1,2}(?:\/\d{2,4})?)/i);
+    if(f){ d.__desde=f[1]; d.__hasta=f[2]; return; }
     const p=l.split(':'); if(p.length<2) return;
     const k=p[0].trim().toLowerCase(), v=num(p.slice(1).join(':'));
     if(v==null) return;
@@ -186,9 +195,6 @@ function pintar(){
     <div class="grid"><select id="h_met">
       <option value="ig_followers_total|instagram">Seguidores en Instagram</option>
       <option value="sp_monthly|spotify">Oyentes mensuales en Spotify</option>
-      <option value="sp_followers|spotify">Seguidores en Spotify</option>
-      <option value="sp_streams|spotify">Streams en la semana</option>
-      <option value="yt_subs|youtube">Suscriptores en YouTube</option>
       <option value="yt_views|youtube">Visualizaciones en YouTube</option>
     </select><input id="h_obj" placeholder="Objetivo (número)" inputmode="decimal"><input id="h_tit" placeholder="Título que ve el cliente"></div>
     <div class="acc"><button class="sec" onclick="nuevoHito()">Agregar hito</button></div></div>`;
@@ -239,9 +245,12 @@ function autocompletar(){
   let n=0;
   Object.entries(d).forEach(([k,v])=>{ const el=$('m_'+k); if(el){el.value=v;n++;} });
   if(d.__desde&&d.__hasta){
-    const anio=new Date().getFullYear();
-    const conv=s=>{const [dd,mm]=s.split('/');return `${anio}-${mm.padStart(2,'0')}-${dd.padStart(2,'0')}`;};
-    $('f_desde').value=conv(d.__desde); $('f_hasta').value=conv(d.__hasta);
+    const anioBase=new Date().getFullYear();
+    const conv=(x,a)=>{const q=x.split('/');let an=a; if(q[2]) an=q[2].length===2?2000+parseInt(q[2]):parseInt(q[2]);
+      return `${an}-${q[1].padStart(2,'0')}-${q[0].padStart(2,'0')}`;};
+    let de=conv(d.__desde,anioBase), ha=conv(d.__hasta,anioBase);
+    if(new Date(ha)<new Date(de)) ha=conv(d.__hasta,anioBase+1);
+    $('f_desde').value=de; $('f_hasta').value=ha;
   }
   $('g_out').innerHTML=`<div class="ok-msg">Leí ${n} métricas. Revisá y guardá.</div>`;
 }
@@ -250,7 +259,12 @@ async function guardarReporte(){
   const desde=$('f_desde').value, hasta=$('f_hasta').value;
   if(!desde||!hasta){ alert('Faltan las fechas'); return; }
   const m={};
-  Object.values(CAMPOS).flat().forEach(([k])=>{ const v=$('m_'+k).value.trim().replace(',','.'); if(v!=='') m[k]=parseFloat(v); });
+  Object.values(CAMPOS).flat().forEach(([k])=>{ let v=$('m_'+k).value.trim(); if(v==='') return;
+    v=v.replace(/\s/g,'').replace(/[^\d.,-]/g,'');
+    const hayC=v.includes(','), hayP=v.includes('.');
+    if(hayC&&hayP) v = v.lastIndexOf(',')>v.lastIndexOf('.') ? v.replace(/\./g,'').replace(',','.') : v.replace(/,/g,'');
+    else if(hayC) v = /,\d{3}(?!\d)/.test(v) ? v.replace(/,/g,'') : v.replace(',','.');
+    const n=parseFloat(v); if(!isNaN(n)) m[k]=n; });
   const r=await rpc('sub_reporte_alta',{p_admin:admin,p_slug:sel,p_desde:desde,p_hasta:hasta,p_metricas:m});
   if(r.ok){ $('g_out').innerHTML='<div class="ok-msg">Guardado ✓</div>'; entrar(); }
   else alert('No se pudo guardar');
