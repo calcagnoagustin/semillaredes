@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel Clientes · Semilla Redes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--crema:#F2EDE4;--navy:#1A2456;--vino:#7A1F3A;--rosa:#E2767C;--oliva:#87863A;--mute:#B9B4C4}
+*{box-sizing:border-box}
+body{margin:0;background:var(--navy);color:var(--crema);font-family:Inter,system-ui,sans-serif;line-height:1.5;padding:28px 18px 90px}
+.wrap{max-width:960px;margin:0 auto}
+h1{font-family:'Playfair Display',serif;font-size:32px;margin:0 0 2px}
+.lede{color:var(--mute);font-size:14.5px;margin:0 0 22px}
+.card{background:#212B60;border:1px solid #2E3970;border-radius:14px;padding:20px;margin:14px 0}
+.card h2{font-family:'Playfair Display',serif;font-size:22px;margin:0 0 2px}
+.meta{font-size:12.5px;color:var(--mute)}
+h3{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--oliva);margin:20px 0 8px}
+label{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--mute);display:block;margin-bottom:4px}
+input,select,textarea{border:1px solid #2E3970;background:#1A2456;color:var(--crema);border-radius:9px;padding:10px 12px;font:inherit;font-size:14px;width:100%}
+textarea{min-height:170px;font-family:ui-monospace,monospace;font-size:12.5px;line-height:1.6}
+button{border:0;background:var(--vino);color:#fff;font:inherit;font-size:13.5px;font-weight:600;border-radius:9px;padding:10px 16px;cursor:pointer}
+button.sec{background:#2E3970}button.ok{background:var(--oliva)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.acc{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.tabs{display:flex;gap:6px;margin:0 0 18px;border-bottom:1px solid #2E3970;flex-wrap:wrap}
+.tab{padding:10px 15px;font-size:14px;font-weight:600;color:var(--mute);cursor:pointer;border-bottom:2px solid transparent}
+.tab.on{color:var(--crema);border-bottom-color:var(--rosa)}
+.plat{font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--rosa);margin:16px 0 6px;font-weight:700}
+.fila{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #2E3970;font-size:13.5px}
+.fila .t{flex:1}
+.ok-msg{color:var(--oliva);font-size:13px;margin-top:8px}
+.oculto{display:none}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px}
+th,td{padding:6px 8px;text-align:right;border-bottom:1px solid #2E3970}
+th:first-child,td:first-child{text-align:left}
+th{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--oliva)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Panel Clientes</h1>
+  <p class="lede">Carga de métricas semanales, tareas y activos.</p>
+
+  <div id="gate">
+    <label>Token de admin</label>
+    <input type="password" id="tok" style="max-width:280px;display:inline-block"> <button onclick="entrar()">Entrar</button>
+  </div>
+
+  <div id="app" class="oculto">
+    <div class="tabs" id="tabs"></div>
+    <div id="vista"></div>
+  </div>
+</div>
+
+<script>
+const API='https://fdrxsjphlvvwwknnrjtx.supabase.co';
+const KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
+const $=id=>document.getElementById(id);
+const rpc=(fn,a)=>fetch(`${API}/rest/v1/rpc/${fn}`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(a)}).then(r=>r.json());
+let admin='', clientes=[], sel=null;
+
+const CAMPOS={
+ 'Instagram':[['ig_followers_total','Seguidores'],['ig_followers_nuevos','Nuevos'],['ig_visitas','Visitas'],['ig_inversion','Inversión USD'],['ig_inversion_diaria','Inv. diaria'],['ig_costo_follower','Costo x seguidor']],
+ 'Spotify':[['sp_monthly','Oyentes mensuales'],['sp_listeners','Listeners'],['sp_streams','Streams'],['sp_stream_listener','Streams x listener'],['sp_guardados','Guardados'],['sp_playlists','Playlists'],['sp_followers','Seguidores'],['sp_meta_visitas','Visitas desde Meta'],['sp_inversion','Inversión USD'],['sp_costo_stream','Costo x stream']],
+ 'YouTube':[['yt_subs','Suscriptores'],['yt_subs_nuevos','Nuevos'],['yt_views','Visualizaciones'],['yt_horas','Horas vistas'],['yt_inversion','Inversión USD'],['yt_costo_view','Costo x view']]
+};
+
+async function entrar(){
+  const t=$('tok').value.trim()||sessionStorage.getItem('sr_admin')||'';
+  const r=await rpc('sub_admin',{p_admin:t});
+  if(r.error){ alert('Token incorrecto'); return; }
+  admin=t; sessionStorage.setItem('sr_admin',t);
+  clientes=r.clientes||[]; sel=sel||(clientes[0]||{}).slug;
+  $('gate').classList.add('oculto'); $('app').classList.remove('oculto');
+  pintarTabs(); pintar();
+}
+function pintarTabs(){
+  $('tabs').innerHTML=clientes.map(c=>`<div class="tab ${c.slug===sel?'on':''}" data-s="${c.slug}">${c.nombre}</div>`).join('')+`<div class="tab" data-s="__nuevo">+ Nuevo</div>`;
+  document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{sel=t.dataset.s;pintarTabs();pintar();});
+}
+
+function parsear(txt){
+  const d={}, L=txt.split('\n').map(x=>x.trim()).filter(Boolean);
+  const num=s=>{const m=(s||'').replace(/\./g,'').replace(',','.').match(/-?\d+(\.\d+)?/);return m?parseFloat(m[0]):null;};
+  let seccion='ig';
+  L.forEach(l=>{
+    const bajo=l.toLowerCase();
+    if(bajo.startsWith('spotify')){seccion='sp';return;}
+    if(bajo.startsWith('youtube')){seccion='yt';return;}
+    if(bajo.startsWith('instagram')){seccion='ig';return;}
+    const f=l.match(/^(\d{1,2}\/\d{1,2}).*?(\d{1,2}\/\d{1,2})/);
+    if(f && bajo.includes('/')&&!bajo.includes(':')){d.__desde=f[1];d.__hasta=f[2];return;}
+    const p=l.split(':'); if(p.length<2) return;
+    const k=p[0].trim().toLowerCase(), v=num(p.slice(1).join(':'));
+    if(v==null) return;
+    const M={
+      'followers': seccion==='ig'?(d.ig_followers_total==null?'ig_followers_total':'ig_followers_nuevos'):'sp_followers',
+      'visitas': seccion==='ig'?'ig_visitas':'sp_meta_visitas',
+      'meta visitas':'sp_meta_visitas',
+      'inversión': seccion+'_inversion', 'inversion': seccion+'_inversion',
+      'costo por follower':'ig_costo_follower','inversión diaria':'ig_inversion_diaria','inversion diaria':'ig_inversion_diaria',
+      'listeners':'sp_listeners','monthly':'sp_monthly','streams':'sp_streams','stream/listener':'sp_stream_listener',
+      'guardados':'sp_guardados','playlists':'sp_playlists','costo por stream':'sp_costo_stream',
+      'suscriptores':'yt_subs','views':'yt_views','visualizaciones':'yt_views','horas':'yt_horas','costo por view':'yt_costo_view'
+    };
+    const campo=M[k]; if(campo) d[campo]=v;
+  });
+  return d;
+}
+
+function pintar(){
+  const v=$('vista');
+  if(sel==='__nuevo'){
+    v.innerHTML=`<div class="card"><h2>Nuevo cliente</h2>
+      <label>Nombre</label><input id="n_nom" placeholder="Lu Glass">
+      <div class="acc"><button onclick="crearCliente()">Crear</button></div><div id="n_out"></div></div>`;
+    return;
+  }
+  const c=clientes.find(x=>x.slug===sel); if(!c){v.innerHTML='';return;}
+  const ult=(c.reportes||[])[0];
+  let h=`<div class="card"><h2>${c.nombre}</h2>
+    <div class="meta">landing.semillaredes.com/cliente.html?c=${c.slug}&k=${c.token}</div>
+    <div class="acc"><button class="sec" id="cp">Copiar link</button><button class="sec" id="wa">Mandar por WhatsApp</button></div></div>`;
+
+  h+=`<div class="card"><h2>Cargar la semana</h2>
+    <p class="meta">Pegá el reporte tal cual lo escribís y se completa solo. O cargá los campos a mano.</p>
+    <h3>Pegar reporte</h3>
+    <textarea id="pegar" placeholder="26/08 al 02/09:&#10;Followers: 6,623&#10;Visitas: 965&#10;..."></textarea>
+    <div class="acc"><button class="ok" onclick="autocompletar()">Leer y completar campos</button></div>
+    <h3>Período</h3>
+    <div class="grid"><div><label>Desde</label><input type="date" id="f_desde"></div><div><label>Hasta</label><input type="date" id="f_hasta"></div></div>`;
+  Object.entries(CAMPOS).forEach(([plat,cs])=>{
+    h+=`<div class="plat">${plat}</div><div class="grid">`;
+    cs.forEach(([k,l])=>{ h+=`<div><label>${l}</label><input type="text" inputmode="decimal" id="m_${k}" value="${ult&&ult.metricas[k]!=null?'':''}"></div>`; });
+    h+=`</div>`;
+  });
+  h+=`<div class="acc"><button onclick="guardarReporte()">Guardar semana</button></div><div id="g_out"></div></div>`;
+
+  if((c.reportes||[]).length){
+    h+=`<div class="card"><h2>Semanas cargadas</h2><table><tr><th>Semana</th><th>IG</th><th>SP oyentes</th><th>YT subs</th><th>Inversión</th></tr>
+      ${c.reportes.map(r=>{const m=r.metricas;return `<tr><td>${r.desde} a ${r.hasta}</td><td>${m.ig_followers_total??'—'}</td><td>${m.sp_monthly??'—'}</td><td>${m.yt_subs??'—'}</td><td>${((m.ig_inversion||0)+(m.sp_inversion||0)+(m.yt_inversion||0)).toFixed(2)}</td></tr>`}).join('')}
+    </table></div>`;
+  }
+
+  h+=`<div class="card"><h2>Tareas</h2>
+    ${(c.tareas||[]).map(t=>`<div class="fila"><span class="t">${t.titulo}</span>
+      <select data-tid="${t.id}"><option value="pendiente"${t.estado==='pendiente'?' selected':''}>Pendiente</option><option value="en_curso"${t.estado==='en_curso'?' selected':''}>En curso</option><option value="hecha"${t.estado==='hecha'?' selected':''}>Hecha</option></select></div>`).join('')||'<p class="meta">Sin tareas.</p>'}
+    <h3>Agregar</h3><input id="t_tit" placeholder="Título de la tarea"><div class="acc"><button class="sec" onclick="nuevaTarea()">Agregar tarea</button></div></div>`;
+
+  h+=`<div class="card"><h2>Activos</h2>
+    ${(c.activos||[]).map(a=>`<div class="fila"><span class="t">${a.titulo}</span><input data-aid="${a.id}" value="${a.url||''}" placeholder="Pegá el link acá" style="max-width:340px"></div>`).join('')||'<p class="meta">Sin activos.</p>'}
+    <h3>Agregar</h3><div class="grid"><input id="a_tit" placeholder="Título"><input id="a_url" placeholder="URL"></div>
+    <div class="acc"><button class="sec" onclick="nuevoActivo()">Agregar activo</button></div></div>`;
+
+  v.innerHTML=h;
+  const link=`https://landing.semillaredes.com/cliente.html?c=${c.slug}&k=${c.token}`;
+  $('cp').onclick=()=>{navigator.clipboard.writeText(link);$('cp').textContent='Copiado ✓';};
+  $('wa').onclick=()=>window.open('https://wa.me/?text='+encodeURIComponent('Te dejo el panel de tu proyecto, se actualiza todas las semanas: '+link),'_blank');
+  document.querySelectorAll('select[data-tid]').forEach(s=>s.onchange=async()=>{
+    await rpc('sub_tarea_set',{p_admin:admin,p_id:s.dataset.tid,p_estado:s.value});
+    s.style.borderColor='#87863A'; setTimeout(()=>s.style.borderColor='#2E3970',900);
+  });
+  document.querySelectorAll('input[data-aid]').forEach(i=>i.onblur=async()=>{
+    await rpc('sub_activo_url',{p_admin:admin,p_id:i.dataset.aid,p_url:i.value});
+    i.style.borderColor='#87863A'; setTimeout(()=>i.style.borderColor='#2E3970',900);
+  });
+}
+
+function autocompletar(){
+  const d=parsear($('pegar').value);
+  let n=0;
+  Object.entries(d).forEach(([k,v])=>{ const el=$('m_'+k); if(el){el.value=v;n++;} });
+  if(d.__desde&&d.__hasta){
+    const anio=new Date().getFullYear();
+    const conv=s=>{const [dd,mm]=s.split('/');return `${anio}-${mm.padStart(2,'0')}-${dd.padStart(2,'0')}`;};
+    $('f_desde').value=conv(d.__desde); $('f_hasta').value=conv(d.__hasta);
+  }
+  $('g_out').innerHTML=`<div class="ok-msg">Leí ${n} métricas. Revisá y guardá.</div>`;
+}
+
+async function guardarReporte(){
+  const desde=$('f_desde').value, hasta=$('f_hasta').value;
+  if(!desde||!hasta){ alert('Faltan las fechas'); return; }
+  const m={};
+  Object.values(CAMPOS).flat().forEach(([k])=>{ const v=$('m_'+k).value.trim().replace(',','.'); if(v!=='') m[k]=parseFloat(v); });
+  const r=await rpc('sub_reporte_alta',{p_admin:admin,p_slug:sel,p_desde:desde,p_hasta:hasta,p_metricas:m});
+  if(r.ok){ $('g_out').innerHTML='<div class="ok-msg">Guardado ✓</div>'; entrar(); }
+  else alert('No se pudo guardar');
+}
+async function nuevaTarea(){ const t=$('t_tit').value.trim(); if(!t)return; await rpc('sub_tarea_alta',{p_admin:admin,p_slug:sel,p_titulo:t}); entrar(); }
+async function nuevoActivo(){ const t=$('a_tit').value.trim(); if(!t)return; await rpc('sub_activo_alta',{p_admin:admin,p_slug:sel,p_titulo:t,p_url:$('a_url').value.trim()}); entrar(); }
+async function crearCliente(){
+  const n=$('n_nom').value.trim(); if(!n)return;
+  const r=await rpc('sub_cliente_alta',{p_admin:admin,p_nombre:n});
+  if(r.ok){ sel=r.slug; entrar(); } else alert('No se pudo crear');
+}
+if(sessionStorage.getItem('sr_admin')) entrar();
+</script>
+</body>
+</html>
