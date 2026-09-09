@@ -9,6 +9,8 @@
 <meta name="bingbot" content="noindex, nofollow, noarchive">
 <meta name="AdsBot-Google" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png">
 <title>Tu proyecto · Semilla Redes</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -64,6 +66,21 @@ th:first-child,td:first-child{text-align:left}
 th{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--oliva);background:#FBF8F2}
 .err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:26px}
 .oculto{display:none}
+.hito{background:#fff;border:1px solid var(--linea);border-radius:13px;padding:16px 18px;margin-bottom:10px}
+.hito .tt{font-size:15.5px;font-weight:600;color:var(--navy)}
+.hito .num{font-size:13px;color:var(--mute);margin-top:2px}
+.hito .barra{height:9px;background:#E2DCCF;border-radius:99px;overflow:hidden;margin-top:9px}
+.hito .barra i{display:block;height:100%;border-radius:99px;background:var(--oliva)}
+.hito.logrado .barra i{background:var(--vino)}
+.hito .falta{font-size:12.5px;color:var(--oliva);font-weight:600;margin-top:6px}
+.hito.logrado .falta{color:var(--vino)}
+.it .x,.nota .x{flex:none;border:0;background:transparent;color:#C9C3B4;font-size:17px;cursor:pointer;padding:0 4px;line-height:1}
+.it .x:hover,.nota .x:hover{color:var(--vino)}
+.nota{position:relative}
+.nota .x{position:absolute;top:10px;right:12px}
+.agregarT{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}
+.agregarT input{border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:11px 13px;font:inherit;font-size:15px}
+.agregarT button{border:0;background:var(--oliva);color:#fff;font:inherit;font-weight:600;border-radius:10px;padding:11px 18px;cursor:pointer}
 .tar .it{cursor:pointer;transition:background .15s}
 .tar .it:hover{background:#FBF8F2}
 .mark{transition:all .15s}
@@ -221,11 +238,27 @@ function pintar(d){
     </table>`;
   }
 
+  const HI=d.hitos||[];
+  if(HI.length){
+    h+=`<h2>Hitos</h2><p class="sub">Las metas que nos pusimos para este proyecto.</p>`;
+    HI.forEach(x=>{
+      const act=Number(m[x.metrica]||0), obj=Number(x.objetivo)||1;
+      const pct=Math.min(100,Math.round(act/obj*100));
+      const listo=act>=obj;
+      h+=`<div class="hito ${listo?'logrado':''}"><div class="tt">${x.titulo||x.metrica}</div>
+        <div class="num">${fmt(act)} de ${fmt(obj)}</div>
+        <div class="barra"><i style="width:${pct}%"></i></div>
+        <div class="falta">${listo?'¡Logrado!':`${pct}% · faltan ${fmt(obj-act)}`}</div></div>`;
+    });
+  }
+
   const T=d.tareas||[];
   if(T.length){
     h+=`<h2>En qué estamos</h2><p class="sub">Lo que ya está hecho y lo que sigue.</p><div class="tar">
-      ${T.map(t=>`<div class="it ${t.estado}" data-tid="${t.id}" data-est="${t.estado}"><span class="mark ${t.estado}"></span><span class="tx"><span class="tt">${t.titulo}</span>${t.detalle?`<span class="de">${t.detalle}</span>`:''}</span></div>`).join('')}
-    </div><p class="pista">Tocá cualquiera para cambiarle el estado: pendiente, en curso o hecha.</p>`;
+      ${T.map(t=>`<div class="it ${t.estado}"><span class="mark ${t.estado}" data-tid="${t.id}" data-est="${t.estado}"></span><span class="tx" data-tid2="${t.id}" data-est2="${t.estado}"><span class="tt">${t.titulo}</span>${t.detalle?`<span class="de">${t.detalle}</span>`:''}</span>${t.creada_por==='cliente'?`<button class="x" data-delt="${t.id}" title="Borrar">×</button>`:''}</div>`).join('')}
+    </div>
+    <div class="agregarT"><input id="t_nueva" placeholder="Agregar algo que quieras hacer o pedirnos"><button id="t_add">Agregar</button></div>
+    <p class="pista">Tocá una tarea para cambiarle el estado: pendiente, en curso o hecha. Las que agregues vos las podés borrar.</p>`;
   }
 
   const A=d.activos||[];
@@ -239,7 +272,7 @@ function pintar(d){
   const N=d.notas||[];
   h+=`<h2>Tus notas</h2><p class="sub">Dejanos cualquier cosa que quieras que tengamos en cuenta: una idea, una duda, algo que pasó esta semana.</p>
     <div class="notas"><textarea id="nota_txt" placeholder="Escribí acá…"></textarea><br><button id="nota_btn">Guardar nota</button><div id="nota_out"></div>
-    ${N.map(n=>`<div class="nota"><div class="quien ${n.autor==='semilla'?'semilla':''}">${n.autor==='semilla'?'Semilla Redes':'Vos'}</div><div class="txt">${n.texto}</div><div class="cuando">${new Date(n.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</div></div>`).join('')}
+    ${N.map(n=>`<div class="nota"><div class="quien ${n.autor==='semilla'?'semilla':''}">${n.autor==='semilla'?'Semilla Redes':'Vos'}</div><div class="txt">${n.texto}</div><div class="cuando">${new Date(n.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</div>${n.autor!=='semilla'?`<button class="x" data-deln="${n.id}" title="Borrar nota">×</button>`:''}</div>`).join('')}
     </div>`;
 
   h+=`<p class="pie">Cualquier duda sobre estos números, escribile a Agus. Actualizamos todas las semanas.</p>`;
@@ -247,26 +280,40 @@ function pintar(d){
   $('cargando').classList.add('oculto'); $('app').classList.remove('oculto');
 
   const ciclo={pendiente:'en_curso',en_curso:'hecha',hecha:'pendiente'};
-  document.querySelectorAll('.it[data-tid]').forEach(el=>{
-    el.onclick=async()=>{
-      const nuevo=ciclo[el.dataset.est]||'pendiente';
-      const r=await rpc('sub_tarea_cliente',{p_slug:slug,p_k:tok,p_id:el.dataset.tid,p_estado:nuevo});
-      if(r.ok){
-        el.dataset.est=nuevo;
-        el.className='it '+nuevo;
-        el.querySelector('.mark').className='mark '+nuevo;
-      }
-    };
+  const cambiar=async(id,est,fila)=>{
+    const nuevo=ciclo[est]||'pendiente';
+    const r=await rpc('sub_tarea_cliente',{p_slug:slug,p_k:tok,p_id:id,p_estado:nuevo});
+    if(r.ok) recargar();
+  };
+  document.querySelectorAll('[data-tid]').forEach(el=>el.onclick=e=>{e.stopPropagation();cambiar(el.dataset.tid,el.dataset.est);});
+  document.querySelectorAll('[data-tid2]').forEach(el=>el.onclick=e=>{e.stopPropagation();cambiar(el.dataset.tid2,el.dataset.est2);});
+  document.querySelectorAll('[data-delt]').forEach(b=>b.onclick=async e=>{
+    e.stopPropagation();
+    if(!confirm('¿Borrar esta tarea?')) return;
+    const r=await rpc('sub_tarea_borrar',{p_slug:slug,p_k:tok,p_id:b.dataset.delt}); if(r.ok) recargar();
   });
+  document.querySelectorAll('[data-deln]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('¿Borrar esta nota?')) return;
+    const r=await rpc('sub_nota_borrar',{p_slug:slug,p_k:tok,p_id:b.dataset.deln}); if(r.ok) recargar();
+  });
+  const ta=$('t_add');
+  if(ta) ta.onclick=async()=>{
+    const t=$('t_nueva').value.trim(); if(!t) return;
+    ta.disabled=true; ta.textContent='…';
+    const r=await rpc('sub_tarea_cliente_alta',{p_slug:slug,p_k:tok,p_titulo:t});
+    if(r.ok) recargar(); else { ta.disabled=false; ta.textContent='Agregar'; }
+  };
   const nb=$('nota_btn');
   if(nb) nb.onclick=async()=>{
     const t=$('nota_txt').value.trim(); if(!t) return;
     nb.disabled=true; nb.textContent='Guardando…';
     const r=await rpc('sub_nota_alta',{p_slug:slug,p_k:tok,p_texto:t});
-    if(r.ok){ $('nota_txt').value=''; rpc('sub_get',{p_slug:slug,p_k:tok}).then(pintar); }
+    if(r.ok){ $('nota_txt').value=''; recargar(); }
     else { $('nota_out').innerHTML='<p class="pista">No se pudo guardar, probá de nuevo.</p>'; nb.disabled=false; nb.textContent='Guardar nota'; }
   };
 }
+
+function recargar(){ rpc('sub_get',{p_slug:slug,p_k:tok}).then(pintar); }
 
 rpc('sub_get',{p_slug:slug,p_k:tok}).then(d=>{
   if(d.error){ $('cargando').classList.add('oculto'); $('error').classList.remove('oculto'); return; }
