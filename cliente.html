@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Tu proyecto · Semilla Redes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--crema:#F2EDE4;--navy:#1A2456;--vino:#7A1F3A;--rosa:#E2767C;--oliva:#87863A;--tinta:#24242C;--mute:#8A8697;--linea:#E5DFD2}
+*{box-sizing:border-box}
+body{margin:0;background:var(--crema);color:var(--tinta);font-family:Inter,system-ui,sans-serif;line-height:1.55}
+.wrap{max-width:880px;margin:0 auto;padding:30px 20px 100px}
+.logo{width:150px;display:block;margin-bottom:20px}
+h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(30px,5.4vw,42px);line-height:1.08;color:var(--navy);margin:0 0 4px}
+.periodo{font-size:14px;color:var(--mute);margin:0 0 26px}
+h2{font-family:'Playfair Display',serif;font-size:23px;color:var(--navy);margin:36px 0 3px}
+.sub{font-size:13.5px;color:var(--mute);margin:0 0 14px}
+
+.tarj{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px}
+.t{background:#fff;border:1px solid var(--linea);border-radius:13px;padding:16px}
+.t .lab{font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--oliva);font-weight:700}
+.t .val{font-family:'Playfair Display',serif;font-size:31px;color:var(--navy);line-height:1.1;margin-top:5px}
+.t .delta{font-size:12.5px;margin-top:3px;color:var(--mute)}
+.up{color:var(--oliva);font-weight:600}.down{color:var(--vino);font-weight:600}
+.t.destacada{background:var(--navy);border-color:var(--navy)}
+.t.destacada .lab{color:var(--rosa)}
+.t.destacada .val{color:var(--crema)}
+.t.destacada .delta{color:#B9B4C4}
+
+.graf{background:#fff;border:1px solid var(--linea);border-radius:13px;padding:18px;margin-top:12px}
+.graf h3{font-size:14px;color:var(--navy);margin:0 0 2px}
+.graf .leyenda{font-size:12.5px;color:var(--mute);margin:0 0 10px}
+svg.linea{width:100%;height:170px;display:block;overflow:visible}
+.aviso{background:#F6F2E9;border:1px dashed #D8CFBB;border-radius:11px;padding:14px 16px;font-size:13.5px;color:#5B5766;margin-top:12px}
+
+.tar{background:#fff;border:1px solid var(--linea);border-radius:13px;overflow:hidden}
+.tar .it{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-bottom:1px solid var(--linea)}
+.tar .it:last-child{border-bottom:0}
+.mark{flex:none;width:19px;height:19px;border-radius:50%;border:2px solid #DDD6C7;margin-top:2px;position:relative}
+.mark.hecha{background:var(--oliva);border-color:var(--oliva)}
+.mark.hecha:after{content:"";position:absolute;left:5px;top:2px;width:5px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.mark.en_curso{border-color:var(--rosa);background:repeating-linear-gradient(45deg,var(--rosa),var(--rosa) 3px,#fff 3px,#fff 6px)}
+.it .tx{flex:1}
+.it .tt{font-size:15.5px;font-weight:600;color:var(--navy)}
+.it.hecha .tt{color:var(--mute);text-decoration:line-through}
+.it .de{font-size:13px;color:var(--mute)}
+
+.act{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.a{background:#fff;border:1px solid var(--linea);border-radius:13px;padding:16px;display:block;text-decoration:none;color:inherit}
+.a:hover{border-color:var(--oliva)}
+.a .tt{font-size:15.5px;font-weight:600;color:var(--navy)}
+.a .de{font-size:13px;color:var(--mute);margin-top:2px}
+.a .go{font-size:12.5px;color:var(--vino);font-weight:600;margin-top:8px}
+.a.sinlink .go{color:var(--mute);font-weight:400}
+table{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;border:1px solid var(--linea);border-radius:13px;overflow:hidden}
+th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--linea)}
+th:first-child,td:first-child{text-align:left}
+th{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--oliva);background:#FBF8F2}
+.err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:26px}
+.oculto{display:none}
+.pie{font-size:12.5px;color:var(--mute);margin-top:40px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <img class="logo" src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semilla-logo-horizontal.png" alt="Semilla Redes">
+  <div id="cargando">Cargando…</div>
+  <div id="app" class="oculto"></div>
+  <div id="error" class="err oculto">Este link no es válido. Pedile uno nuevo a Agus.</div>
+</div>
+
+<script>
+const API='https://fdrxsjphlvvwwknnrjtx.supabase.co';
+const KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
+const qs=new URLSearchParams(location.search);
+const slug=qs.get('c')||'', tok=qs.get('k')||'';
+const $=id=>document.getElementById(id);
+const rpc=(fn,a)=>fetch(`${API}/rest/v1/rpc/${fn}`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(a)}).then(r=>r.json());
+
+const fmt=(n,d=0)=>n==null?'—':Number(n).toLocaleString('es-AR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fecha=s=>{const [a,m,d]=s.split('-');return `${d}/${m}`;};
+
+function delta(act,ant,invertido){
+  if(ant==null||act==null) return '';
+  const d=act-ant; if(!ant||Math.abs(d)<0.0001) return '<span class="delta">igual que la semana pasada</span>';
+  const pct=Math.round(d/ant*100);
+  const bien = invertido ? d<0 : d>0;
+  const flecha = d>0?'▲':'▼';
+  return `<span class="delta ${bien?'up':'down'}">${flecha} ${Math.abs(pct)}% vs semana anterior</span>`;
+}
+
+function linea(datos, etiquetas, color, invertido){
+  if(datos.filter(x=>x!=null).length<2) return null;
+  const W=560,H=150,P=26;
+  const vals=datos.filter(x=>x!=null);
+  const min=Math.min(...vals), max=Math.max(...vals);
+  const rango=(max-min)||1;
+  const x=i=>P+(i*(W-P*2)/Math.max(1,datos.length-1));
+  const y=v=>H-P-((v-min)/rango)*(H-P*2);
+  let d='',pts='';
+  datos.forEach((v,i)=>{ if(v==null)return; d+=(d?' L ':'M ')+x(i)+' '+y(v); pts+=`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="${color}"/>`; });
+  const labs=etiquetas.map((e,i)=>`<text x="${x(i)}" y="${H-6}" font-size="10" fill="#8A8697" text-anchor="middle">${e}</text>`).join('');
+  const valsTxt=datos.map((v,i)=>v==null?'':`<text x="${x(i)}" y="${y(v)-11}" font-size="11" font-weight="700" fill="${color}" text-anchor="middle">${v}</text>`).join('');
+  return `<svg class="linea" viewBox="0 0 ${W} ${H}"><path d="${d}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>${pts}${valsTxt}${labs}</svg>`;
+}
+
+function grafico(titulo, leyenda, datos, etiquetas, color, invertido){
+  const svg=linea(datos,etiquetas,color,invertido);
+  return `<div class="graf"><h3>${titulo}</h3><p class="leyenda">${leyenda}</p>
+    ${svg||`<div class="aviso">Con una sola semana cargada todavía no hay línea de tendencia. A partir del segundo reporte vas a ver cómo evoluciona.</div>`}</div>`;
+}
+
+function pintar(d){
+  const R=d.reportes||[];
+  const u=R[R.length-1]||null, a=R.length>1?R[R.length-2]:null;
+  const m=u?u.metricas:{}, ma=a?a.metricas:{};
+  const et=R.map(r=>fecha(r.hasta));
+
+  const card=(lab,val,ant,dec,dest,inv)=>`<div class="t ${dest?'destacada':''}"><div class="lab">${lab}</div><div class="val">${val}</div>${delta(ant?.[0],ant?.[1],inv)}</div>`;
+
+  let h=`<h1>${d.cliente.nombre}</h1>
+  <p class="periodo">${u?`Semana del ${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
+
+  h+=`<h2>Instagram</h2><p class="sub">Crecimiento y costo de la pauta.</p><div class="tarj">
+    ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
+    ${card('Nuevos en la semana', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos])}
+    ${card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas])}
+    ${card('Costo por seguidor', 'USD '+fmt(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,true,true)}
+  </div>`;
+  h+=grafico('Costo por seguidor, semana a semana','Mientras más baja la línea, mejor: cada seguidor nuevo te sale menos.',R.map(r=>r.metricas.ig_costo_follower),et,'#7A1F3A',true);
+
+  h+=`<h2>Spotify</h2><p class="sub">Escuchas, oyentes y playlists.</p><div class="tarj">
+    ${card('Oyentes mensuales', fmt(m.sp_monthly), [m.sp_monthly, ma.sp_monthly])}
+    ${card('Streams', fmt(m.sp_streams), [m.sp_streams, ma.sp_streams])}
+    ${card('Seguidores', fmt(m.sp_followers), [m.sp_followers, ma.sp_followers])}
+    ${card('Guardados', fmt(m.sp_guardados), [m.sp_guardados, ma.sp_guardados])}
+    ${card('Playlists', fmt(m.sp_playlists), [m.sp_playlists, ma.sp_playlists])}
+    ${card('Costo por stream', 'USD '+fmt(m.sp_costo_stream,3), [m.sp_costo_stream, ma.sp_costo_stream],3,true,true)}
+  </div>`;
+  h+=grafico('Costo por stream, semana a semana','Igual que arriba: cuanto más baja, más rinde cada dólar.',R.map(r=>r.metricas.sp_costo_stream),et,'#87863A',true);
+
+  h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta esta semana.</p><div class="tarj">
+    ${card('En Instagram','USD '+fmt(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
+    ${card('En Spotify','USD '+fmt(m.sp_inversion,2),[m.sp_inversion,ma.sp_inversion],2)}
+    ${card('Por día','USD '+fmt(m.ig_inversion_diaria,2),[m.ig_inversion_diaria,ma.ig_inversion_diaria],2)}
+    ${card('Total semana','USD '+fmt((m.ig_inversion||0)+(m.sp_inversion||0),2),null,2,true)}
+  </div>`;
+
+  if(R.length>1){
+    h+=`<h2>Semana a semana</h2><p class="sub">Todo el historial.</p><table>
+      <tr><th>Semana</th><th>Seguidores IG</th><th>Nuevos</th><th>Costo x seg.</th><th>Streams</th><th>Costo x stream</th><th>Inversión</th></tr>
+      ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
+        <td>${fmt(x.ig_followers_total)}</td><td>${fmt(x.ig_followers_nuevos)}</td><td>${fmt(x.ig_costo_follower,2)}</td>
+        <td>${fmt(x.sp_streams)}</td><td>${fmt(x.sp_costo_stream,3)}</td><td>${fmt((x.ig_inversion||0)+(x.sp_inversion||0),2)}</td></tr>`}).join('')}
+    </table>`;
+  }
+
+  const T=d.tareas||[];
+  if(T.length){
+    h+=`<h2>En qué estamos</h2><p class="sub">Lo que ya está hecho y lo que sigue.</p><div class="tar">
+      ${T.map(t=>`<div class="it ${t.estado}"><span class="mark ${t.estado}"></span><span class="tx"><span class="tt">${t.titulo}</span>${t.detalle?`<span class="de">${t.detalle}</span>`:''}</span></div>`).join('')}
+    </div>`;
+  }
+
+  const A=d.activos||[];
+  if(A.length){
+    h+=`<h2>Tus activos</h2><p class="sub">Todo lo que vamos construyendo y queda tuyo.</p><div class="act">
+      ${A.map(x=>x.url?`<a class="a" href="${x.url}" target="_blank"><span class="tt">${x.titulo}</span><div class="de">${x.descripcion||''}</div><div class="go">Abrir →</div></a>`
+        :`<div class="a sinlink"><span class="tt">${x.titulo}</span><div class="de">${x.descripcion||''}</div><div class="go">En preparación</div></div>`).join('')}
+    </div>`;
+  }
+
+  h+=`<p class="pie">Cualquier duda sobre estos números, escribile a Agus. Actualizamos todas las semanas.</p>`;
+  $('app').innerHTML=h;
+  $('cargando').classList.add('oculto'); $('app').classList.remove('oculto');
+}
+
+rpc('sub_get',{p_slug:slug,p_k:tok}).then(d=>{
+  if(d.error){ $('cargando').classList.add('oculto'); $('error').classList.remove('oculto'); return; }
+  pintar(d);
+}).catch(()=>{ $('cargando').classList.add('oculto'); $('error').classList.remove('oculto'); });
+</script>
+</body>
+</html>
