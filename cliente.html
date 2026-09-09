@@ -66,12 +66,6 @@ th:first-child,td:first-child{text-align:left}
 th{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--oliva);background:#FBF8F2}
 .err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:26px}
 .oculto{display:none}
-details.hist{background:#fff;border:1px solid var(--linea);border-radius:13px;overflow:hidden}
-details.hist summary{list-style:none;cursor:pointer;padding:15px 18px;display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--navy)}
-details.hist summary::-webkit-details-marker{display:none}
-details.hist summary .flecha{transition:transform .2s;color:var(--oliva);font-size:13px}
-details.hist[open] summary .flecha{transform:rotate(90deg)}
-details.hist table{border:0;border-radius:0}
 .hito{background:#fff;border:1px solid var(--linea);border-radius:13px;padding:16px 18px;margin-bottom:10px}
 .hito .tt{font-size:15.5px;font-weight:600;color:var(--navy)}
 .hito .num{font-size:13px;color:var(--mute);margin-top:2px}
@@ -149,7 +143,7 @@ function multi(R){
   const series=[
     {k:'ig_followers_total',lab:'Instagram',color:'#7A1F3A'},
     {k:'sp_monthly',lab:'Spotify',color:'#87863A'},
-    {k:'yt_subs',lab:'YouTube',color:'#E2767C'}
+    {k:'yt_views',lab:'YouTube',color:'#E2767C'}
   ].map(x=>{
     const vals=R.map(r=>r.metricas[x.k]??null);
     const base=vals.find(v=>v!=null);
@@ -215,7 +209,7 @@ function pintar(d){
     ${card('Playlists', fmt(m.sp_playlists), [m.sp_playlists, ma.sp_playlists])}
     ${card('Costo por stream', 'USD '+fmt(m.sp_costo_stream,3), [m.sp_costo_stream, ma.sp_costo_stream],3,true,true)}
   </div>`;
-  h+=grafico('Costo por stream, semana a semana','Igual que arriba: cuanto más baja, más rinde cada dólar.',R.map(r=>r.metricas.sp_costo_stream),et,'#87863A',true);
+  h+=grafico('Oyentes mensuales, semana a semana','Cuánta gente distinta te escucha por mes. Es el número que mira la industria.',R.map(r=>r.metricas.sp_monthly),et,'#87863A');
 
   h+=`<h2>YouTube</h2><p class="sub">Canal y visualizaciones.</p><div class="tarj">
     ${card('Suscriptores', fmt(m.yt_subs), [m.yt_subs, ma.yt_subs])}
@@ -224,6 +218,8 @@ function pintar(d){
     ${card('Horas vistas', fmt(m.yt_horas), [m.yt_horas, ma.yt_horas])}
     ${card('Costo por view', 'USD '+fmt(m.yt_costo_view,3), [m.yt_costo_view, ma.yt_costo_view],3,true,true)}
   </div>`;
+
+  h+=grafico('Visualizaciones, semana a semana','Cuántas veces se vieron tus videos.',R.map(r=>r.metricas.yt_views),et,'#E2767C');
 
   h+=`<h2>Crecimiento</h2><p class="sub">Las tres plataformas juntas.</p>`+multi(R);
 
@@ -236,13 +232,12 @@ function pintar(d){
   </div>`;
 
   if(R.length>1){
-    h+=`<h2>Semana a semana</h2><p class="sub">Todo el historial.</p>
-      <details class="hist"><summary><span class="flecha">▶</span> Ver las ${R.length} semanas</summary><table>
+    h+=`<h2>Semana a semana</h2><p class="sub">Todo el historial.</p><table>
       <tr><th>Semana</th><th>Seguidores IG</th><th>Nuevos</th><th>Costo x seg.</th><th>Streams</th><th>Costo x stream</th><th>Inversión</th></tr>
       ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
         <td>${fmt(x.ig_followers_total)}</td><td>${fmt(x.ig_followers_nuevos)}</td><td>${fmt(x.ig_costo_follower,2)}</td>
         <td>${fmt(x.sp_streams)}</td><td>${fmt(x.sp_costo_stream,3)}</td><td>${fmt((x.ig_inversion||0)+(x.sp_inversion||0)+(x.yt_inversion||0),2)}</td></tr>`}).join('')}
-    </table></details>`;
+    </table>`;
   }
 
   const HI=d.hitos||[];
