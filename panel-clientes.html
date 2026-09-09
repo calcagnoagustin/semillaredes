@@ -85,7 +85,8 @@ let admin='', clientes=[], sel=null;
 const CAMPOS={
  'Instagram':[['ig_followers_total','Seguidores'],['ig_followers_nuevos','Nuevos'],['ig_visitas','Visitas'],['ig_inversion','Inversión USD'],['ig_inversion_diaria','Inv. diaria'],['ig_costo_follower','Costo x seguidor']],
  'Spotify':[['sp_monthly','Oyentes mensuales'],['sp_listeners','Listeners'],['sp_streams','Streams'],['sp_stream_listener','Streams x listener'],['sp_guardados','Guardados'],['sp_playlists','Playlists'],['sp_followers','Seguidores'],['sp_meta_visitas','Visitas desde Meta'],['sp_inversion','Inversión USD'],['sp_costo_stream','Costo x stream']],
- 'YouTube':[['yt_subs','Suscriptores'],['yt_subs_nuevos','Nuevos'],['yt_views','Visualizaciones'],['yt_horas','Horas vistas'],['yt_inversion','Inversión USD'],['yt_costo_view','Costo x view']]
+ 'YouTube (canal)':[['yt_subs','Suscriptores'],['yt_subs_nuevos','Nuevos'],['yt_views','Views del canal'],['yt_horas','Horas vistas']],
+ 'YouTube (pauta)':[['yt_views_ads','Views del anuncio'],['yt_inversion','Inversión USD'],['yt_costo_view','Costo x view']]
 };
 
 async function entrar(){
@@ -140,7 +141,8 @@ function parsear(txt){
       'costo por follower':'ig_costo_follower','inversión diaria':'ig_inversion_diaria','inversion diaria':'ig_inversion_diaria',
       'listeners':'sp_listeners','monthly':'sp_monthly','streams':'sp_streams','stream/listener':'sp_stream_listener',
       'guardados':'sp_guardados','playlists':'sp_playlists','costo por stream':'sp_costo_stream',
-      'suscriptores':'yt_subs','views':'yt_views','visualizaciones':'yt_views','horas':'yt_horas','costo por view':'yt_costo_view'
+      'suscriptores':'yt_subs','views':'yt_views','visualizaciones':'yt_views','horas':'yt_horas','costo por view':'yt_costo_view',
+      'views ads':'yt_views_ads','views del anuncio':'yt_views_ads','visualizaciones ads':'yt_views_ads','reproducciones':'yt_views_ads'
     };
     const campo=M[k]; if(campo) d[campo]=v;
   });
@@ -195,7 +197,7 @@ function pintar(){
     <div class="grid"><select id="h_met">
       <option value="ig_followers_total|instagram">Seguidores en Instagram</option>
       <option value="sp_monthly|spotify">Oyentes mensuales en Spotify</option>
-      <option value="yt_views|youtube">Visualizaciones en YouTube</option>
+      <option value="yt_views|youtube">Visualizaciones del canal en YouTube</option>
     </select><input id="h_obj" placeholder="Objetivo (número)" inputmode="decimal"><input id="h_tit" placeholder="Título que ve el cliente"></div>
     <div class="acc"><button class="sec" onclick="nuevoHito()">Agregar hito</button></div></div>`;
 
