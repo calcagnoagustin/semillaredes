@@ -41,6 +41,20 @@ th{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mute
 .mini{height:5px;background:#2E3970;border-radius:99px;overflow:hidden;width:110px}
 .mini i{display:block;height:100%;background:var(--oliva)}
 .oculto{display:none}
+.aud{background:#161F4D;border:1px solid #2E3970;border-radius:12px;padding:20px;margin-top:12px}
+.aud h3{font-family:'Playfair Display',serif;font-size:20px;margin:0 0 6px;color:var(--crema)}
+.aud .ver{font-size:15px;color:#DDD8CC;margin:0 0 18px;line-height:1.6}
+.aud h4{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--oliva);margin:18px 0 7px;display:flex;align-items:center;gap:8px}
+.sem{width:9px;height:9px;border-radius:50%;display:inline-block}
+.sem.verde{background:#87863A}.sem.amarillo{background:#D9A441}.sem.rojo{background:#C0392B}
+.aud p{font-size:14px;color:#C9C4BA;margin:0 0 8px;line-height:1.65}
+.aud ul{margin:6px 0 0;padding-left:18px;font-size:14px;color:#C9C4BA}
+.aud li{margin-bottom:6px}
+.aud .caja{background:rgba(226,118,124,.10);border-left:2px solid var(--rosa);padding:12px 14px;border-radius:0 8px 8px 0;margin:10px 0}
+.aud .alerta{background:rgba(192,57,43,.14);border-left:2px solid #C0392B;padding:12px 14px;border-radius:0 8px 8px 0;margin:10px 0}
+.aud .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}
+@media(max-width:760px){.aud .cols{grid-template-columns:1fr}}
+.aud .col h5{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--rosa);margin:0 0 6px}
 .galeria{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-top:12px}
 .galeria a{display:block;border-radius:8px;overflow:hidden;border:1px solid #2E3970;aspect-ratio:1;background:#1A2456}
 .galeria img{width:100%;height:100%;object-fit:cover;display:block}
@@ -133,6 +147,37 @@ function textoPlano(p){
   return s;
 }
 
+function audHTML(a,imgs){
+  const L=x=>(x||[]).map(i=>`<li>${i}</li>`).join('');
+  const pilar=(t,o)=>`<h4><span class="sem ${o.estado}"></span>${t}</h4><p>${o.lectura}</p>${(o.acciones||[]).length?`<ul>${L(o.acciones)}</ul>`:''}`;
+  const e=a.economia||{}, im=a.imagenes||{}, pl=a.plan_180||{};
+  return `<div class="aud">
+    <h3>Auditoría</h3><p class="ver">${a.veredicto||''}</p>
+    ${pilar('01 · Modelo de negocio',a.pilar_negocio||{estado:'amarillo',lectura:''})}
+    ${pilar('02 · Comunicación',a.pilar_comunicacion||{estado:'amarillo',lectura:''})}
+    ${pilar('03 · Publicidad',a.pilar_publicidad||{estado:'amarillo',lectura:''})}
+    <h4>Los números</h4>
+    ${(e.cuentas||[]).length?`<ul>${L(e.cuentas)}</ul>`:''}
+    ${e.brecha?`<div class="caja">${e.brecha}</div>`:''}
+    ${e.cac_tolerable?`<p><b>CAC tolerable:</b> ${e.cac_tolerable}</p>`:''}
+    ${e.escalera?`<p><b>Escalera de valor:</b> ${e.escalera}</p>`:''}
+    ${(e.faltan_datos||[]).length?`<p><b>Faltan datos:</b> ${(e.faltan_datos||[]).join(' · ')}</p>`:''}
+    <h4>El material (${imgs||0} imágenes vistas)</h4>
+    <p><b>Nivel ${im.nivel||'—'}</b> · ${im.sirve_para_pauta?'sirve para pauta':'NO sirve para pauta como está'}</p>
+    <p>${im.lectura||''}</p>
+    ${(im.hay_que_producir||[]).length?`<p><b>Hay que producir:</b></p><ul>${L(im.hay_que_producir)}</ul>`:''}
+    <h4>Plan 180 días</h4>
+    <div class="cols">
+      <div class="col"><h5>Mes 1 y 2</h5><ul>${L(pl.mes_1_2)}</ul></div>
+      <div class="col"><h5>Mes 3 y 4</h5><ul>${L(pl.mes_3_4)}</ul></div>
+      <div class="col"><h5>Mes 5 y 6</h5><ul>${L(pl.mes_5_6)}</ul></div>
+    </div>
+    <h4>Contenidos para arrancar</h4><ul>${L(a.contenidos)}</ul>
+    <h4>Públicos para pauta</h4><ul>${L(a.publicos)}</ul>
+    ${(a.alertas||[]).length?`<h4>Alertas</h4><div class="alerta"><ul>${L(a.alertas)}</ul></div>`:''}
+    <h4>Para la reunión</h4><ul>${L(a.preguntas_reunion)}</ul>
+  </div>`;
+}
 const ETAPAS={1:'Meses 1 y 2 · Descubrimiento',2:'Meses 3 y 4 · Desarrollo',3:'Meses 5 y 6 · Escalabilidad'};
 function entregablesHTML(p){
   const ents=p.entregables||[];
@@ -187,16 +232,30 @@ function pintar(proys){
       <div class="acc">
         <button class="sec" data-copy="${link}">Copiar link del artista</button>
         <button class="ok" data-claude="${p.slug}">Copiar briefing para Claude</button>
+        <button class="ok" data-aud="${p.slug}">Auditoría IA</button>
         <button class="sec" data-wa="${encodeURIComponent('Hola! Te dejo el espacio de tu proyecto en Semilla Redes. Entrá cuando puedas y completá lo que te salga, se guarda solo: '+link)}">Mandar por WhatsApp</button>
       </div>
       <details><summary>Ver briefing · ${p.completadas} respuestas</summary>${detalle||'<p class="meta">Sin respuestas todavía.</p>'}</details>
       ${(p.galeria||[]).length?`<details><summary>Ver ${p.galeria.length} archivos</summary><div class="galeria">${p.galeria.map(a=>`<a href="${a.url}" target="_blank" title="${a.nombre}"><img src="${a.url}" loading="lazy" alt=""></a>`).join('')}</div><div class="acc" style="margin-top:10px"><button class="sec" data-urls="1">Copiar todas las URLs</button></div></details>`:''}
+      <div id="aud_${p.slug}"></div>
       <details><summary>Ver estado del proyecto · ${(p.entregables||[]).filter(e=>e.estado==='listo').length}/${(p.entregables||[]).length}</summary><div id="ent_${p.slug}">${entregablesHTML(p)}</div></details>`;
     cont.appendChild(c);
     c.querySelector('[data-copy]').onclick=e=>{navigator.clipboard.writeText(e.target.dataset.copy);e.target.textContent='Copiado ✓';};
     c.querySelector('[data-claude]').onclick=e=>{navigator.clipboard.writeText(textoPlano(p));e.target.textContent='Copiado ✓';};
     c.querySelector('[data-wa]').onclick=e=>window.open('https://wa.me/?text='+e.target.dataset.wa,'_blank');
     engancharEnt(c);
+    const ba=c.querySelector('[data-aud]');
+    if(ba) ba.onclick=async()=>{
+      ba.disabled=true; ba.textContent='Auditando…';
+      const cont=document.getElementById('aud_'+p.slug);
+      cont.innerHTML='<div class="aud"><p>Leyendo el briefing, haciendo las cuentas y mirando las imágenes. Tarda hasta un minuto.</p></div>';
+      try{
+        const r=await fetch(`${API}/functions/v1/setup-auditoria`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({admin:admin,slug:p.slug})}).then(x=>x.json());
+        if(r.auditoria) cont.innerHTML=audHTML(r.auditoria,r.imagenes_vistas);
+        else cont.innerHTML=`<div class="aud"><p>${r.mensaje||r.error||'No salió.'}</p></div>`;
+      }catch(e){ cont.innerHTML='<div class="aud"><p>No salió. Probá de nuevo.</p></div>'; }
+      ba.disabled=false; ba.textContent='Auditar de nuevo';
+    };
     const bu=c.querySelector('[data-urls]');
     if(bu) bu.onclick=()=>{navigator.clipboard.writeText((p.galeria||[]).map(a=>a.url).join('\n'));bu.textContent='Copiado ✓';};
   });
