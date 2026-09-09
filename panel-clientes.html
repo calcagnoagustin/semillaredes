@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png">
 <title>Panel Clientes · Semilla Redes</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -38,6 +39,17 @@ button.sec{background:#2E3970}button.ok{background:var(--oliva)}
 @media(max-width:640px){.agregar{grid-template-columns:1fr}}
 .ok-msg{color:var(--oliva);font-size:13px;margin-top:8px}
 .oculto{display:none}
+details{margin-top:10px}
+summary{cursor:pointer;font-size:13.5px;color:var(--mute);padding:6px 0}
+summary::marker{color:var(--oliva)}
+.x{border:0;background:transparent;color:#5A6497;font-size:18px;cursor:pointer;padding:0 6px;line-height:1}
+.x:hover{color:var(--rosa)}
+.nota-i{background:#1A2456;border-left:2px solid var(--oliva);border-radius:0 9px 9px 0;padding:10px 13px;margin:8px 0;font-size:13.5px;position:relative}
+.nota-i.cliente{border-left-color:var(--rosa)}
+.nota-i .q{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--oliva);font-weight:700}
+.nota-i.cliente .q{color:var(--rosa)}
+.nota-i .x{position:absolute;top:6px;right:6px}
+.hito-i{display:grid;grid-template-columns:1fr 90px 30px;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #2E3970;font-size:13.5px}
 table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px}
 th,td{padding:6px 8px;text-align:right;border-bottom:1px solid #2E3970}
 th:first-child,td:first-child{text-align:left}
@@ -90,6 +102,13 @@ function pintarTabs(){
   document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{sel=t.dataset.s;pintarTabs();pintar();});
 }
 
+function notasHTML(c,seccion,expandido){
+  const N=(c.notas||[]).filter(n=>(n.seccion||'general')===seccion);
+  const lista=N.map(n=>`<div class="nota-i ${n.autor==='cliente'?'cliente':''}"><div class="q">${n.autor==='cliente'?c.nombre:'Vos'} · ${new Date(n.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'short'})}</div>${n.texto}<button class="x" data-del-nota="${n.id}">×</button></div>`).join('');
+  const form=`<div class="agregar" style="margin-top:10px"><input class="n_txt" data-sec="${seccion}" placeholder="Dejar una nota…"><button class="sec" data-add-nota="${seccion}">Anotar</button></div>`;
+  if(expandido) return lista+form;
+  return `<details><summary>Notas de esta sección${N.length?` (${N.length})`:''}</summary>${lista}${form}</details>`;
+}
 function parsear(txt){
   const d={}, L=txt.split('\n').map(x=>x.trim()).filter(Boolean);
   const num=s=>{const m=(s||'').replace(/\./g,'').replace(',','.').match(/-?\d+(\.\d+)?/);return m?parseFloat(m[0]):null;};
@@ -148,26 +167,56 @@ function pintar(){
   h+=`<div class="acc"><button onclick="guardarReporte()">Guardar semana</button></div><div id="g_out"></div></div>`;
 
   if((c.reportes||[]).length){
-    h+=`<div class="card"><h2>Semanas cargadas</h2><table><tr><th>Semana</th><th>IG</th><th>SP oyentes</th><th>YT subs</th><th>Inversión</th><th></th></tr>
+    h+=`<div class="card"><h2>Semanas cargadas</h2><details><summary>Ver las ${c.reportes.length} semanas</summary><table><tr><th>Semana</th><th>IG</th><th>SP oyentes</th><th>YT subs</th><th>Inversión</th><th></th></tr>
       ${c.reportes.map(r=>{const m=r.metricas;return `<tr><td>${r.desde} a ${r.hasta}</td><td>${m.ig_followers_total??'—'}</td><td>${m.sp_monthly??'—'}</td><td>${m.yt_subs??'—'}</td><td>${((m.ig_inversion||0)+(m.sp_inversion||0)+(m.yt_inversion||0)).toFixed(2)}</td>
       <td class="acciones"><button class="borrar" data-del="${r.desde}|${r.hasta}" title="Borrar esta semana">Borrar</button></td></tr>`}).join('')}
-    </table></div>`;
+    </table></details></div>`;
   }
 
   h+=`<div class="card"><h2>Tareas</h2>
-    ${(c.tareas||[]).map(t=>`<div class="fila"><span class="t">${t.titulo}</span>
-      <select data-tid="${t.id}"><option value="pendiente"${t.estado==='pendiente'?' selected':''}>Pendiente</option><option value="en_curso"${t.estado==='en_curso'?' selected':''}>En curso</option><option value="hecha"${t.estado==='hecha'?' selected':''}>Hecha</option></select></div>`).join('')||'<p class="meta">Sin tareas.</p>'}
-    <h3>Agregar</h3><div class="agregar"><input id="t_tit" placeholder="Título de la tarea"><button class="sec" onclick="nuevaTarea()">Agregar</button></div></div>`;
+    ${(c.tareas||[]).map(t=>`<div class="fila" style="grid-template-columns:1fr 170px 30px"><span class="t">${t.titulo}${t.creada_por==='cliente'?' <span style="color:var(--rosa);font-size:11px">· la pidió el cliente</span>':''}</span>
+      <select data-tid="${t.id}"><option value="pendiente"${t.estado==='pendiente'?' selected':''}>Pendiente</option><option value="en_curso"${t.estado==='en_curso'?' selected':''}>En curso</option><option value="hecha"${t.estado==='hecha'?' selected':''}>Hecha</option></select>
+      <button class="x" data-del-tarea="${t.id}" title="Borrar tarea">×</button></div>`).join('')||'<p class="meta">Sin tareas.</p>'}
+    <h3>Agregar</h3><div class="agregar"><input id="t_tit" placeholder="Título de la tarea"><button class="sec" onclick="nuevaTarea()">Agregar</button></div>
+    ${notasHTML(c,'tareas')}</div>`;
+
+  h+=`<div class="card"><h2>Hitos</h2><p class="meta">Metas que ve el cliente con su barra de avance.</p>
+    ${(c.hitos||[]).map(x=>`<div class="hito-i"><span>${x.titulo||x.metrica}</span><span style="text-align:right">${x.objetivo}</span><button class="x" data-del-hito="${x.id}">×</button></div>`).join('')||'<p class="meta">Sin hitos.</p>'}
+    <h3>Agregar</h3>
+    <div class="grid"><select id="h_met">
+      <option value="ig_followers_total|instagram">Seguidores en Instagram</option>
+      <option value="sp_monthly|spotify">Oyentes mensuales en Spotify</option>
+      <option value="sp_followers|spotify">Seguidores en Spotify</option>
+      <option value="sp_streams|spotify">Streams en la semana</option>
+      <option value="yt_subs|youtube">Suscriptores en YouTube</option>
+      <option value="yt_views|youtube">Visualizaciones en YouTube</option>
+    </select><input id="h_obj" placeholder="Objetivo (número)" inputmode="decimal"><input id="h_tit" placeholder="Título que ve el cliente"></div>
+    <div class="acc"><button class="sec" onclick="nuevoHito()">Agregar hito</button></div></div>`;
 
   h+=`<div class="card"><h2>Activos</h2>
-    ${(c.activos||[]).map(a=>`<div class="fila activo"><span class="t">${a.titulo}</span><input data-aid="${a.id}" value="${a.url||''}" placeholder="Pegá el link acá"></div>`).join('')||'<p class="meta">Sin activos.</p>'}
+    ${(c.activos||[]).map(a=>`<div class="fila activo" style="grid-template-columns:minmax(0,200px) 1fr 30px"><span class="t">${a.titulo}</span><input data-aid="${a.id}" value="${a.url||''}" placeholder="Pegá el link acá"><button class="x" data-del-activo="${a.id}" title="Borrar activo">×</button></div>`).join('')||'<p class="meta">Sin activos.</p>'}
     <h3>Agregar</h3><div class="fila activo" style="border:0;padding-top:0"><input id="a_tit" placeholder="Título"><input id="a_url" placeholder="https://..."></div>
-    <div class="acc"><button class="sec" onclick="nuevoActivo()">Agregar activo</button></div></div>`;
+    <div class="acc"><button class="sec" onclick="nuevoActivo()">Agregar activo</button></div>
+    ${notasHTML(c,'activos')}</div>`;
+
+  h+=`<div class="card"><h2>Notas del proyecto</h2><p class="meta">Lo que anotes acá lo ve el cliente en su página. Ideal para dejarle registro de lo que hiciste con las campañas.</p>
+    ${notasHTML(c,'general',true)}</div>`;
 
   v.innerHTML=h;
   const link=`https://landing.semillaredes.com/cliente.html?c=${c.slug}&k=${c.token}`;
   $('cp').onclick=()=>{navigator.clipboard.writeText(link);$('cp').textContent='Copiado ✓';};
   $('wa').onclick=()=>window.open('https://wa.me/?text='+encodeURIComponent('Te dejo el panel de tu proyecto, se actualiza todas las semanas: '+link),'_blank');
+  document.querySelectorAll('[data-del-tarea]').forEach(b=>b.onclick=async()=>{ if(!confirm('¿Borrar esta tarea?'))return; const r=await rpc('sub_borrar',{p_admin:admin,p_que:'tarea',p_id:b.dataset.delTarea}); if(r.ok) entrar(); });
+  document.querySelectorAll('[data-del-activo]').forEach(b=>b.onclick=async()=>{ if(!confirm('¿Borrar este activo?'))return; const r=await rpc('sub_borrar',{p_admin:admin,p_que:'activo',p_id:b.dataset.delActivo}); if(r.ok) entrar(); });
+  document.querySelectorAll('[data-del-nota]').forEach(b=>b.onclick=async()=>{ if(!confirm('¿Borrar esta nota?'))return; const r=await rpc('sub_borrar',{p_admin:admin,p_que:'nota',p_id:b.dataset.delNota}); if(r.ok) entrar(); });
+  document.querySelectorAll('[data-del-hito]').forEach(b=>b.onclick=async()=>{ if(!confirm('¿Borrar este hito?'))return; const r=await rpc('sub_borrar',{p_admin:admin,p_que:'hito',p_id:b.dataset.delHito}); if(r.ok) entrar(); });
+  document.querySelectorAll('[data-add-nota]').forEach(b=>b.onclick=async()=>{
+    const sec=b.dataset.addNota;
+    const inp=[...document.querySelectorAll('.n_txt')].find(i=>i.dataset.sec===sec);
+    if(!inp||!inp.value.trim())return;
+    const r=await rpc('sub_nota_admin',{p_admin:admin,p_slug:sel,p_texto:inp.value.trim(),p_seccion:sec});
+    if(r.ok) entrar();
+  });
   document.querySelectorAll('button[data-del]').forEach(b=>b.onclick=async()=>{
     const [de,ha]=b.dataset.del.split('|');
     if(!confirm(`¿Borrar la semana del ${de} al ${ha}?\n\nSe pierden todas las métricas de esa semana.`)) return;
@@ -208,6 +257,13 @@ async function guardarReporte(){
 }
 async function nuevaTarea(){ const t=$('t_tit').value.trim(); if(!t)return; await rpc('sub_tarea_alta',{p_admin:admin,p_slug:sel,p_titulo:t}); entrar(); }
 async function nuevoActivo(){ const t=$('a_tit').value.trim(); if(!t)return; await rpc('sub_activo_alta',{p_admin:admin,p_slug:sel,p_titulo:t,p_url:$('a_url').value.trim()}); entrar(); }
+async function nuevoHito(){
+  const [met,plat]=$('h_met').value.split('|');
+  const obj=parseFloat(($('h_obj').value||'').replace(/[^\d.]/g,''));
+  if(!obj){ alert('Falta el objetivo'); return; }
+  const r=await rpc('sub_hito_alta',{p_admin:admin,p_slug:sel,p_plataforma:plat,p_metrica:met,p_objetivo:obj,p_titulo:$('h_tit').value.trim()||null});
+  if(r.ok) entrar();
+}
 async function crearCliente(){
   const n=$('n_nom').value.trim(); if(!n)return;
   const r=await rpc('sub_cliente_alta',{p_admin:admin,p_nombre:n});
