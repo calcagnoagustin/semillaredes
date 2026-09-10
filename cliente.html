@@ -359,13 +359,28 @@ function pintarResto(d,h){
   if(HI.length){
     h+=`<h2>Hitos</h2><p class="sub">Las metas que nos pusimos para este proyecto.</p>`;
     HI.forEach(x=>{
-      const act=Number(m[x.metrica]||0), obj=Number(x.objetivo)||1;
-      const pct=Math.min(100,Math.round(act/obj*100));
-      const listo=act>=obj;
-      h+=`<div class="hito ${listo?'logrado':''}"><div class="tt">${x.titulo||x.metrica}</div>
-        <div class="num">${fmt(act)} de ${fmt(obj)}</div>
-        <div class="barra"><i style="width:${pct}%"></i></div>
-        <div class="falta">${listo?'¡Logrado!':`${pct}% · faltan ${fmt(obj-act)}`}</div></div>`;
+      const obj=Number(x.objetivo)||1;
+      // valor actual: si es un total calculado, lo sumamos
+      let act;
+      if(x.metrica==='total_mensajes') act=Number(m.ej_mensajes||0)+Number(m.cal_mensajes||0)+Number(m.esp_mensajes||0);
+      else act=Number(m[x.metrica]||0);
+      const menosEsMejor=/costo|cac/i.test(x.metrica);
+      const dec = /costo/i.test(x.metrica) ? 2 : 0;
+      if(menosEsMejor){
+        const listo = act>0 && act<=obj;
+        const pct = act>0 ? Math.min(100, Math.round(obj/act*100)) : 0;
+        h+=`<div class="hito ${listo?'logrado':''}"><div class="tt">${x.titulo||x.metrica}</div>
+          <div class="num">${act>0?`Hoy estás en ${fmt(act,dec)} · la meta es ${fmt(obj,dec)} o menos`:'Todavía sin datos'}</div>
+          <div class="barra"><i style="width:${pct}%"></i></div>
+          <div class="falta">${listo?'¡Logrado!':(act>0?`Te falta bajar ${fmt(act-obj,dec)}`:'')}</div></div>`;
+      } else {
+        const listo=act>=obj;
+        const pct=Math.min(100,Math.round(act/obj*100));
+        h+=`<div class="hito ${listo?'logrado':''}"><div class="tt">${x.titulo||x.metrica}</div>
+          <div class="num">${fmt(act,dec)} de ${fmt(obj,dec)}</div>
+          <div class="barra"><i style="width:${pct}%"></i></div>
+          <div class="falta">${listo?'¡Logrado!':`${pct}% · faltan ${fmt(obj-act,dec)}`}</div></div>`;
+      }
     });
   }
 
