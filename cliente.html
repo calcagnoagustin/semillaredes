@@ -261,6 +261,7 @@ function pintarMixto(d){
     ${card('Invertido', 'USD '+fmt(m.msj_inversion,2), [m.msj_inversion, ma.msj_inversion],2)}
   </div>`;
   h+=grafico('Consultas por semana','Cuánta gente escribió para comprar.',R.map(r=>r.metricas.msj_mensajes),et,'#87863A');
+  h+=grafico('Costo por consulta, semana a semana','Cuánto cuesta cada persona que escribe. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.msj_costo_mensaje),et,'#E2767C',true);
 
   const hayVentas = R.some(r=>r.metricas.msj_conversiones!=null || r.metricas.msj_ingreso!=null);
   if(hayVentas){
