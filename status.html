@@ -119,7 +119,7 @@ table{font-size:13px}
     <svg viewBox="0 0 44 44" aria-hidden="true"><g stroke="#E2767C" stroke-width="2.4" stroke-linecap="round"><line x1="22" y1="22" x2="5" y2="22"/><line x1="22" y1="22" x2="39" y2="22"/><line x1="22" y1="22" x2="22" y2="5"/><line x1="22" y1="22" x2="22" y2="39"/><line x1="22" y1="22" x2="10" y2="10"/><line x1="22" y1="22" x2="34" y2="34"/><line x1="22" y1="22" x2="34" y2="10"/><line x1="22" y1="22" x2="10" y2="34"/></g><g fill="#E2767C"><circle cx="5" cy="22" r="3.4"/><circle cx="39" cy="22" r="3.4"/><circle cx="22" cy="5" r="3.4"/><circle cx="22" cy="39" r="3.4"/><circle cx="10" cy="10" r="3.4"/><circle cx="34" cy="34" r="3.4"/><circle cx="34" cy="10" r="3.4"/><circle cx="10" cy="34" r="3.4"/></g><ellipse cx="22" cy="22" rx="6.6" ry="10.5" fill="#87863A"/></svg>
     <div><b>SEMILLA</b><span>REDES</span></div>
   </div>
-  <div class="stamp">Documento interno · <b>Última actualización: 27/08/2026</b></div>
+  <div class="stamp">Documento interno · <b>Última actualización: 10/09/2026</b></div>
 </div>
 
 <div class="shell">
@@ -142,6 +142,7 @@ table{font-size:13px}
   <a href="#setup">15 · Setup Inicial</a>
   <a href="#raiz">16 · Redes con raíz</a>
   <a href="#lanzamiento">17 · Lanzamiento Oct 26</a>
+  <a href="#facturacion">18 · Facturación</a>
   <a href="#registro">14 · Registro</a>
 </nav>
 
@@ -585,11 +586,37 @@ table{font-size:13px}
 <p style="margin-top:10px"><b>Cómo mover archivos binarios al repo:</b> la VM tiene el token de GitHub pero no ve los archivos de la Mac, y el sandbox ve los archivos pero no llega a GitHub. El camino que funcionó: bucket temporal en Supabase (<code>tmp-traspaso</code>, público, con políticas de anon para insert/select/delete), la Mac sube con <code>curl</code> usando la publishable key, la VM baja y publica con <code>gh_file.py</code>, y después se borran objetos y políticas. El bucket vacío no se puede borrar por SQL: hay que sacarlo del panel de Supabase. Los modelos pesados (.onnx) se bajan desde la Mac a la carpeta de outputs, que el sandbox sí lee.</p>
 </section>
 
+<!-- 18 -->
+<section id="facturacion">
+<h2>18 · Facturación al exterior</h2>
+<p>Los clientes del exterior se facturan con un invoice propio de Semilla Redes, en inglés. Reemplaza al formato viejo: una tabla en Google Docs con la marca <b>SemillaART</b>, <code>semillanft.com</code> y cobro por <code>paypal.me/aguscalcagno</code>, que además dejaba el subtotal en cero. Ese modelo queda deprecado.</p>
+
+<table>
+<tr><th>Convención</th><th>Criterio</th></tr>
+<tr><td>Numeración</td><td><code>SR-AAAA-MM</code> — un invoice por mes calendario</td></tr>
+<tr><td>Fechas</td><td>Emisión el día 1, vencimiento el día 30: el período dura el mes completo</td></tr>
+<tr><td>Idioma</td><td>Inglés</td></tr>
+<tr><td>Tamaño de hoja</td><td><b>Letter</b> para Estados Unidos · A4 para Europa</td></tr>
+<tr><td>Nota fiscal</td><td>Servicios exportados desde Argentina, sin IVA aplicable</td></tr>
+<tr><td>Diseño</td><td>Logo oficial, header navy, Playfair + Inter, total en vino</td></tr>
+</table>
+
+<table style="margin-top:14px">
+<tr><th>Invoice</th><th>Cliente</th><th>Período</th><th>Monto</th><th>Estado</th></tr>
+<tr><td><code>SR-2026-09</code></td><td><b>MD Coach App LLC</b> — Anibal Martinez, Aurora, Colorado, EE.UU.</td><td>Septiembre 2026</td><td>USD 600</td><td>Emitido</td></tr>
+<tr><td><code>SR-2026-07</code></td><td>Alan Tribouley — Dinamarca (CVR 46000587)</td><td>Julio 2026</td><td>USD 65</td><td>Emitido</td></tr>
+<tr><td><code>SR-2026-06</code></td><td>Alan Tribouley — Dinamarca (CVR 46000587)</td><td>Junio 2026</td><td>USD 65</td><td>Emitido</td></tr>
+</table>
+
+<p style="margin-top:14px"><b>Servicios facturados:</b> MD Coach App LLC son honorarios mensuales por gestión de anuncios en Meta Ads; Alan Tribouley es consultoría de marketing. <b>Cobro:</b> MD Coach App paga por transferencia ACH/wire a una cuenta en dólares en Estados Unidos, que es lo más barato para un cliente de allá y bastante mejor que PayPal. <b>Los datos bancarios no se publican acá</b>: viven únicamente en el PDF de cada invoice.</p>
+</section>
+
 <!-- 14 -->
 <section id="registro">
 <h2>14 · Registro de actualizaciones</h2>
 <table>
 <tr><th>Fecha</th><th>Cambio</th></tr>
+<tr><td><b>10/09/2026</b></td><td>Se agrega la sección <b>18 · Facturación al exterior</b>. Se define el formato propio de invoice de Semilla Redes y se jubila el modelo viejo de Google Docs (marca SemillaART, <code>semillanft.com</code>, cobro por PayPal y subtotal en cero). Convenciones: numeración <code>SR-AAAA-MM</code>, un invoice por mes calendario con emisión el día 1 y vencimiento el 30, en inglés, hoja Letter para Estados Unidos y A4 para Europa, con la nota de exportación de servicios sin IVA. Se emite <code>SR-2026-09</code> a <b>MD Coach App LLC</b> (Aurora, Colorado) por USD 600 de honorarios de Meta Ads de septiembre, cobrable por transferencia ACH/wire a cuenta en dólares. Se registran también los invoices de junio y julio a Alan Tribouley.</td></tr>
 <tr><td><b>31/08/2026</b></td><td><b>Hero nuevo de la Formación</b>, sobre un mock que Agus armó con ChatGPT. Titular: "Formación Semilla: aprendé a transformar tu arte en un negocio digital." en tres líneas, con los cortes forzados. Debajo, los tres pilares como círculos de color con ícono: negocio en oliva, comunicación en rosa, publicidad en navy. Foto de Agus recortada sobre disco arena, con los trazos rosa arriba a la derecha. <b>El hero va a sangre</b>, no en caja centrada: la foto toca el borde derecho en cualquier ancho. Las medidas salen del mock de 1536&times;1024 y van como <code>min(Xvw, Ypx)</code>, con X = Y/1536&times;100. El cuerpo del titular es <code>min(calc(4.55vw - 8px), 84px)</code>, despejado midiendo el ancho real de la línea más larga contra el ancho útil de la columna. En celular la foto va entre los pilares y los botones, usando <code>display:contents</code> sobre <code>.hero-copy</code> para poder intercalarla. Horario de los teóricos: pasa a <b>17 a 18 hs</b> en formacion.html, formacion-cm.html y este status.</td></tr>
 <tr><td><b>29/08/2026</b></td><td>Se suma a <code>formacion.html</code> el CTA <b>Pre inscripción</b> apuntando al Google Form nuevo (<code>1FAIpQLScCcE046UMn5iJs08cxpwGVhkwgKaOZA1QuxSpSzWkVY0cifQ</code>), en los cinco lugares donde antes decía "Inscribite ahora" y llevaba a WhatsApp; los CTA de WhatsApp quedan como estaban. Se rebrandea el hero: pasa a dos columnas con la foto recortada de Agus (la misma de <code>charla.html</code>) sobre disco arena, y se corrigen el rosa y el oliva, que en esta página seguían siendo los viejos <code>#C97080</code> y <code>#7A8A42</code>. El titular baja a <code>clamp(40px,5vw,62px)</code> para que no se corte al angostarse la columna. El link del footer también apunta ahora al formulario nuevo.</td></tr>
 <tr><td><b>29/08/2026</b></td><td>Se cargan al archivo los <b>Drops 89 a 97</b>: el píxel de Meta, los tres tipos de contenido, la serie completa del Embudo Semilla (91–96) y las playlists con la herramienta Curadores Semilla. El archivo pasa de 88 a 97. Se rehace el bloque del embudo dentro de los drops para que el nivel activo se distinga y no se dupliquen las viñetas. Queda pendiente definir la fecha real del 97. Se deja documentado en la sección 06 cómo se agrega un drop nuevo y por qué los atributos HTML van con comillas simples.</td></tr>
