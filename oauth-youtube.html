@@ -33,7 +33,9 @@ button{width:100%;border:0;background:var(--vino);color:#fff;font-weight:600;bor
 const API='https://fdrxsjphlvvwwknnrjtx.supabase.co';
 const KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
 const $=id=>document.getElementById(id);
-const code=new URLSearchParams(location.search).get('code');
+const P=new URLSearchParams(location.search);
+const code=P.get('code');
+const cuenta=P.get('state')||P.get('cuenta')||'principal';
 const errUrl=new URLSearchParams(location.search).get('error');
 const fn=(b)=>fetch(`${API}/functions/v1/youtube-sync`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(b)}).then(r=>r.json());
 
@@ -50,11 +52,12 @@ if(errUrl){
 } else if(code){
   $('msg').textContent='Guardando el permiso…';
   pedirToken(async(admin)=>{
-    const r=await fn({accion:'canje',admin,code});
+    const r=await fn({accion:'canje',admin,code,cuenta});
     if(r.ok){
       $('tit').textContent='Listo';
-      $('msg').innerHTML='<span class="ok">YouTube quedó conectado.</span>';
-      $('extra').innerHTML='<p class="mini">Ya podés cerrar esta pestaña y volver al panel.</p>';
+      $('msg').innerHTML='<span class="ok">YouTube quedó conectado'+(cuenta!=='principal'?' para '+cuenta:'')+'.</span>';
+      const lista=(r.canales||[]).map(c=>`<li><b>${c.nombre}</b> · ${c.subs||0} subs<br><span style="font-size:12px;color:#8A8697">${c.id}</span></li>`).join('');
+      $('extra').innerHTML=(lista?`<p class="mini">Canales visibles con esta cuenta:</p><ul style="font-size:14px">${lista}</ul>`:'')+'<p class="mini">Ya podés cerrar esta pestaña y volver al panel.</p>';
     } else {
       $('tit').textContent='No se pudo guardar';
       $('msg').innerHTML='<span class="err">'+(r.detalle||r.error||'Error')+'</span>';
@@ -62,9 +65,9 @@ if(errUrl){
     }
   });
 } else {
-  $('msg').textContent='Vas a autorizar el acceso de solo lectura a las estadísticas de tus canales.';
+  $('msg').textContent=cuenta==='principal'?'Vas a autorizar el acceso de solo lectura a las estadísticas de tus canales.':'Vas a conectar la cuenta de YouTube de '+cuenta+'. Elegí la cuenta dueña de ese canal.';
   pedirToken(async(admin)=>{
-    const r=await fn({accion:'url',admin});
+    const r=await fn({accion:'url',admin,cuenta});
     if(r.url){ $('extra').innerHTML='<button id="ir">Conectar con Google</button><p class="mini">Solo lectura. Nunca publicamos ni modificamos nada.</p>'; $('ir').onclick=()=>location.href=r.url; }
     else $('msg').innerHTML='<span class="err">'+(r.detalle||r.error||'Error')+'</span>';
   });
