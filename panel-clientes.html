@@ -82,12 +82,24 @@ const $=id=>document.getElementById(id);
 const rpc=(fn,a)=>fetch(`${API}/rest/v1/rpc/${fn}`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(a)}).then(r=>r.json());
 let admin='', clientes=[], sel=null;
 
-const CAMPOS={
+const CAMPOS_MUSICA={
  'Instagram':[['ig_followers_total','Seguidores'],['ig_followers_nuevos','Nuevos'],['ig_visitas','Visitas'],['ig_inversion','Inversión USD'],['ig_inversion_diaria','Inv. diaria'],['ig_costo_follower','Costo x seguidor']],
  'Spotify':[['sp_monthly','Oyentes mensuales'],['sp_listeners','Listeners'],['sp_streams','Streams'],['sp_stream_listener','Streams x listener'],['sp_guardados','Guardados'],['sp_playlists','Playlists'],['sp_followers','Seguidores'],['sp_meta_visitas','Visitas desde Meta'],['sp_inversion','Inversión USD'],['sp_costo_stream','Costo x stream']],
  'YouTube (canal)':[['yt_subs','Suscriptores'],['yt_subs_nuevos','Nuevos'],['yt_views','Views del canal'],['yt_horas','Horas vistas']],
  'YouTube (pauta)':[['yt_views_ads','Views del anuncio'],['yt_inversion','Inversión USD'],['yt_costo_view','Costo x view']]
 };
+const CAMPOS_MENSAJES={
+ 'Reservas Ejecutivo':[['ej_mensajes','Mensajes'],['ej_inversion','Inversión USD'],['ej_costo_mensaje','Costo x mensaje'],['ej_alcance','Personas alcanzadas'],['ej_pba','PBA'],['ej_caba','CABA'],['ej_inv_diaria','Inv. diaria']],
+ 'Reservas Calificadas':[['cal_mensajes','Mensajes'],['cal_inversion','Inversión USD'],['cal_costo_mensaje','Costo x mensaje'],['cal_alcance','Personas alcanzadas'],['cal_pba','PBA'],['cal_caba','CABA'],['cal_inv_diaria','Inv. diaria']],
+ 'Campaña especial':[['esp_nombre','Nombre de la campaña'],['esp_mensajes','Mensajes'],['esp_inversion','Inversión USD'],['esp_costo_mensaje','Costo x mensaje'],['esp_alcance','Personas alcanzadas'],['esp_pba','PBA'],['esp_caba','CABA']]
+};
+const CAMPOS_MIXTO={
+ 'Instagram':[['ig_followers_total','Seguidores'],['ig_followers_nuevos','Nuevos'],['ig_visitas','Visitas'],['ig_inversion','Inversión USD'],['ig_inversion_diaria','Inv. diaria'],['ig_costo_follower','Costo x seguidor']],
+ 'Consultas por productos':[['msj_mensajes','Consultas'],['msj_inversion','Inversión USD'],['msj_costo_mensaje','Costo x consulta'],['msj_potenciales','Potenciales']],
+ 'Ventas':[['msj_conversiones','Ventas'],['msj_costo_conversion','Costo x venta'],['msj_ingreso','Ingreso USD'],['msj_roas','ROAS']]
+};
+const CAMPOS_POR_TIPO={musica:CAMPOS_MUSICA, mensajes:CAMPOS_MENSAJES, mixto:CAMPOS_MIXTO};
+let CAMPOS = CAMPOS_MUSICA;
 
 async function entrar(){
   const t=$('tok').value.trim()||sessionStorage.getItem('sr_admin')||'';
@@ -133,15 +145,29 @@ function parsear(txt){
     const p=l.split(':'); if(p.length<2) return;
     const k=p[0].trim().toLowerCase(), v=num(p.slice(1).join(':'));
     if(v==null) return;
+    // secciones de reportes de mensajes
+    if(/^reservas ejecutivo/i.test(bajo)){seccion='ej';return;}
+    if(/^reservas calificadas/i.test(bajo)){seccion='cal';return;}
+    if(/^famosos/i.test(bajo)){seccion='fam';return;}
+    if(/^reservas /i.test(bajo)){seccion='esp';return;}
+    if(/^mensajes \(productos\)/i.test(bajo)){seccion='msj';return;}
     const M={
       'followers': seccion==='ig'?(d.ig_followers_total==null?'ig_followers_total':'ig_followers_nuevos'):'sp_followers',
       'visitas': seccion==='ig'?'ig_visitas':'sp_meta_visitas',
       'meta visitas':'sp_meta_visitas',
-      'inversión': seccion+'_inversion', 'inversion': seccion+'_inversion',
-      'costo por follower':'ig_costo_follower','inversión diaria':'ig_inversion_diaria','inversion diaria':'ig_inversion_diaria',
+      'inversión': (seccion==='msj'?'msj_inversion':seccion+'_inversion'), 'inversion': (seccion==='msj'?'msj_inversion':seccion+'_inversion'),
+      'costo por follower':'ig_costo_follower','inversión diaria':(seccion==='ig'?'ig_inversion_diaria':seccion+'_inv_diaria'),'inversion diaria':(seccion==='ig'?'ig_inversion_diaria':seccion+'_inv_diaria'),
       'listeners':'sp_listeners','monthly':'sp_monthly','streams':'sp_streams','stream/listener':'sp_stream_listener',
       'guardados':'sp_guardados','playlists':'sp_playlists','costo por stream':'sp_costo_stream',
       'suscriptores':'yt_subs','views':'yt_views','visualizaciones':'yt_views','horas':'yt_horas','costo por view':'yt_costo_view',
+      'mensajes': (seccion==='msj'?'msj_mensajes':seccion+'_mensajes'),
+      'inversión total': seccion+'_inversion',
+      'costo por mensaje': (seccion==='msj'?'msj_costo_mensaje':seccion+'_costo_mensaje'),
+      'personas alcanzadas': seccion+'_alcance',
+      'pba': seccion+'_pba', 'caba': seccion+'_caba',
+      'potenciales':'msj_potenciales','conversiones':'msj_conversiones',
+      'costo conversión':'msj_costo_conversion','costo conversion':'msj_costo_conversion',
+      'ingreso':'msj_ingreso','roas':'msj_roas',
       'views ads':'yt_views_ads','views del anuncio':'yt_views_ads','visualizaciones ads':'yt_views_ads','reproducciones':'yt_views_ads'
     };
     const campo=M[k]; if(campo) d[campo]=v;
@@ -159,6 +185,7 @@ function pintar(){
   }
   const c=clientes.find(x=>x.slug===sel); if(!c){v.innerHTML='';return;}
   const ult=(c.reportes||[])[0];
+  CAMPOS = CAMPOS_POR_TIPO[c.tipo] || CAMPOS_MUSICA;
   let h=`<div class="card"><h2>${c.nombre}</h2>
     <div class="meta">landing.semillaredes.com/cliente.html?c=${c.slug}&k=${c.token}</div>
     <div class="acc"><button class="sec" id="cp">Copiar link</button><button class="sec" id="wa">Mandar por WhatsApp</button></div></div>`;
