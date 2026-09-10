@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png">
+<title>Conectar YouTube · Semilla Redes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--crema:#F2EDE4;--navy:#1A2456;--vino:#7A1F3A;--oliva:#87863A;--mute:#6E6A78}
+body{margin:0;background:var(--crema);color:#24242C;font-family:Inter,system-ui,sans-serif;line-height:1.6;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+.caja{max-width:520px;width:100%;background:#fff;border:1px solid #E5DFD2;border-radius:16px;padding:34px}
+img.logo{width:150px;display:block;margin:0 auto 24px}
+h1{font-family:'Playfair Display',serif;font-size:27px;color:var(--navy);margin:0 0 8px;text-align:center}
+p{font-size:15.5px;color:#55525F;text-align:center;margin:0 0 8px}
+.ok{color:var(--oliva);font-weight:600}
+.err{color:var(--vino);font-weight:600}
+input,button{font:inherit}
+input{width:100%;border:1px solid #DDD6C7;border-radius:10px;padding:12px 13px;font-size:15px;margin:14px 0 0}
+button{width:100%;border:0;background:var(--vino);color:#fff;font-weight:600;border-radius:10px;padding:13px;cursor:pointer;margin-top:12px}
+.mini{font-size:13px;color:var(--mute);text-align:center;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="caja">
+  <img class="logo" src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semilla-logo-horizontal.png" alt="Semilla Redes">
+  <h1 id="tit">Conectar YouTube</h1>
+  <p id="msg">Verificando…</p>
+  <div id="extra"></div>
+</div>
+<script>
+const API='https://fdrxsjphlvvwwknnrjtx.supabase.co';
+const KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
+const $=id=>document.getElementById(id);
+const code=new URLSearchParams(location.search).get('code');
+const errUrl=new URLSearchParams(location.search).get('error');
+const fn=(b)=>fetch(`${API}/functions/v1/youtube-sync`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(b)}).then(r=>r.json());
+
+function pedirToken(cb){
+  const t=sessionStorage.getItem('sr_admin');
+  if(t) return cb(t);
+  $('extra').innerHTML='<input id="adm" type="password" placeholder="Token de admin"><button id="ok">Continuar</button>';
+  $('ok').onclick=()=>{const v=$('adm').value.trim(); if(!v)return; sessionStorage.setItem('sr_admin',v); $('extra').innerHTML=''; cb(v);};
+}
+
+if(errUrl){
+  $('tit').textContent='No se completó';
+  $('msg').innerHTML='<span class="err">Google devolvió: '+errUrl+'</span>';
+} else if(code){
+  $('msg').textContent='Guardando el permiso…';
+  pedirToken(async(admin)=>{
+    const r=await fn({accion:'canje',admin,code});
+    if(r.ok){
+      $('tit').textContent='Listo';
+      $('msg').innerHTML='<span class="ok">YouTube quedó conectado.</span>';
+      $('extra').innerHTML='<p class="mini">Ya podés cerrar esta pestaña y volver al panel.</p>';
+    } else {
+      $('tit').textContent='No se pudo guardar';
+      $('msg').innerHTML='<span class="err">'+(r.detalle||r.error||'Error')+'</span>';
+      $('extra').innerHTML='<p class="mini">Probá generar el link de nuevo desde el panel.</p>';
+    }
+  });
+} else {
+  $('msg').textContent='Vas a autorizar el acceso de solo lectura a las estadísticas de tus canales.';
+  pedirToken(async(admin)=>{
+    const r=await fn({accion:'url',admin});
+    if(r.url){ $('extra').innerHTML='<button id="ir">Conectar con Google</button><p class="mini">Solo lectura. Nunca publicamos ni modificamos nada.</p>'; $('ir').onclick=()=>location.href=r.url; }
+    else $('msg').innerHTML='<span class="err">'+(r.detalle||r.error||'Error')+'</span>';
+  });
+}
+</script>
+</body>
+</html>
