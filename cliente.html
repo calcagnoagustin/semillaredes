@@ -66,6 +66,20 @@ th:first-child,td:first-child{text-align:left}
 th{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--oliva);background:#FBF8F2}
 .err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:26px}
 .oculto{display:none}
+.camp{background:#fff;border:1px solid var(--linea);border-radius:14px;padding:18px 20px;margin-bottom:12px}
+.camp h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);margin:0 0 2px}
+.camp .que{font-size:13px;color:var(--mute);margin:0 0 12px}
+.camp .nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
+.camp .n{border-left:2px solid var(--linea);padding-left:11px}
+.camp .n .l{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--oliva);font-weight:700}
+.camp .n .v{font-family:'Playfair Display',serif;font-size:26px;color:var(--navy);line-height:1.15}
+.camp .n .d{font-size:12px;color:var(--mute)}
+.camp.destacada{background:var(--navy);border-color:var(--navy)}
+.camp.destacada h3,.camp.destacada .n .v{color:var(--crema)}
+.camp.destacada .que,.camp.destacada .n .d{color:#B9B4C4}
+.camp.destacada .n{border-left-color:#2E3970}
+.zona{display:flex;gap:10px;margin-top:12px;font-size:13px;color:var(--mute)}
+.zona b{color:var(--navy)}
 details.hist{background:#fff;border:1px solid var(--linea);border-radius:13px;overflow:hidden}
 details.hist summary{list-style:none;cursor:pointer;padding:15px 18px;display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--navy)}
 details.hist summary::-webkit-details-marker{display:none}
@@ -188,16 +202,72 @@ function grafico(titulo, leyenda, datos, etiquetas, color, invertido){
     ${svg||`<div class="aviso">Con una sola semana cargada todavía no hay línea de tendencia. A partir del segundo reporte vas a ver cómo evoluciona.</div>`}</div>`;
 }
 
+const CAMPS=[
+  {p:'ej', tit:'Reservas Ejecutivo', que:'Campaña para el público ejecutivo.'},
+  {p:'cal', tit:'Reservas Calificadas', que:'La campaña principal: incluye famosos y general.', dest:true},
+  {p:'fam', tit:'Famosos', que:'Campaña dirigida al segmento de famosos.'}
+];
+
+function pintarMensajes(d){
+  const R=d.reportes||[];
+  const u=R[R.length-1]||null, a=R.length>1?R[R.length-2]:null;
+  const m=u?u.metricas:{}, ma=a?a.metricas:{};
+  const et=R.map(r=>fecha(r.hasta));
+  const tot=x=>(Number(x.ej_mensajes||0)+Number(x.cal_mensajes||0)+Number(x.fam_mensajes||0));
+  const inv=x=>(Number(x.ej_inversion||0)+Number(x.cal_inversion||0)+Number(x.fam_inversion||0));
+
+  let h=`<h1>${d.cliente.nombre}</h1>
+    <p class="periodo">${u?`Semana del ${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
+
+  h+=`<h2>La semana</h2><p class="sub">Lo que trajeron las campañas.</p><div class="tarj">
+    ${card('Mensajes totales', fmt(tot(m)), [tot(m), a?tot(ma):null],0,true)}
+    ${card('Invertido', 'USD '+fmt(inv(m),2), [inv(m), a?inv(ma):null],2)}
+    ${card('Costo por mensaje', 'USD '+fmt(inv(m)/(tot(m)||1),2), [inv(m)/(tot(m)||1), a?inv(ma)/(tot(ma)||1):null],2,false,true)}
+    ${card('Personas alcanzadas', fmt(Number(m.ej_alcance||0)+Number(m.cal_alcance||0)+Number(m.fam_alcance||0)), null)}
+  </div>`;
+
+  h+=grafico('Mensajes por semana','Cuánta gente escribió para reservar.',R.map(r=>tot(r.metricas)),et,'#7A1F3A');
+  h+=grafico('Costo por mensaje','Cuánto cuesta cada consulta. Mientras más baja la línea, mejor.',R.map(r=>{const x=r.metricas;return Math.round(inv(x)/(tot(x)||1)*100)/100;}),et,'#87863A',true);
+
+  h+=`<h2>Cada campaña</h2><p class="sub">Cómo rindió cada una esta semana.</p>`;
+  CAMPS.forEach(c=>{
+    const men=m[c.p+'_mensajes'], costo=m[c.p+'_costo_mensaje'], alc=m[c.p+'_alcance'], invc=m[c.p+'_inversion'];
+    if(men==null && invc==null) return;
+    h+=`<div class="camp ${c.dest?'destacada':''}"><h3>${c.tit}</h3><p class="que">${c.que}</p>
+      <div class="nums">
+        <div class="n"><div class="l">Mensajes</div><div class="v">${fmt(men)}</div><div class="d">${delta(men, ma[c.p+'_mensajes'])||''}</div></div>
+        <div class="n"><div class="l">Costo x mensaje</div><div class="v">${fmt(costo,2)}</div><div class="d">USD</div></div>
+        <div class="n"><div class="l">Alcance</div><div class="v">${fmt(alc)}</div><div class="d">personas</div></div>
+        <div class="n"><div class="l">Invertido</div><div class="v">${fmt(invc,0)}</div><div class="d">USD · ${fmt(m[c.p+'_inv_diaria'])} por día</div></div>
+      </div>
+      <div class="zona"><span>PBA <b>${fmt(m[c.p+'_pba'])}</b></span><span>·</span><span>CABA <b>${fmt(m[c.p+'_caba'])}</b></span></div>
+    </div>`;
+  });
+
+  if(R.length>1){
+    h+=`<h2>Semana a semana</h2><p class="sub">Todo el historial.</p>
+      <details class="hist"><summary><span class="flecha">▶</span> Ver las ${R.length} semanas</summary><table>
+      <tr><th>Semana</th><th>Ejecutivo</th><th>Calificadas</th><th>Famosos</th><th>Total</th><th>Costo x mje.</th><th>Inversión</th></tr>
+      ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
+        <td>${fmt(x.ej_mensajes)}</td><td>${fmt(x.cal_mensajes)}</td><td>${fmt(x.fam_mensajes)}</td>
+        <td><b>${fmt(tot(x))}</b></td><td>${fmt(inv(x)/(tot(x)||1),2)}</td><td>${fmt(inv(x),2)}</td></tr>`}).join('')}
+      </table></details>`;
+  }
+  return h;
+}
+
 function pintar(d){
   const R=d.reportes||[];
   const u=R[R.length-1]||null, a=R.length>1?R[R.length-2]:null;
   const m=u?u.metricas:{}, ma=a?a.metricas:{};
   const et=R.map(r=>fecha(r.hasta));
+  window.__d=d;
 
   const card=(lab,val,ant,dec,dest,inv)=>`<div class="t ${dest?'destacada':''}"><div class="lab">${lab}</div><div class="val">${val}</div>${delta(ant?.[0],ant?.[1],inv)}</div>`;
 
-  let h=`<h1>${d.cliente.nombre}</h1>
+  let h = (d.cliente.tipo==='mensajes') ? pintarMensajes(d) : `<h1>${d.cliente.nombre}</h1>
   <p class="periodo">${u?`Semana del ${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
+  if(d.cliente.tipo==='mensajes'){ return pintarResto(d,h); }
 
   h+=`<h2>Instagram</h2><p class="sub">Crecimiento y costo de la pauta.</p><div class="tarj">
     ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
@@ -253,6 +323,11 @@ function pintar(d){
     </table></details>`;
   }
 
+  return pintarResto(d,h);
+}
+
+function pintarResto(d,h){
+  const R=d.reportes||[]; const u=R[R.length-1]||null; const m=u?u.metricas:{};
   const HI=d.hitos||[];
   if(HI.length){
     h+=`<h2>Hitos</h2><p class="sub">Las metas que nos pusimos para este proyecto.</p>`;
