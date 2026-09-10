@@ -43,7 +43,26 @@ const code=P.get('code');
 const $=id=>document.getElementById(id);
 const fn=b=>fetch(`${API}/functions/v1/yt-conectar`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({slug,clave,...b})}).then(r=>r.json());
 
+const fnLista=()=>fetch(`${API}/rest/v1/rpc/sub_lista_publica`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({p_clave:clave})}).then(r=>r.json());
+
+async function elegirCliente(){
+  const r=await fnLista();
+  if(!r.ok){ $('cont').innerHTML='<h1>Link no válido</h1><p class="c">Pedile uno nuevo a Agus.</p>'; return; }
+  const ops=(r.clientes||[]).map(c=>`<option value="${c.slug}">${c.nombre}</option>`).join('');
+  $('cont').innerHTML=`<h1>Conectá tu YouTube</h1>
+    <p class="c">Elegí tu proyecto para empezar.</p>
+    <select id="quien" style="width:100%;border:1px solid var(--linea);border-radius:11px;padding:14px;font:inherit;font-size:16px;margin-top:16px;background:#fff">
+      <option value="">Elegí tu proyecto…</option>${ops}
+    </select>
+    <button id="seguir">Continuar</button>`;
+  $('seguir').onclick=()=>{
+    const v=$('quien').value; if(!v){ return; }
+    location.href=`?c=${v}&i=${encodeURIComponent(clave)}`;
+  };
+}
+
 async function inicio(){
+  if(!slug && clave){ return elegirCliente(); }
   if(code){
     $('cont').innerHTML='<p class="c">Guardando el permiso…</p>';
     const r=await fn({accion:'canje',code});
