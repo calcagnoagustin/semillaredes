@@ -253,6 +253,7 @@ function pintarMixto(d){
     ${card('Costo por seguidor', 'USD '+fmt(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,true,true)}
   </div>`;
   h+=grafico('Seguidores, semana a semana','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
+  h+=grafico('Costo por seguidor, semana a semana','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
 
   h+=`<h2>Consultas</h2><p class="sub">Gente que escribió preguntando por productos.</p><div class="tarj">
     ${card('Consultas', fmt(m.msj_mensajes), [m.msj_mensajes, ma.msj_mensajes],0,true)}
