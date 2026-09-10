@@ -134,6 +134,8 @@ const slug=qs.get('c')||'', tok=qs.get('k')||'';
 const $=id=>document.getElementById(id);
 const rpc=(fn,a)=>fetch(`${API}/rest/v1/rpc/${fn}`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(a)}).then(r=>r.json());
 
+let MON='USD';
+const mon=(n,d=2)=>n==null?'—':(MON==='ARS'?'$ '+Number(n).toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0}):'USD '+Number(n).toLocaleString('es-AR',{minimumFractionDigits:d,maximumFractionDigits:d}));
 const fmt=(n,d=0)=>n==null?'—':Number(n).toLocaleString('es-AR',{minimumFractionDigits:d,maximumFractionDigits:d});
 const fecha=s=>{const [a,m,d]=s.split('-');return `${d}/${m}`;};
 
@@ -238,6 +240,7 @@ function multiCamp(R,et){
 }
 
 function pintarMixto(d){
+  MON=(d.cliente.moneda||'USD');
   const R=d.reportes||[];
   const u=R[R.length-1]||null, a=R.length>1?R[R.length-2]:null;
   const m=u?u.metricas:{}, ma=a?a.metricas:{};
@@ -250,15 +253,15 @@ function pintarMixto(d){
     ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
     ${card('Nuevos en la semana', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos])}
     ${card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas])}
-    ${card('Costo por seguidor', 'USD '+fmt(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,true,true)}
+    ${card('Costo por seguidor', mon(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,true,true)}
   </div>`;
   h+=grafico('Seguidores, semana a semana','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
   h+=grafico('Costo por seguidor, semana a semana','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
 
   h+=`<h2>Consultas</h2><p class="sub">Gente que escribió preguntando por productos.</p><div class="tarj">
     ${card('Consultas', fmt(m.msj_mensajes), [m.msj_mensajes, ma.msj_mensajes],0,true)}
-    ${card('Costo por consulta', 'USD '+fmt(m.msj_costo_mensaje,2), [m.msj_costo_mensaje, ma.msj_costo_mensaje],2,false,true)}
-    ${card('Invertido', 'USD '+fmt(m.msj_inversion,2), [m.msj_inversion, ma.msj_inversion],2)}
+    ${card('Costo por consulta', mon(m.msj_costo_mensaje,2), [m.msj_costo_mensaje, ma.msj_costo_mensaje],2,false,true)}
+    ${card('Invertido', mon(m.msj_inversion,2), [m.msj_inversion, ma.msj_inversion],2)}
   </div>`;
   h+=grafico('Consultas por semana','Cuánta gente escribió para comprar.',R.map(r=>r.metricas.msj_mensajes),et,'#87863A');
   h+=grafico('Costo por consulta, semana a semana','Cuánto cuesta cada persona que escribe. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.msj_costo_mensaje),et,'#E2767C',true);
@@ -267,17 +270,17 @@ function pintarMixto(d){
   if(hayVentas){
     h+=`<h2>Ventas</h2><p class="sub">Lo que las consultas terminaron generando.</p><div class="tarj">
       ${card('Ventas', fmt(m.msj_conversiones), [m.msj_conversiones, ma.msj_conversiones])}
-      ${card('Ingreso', 'USD '+fmt(m.msj_ingreso,0), [m.msj_ingreso, ma.msj_ingreso])}
-      ${card('Costo por venta', 'USD '+fmt(m.msj_costo_conversion,2), [m.msj_costo_conversion, ma.msj_costo_conversion],2,false,true)}
+      ${card('Ingreso', mon(m.msj_ingreso,0), [m.msj_ingreso, ma.msj_ingreso])}
+      ${card('Costo por venta', mon(m.msj_costo_conversion,2), [m.msj_costo_conversion, ma.msj_costo_conversion],2,false,true)}
       ${m.msj_roas!=null?card('ROAS', fmt(m.msj_roas,2), [m.msj_roas, ma.msj_roas],2,true):''}
     </div>
     <div class="graf"><h3>Qué es el ROAS</h3><p class="leyenda">Por cada dólar puesto en publicidad, cuántos volvieron en ventas. Un ROAS de 5 significa que cada dólar trajo cinco.</p></div>`;
   }
 
   h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta esta semana.</p><div class="tarj">
-    ${card('En seguidores','USD '+fmt(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
-    ${card('En consultas','USD '+fmt(m.msj_inversion,2),[m.msj_inversion,ma.msj_inversion],2)}
-    ${card('Total','USD '+fmt(Number(m.ig_inversion||0)+Number(m.msj_inversion||0),2),null,2,true)}
+    ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
+    ${card('En consultas',mon(m.msj_inversion,2),[m.msj_inversion,ma.msj_inversion],2)}
+    ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.msj_inversion||0),2),null,2,true)}
   </div>`;
 
   if(R.length>1){
@@ -294,6 +297,7 @@ function pintarMixto(d){
 }
 
 function pintarMensajes(d){
+  MON=(d.cliente.moneda||'USD');
   const R=d.reportes||[];
   const u=R[R.length-1]||null, a=R.length>1?R[R.length-2]:null;
   const m=u?u.metricas:{}, ma=a?a.metricas:{};
@@ -306,8 +310,8 @@ function pintarMensajes(d){
 
   h+=`<h2>La semana</h2><p class="sub">Lo que trajeron las campañas.</p><div class="tarj">
     ${card('Mensajes totales', fmt(tot(m)), [tot(m), a?tot(ma):null],0,true)}
-    ${card('Invertido', 'USD '+fmt(inv(m),2), [inv(m), a?inv(ma):null],2)}
-    ${card('Costo por mensaje', 'USD '+fmt(inv(m)/(tot(m)||1),2), [inv(m)/(tot(m)||1), a?inv(ma)/(tot(ma)||1):null],2,false,true)}
+    ${card('Invertido', mon(inv(m),2), [inv(m), a?inv(ma):null],2)}
+    ${card('Costo por mensaje', mon(inv(m)/(tot(m)||1),2), [inv(m)/(tot(m)||1), a?inv(ma)/(tot(ma)||1):null],2,false,true)}
     ${card('Personas alcanzadas', fmt(Number(m.ej_alcance||0)+Number(m.cal_alcance||0)+Number(m.esp_alcance||0)), null)}
   </div>`;
 
@@ -347,7 +351,7 @@ function pintar(d){
   const u=R[R.length-1]||null, a=R.length>1?R[R.length-2]:null;
   const m=u?u.metricas:{}, ma=a?a.metricas:{};
   const et=R.map(r=>fecha(r.hasta));
-  window.__d=d;
+  window.__d=d; MON=(d.cliente.moneda||'USD');
 
 
   let h = (d.cliente.tipo==='mensajes') ? pintarMensajes(d)
@@ -360,7 +364,7 @@ function pintar(d){
     ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
     ${card('Nuevos en la semana', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos])}
     ${card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas])}
-    ${card('Costo por seguidor', 'USD '+fmt(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,true,true)}
+    ${card('Costo por seguidor', mon(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,true,true)}
   </div>`;
   h+=grafico('Costo por seguidor, semana a semana','Mientras más baja la línea, mejor: cada seguidor nuevo te sale menos.',R.map(r=>r.metricas.ig_costo_follower),et,'#7A1F3A',true);
 
@@ -370,7 +374,7 @@ function pintar(d){
     ${card('Seguidores', fmt(m.sp_followers), [m.sp_followers, ma.sp_followers])}
     ${card('Guardados', fmt(m.sp_guardados), [m.sp_guardados, ma.sp_guardados])}
     ${card('Playlists', fmt(m.sp_playlists), [m.sp_playlists, ma.sp_playlists])}
-    ${card('Costo por stream', 'USD '+fmt(m.sp_costo_stream,3), [m.sp_costo_stream, ma.sp_costo_stream],3,true,true)}
+    ${card('Costo por stream', mon(m.sp_costo_stream,3), [m.sp_costo_stream, ma.sp_costo_stream],3,true,true)}
   </div>`;
   h+=grafico('Oyentes mensuales, semana a semana','Cuánta gente distinta te escucha por mes. Es el número que mira la industria.',R.map(r=>r.metricas.sp_monthly),et,'#87863A');
 
@@ -383,8 +387,8 @@ function pintar(d){
   if(m.yt_views_ads!=null || ma.yt_views_ads!=null){
     h+=`<p class="sub" style="margin-top:18px">Aparte, lo que trajo la pauta en YouTube. Son visualizaciones del anuncio, no del canal.</p><div class="tarj">
       ${card('Views del anuncio', fmt(m.yt_views_ads), [m.yt_views_ads, ma.yt_views_ads])}
-      ${card('Invertido', 'USD '+fmt(m.yt_inversion,2), [m.yt_inversion, ma.yt_inversion],2)}
-      ${card('Costo por view', 'USD '+fmt(m.yt_costo_view,3), [m.yt_costo_view, ma.yt_costo_view],3,true,true)}
+      ${card('Invertido', mon(m.yt_inversion,2), [m.yt_inversion, ma.yt_inversion],2)}
+      ${card('Costo por view', mon(m.yt_costo_view,3), [m.yt_costo_view, ma.yt_costo_view],3,true,true)}
     </div>`;
   }
 
@@ -393,11 +397,11 @@ function pintar(d){
   h+=`<h2>Crecimiento</h2><p class="sub">Las tres plataformas juntas.</p>`+multi(R);
 
   h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta esta semana.</p><div class="tarj">
-    ${card('En Instagram','USD '+fmt(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
-    ${card('En Spotify','USD '+fmt(m.sp_inversion,2),[m.sp_inversion,ma.sp_inversion],2)}
-    ${card('En YouTube','USD '+fmt(m.yt_inversion,2),[m.yt_inversion,ma.yt_inversion],2)}
-    ${card('Por día','USD '+fmt(m.ig_inversion_diaria,2),[m.ig_inversion_diaria,ma.ig_inversion_diaria],2)}
-    ${card('Total semana','USD '+fmt((m.ig_inversion||0)+(m.sp_inversion||0)+(m.yt_inversion||0),2),null,2,true)}
+    ${card('En Instagram',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
+    ${card('En Spotify',mon(m.sp_inversion,2),[m.sp_inversion,ma.sp_inversion],2)}
+    ${card('En YouTube',mon(m.yt_inversion,2),[m.yt_inversion,ma.yt_inversion],2)}
+    ${card('Por día',mon(m.ig_inversion_diaria,2),[m.ig_inversion_diaria,ma.ig_inversion_diaria],2)}
+    ${card('Total semana',mon((m.ig_inversion||0)+(m.sp_inversion||0)+(m.yt_inversion||0),2),null,2,true)}
   </div>`;
 
   if(R.length>1){
