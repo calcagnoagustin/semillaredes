@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png">
+<title>Conectar tu YouTube · Semilla Redes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--crema:#F2EDE4;--navy:#1A2456;--vino:#7A1F3A;--oliva:#87863A;--mute:#6E6A78;--linea:#E5DFD2}
+body{margin:0;background:var(--crema);color:#24242C;font-family:Inter,system-ui,sans-serif;line-height:1.65;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:22px}
+.caja{max-width:540px;width:100%;background:#fff;border:1px solid var(--linea);border-radius:18px;padding:36px 32px}
+img.logo{width:150px;display:block;margin:0 auto 26px}
+h1{font-family:'Playfair Display',serif;font-size:29px;color:var(--navy);margin:0 0 10px;text-align:center;line-height:1.15}
+p{font-size:15.5px;color:#55525F;margin:0 0 12px}
+p.c{text-align:center}
+ul{font-size:15px;color:#55525F;padding-left:20px;margin:14px 0}
+li{margin-bottom:7px}
+button{width:100%;border:0;background:var(--vino);color:#fff;font:inherit;font-weight:600;font-size:16px;border-radius:11px;padding:15px;cursor:pointer;margin-top:18px}
+button:disabled{opacity:.6}
+.ok{color:var(--oliva);font-weight:600}
+.err{color:var(--vino);font-weight:600}
+.mini{font-size:13px;color:var(--mute);text-align:center;margin-top:16px}
+.caja-info{background:#F6F2E9;border-radius:12px;padding:15px 17px;margin:18px 0;font-size:14.5px;color:#5B5766}
+.canal{border:1px solid var(--linea);border-radius:11px;padding:12px 14px;margin-top:10px;font-size:14.5px}
+</style>
+</head>
+<body>
+<div class="caja">
+  <img class="logo" src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semilla-logo-horizontal.png" alt="Semilla Redes">
+  <div id="cont"><p class="c">Cargando…</p></div>
+</div>
+<script>
+const API='https://fdrxsjphlvvwwknnrjtx.supabase.co';
+const KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
+const P=new URLSearchParams(location.search);
+const st=(P.get('state')||'').split('|');
+const slug=P.get('c')||st[0]||'';
+const clave=P.get('i')||st[1]||'';
+const code=P.get('code');
+const $=id=>document.getElementById(id);
+const fn=b=>fetch(`${API}/functions/v1/yt-conectar`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({slug,clave,...b})}).then(r=>r.json());
+
+async function inicio(){
+  if(code){
+    $('cont').innerHTML='<p class="c">Guardando el permiso…</p>';
+    const r=await fn({accion:'canje',code});
+    if(r.ok){
+      const lista=(r.canales||[]).map(c=>`<div class="canal"><b>${c.nombre}</b><br><span style="color:#6E6A78">${c.subs||0} suscriptores</span></div>`).join('');
+      $('cont').innerHTML=`<h1>Listo, ${r.nombre?r.nombre.split(' ')[0]:''}</h1>
+        <p class="c ok">Tu YouTube quedó conectado.</p>
+        ${lista?`<p class="mini">Canal conectado:</p>${lista}`:''}
+        <p class="mini">Ya podés cerrar esta pestaña. De acá en adelante tus números aparecen solos en tu página de seguimiento.</p>`;
+    } else {
+      $('cont').innerHTML=`<h1>No se pudo</h1><p class="c err">${r.detalle||r.error||'Error'}</p>
+        <p class="mini">Escribile a Agus y te manda un link nuevo.</p>`;
+    }
+    return;
+  }
+  const info=await fn({accion:'info'});
+  if(!info.ok){
+    $('cont').innerHTML='<h1>Link vencido</h1><p class="c">Este enlace ya no sirve. Pedile uno nuevo a Agus.</p>';
+    return;
+  }
+  $('cont').innerHTML=`<h1>Hola, ${info.nombre.split(' ')[0]}</h1>
+    <p class="c">Para que tus números de YouTube aparezcan solos en tu página de seguimiento, necesitamos que autorices el acceso a tus estadísticas.</p>
+    <div class="caja-info"><b>Es de solo lectura.</b> Podemos ver visualizaciones, suscriptores y tiempo de reproducción. No podemos publicar, editar ni borrar nada de tu canal, y no vemos tus mensajes ni tu contraseña.</div>
+    <ul>
+      <li>Elegí la cuenta de Google de tu canal.</li>
+      <li>Google va a avisarte que la app no está verificada: tocá <b>Configuración avanzada</b> y después <b>Ir a Auditoría para Artistas</b>.</li>
+      <li>Aceptá y listo. Es una sola vez.</li>
+    </ul>
+    <button id="ir">Conectar mi YouTube</button>
+    <p class="mini">Podés revocarlo cuando quieras desde tu cuenta de Google.</p>`;
+  $('ir').onclick=async()=>{
+    $('ir').disabled=true; $('ir').textContent='Abriendo Google…';
+    const r=await fn({accion:'url'});
+    if(r.url) location.href=r.url; else { $('ir').disabled=false; $('ir').textContent='Conectar mi YouTube'; }
+  };
+}
+inicio();
+</script>
+</body>
+</html>
