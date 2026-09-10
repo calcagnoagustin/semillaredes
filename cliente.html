@@ -206,17 +206,42 @@ const card=(lab,val,ant,dec,dest,inv)=>`<div class="t ${dest?'destacada':''}"><d
 
 const CAMPS=[
   {p:'ej', tit:'Reservas Ejecutivo', que:'Campaña para el público ejecutivo.'},
-  {p:'cal', tit:'Reservas Calificadas', que:'La campaña principal: incluye famosos y general.', dest:true},
-  {p:'fam', tit:'Famosos', que:'Campaña dirigida al segmento de famosos.'}
+  {p:'cal', tit:'Reservas Calificadas', que:'La campaña principal.', dest:true},
+  {p:'esp', tit:'Campaña especial', que:'Acción puntual por fecha.'}
 ];
+
+function multiCamp(R,et){
+  const series=[{k:'ej_mensajes',lab:'Ejecutivo',color:'#7A1F3A'},{k:'cal_mensajes',lab:'Calificadas',color:'#87863A'}]
+    .map(x=>({...x, vals:R.map(r=>r.metricas[x.k]??null)}))
+    .filter(x=>x.vals.filter(v=>v!=null).length>1);
+  if(!series.length) return '';
+  const W=560,H=175,P=30;
+  const todos=series.flatMap(s=>s.vals).filter(v=>v!=null);
+  const min=Math.min(...todos), max=Math.max(...todos), rango=(max-min)||1;
+  const x=i=>P+(i*(W-P*2)/Math.max(1,R.length-1));
+  const y=v=>H-P-((v-min)/rango)*(H-P*2);
+  let cuerpo='';
+  series.forEach(s=>{
+    let d2='';
+    s.vals.forEach((v,i)=>{ if(v==null)return; d2+=(d2?' L ':'M ')+x(i)+' '+y(v); });
+    cuerpo+=`<path d="${d2}" fill="none" stroke="${s.color}" stroke-width="2.5" stroke-linejoin="round"/>`;
+    s.vals.forEach((v,i)=>{ if(v!=null) cuerpo+=`<circle cx="${x(i)}" cy="${y(v)}" r="3.5" fill="${s.color}"/><text x="${x(i)}" y="${y(v)-10}" font-size="10.5" font-weight="700" fill="${s.color}" text-anchor="middle">${v}</text>`; });
+  });
+  cuerpo+=R.map((r,i)=>`<text x="${x(i)}" y="${H-8}" font-size="10" fill="#8A8697" text-anchor="middle">${et[i]}</text>`).join('');
+  const ley=series.map(s=>`<span style="display:inline-flex;align-items:center;gap:6px;margin-right:16px"><span style="width:10px;height:10px;border-radius:50%;background:${s.color};display:inline-block"></span>${s.lab}</span>`).join('');
+  return `<div class="graf"><h3>Mensajes por campaña, semana a semana</h3>
+    <p class="leyenda">Cuánta gente escribió para reservar en cada campaña.</p>
+    <div style="font-size:12.5px;margin-bottom:8px">${ley}</div>
+    <svg class="linea" viewBox="0 0 ${W} ${H}">${cuerpo}</svg></div>`;
+}
 
 function pintarMensajes(d){
   const R=d.reportes||[];
   const u=R[R.length-1]||null, a=R.length>1?R[R.length-2]:null;
   const m=u?u.metricas:{}, ma=a?a.metricas:{};
   const et=R.map(r=>fecha(r.hasta));
-  const tot=x=>(Number(x.ej_mensajes||0)+Number(x.cal_mensajes||0)+Number(x.fam_mensajes||0));
-  const inv=x=>(Number(x.ej_inversion||0)+Number(x.cal_inversion||0)+Number(x.fam_inversion||0));
+  const tot=x=>(Number(x.ej_mensajes||0)+Number(x.cal_mensajes||0)+Number(x.esp_mensajes||0));
+  const inv=x=>(Number(x.ej_inversion||0)+Number(x.cal_inversion||0)+Number(x.esp_inversion||0));
 
   let h=`<h1>${d.cliente.nombre}</h1>
     <p class="periodo">${u?`Semana del ${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
@@ -225,17 +250,18 @@ function pintarMensajes(d){
     ${card('Mensajes totales', fmt(tot(m)), [tot(m), a?tot(ma):null],0,true)}
     ${card('Invertido', 'USD '+fmt(inv(m),2), [inv(m), a?inv(ma):null],2)}
     ${card('Costo por mensaje', 'USD '+fmt(inv(m)/(tot(m)||1),2), [inv(m)/(tot(m)||1), a?inv(ma)/(tot(ma)||1):null],2,false,true)}
-    ${card('Personas alcanzadas', fmt(Number(m.ej_alcance||0)+Number(m.cal_alcance||0)+Number(m.fam_alcance||0)), null)}
+    ${card('Personas alcanzadas', fmt(Number(m.ej_alcance||0)+Number(m.cal_alcance||0)+Number(m.esp_alcance||0)), null)}
   </div>`;
 
-  h+=grafico('Mensajes por semana','Cuánta gente escribió para reservar.',R.map(r=>tot(r.metricas)),et,'#7A1F3A');
+  h+=multiCamp(R,et);
   h+=grafico('Costo por mensaje','Cuánto cuesta cada consulta. Mientras más baja la línea, mejor.',R.map(r=>{const x=r.metricas;return Math.round(inv(x)/(tot(x)||1)*100)/100;}),et,'#87863A',true);
 
   h+=`<h2>Cada campaña</h2><p class="sub">Cómo rindió cada una esta semana.</p>`;
   CAMPS.forEach(c=>{
     const men=m[c.p+'_mensajes'], costo=m[c.p+'_costo_mensaje'], alc=m[c.p+'_alcance'], invc=m[c.p+'_inversion'];
     if(men==null && invc==null) return;
-    h+=`<div class="camp ${c.dest?'destacada':''}"><h3>${c.tit}</h3><p class="que">${c.que}</p>
+    const titulo = (c.p==='esp' && m.esp_nombre) ? m.esp_nombre : c.tit;
+    h+=`<div class="camp ${c.dest?'destacada':''}"><h3>${titulo}</h3><p class="que">${c.que}</p>
       <div class="nums">
         <div class="n"><div class="l">Mensajes</div><div class="v">${fmt(men)}</div><div class="d">${delta(men, ma[c.p+'_mensajes'])||''}</div></div>
         <div class="n"><div class="l">Costo x mensaje</div><div class="v">${fmt(costo,2)}</div><div class="d">USD</div></div>
@@ -249,9 +275,9 @@ function pintarMensajes(d){
   if(R.length>1){
     h+=`<h2>Semana a semana</h2><p class="sub">Todo el historial.</p>
       <details class="hist"><summary><span class="flecha">▶</span> Ver las ${R.length} semanas</summary><table>
-      <tr><th>Semana</th><th>Ejecutivo</th><th>Calificadas</th><th>Famosos</th><th>Total</th><th>Costo x mje.</th><th>Inversión</th></tr>
+      <tr><th>Semana</th><th>Ejecutivo</th><th>Calificadas</th><th>Total</th><th>Costo x mje.</th><th>Inversión</th></tr>
       ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
-        <td>${fmt(x.ej_mensajes)}</td><td>${fmt(x.cal_mensajes)}</td><td>${fmt(x.fam_mensajes)}</td>
+        <td>${fmt(x.ej_mensajes)}</td><td>${fmt(x.cal_mensajes)}</td>
         <td><b>${fmt(tot(x))}</b></td><td>${fmt(inv(x)/(tot(x)||1),2)}</td><td>${fmt(inv(x),2)}</td></tr>`}).join('')}
       </table></details>`;
   }
