@@ -202,6 +202,8 @@ function grafico(titulo, leyenda, datos, etiquetas, color, invertido){
     ${svg||`<div class="aviso">Con una sola semana cargada todavía no hay línea de tendencia. A partir del segundo reporte vas a ver cómo evoluciona.</div>`}</div>`;
 }
 
+const card=(lab,val,ant,dec,dest,inv)=>`<div class="t ${dest?'destacada':''}"><div class="lab">${lab}</div><div class="val">${val}</div>${delta(ant?.[0],ant?.[1],inv)}</div>`;
+
 const CAMPS=[
   {p:'ej', tit:'Reservas Ejecutivo', que:'Campaña para el público ejecutivo.'},
   {p:'cal', tit:'Reservas Calificadas', que:'La campaña principal: incluye famosos y general.', dest:true},
@@ -263,7 +265,6 @@ function pintar(d){
   const et=R.map(r=>fecha(r.hasta));
   window.__d=d;
 
-  const card=(lab,val,ant,dec,dest,inv)=>`<div class="t ${dest?'destacada':''}"><div class="lab">${lab}</div><div class="val">${val}</div>${delta(ant?.[0],ant?.[1],inv)}</div>`;
 
   let h = (d.cliente.tipo==='mensajes') ? pintarMensajes(d) : `<h1>${d.cliente.nombre}</h1>
   <p class="periodo">${u?`Semana del ${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
