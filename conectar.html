@@ -24,7 +24,7 @@ button:disabled{opacity:.6}
 .err{color:var(--vino);font-weight:600}
 .mini{font-size:13px;color:var(--mute);text-align:center;margin-top:16px}
 .caja-info{background:#F6F2E9;border-radius:12px;padding:15px 17px;margin:18px 0;font-size:14.5px;color:#5B5766}
-.canal{border:1px solid var(--linea);border-radius:11px;padding:12px 14px;margin-top:10px;font-size:14.5px}
+.canal{border:1px solid var(--linea);border-radius:11px;padding:13px 15px;margin-top:12px;font-size:15px;text-align:center}
 </style>
 </head>
 <body>
@@ -36,68 +36,51 @@ button:disabled{opacity:.6}
 const API='https://fdrxsjphlvvwwknnrjtx.supabase.co';
 const KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
 const P=new URLSearchParams(location.search);
-const st=(P.get('state')||'').split('|');
-const slug=P.get('c')||st[0]||'';
-const clave=P.get('i')||st[1]||'';
+const clave=P.get('i')||P.get('state')||'';
 const code=P.get('code');
 const $=id=>document.getElementById(id);
-const fn=b=>fetch(`${API}/functions/v1/yt-conectar`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({slug,clave,...b})}).then(r=>r.json());
+const fn=b=>fetch(`${API}/functions/v1/yt-conectar`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({clave,...b})}).then(r=>r.json());
 
-const fnLista=()=>fetch(`${API}/rest/v1/rpc/sub_lista_publica`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({p_clave:clave})}).then(r=>r.json());
-
-async function elegirCliente(){
-  const r=await fnLista();
-  if(!r.ok){ $('cont').innerHTML='<h1>Link no válido</h1><p class="c">Pedile uno nuevo a Agus.</p>'; return; }
-  const ops=(r.clientes||[]).map(c=>`<option value="${c.slug}">${c.nombre}</option>`).join('');
+function pantallaInicio(){
   $('cont').innerHTML=`<h1>Conectá tu YouTube</h1>
-    <p class="c">Elegí tu proyecto para empezar.</p>
-    <select id="quien" style="width:100%;border:1px solid var(--linea);border-radius:11px;padding:14px;font:inherit;font-size:16px;margin-top:16px;background:#fff">
-      <option value="">Elegí tu proyecto…</option>${ops}
-    </select>
-    <button id="seguir">Continuar</button>`;
-  $('seguir').onclick=()=>{
-    const v=$('quien').value; if(!v){ return; }
-    location.href=`?c=${v}&i=${encodeURIComponent(clave)}`;
+    <p class="c">Para que tus números aparezcan solos en tu página de seguimiento, autorizá el acceso a las estadísticas de tu canal.</p>
+    <div class="caja-info"><b>Es de solo lectura.</b> Vemos visualizaciones, suscriptores y tiempo de reproducción. No podemos publicar, editar ni borrar nada de tu canal, no vemos tus mensajes y nunca conocemos tu contraseña.</div>
+    <ul>
+      <li>Entrá con la cuenta de Google de tu canal.</li>
+      <li>Si Google avisa que la app no está verificada, tocá <b>Configuración avanzada</b> y después <b>Ir a Auditoría para Artistas</b>.</li>
+      <li>Aceptá. Es una sola vez y lo podés revocar cuando quieras.</li>
+    </ul>
+    <button id="ir">Conectar mi YouTube</button>
+    <p class="mini">Te reconocemos por el nombre de tu canal.</p>`;
+  $('ir').onclick=async()=>{
+    $('ir').disabled=true; $('ir').textContent='Abriendo Google…';
+    const r=await fn({accion:'url'});
+    if(r.url) location.href=r.url;
+    else { $('ir').disabled=false; $('ir').textContent='Conectar mi YouTube'; }
   };
 }
 
 async function inicio(){
-  if(!slug && clave){ return elegirCliente(); }
+  if(!clave){ $('cont').innerHTML='<h1>Link incompleto</h1><p class="c">Pedile el enlace de nuevo a Agus.</p>'; return; }
   if(code){
     $('cont').innerHTML='<p class="c">Guardando el permiso…</p>';
     const r=await fn({accion:'canje',code});
-    if(r.ok){
-      const lista=(r.canales||[]).map(c=>`<div class="canal"><b>${c.nombre}</b><br><span style="color:#6E6A78">${c.subs||0} suscriptores</span></div>`).join('');
-      $('cont').innerHTML=`<h1>Listo, ${r.nombre?r.nombre.split(' ')[0]:''}</h1>
+    if(r.ok && !r.sin_match){
+      $('cont').innerHTML=`<h1>Listo${r.nombre?', '+r.nombre.split(' ')[0]:''}</h1>
         <p class="c ok">Tu YouTube quedó conectado.</p>
-        ${lista?`<p class="mini">Canal conectado:</p>${lista}`:''}
-        <p class="mini">Ya podés cerrar esta pestaña. De acá en adelante tus números aparecen solos en tu página de seguimiento.</p>`;
+        ${r.canal?`<div class="canal"><b>${r.canal.nombre}</b><br><span style="color:#6E6A78">${r.canal.subs||0} suscriptores</span></div>`:''}
+        <p class="mini">Ya podés cerrar esta pestaña. Tus números van a aparecer solos en tu página.</p>`;
+    } else if(r.ok && r.sin_match){
+      $('cont').innerHTML=`<h1>Conectado</h1>
+        <p class="c ok">Recibimos el permiso de tu canal.</p>
+        ${r.canal?`<div class="canal"><b>${r.canal.nombre}</b></div>`:''}
+        <p class="mini">Agus lo va a terminar de vincular a tu proyecto. No hace falta que hagas nada más.</p>`;
     } else {
-      $('cont').innerHTML=`<h1>No se pudo</h1><p class="c err">${r.detalle||r.error||'Error'}</p>
-        <p class="mini">Escribile a Agus y te manda un link nuevo.</p>`;
+      $('cont').innerHTML=`<h1>No se pudo</h1><p class="c err">${r.detalle||r.error||'Error'}</p><p class="mini">Escribile a Agus.</p>`;
     }
     return;
   }
-  const info=await fn({accion:'info'});
-  if(!info.ok){
-    $('cont').innerHTML='<h1>Link vencido</h1><p class="c">Este enlace ya no sirve. Pedile uno nuevo a Agus.</p>';
-    return;
-  }
-  $('cont').innerHTML=`<h1>Hola, ${info.nombre.split(' ')[0]}</h1>
-    <p class="c">Para que tus números de YouTube aparezcan solos en tu página de seguimiento, necesitamos que autorices el acceso a tus estadísticas.</p>
-    <div class="caja-info"><b>Es de solo lectura.</b> Podemos ver visualizaciones, suscriptores y tiempo de reproducción. No podemos publicar, editar ni borrar nada de tu canal, y no vemos tus mensajes ni tu contraseña.</div>
-    <ul>
-      <li>Elegí la cuenta de Google de tu canal.</li>
-      <li>Google va a avisarte que la app no está verificada: tocá <b>Configuración avanzada</b> y después <b>Ir a Auditoría para Artistas</b>.</li>
-      <li>Aceptá y listo. Es una sola vez.</li>
-    </ul>
-    <button id="ir">Conectar mi YouTube</button>
-    <p class="mini">Podés revocarlo cuando quieras desde tu cuenta de Google.</p>`;
-  $('ir').onclick=async()=>{
-    $('ir').disabled=true; $('ir').textContent='Abriendo Google…';
-    const r=await fn({accion:'url'});
-    if(r.url) location.href=r.url; else { $('ir').disabled=false; $('ir').textContent='Conectar mi YouTube'; }
-  };
+  pantallaInicio();
 }
 inicio();
 </script>
