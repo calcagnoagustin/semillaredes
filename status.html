@@ -169,7 +169,7 @@ table{font-size:13px}
 <tr><td><b>Base</b></td><td>Merlo, San Luis, Argentina</td></tr>
 <tr><td><b>Mail</b></td><td>agus@semillaredes.com</td></tr>
 <tr><td><b>Teléfono</b></td><td>+54 9 2665 24 2011</td></tr>
-<tr><td><b>Sitios</b></td><td>semillaredes.com · aguscalcagno.com (plataforma) · landing.semillaredes.com (landings)</td></tr>
+<tr><td><b>Sitios</b></td><td>semillaredes.com · aguscalcagno.com (plataforma) · semillaredes.com (landings)</td></tr>
 <tr><td><b>Instagram</b></td><td>@semillaredes — 12.8k seguidores, cuenta verificada</td></tr>
 <tr><td><b>Tono</b></td><td>Editorial, cultural, cálido pero premium. Orgánico + estructurado. Español rioplatense.</td></tr>
 </table>
@@ -306,7 +306,7 @@ table{font-size:13px}
 <h2>06 · Los Drops</h2>
 <p>Newsletter semanal de la membresía. Estructura fija: siempre arranca con <b>"Buenas semanas, artistas."</b> y cierra con "Abrazo." Textos escritos en el proyecto DROPS y consolidados por número.</p>
 
-<p>El archivo público está en <code>landing.semillaredes.com/drops</code> y va por el <b>número 97</b>. Cada entrada vive dentro del array <code>const DROPS</code> de <code>drops/index.html</code>: para sumar uno nuevo se agrega un objeto JSON antes del marcador <code>/*__NEXT_DROP__*/</code>, con coma <b>adelante</b> (la última entrada no lleva coma final). El HTML del drop va dentro de un string JSON, así que los atributos en línea tienen que ir con comillas simples: una comilla doble sin escapar rompe el array entero y la página queda en blanco. Validar parseando el array antes de publicar.</p>
+<p>El archivo público está en <code>semillaredes.com/drops</code> y va por el <b>número 97</b>. Cada entrada vive dentro del array <code>const DROPS</code> de <code>drops/index.html</code>: para sumar uno nuevo se agrega un objeto JSON antes del marcador <code>/*__NEXT_DROP__*/</code>, con coma <b>adelante</b> (la última entrada no lleva coma final). El HTML del drop va dentro de un string JSON, así que los atributos en línea tienen que ir con comillas simples: una comilla doble sin escapar rompe el array entero y la página queda en blanco. Validar parseando el array antes de publicar.</p>
 
 <h3>Publicados 89–97</h3>
 <table>
@@ -448,8 +448,8 @@ table{font-size:13px}
 <h2>12 · Stack técnico</h2>
 <table>
 <tr><th>Sistema</th><th>Detalle</th></tr>
-<tr><td><b>Repositorio</b></td><td><code>calcagnoagustin/semillaredes</code> · GitHub Pages · branch <code>main</code> · CNAME <code>landing.semillaredes.com</code>. Esta página vive en la raíz.</td></tr>
-<tr><td><b>Plataforma</b></td><td>aguscalcagno.com (cursos y membresía) · landing.semillaredes.com (landings) · semillaredes.com (sitio institucional)</td></tr>
+<tr><td><b>Repositorio</b></td><td><code>calcagnoagustin/semillaredes</code> · GitHub Pages · branch <code>main</code> · CNAME <code>semillaredes.com</code>. Esta página vive en la raíz.</td></tr>
+<tr><td><b>Plataforma</b></td><td>aguscalcagno.com (cursos y membresía) · semillaredes.com (landings) · semillaredes.com (sitio institucional)</td></tr>
 <tr><td><b>Meta Pixel</b></td><td>ID 953367820005998 ("aguscalcagno"). Clicks a WhatsApp disparan <code>fbq('track','Contact')</code> en cualquier anchor con "wa.me" o "whatsapp".</td></tr>
 <tr><td><b>Tiendup</b></td><td>Pagos y suscripciones. Envía eventos de compra server-side por Conversions API. El panel admin es distinto de <code>payments.tiendup.com</code> (checkout público), que ya está en la lista de dominios autorizados del pixel.</td></tr>
 <tr><td><b>ManyChat</b></td><td>Sin integración directa: se arman flujos estructurados para importar a mano. Soporta triggers por palabra clave → DM, historias → WhatsApp, y tráfico desde Spotify.</td></tr>
@@ -544,7 +544,7 @@ table{font-size:13px}
 <tr><td>Cupo</td><td>Sin número público: se comunica solo como "cupos limitados".</td></tr>
 <tr><td>Incluye</td><td>Plantillas (grilla de productos, calendario de lanzamiento de 14 días, los 5 formatos, checklist de campaña, guion de respuesta de WhatsApp) + <b>1 mes de membresía gratuita</b>.</td></tr>
 <tr><td>Curso avanzado de Meta Ads</td><td><b>No se regala.</b> Es inclusión de la Formación Semilla y no puede entregarse acá sin vaciar el motivo de entrada a la Formación. Se ofrece aparte como opcional pago; en el formulario hay un checkbox que releva el interés.</td></tr>
-<tr><td>Landing</td><td><code>landing.semillaredes.com/redes-con-raiz.html</code> — formulario de preinscripción propio (sin costo, no compromete).</td></tr>
+<tr><td>Landing</td><td><code>semillaredes.com/redes-con-raiz.html</code> — formulario de preinscripción propio (sin costo, no compromete).</td></tr>
 <tr><td>Datos del formulario</td><td>Supabase: tabla <code>preinscripciones</code> + RPC <code>preinscripcion_crear</code> (security definer, RLS activo, la anon key nunca toca la tabla directo).</td></tr>
 </table>
 <p style="margin-top:14px"><b>Criterio del programa:</b> esquemático y procedimental, no conceptual. Cada bloque termina con algo hecho. <b>Clase 1 (Productos y contenido):</b> cómo pensar tus productos (grilla de 4) · cómo lanzar un producto (calendario de 14 días) · cómo hacer contenido que engancha (los 3 segundos, 5 formatos, qué NO hacer, producción en lote) · cómo pedir el siguiente paso. <b>Clase 2 (Publicidad paso a paso):</b> revisión de lo publicado · campaña de mensajes · campaña de seguidores · campaña de venta · políticas de atributos personales de Meta · las 4 métricas.</p>
@@ -567,7 +567,7 @@ table{font-size:13px}
 
 <table style="margin-top:14px">
 <tr><th>Activo</th><th>Estado</th></tr>
-<tr><td><code>landing.semillaredes.com/charla.html</code> — landing de la charla con formulario propio de inscripción</td><td>Publicada</td></tr>
+<tr><td><code>semillaredes.com/charla.html</code> — landing de la charla con formulario propio de inscripción</td><td>Publicada</td></tr>
 <tr><td>Captura en Supabase: RPC <code>preinscripcion_crear</code> con <code>curso = 'charla-formacion-oct26'</code></td><td>Probada de punta a punta</td></tr>
 <tr><td>Meta Pixel 953367820005998 en la landing + evento <code>Lead</code> al enviar el formulario</td><td>Activo</td></tr>
 <tr><td>Presupuesto de pauta definido para los 40 días hasta el 7/10</td><td>USD 300-600</td></tr>

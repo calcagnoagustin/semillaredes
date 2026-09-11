@@ -20,4 +20,4 @@ Disallow: /bots.status.html
 # No tienen contenido sin el token del cliente.
 # /cliente.html  /proyecto.html  /proyecto-beta.html
 
-Sitemap: https://landing.semillaredes.com/sitemap.xml
+Sitemap: https://semillaredes.com/sitemap.xml

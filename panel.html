@@ -113,9 +113,9 @@ function pintarMenu(){
     document.querySelectorAll('.mb').forEach(x=>x.classList.remove('on')); b.classList.add('on');
     const s=b.dataset.s;
     if(s==='clientes') verClientes();
-    if(s==='setup') abrirPanel('https://landing.semillaredes.com/panel-setup.html');
-    if(s==='reportes') abrirPanel('https://landing.semillaredes.com/panel-clientes.html');
-    if(s==='patrones') abrirPanel('https://landing.semillaredes.com/panel-setup.html#patrones');
+    if(s==='setup') abrirPanel('https://semillaredes.com/panel-setup.html');
+    if(s==='reportes') abrirPanel('https://semillaredes.com/panel-clientes.html');
+    if(s==='patrones') abrirPanel('https://semillaredes.com/panel-setup.html#patrones');
   });
 }
 
@@ -138,8 +138,8 @@ function tarjeta(c){
       <div class="barra"><i style="width:${pct}%"></i></div>
       <div class="pie">
         <span class="url">Briefing</span>
-        <a href="https://landing.semillaredes.com/proyecto.html?p=${c.slug}&k=${c.token}" target="_blank" onclick="event.stopPropagation()">Abrir ↗</a>
-        <button data-copiar="https://landing.semillaredes.com/proyecto.html?p=${c.slug}&k=${c.token}" onclick="event.stopPropagation()">Copiar</button>
+        <a href="https://semillaredes.com/proyecto.html?p=${c.slug}&k=${c.token}" target="_blank" onclick="event.stopPropagation()">Abrir ↗</a>
+        <button data-copiar="https://semillaredes.com/proyecto.html?p=${c.slug}&k=${c.token}" onclick="event.stopPropagation()">Copiar</button>
       </div></div>`;
   }
   const m=c.ultimas_metricas||{};
@@ -195,10 +195,10 @@ function verCliente(slug,origen){
       <h2 style="font-family:'Playfair Display',serif;margin:0 0 4px">${c.nombre}</h2>
       <p class="lede">Setup · Plan ${c.plan} · ${c.kpi_respuestas} respuestas · ${c.kpi_archivos} archivos</p>
       <div class="acc">
-        <button class="pri" onclick="navigator.clipboard.writeText('https://landing.semillaredes.com/proyecto.html?p=${c.slug}&k=${c.token}');this.textContent='Link copiado ✓'">Copiar link del briefing</button>
-        <a class="ok" href="https://landing.semillaredes.com/panel-setup.html" target="_blank">Auditoría IA y entregables</a>
+        <button class="pri" onclick="navigator.clipboard.writeText('https://semillaredes.com/proyecto.html?p=${c.slug}&k=${c.token}');this.textContent='Link copiado ✓'">Copiar link del briefing</button>
+        <a class="ok" href="https://semillaredes.com/panel-setup.html" target="_blank">Auditoría IA y entregables</a>
       </div>
-      <iframe class="detalle" src="https://landing.semillaredes.com/proyecto.html?p=${c.slug}&k=${c.token}"></iframe>`;
+      <iframe class="detalle" src="https://semillaredes.com/proyecto.html?p=${c.slug}&k=${c.token}"></iframe>`;
     return;
   }
   $('vista').innerHTML=`<button class="volver" onclick="verClientes()">← Volver a clientes</button>
@@ -206,10 +206,10 @@ function verCliente(slug,origen){
     <p class="lede">${c.tipo==='mensajes'?'Pauta':c.tipo==='mixto'?'Mixto':'Suscripción'} · ${c.kpi_semanas} semanas cargadas${c.kpi_ultima?` · última ${c.kpi_ultima}`:''}</p>
     <div class="acc">
       <button class="pri" onclick="navigator.clipboard.writeText('https://semillaredes.com/${corto}');this.textContent='Link copiado ✓'">Copiar link del cliente</button>
-      <a class="ok" href="https://landing.semillaredes.com/panel-clientes.html" target="_blank">Cargar semana / tareas</a>
+      <a class="ok" href="https://semillaredes.com/panel-clientes.html" target="_blank">Cargar semana / tareas</a>
       <a href="https://semillaredes.com/${corto}" target="_blank">Abrir status</a>
     </div>
-    <iframe class="detalle" src="https://landing.semillaredes.com/cliente.html?c=${c.slug}&k=${c.token}"></iframe>`;
+    <iframe class="detalle" src="https://semillaredes.com/cliente.html?c=${c.slug}&k=${c.token}"></iframe>`;
 }
 
 if(sessionStorage.getItem('sr_admin')) entrar();

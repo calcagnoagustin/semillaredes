@@ -187,7 +187,7 @@ function pintar(){
   const ult=(c.reportes||[])[0];
   CAMPOS = CAMPOS_POR_TIPO[c.tipo] || CAMPOS_MUSICA;
   let h=`<div class="card"><h2>${c.nombre}</h2>
-    <div class="meta">landing.semillaredes.com/cliente.html?c=${c.slug}&k=${c.token}</div>
+    <div class="meta">semillaredes.com/cliente.html?c=${c.slug}&k=${c.token}</div>
     <div class="acc"><button class="sec" id="cp">Copiar link</button><button class="sec" id="wa">Mandar por WhatsApp</button></div></div>`;
 
   h+=`<div class="card"><h2>Cargar la semana</h2>
@@ -238,7 +238,7 @@ function pintar(){
     ${notasHTML(c,'general',true)}</div>`;
 
   v.innerHTML=h;
-  const link=`https://landing.semillaredes.com/cliente.html?c=${c.slug}&k=${c.token}`;
+  const link=`https://semillaredes.com/cliente.html?c=${c.slug}&k=${c.token}`;
   $('cp').onclick=()=>{navigator.clipboard.writeText(link);$('cp').textContent='Copiado ✓';};
   $('wa').onclick=()=>window.open('https://wa.me/?text='+encodeURIComponent('Te dejo el panel de tu proyecto, se actualiza todas las semanas: '+link),'_blank');
   document.querySelectorAll('[data-del-tarea]').forEach(b=>b.onclick=async()=>{ if(!confirm('¿Borrar esta tarea?'))return; const r=await rpc('sub_borrar',{p_admin:admin,p_que:'tarea',p_id:b.dataset.delTarea}); if(r.ok) entrar(); });
