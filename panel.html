@@ -43,6 +43,10 @@ input.buscar{flex:1;min-width:180px;border:1px solid var(--linea);background:#1A
 .cli .barra{height:5px;background:var(--linea);border-radius:99px;overflow:hidden;margin-top:11px}
 .cli .barra i{display:block;height:100%;background:var(--oliva)}
 .cli.vacio{opacity:.55}
+.cli .pie{display:flex;gap:8px;margin-top:12px;padding-top:11px;border-top:1px solid var(--linea)}
+.cli .pie a,.cli .pie button{flex:1;text-align:center;border:0;background:#2E3970;color:var(--crema);font:inherit;font-size:12px;font-weight:600;border-radius:8px;padding:7px 6px;cursor:pointer;text-decoration:none}
+.cli .pie a:hover,.cli .pie button:hover{background:var(--oliva)}
+.cli .pie .url{font-size:11px;color:var(--mute);padding:7px 0;flex:1.4;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 .volver{background:transparent;border:0;color:var(--rosa);font:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:0;margin-bottom:14px}
 .oculto{display:none}
@@ -131,7 +135,12 @@ function tarjeta(c){
         <div class="k"><b>${c.kpi_archivos}</b>archivos</div>
         <div class="k"><b>${c.kpi_entregables_listos}/${c.kpi_entregables_total}</b>entregables</div>
       </div>
-      <div class="barra"><i style="width:${pct}%"></i></div></div>`;
+      <div class="barra"><i style="width:${pct}%"></i></div>
+      <div class="pie">
+        <span class="url">Briefing</span>
+        <a href="https://landing.semillaredes.com/proyecto.html?p=${c.slug}&k=${c.token}" target="_blank" onclick="event.stopPropagation()">Abrir ↗</a>
+        <button data-copiar="https://landing.semillaredes.com/proyecto.html?p=${c.slug}&k=${c.token}" onclick="event.stopPropagation()">Copiar</button>
+      </div></div>`;
   }
   const m=c.ultimas_metricas||{};
   const dato = m.ig_followers_total!=null ? `<div class="k"><b>${Number(m.ig_followers_total).toLocaleString('es-AR')}</b>seguidores</div>`
@@ -145,6 +154,11 @@ function tarjeta(c){
       ${c.kpi_tareas_pend?`<div class="k"><b>${c.kpi_tareas_pend}</b>pendientes</div>`:''}
     </div>
     ${c.kpi_ultima?`<div class="k" style="margin-top:9px;font-size:12px">Última semana: ${c.kpi_ultima}</div>`:'<div class="k" style="margin-top:9px;font-size:12px">Sin reportes cargados</div>'}
+    <div class="pie">
+      <span class="url">/${c.slug.replace(/-/g,'')}</span>
+      <a href="https://semillaredes.com/${c.slug.replace(/-/g,'')}" target="_blank" onclick="event.stopPropagation()">Abrir ↗</a>
+      <button data-copiar="https://semillaredes.com/${c.slug.replace(/-/g,'')}" onclick="event.stopPropagation()">Copiar</button>
+    </div>
   </div>`;
 }
 
@@ -165,6 +179,11 @@ function verClientes(){
   document.querySelectorAll('.chip').forEach(ch=>ch.onclick=()=>{filtro=ch.dataset.f;verClientes();});
   $('q').oninput=e=>{busca=e.target.value; const p=e.target.selectionStart; verClientes(); const q=$('q'); q.focus(); q.setSelectionRange(p,p);};
   document.querySelectorAll('.cli').forEach(c=>c.onclick=()=>verCliente(c.dataset.slug,c.dataset.origen));
+  document.querySelectorAll('[data-copiar]').forEach(b=>b.onclick=(e)=>{
+    e.stopPropagation();
+    navigator.clipboard.writeText(b.dataset.copiar);
+    const t=b.textContent; b.textContent='Copiado ✓'; setTimeout(()=>b.textContent=t,1400);
+  });
 }
 
 function verCliente(slug,origen){
