@@ -15,6 +15,11 @@ Disallow: /status.html
 Disallow: /hub.html
 Disallow: /bots.status.html
 
+# Las 23 páginas de clientes (/federicoandahazi/, /larafichera/, etc.) viven en la
+# raíz y se dejan rastreables A PROPÓSITO: todas llevan noindex, nofollow, noarchive
+# en la etiqueta. Si se bloquearan acá, Google no podría leer ese noindex y podrían
+# quedar indexadas igual, sólo con la URL. No agregar Disallow para ellas.
+
 # Estas se dejan rastreables a propósito para que los buscadores
 # lean su etiqueta noindex y las excluyan de forma definitiva.
 # No tienen contenido sin el token del cliente.
