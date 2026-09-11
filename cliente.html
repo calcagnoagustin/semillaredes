@@ -66,6 +66,16 @@ th:first-child,td:first-child{text-align:left}
 th{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--oliva);background:#FBF8F2}
 .err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:26px}
 .oculto{display:none}
+.reco{background:var(--navy);border-radius:15px;padding:24px 26px;margin-top:12px}
+.reco .cab{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.reco h3{font-family:'Playfair Display',serif;font-size:22px;color:var(--crema);margin:0}
+.reco .cuando{font-size:12px;color:#B9B4C4}
+.reco .items{margin-top:16px}
+.reco .it2{display:flex;gap:14px;padding:15px 0;border-top:1px solid #2E3970}
+.reco .num{flex:none;width:26px;height:26px;border-radius:50%;background:var(--rosa);color:var(--navy);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+.reco .tt{font-size:16px;font-weight:600;color:var(--crema);margin-bottom:3px}
+.reco .tx{font-size:14.5px;color:#DDD8CC;line-height:1.6}
+.reco .pie2{font-size:12.5px;color:#8A8697;margin-top:16px}
 .camp{background:#fff;border:1px solid var(--linea);border-radius:14px;padding:18px 20px;margin-bottom:12px}
 .camp h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);margin:0 0 2px}
 .camp .que{font-size:13px;color:var(--mute);margin:0 0 12px}
@@ -470,6 +480,20 @@ function pintarResto(d,h){
     <div class="notas"><textarea id="nota_txt" placeholder="Escribí acá…"></textarea><br><button id="nota_btn">Guardar nota</button><div id="nota_out"></div>
     ${N.map(n=>`<div class="nota"><div class="quien ${n.autor==='semilla'?'semilla':''}">${n.autor==='semilla'?'Semilla Redes':'Vos'}</div><div class="txt">${n.texto}</div><div class="cuando">${new Date(n.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</div>${n.autor!=='semilla'?`<button class="x" data-deln="${n.id}" title="Borrar nota">×</button>`:''}</div>`).join('')}
     </div>`;
+
+  const RC=d.recomendaciones&&d.recomendaciones.recomendaciones;
+  if(RC&&RC.length){
+    h+=`<h2>Recomendaciones</h2><p class="sub">Lo que miramos esta semana y qué haríamos ahora.</p>
+      <div class="reco">
+        <div class="cab"><h3>Tres cosas para esta semana</h3>
+        ${d.recomendaciones_fecha?`<span class="cuando">${new Date(d.recomendaciones_fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</span>`:''}</div>
+        <div class="items">
+          ${RC.slice(0,3).map((r,i)=>`<div class="it2"><span class="num">${i+1}</span>
+            <span><span class="tt">${r.titulo||''}</span><span class="tx">${r.texto||''}</span></span></div>`).join('')}
+        </div>
+        <p class="pie2">Análisis automático sobre tus métricas. Cualquier duda, hablamos en la reunión.</p>
+      </div>`;
+  }
 
   h+=`<p class="pie">Cualquier duda sobre estos números, escribile a Agus. Actualizamos todas las semanas.</p>`;
   $('app').innerHTML=h;
