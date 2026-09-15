@@ -96,7 +96,8 @@ const CAMPOS_MENSAJES={
 const CAMPOS_MIXTO={
  'Instagram':[['ig_followers_total','Seguidores'],['ig_followers_nuevos','Nuevos'],['ig_visitas','Visitas'],['ig_inversion','Inversión USD'],['ig_inversion_diaria','Inv. diaria'],['ig_costo_follower','Costo x seguidor']],
  'Consultas por productos':[['msj_mensajes','Consultas'],['msj_inversion','Inversión USD'],['msj_costo_mensaje','Costo x consulta'],['msj_potenciales','Potenciales']],
- 'Ventas':[['msj_conversiones','Ventas'],['msj_costo_conversion','Costo x venta'],['msj_ingreso','Ingreso USD'],['msj_roas','ROAS']]
+ 'Ventas':[['msj_conversiones','Ventas'],['msj_costo_conversion','Costo x venta'],['msj_ingreso','Ingreso'],['msj_roas','ROAS']],
+ 'Interacción':[['int_interacciones','Interacciones'],['int_inversion','Inversión'],['int_costo','Costo x interacción']]
 };
 const CAMPOS_POR_TIPO={musica:CAMPOS_MUSICA, mensajes:CAMPOS_MENSAJES, mixto:CAMPOS_MIXTO};
 let CAMPOS = CAMPOS_MUSICA;
@@ -151,11 +152,12 @@ function parsear(txt){
     if(/^famosos/i.test(bajo)){seccion='fam';return;}
     if(/^reservas /i.test(bajo)){seccion='esp';return;}
     if(/^mensajes \(productos\)/i.test(bajo)){seccion='msj';return;}
+    if(/^interacci[oó]n/i.test(bajo)){seccion='int';return;}
     const M={
       'followers': seccion==='ig'?(d.ig_followers_total==null?'ig_followers_total':'ig_followers_nuevos'):'sp_followers',
       'visitas': seccion==='ig'?'ig_visitas':'sp_meta_visitas',
       'meta visitas':'sp_meta_visitas',
-      'inversión': (seccion==='msj'?'msj_inversion':seccion+'_inversion'), 'inversion': (seccion==='msj'?'msj_inversion':seccion+'_inversion'),
+      'inversión': seccion+'_inversion', 'inversion': seccion+'_inversion',
       'costo por follower':'ig_costo_follower','inversión diaria':(seccion==='ig'?'ig_inversion_diaria':seccion+'_inv_diaria'),'inversion diaria':(seccion==='ig'?'ig_inversion_diaria':seccion+'_inv_diaria'),
       'listeners':'sp_listeners','monthly':'sp_monthly','streams':'sp_streams','stream/listener':'sp_stream_listener',
       'guardados':'sp_guardados','playlists':'sp_playlists','costo por stream':'sp_costo_stream',
@@ -165,6 +167,7 @@ function parsear(txt){
       'costo por mensaje': (seccion==='msj'?'msj_costo_mensaje':seccion+'_costo_mensaje'),
       'personas alcanzadas': seccion+'_alcance',
       'pba': seccion+'_pba', 'caba': seccion+'_caba',
+      'interacciones':'int_interacciones','x interación':'int_costo','x interacción':'int_costo','costo x interaccion':'int_costo',
       'potenciales':'msj_potenciales','conversiones':'msj_conversiones',
       'costo conversión':'msj_costo_conversion','costo conversion':'msj_costo_conversion',
       'ingreso':'msj_ingreso','roas':'msj_roas',
