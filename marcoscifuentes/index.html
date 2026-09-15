@@ -25,7 +25,7 @@ iframe{border:0;width:100%;height:100%;display:block}
 </style>
 </head>
 <body>
-<iframe src="https://semillaredes.com/cliente.html?c=marcos-cifuentes&k=c51b84e941d4" title="Marcos Cifuentes"></iframe>
+<iframe id="marco" title="Marcos Cifuentes"></iframe>
 
 <div id="instalar">
   <img src="/icono-192.png" alt="">
@@ -35,7 +35,26 @@ iframe{border:0;width:100%;height:100%;display:block}
 </div>
 
 <script>
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js').catch(()=>{}); }
+const BASE='https://semillaredes.com/cliente.html?c=marcos-cifuentes&k=c51b84e941d4';
+const marco=document.getElementById('marco');
+function cargar(){ marco.src = BASE + '&v=' + Date.now(); }
+cargar();
+
+// al volver a la app, traer lo último
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) cargar(); });
+window.addEventListener('focus', cargar);
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').then(reg=>{
+    reg.update();
+    setInterval(()=>reg.update(), 60*60*1000);
+    reg.addEventListener('updatefound', ()=>{
+      const nuevo=reg.installing;
+      if(nuevo) nuevo.addEventListener('statechange', ()=>{ if(nuevo.state==='activated') cargar(); });
+    });
+  }).catch(()=>{});
+  navigator.serviceWorker.addEventListener('message', e=>{ if(e.data==='recargar') cargar(); });
+}
 
 const caja=document.getElementById('instalar');
 const yaInstalada = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
