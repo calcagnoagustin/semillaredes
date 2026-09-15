@@ -276,13 +276,27 @@ function pintarMixto(d){
   h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
   h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
 
-  h+=`<h2>Consultas</h2><p class="sub">Gente que escribió preguntando por productos.</p><div class="tarj">
-    ${card('Consultas', fmt(m.msj_mensajes), [m.msj_mensajes, ma.msj_mensajes],0,true)}
-    ${card('Costo por consulta', mon(m.msj_costo_mensaje,2), [m.msj_costo_mensaje, ma.msj_costo_mensaje],2,false,true)}
-    ${card('Invertido', mon(m.msj_inversion,2), [m.msj_inversion, ma.msj_inversion],2)}
-  </div>`;
-  h+=grafico('Consultas','Cuánta gente escribió para comprar.',R.map(r=>r.metricas.msj_mensajes),et,'#87863A');
-  h+=grafico('Costo por consulta','Cuánto cuesta cada persona que escribe. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.msj_costo_mensaje),et,'#E2767C',true);
+  const hayConsultas = R.some(r=>r.metricas.msj_mensajes!=null);
+  if(hayConsultas){
+    h+=`<h2>Consultas</h2><p class="sub">Gente que escribió preguntando por productos.</p><div class="tarj">
+      ${card('Consultas', fmt(m.msj_mensajes), [m.msj_mensajes, ma.msj_mensajes],0,true)}
+      ${card('Costo por consulta', mon(m.msj_costo_mensaje,2), [m.msj_costo_mensaje, ma.msj_costo_mensaje],2,false,true)}
+      ${card('Invertido', mon(m.msj_inversion,2), [m.msj_inversion, ma.msj_inversion],2)}
+    </div>`;
+    h+=grafico('Consultas','Cuánta gente escribió para comprar.',R.map(r=>r.metricas.msj_mensajes),et,'#87863A');
+    h+=grafico('Costo por consulta','Cuánto cuesta cada persona que escribe. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.msj_costo_mensaje),et,'#E2767C',true);
+  }
+
+  const hayInter = R.some(r=>r.metricas.int_interacciones!=null);
+  if(hayInter){
+    h+=`<h2>Interacción</h2><p class="sub">Campaña para que la gente reaccione con tus publicaciones: likes, comentarios y guardados.</p><div class="tarj">
+      ${card('Interacciones', fmt(m.int_interacciones), [m.int_interacciones, ma.int_interacciones],0,true)}
+      ${card('Costo por interacción', mon(m.int_costo,2), [m.int_costo, ma.int_costo],2,false,true)}
+      ${card('Invertido', mon(m.int_inversion,2), [m.int_inversion, ma.int_inversion],2)}
+    </div>`;
+    h+=grafico('Interacciones','Cuánta gente reaccionó con tus publicaciones.',R.map(r=>r.metricas.int_interacciones),et,'#87863A');
+    h+=grafico('Costo por interacción','Cuánto cuesta cada reacción. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.int_costo),et,'#E2767C',true);
+  }
 
   const hayVentas = R.some(r=>r.metricas.msj_conversiones!=null || r.metricas.msj_ingreso!=null);
   if(hayVentas){
@@ -298,7 +312,7 @@ function pintarMixto(d){
   h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
     ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
     ${card('En consultas',mon(m.msj_inversion,2),[m.msj_inversion,ma.msj_inversion],2)}
-    ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.msj_inversion||0),2),null,2,true)}
+    ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.msj_inversion||0)+Number(m.int_inversion||0),2),null,2,true)}
   </div>`;
 
   if(R.length>1){
