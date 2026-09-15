@@ -221,13 +221,43 @@ function pintar(){
     <h3>Agregar</h3><div class="agregar"><input id="t_tit" placeholder="Título de la tarea"><button class="sec" onclick="nuevaTarea()">Agregar</button></div>
     ${notasHTML(c,'tareas')}</div>`;
 
-  h+=`<div class="card"><h2>Hitos</h2><p class="meta">Metas que ve el cliente con su barra de avance.</p>
+  h+=`<div class="card"><h2>Hitos</h2><p class="meta">Metas que ve el cliente con su barra de avance. En las que dicen "bajar a", la barra se llena a medida que el costo baja.</p>
     ${(c.hitos||[]).map(x=>`<div class="hito-i"><span>${x.titulo||x.metrica}</span><span style="text-align:right">${x.objetivo}</span><button class="x" data-del-hito="${x.id}">×</button></div>`).join('')||'<p class="meta">Sin hitos.</p>'}
     <h3>Agregar</h3>
     <div class="grid"><select id="h_met">
-      <option value="ig_followers_total|instagram">Seguidores en Instagram</option>
-      <option value="sp_monthly|spotify">Oyentes mensuales en Spotify</option>
-      <option value="yt_views|youtube">Visualizaciones del canal en YouTube</option>
+      <optgroup label="Instagram">
+        <option value="ig_followers_total|instagram">Seguidores</option>
+        <option value="ig_followers_nuevos|instagram">Nuevos por período</option>
+        <option value="ig_costo_follower|instagram">Costo por seguidor (bajar a)</option>
+      </optgroup>
+      <optgroup label="Spotify">
+        <option value="sp_monthly|spotify">Oyentes mensuales</option>
+        <option value="sp_streams|spotify">Streams</option>
+        <option value="sp_followers|spotify">Seguidores en Spotify</option>
+        <option value="sp_playlists|spotify">Playlists</option>
+      </optgroup>
+      <optgroup label="YouTube">
+        <option value="yt_views|youtube">Visualizaciones del canal</option>
+        <option value="yt_subs|youtube">Suscriptores</option>
+      </optgroup>
+      <optgroup label="Consultas y ventas">
+        <option value="msj_mensajes|meta">Consultas por período</option>
+        <option value="msj_costo_mensaje|meta">Costo por consulta (bajar a)</option>
+        <option value="msj_conversiones|meta">Ventas por período</option>
+        <option value="msj_ingreso|meta">Ingreso por período</option>
+        <option value="msj_roas|meta">ROAS</option>
+      </optgroup>
+      <optgroup label="Mensajes por campaña">
+        <option value="total_mensajes|meta">Mensajes totales por período</option>
+        <option value="cal_mensajes|meta">Mensajes Calificadas</option>
+        <option value="cal_costo_mensaje|meta">Costo x mensaje Calificadas (bajar a)</option>
+        <option value="ej_mensajes|meta">Mensajes Ejecutivo</option>
+        <option value="ej_costo_mensaje|meta">Costo x mensaje Ejecutivo (bajar a)</option>
+      </optgroup>
+      <optgroup label="Interacción">
+        <option value="int_interacciones|meta">Interacciones por período</option>
+        <option value="int_costo|meta">Costo por interacción (bajar a)</option>
+      </optgroup>
     </select><input id="h_obj" placeholder="Objetivo (número)" inputmode="decimal"><input id="h_tit" placeholder="Título que ve el cliente"></div>
     <div class="acc"><button class="sec" onclick="nuevoHito()">Agregar hito</button></div></div>`;
 
