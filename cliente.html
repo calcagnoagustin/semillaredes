@@ -191,7 +191,7 @@ function multi(R){
   }).filter(x=>x.base && x.idx.filter(v=>v!=null).length>1);
 
   if(!series.length) return `<div class="graf"><h3>Curva de crecimiento</h3><p class="leyenda">Instagram, Spotify y YouTube en un mismo gráfico.</p>
-    <div class="aviso">Hace falta al menos dos semanas cargadas para dibujar la curva. Con una sola todavía no hay de dónde medir el crecimiento.</div></div>`;
+    <div class="aviso">Hace falta al menos dos períodos cargados para dibujar la curva. Con uno solo todavía no hay de dónde medir el crecimiento.</div></div>`;
 
   const W=560,H=170,P=30;
   const todos=series.flatMap(s=>s.idx).filter(v=>v!=null);
@@ -211,7 +211,7 @@ function multi(R){
   cuerpo+=R.map((r,i)=>`<text x="${x(i)}" y="${H-8}" font-size="10" fill="#8A8697" text-anchor="middle">${fecha(r.hasta)}</text>`).join('');
   const ley=series.map(s=>`<span style="display:inline-flex;align-items:center;gap:6px;margin-right:14px"><span style="width:10px;height:10px;border-radius:50%;background:${s.color};display:inline-block"></span>${s.lab} <b style="color:${s.color}">${s.vals.filter(v=>v!=null).slice(-1)[0]}</b></span>`).join('');
   return `<div class="graf"><h3>Curva de crecimiento</h3>
-    <p class="leyenda">Las tres plataformas arrancan en 100 la primera semana, así se ve cuál crece más rápido sin que los números grandes tapen a los chicos.</p>
+    <p class="leyenda">Las tres plataformas arrancan en 100 en el primer período, así se ve cuál crece más rápido sin que los números grandes tapen a los chicos.</p>
     <div style="font-size:12.5px;margin-bottom:8px">${ley}</div>
     <svg class="linea" viewBox="0 0 ${W} ${H}">${cuerpo}</svg></div>`;
 }
@@ -219,7 +219,7 @@ function multi(R){
 function grafico(titulo, leyenda, datos, etiquetas, color, invertido){
   const svg=linea(datos,etiquetas,color,invertido);
   return `<div class="graf"><h3>${titulo}</h3><p class="leyenda">${leyenda}</p>
-    ${svg||`<div class="aviso">Con una sola semana cargada todavía no hay línea de tendencia. A partir del segundo reporte vas a ver cómo evoluciona.</div>`}</div>`;
+    ${svg||`<div class="aviso">Con un solo período cargado todavía no hay línea de tendencia. A partir del segundo reporte vas a ver cómo evoluciona.</div>`}</div>`;
 }
 
 const card=(lab,val,ant,dec,dest,inv)=>`<div class="t ${dest?'destacada':''}"><div class="lab">${lab}</div><div class="val">${val}</div>${delta(ant?.[0],ant?.[1],inv)}</div>`;
@@ -434,6 +434,63 @@ function pintarMensajes(d){
   return h;
 }
 
+function pintarSteam(d){
+  MON=(d.cliente.moneda||'USD');
+  const R=d.reportes||[];
+  const u=R[R.length-1]||null;
+  const ultimo=(k)=>{ for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null) return x; } return null; };
+  const previo=(k)=>{ let visto=false; for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null){ if(visto) return x; visto=true; } } return null; };
+  const m=new Proxy({},{get:(_,k)=>ultimo(k)}), ma=new Proxy({},{get:(_,k)=>previo(k)});
+  const et=R.map(r=>fecha(r.hasta));
+
+  let h=`<h1>${d.cliente.nombre}</h1>
+    <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
+
+  h+=`<h2>Campa&ntilde;a de seguidores</h2><p class="sub">La pauta que hace crecer la cuenta de Instagram.</p><div class="tarj">
+    ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
+    ${card('Nuevos en el per&iacute;odo', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos],0,true)}
+    ${card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas])}
+    ${card('Costo por seguidor', mon(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,false,true)}
+    ${card('Invertido', mon(m.ig_inversion,2), [m.ig_inversion, ma.ig_inversion],2)}
+    ${card('Inversi&oacute;n diaria', mon(m.ig_inversion_diaria,2), [m.ig_inversion_diaria, ma.ig_inversion_diaria],2)}
+  </div>`;
+  h+=grafico('Seguidores','C&oacute;mo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
+  h+=grafico('Costo por seguidor','Cu&aacute;nto cuesta cada seguidor nuevo. Mientras m&aacute;s baja la l&iacute;nea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
+
+  const haySteam = R.some(r=>r.metricas.stm_visitas!=null || r.metricas.stm_wishlist!=null);
+  if(haySteam){
+    h+=`<h2>Campa&ntilde;a a Steam</h2><p class="sub">La pauta que lleva gente a la p&aacute;gina del juego en Steam.</p><div class="tarj">
+      ${card('Visitas desde Meta', fmt(m.stm_visitas), [m.stm_visitas, ma.stm_visitas])}
+      ${card('Costo por visita', mon(m.stm_costo_visita,2), [m.stm_costo_visita, ma.stm_costo_visita],2,false,true)}
+      ${card('Invertido', mon(m.stm_inversion,2), [m.stm_inversion, ma.stm_inversion],2)}
+      ${card('Visitas totales en Steam', fmt(m.stm_visitas_steam), [m.stm_visitas_steam, ma.stm_visitas_steam])}
+      ${card('Wishlists', fmt(m.stm_wishlist), [m.stm_wishlist, ma.stm_wishlist],0,true)}
+      ${card('Costo por wishlist', mon(m.stm_costo_wishlist,2), [m.stm_costo_wishlist, ma.stm_costo_wishlist],2,false,true)}
+    </div>`;
+    h+=grafico('Visitas a Steam desde la pauta','Cu&aacute;nta gente entr&oacute; a la p&aacute;gina del juego gracias a los anuncios.',R.map(r=>r.metricas.stm_visitas),et,'#87863A');
+    h+=grafico('Wishlists','El n&uacute;mero que importa: cu&aacute;nta gente agreg&oacute; el juego a su lista de deseados.',R.map(r=>r.metricas.stm_wishlist),et,'#E2767C');
+    h+=grafico('Costo por wishlist','Cu&aacute;nto cuesta cada wishlist. Mientras m&aacute;s baja la l&iacute;nea, mejor.',R.map(r=>r.metricas.stm_costo_wishlist),et,'#1A2456',true);
+  }
+
+  h+=`<h2>Inversi&oacute;n</h2><p class="sub">Lo que se puso en pauta en este per&iacute;odo.</p><div class="tarj">
+    ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
+    ${card('En Steam',mon(m.stm_inversion,2),[m.stm_inversion,ma.stm_inversion],2)}
+    ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.stm_inversion||0),2),null,2,true)}
+  </div>`;
+
+  if(R.length>1){
+    h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
+      <details class="hist"><summary><span class="flecha">&#9654;</span> Ver los ${R.length} reportes</summary><table>
+      <tr><th>Per&iacute;odo</th><th>Seguidores</th><th>Nuevos</th><th>Costo x seg.</th><th>Visitas Steam</th><th>Wishlists</th><th>Costo x wishlist</th><th>Inversi&oacute;n</th></tr>
+      ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
+        <td>${fmt(x.ig_followers_total)}</td><td>${fmt(x.ig_followers_nuevos)}</td><td>${fmt(x.ig_costo_follower,2)}</td>
+        <td>${fmt(x.stm_visitas)}</td><td>${fmt(x.stm_wishlist)}</td><td>${fmt(x.stm_costo_wishlist,2)}</td>
+        <td>${fmt(Number(x.ig_inversion||0)+Number(x.stm_inversion||0),2)}</td></tr>`}).join('')}
+      </table></details>`;
+  }
+  return h;
+}
+
 function pintar(d){
   const R=d.reportes||[];
   const u=R[R.length-1]||null, a=R.length>1?R[R.length-2]:null;
@@ -447,9 +504,10 @@ function pintar(d){
   let h = (d.cliente.tipo==='mensajes') ? pintarMensajes(d)
         : (d.cliente.tipo==='ventas') ? pintarVentas(d)
         : (d.cliente.tipo==='mixto') ? pintarMixto(d)
+        : (d.cliente.tipo==='steam') ? pintarSteam(d)
         : `<h1>${d.cliente.nombre}</h1>
   <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
-  if(['mensajes','mixto','ventas'].includes(d.cliente.tipo)){ return pintarResto(d,h); }
+  if(['mensajes','mixto','ventas','steam'].includes(d.cliente.tipo)){ return pintarResto(d,h); }
 
   h+=`<h2>Instagram</h2><p class="sub">Crecimiento y costo de la pauta.</p><div class="tarj">
     ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
@@ -574,7 +632,7 @@ function pintarResto(d,h){
   }
 
   const N=d.notas||[];
-  h+=`<h2>Tus notas</h2><p class="sub">Dejanos cualquier cosa que quieras que tengamos en cuenta: una idea, una duda, algo que pasó esta semana.</p>
+  h+=`<h2>Tus notas</h2><p class="sub">Dejanos cualquier cosa que quieras que tengamos en cuenta: una idea, una duda, algo que haya pasado en estos días.</p>
     <div class="notas"><textarea id="nota_txt" placeholder="Escribí acá…"></textarea><br><button id="nota_btn">Guardar nota</button><div id="nota_out"></div>
     ${N.map(n=>`<div class="nota"><div class="quien ${n.autor==='semilla'?'semilla':''}">${n.autor==='semilla'?'Semilla Redes':'Vos'}</div><div class="txt">${n.texto}</div><div class="cuando">${new Date(n.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</div>${n.autor!=='semilla'?`<button class="x" data-deln="${n.id}" title="Borrar nota">×</button>`:''}</div>`).join('')}
     </div>`;
@@ -593,7 +651,7 @@ function pintarResto(d,h){
       </div>`;
   }
 
-  h+=`<p class="pie">Cualquier duda sobre estos números, escribile a Agus. Actualizamos todas las semanas.</p>`;
+  h+=`<p class="pie">Cualquier duda sobre estos números, escribile a Agus.</p>`;
   $('app').innerHTML=h;
   $('cargando').classList.add('oculto'); $('app').classList.remove('oculto');
 

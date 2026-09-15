@@ -104,7 +104,11 @@ const CAMPOS_VENTAS={
  'Instagram':[['ig_followers_total','Seguidores'],['ig_followers_nuevos','Nuevos'],['ig_visitas','Visitas'],['ig_inversion','Inversión'],['ig_inversion_diaria','Inv. diaria'],['ig_costo_follower','Costo x seguidor']],
  'Venta del producto':[['vta_visitas','Visitas a la página'],['vta_inversion','Inversión'],['vta_costo_visita','Costo x visita'],['vta_ventas','Ventas'],['vta_costo_venta','Costo x venta'],['vta_ingreso','Ingreso']]
 };
-const CAMPOS_POR_TIPO={musica:CAMPOS_MUSICA, mensajes:CAMPOS_MENSAJES, mixto:CAMPOS_MIXTO, ventas:CAMPOS_VENTAS};
+const CAMPOS_STEAM={
+ 'Campa\u00f1a de seguidores':[['ig_followers_total','Seguidores'],['ig_followers_nuevos','Nuevos'],['ig_visitas','Visitas'],['ig_inversion','Inversi\u00f3n'],['ig_inversion_diaria','Inv. diaria'],['ig_costo_follower','Costo x seguidor']],
+ 'Campa\u00f1a a Steam':[['stm_visitas','Visitas desde Meta'],['stm_inversion','Inversi\u00f3n'],['stm_costo_visita','Costo x visita'],['stm_visitas_steam','Visitas totales en Steam'],['stm_wishlist','Wishlists'],['stm_costo_wishlist','Costo x wishlist']]
+};
+const CAMPOS_POR_TIPO={musica:CAMPOS_MUSICA, mensajes:CAMPOS_MENSAJES, mixto:CAMPOS_MIXTO, ventas:CAMPOS_VENTAS, steam:CAMPOS_STEAM};
 let CAMPOS = CAMPOS_MUSICA;
 
 async function entrar(){
@@ -157,13 +161,20 @@ function parsear(txt){
     if(/^famosos/i.test(bajo)){seccion='fam';return;}
     if(/^reservas /i.test(bajo)){seccion='esp';return;}
     if(/^mensajes \(productos\)/i.test(bajo)){seccion='msj';return;}
+    if(/^followers?\s*:?\s*$|^campa[nñ]a de seguidores/i.test(bajo)){seccion='ig';return;}
+    if(/^meta a steam|^campa[nñ]a a steam|^steam \(meta\)/i.test(bajo)){seccion='stm';return;}
+    if(/^steam\s*:?\s*$/i.test(bajo)){seccion='stmn';return;}
     if(/^interacci[oó]n/i.test(bajo)){seccion='int';return;}
     if(/^lanzamiento/i.test(bajo)){seccion='lan';return;}
     if(/^venta de libro|^venta del producto|^ventas?:/i.test(bajo)){seccion='vta';return;}
     if(/^hypedi?tt/i.test(bajo)){seccion='hyp';return;}
     const M={
       'followers': seccion==='ig'?(d.ig_followers_total==null?'ig_followers_total':'ig_followers_nuevos'):'sp_followers',
-      'visitas': seccion==='ig'?'ig_visitas':'sp_meta_visitas',
+      'visitas': seccion==='ig'?'ig_visitas':(seccion==='stm'?'stm_visitas':(seccion==='stmn'?'stm_visitas_steam':'sp_meta_visitas')),
+      'visitas totales': seccion==='stmn'?'stm_visitas_steam':'stm_visitas',
+      'wishlist':'stm_wishlist','wishlists':'stm_wishlist',
+      'costo por wishlist':'stm_costo_wishlist',
+      'costo por visita (tr\u00e1fico)':'stm_costo_visita','costo por visita (trafico)':'stm_costo_visita',
       'meta visitas':'sp_meta_visitas',
       'inversión': seccion+'_inversion', 'inversion': seccion+'_inversion',
       'costo por follower':'ig_costo_follower','inversión diaria':(seccion==='ig'?'ig_inversion_diaria':seccion+'_inv_diaria'),'inversion diaria':(seccion==='ig'?'ig_inversion_diaria':seccion+'_inv_diaria'),
@@ -176,7 +187,7 @@ function parsear(txt){
       'personas alcanzadas': seccion+'_alcance',
       'pba': seccion+'_pba', 'caba': seccion+'_caba',
       'visitas a la página':(seccion==='vta'?'vta_visitas':'lan_visitas'),'visitas a la pagina':(seccion==='vta'?'vta_visitas':'lan_visitas'),
-      'costo por visita':(seccion==='vta'?'vta_costo_visita':'lan_costo_visita'),
+      'costo por visita':(seccion==='vta'?'vta_costo_visita':(seccion==='stm'?'stm_costo_visita':'lan_costo_visita')),
       'ventas':'vta_ventas','costo por venta':'vta_costo_venta',
       'hypeditt visits':'lan_hypeddit','visits':'lan_hypeddit','total link clicks':'lan_clics',
       'interacciones':'int_interacciones','x interación':'int_costo','x interacción':'int_costo','costo x interaccion':'int_costo',
@@ -251,6 +262,11 @@ function pintar(){
       <optgroup label="YouTube">
         <option value="yt_views|youtube">Visualizaciones del canal</option>
         <option value="yt_subs|youtube">Suscriptores</option>
+      </optgroup>
+      <optgroup label="Steam">
+        <option value="stm_wishlist|meta">Wishlists por per\u00edodo</option>
+        <option value="stm_costo_wishlist|meta">Costo por wishlist (bajar a)</option>
+        <option value="stm_visitas|meta">Visitas a Steam desde la pauta</option>
       </optgroup>
       <optgroup label="Consultas y ventas">
         <option value="msj_mensajes|meta">Consultas por período</option>
