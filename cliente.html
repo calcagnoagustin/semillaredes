@@ -255,6 +255,60 @@ function multiCamp(R,et){
     <svg class="linea" viewBox="0 0 ${W} ${H}">${cuerpo}</svg></div>`;
 }
 
+function pintarVentas(d){
+  MON=(d.cliente.moneda||'USD');
+  const R=d.reportes||[];
+  const u=R[R.length-1]||null, a=R.length>1?R[R.length-2]:null;
+  const ultimo=(k)=>{ for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null) return x; } return null; };
+  const previo=(k)=>{ let visto=false; for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null){ if(visto) return x; visto=true; } } return null; };
+  const m=new Proxy({},{get:(_,k)=>ultimo(k)}), ma=new Proxy({},{get:(_,k)=>previo(k)});
+  const et=R.map(r=>fecha(r.hasta));
+
+  let h=`<h1>${d.cliente.nombre}</h1>
+    <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
+
+  h+=`<h2>Instagram</h2><p class="sub">Crecimiento de la cuenta.</p><div class="tarj">
+    ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
+    ${card('Nuevos en el período', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos])}
+    ${card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas])}
+    ${card('Costo por seguidor', mon(m.ig_costo_follower,3), [m.ig_costo_follower, ma.ig_costo_follower],3,true,true)}
+  </div>`;
+  h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
+  h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
+
+  const hayVta = R.some(r=>r.metricas.vta_visitas!=null);
+  if(hayVta){
+    h+=`<h2>Ventas</h2><p class="sub">La campaña que lleva gente a comprar.</p><div class="tarj">
+      ${card('Ventas', fmt(m.vta_ventas), [m.vta_ventas, ma.vta_ventas],0,true)}
+      ${card('Costo por venta', mon(m.vta_costo_venta,2), [m.vta_costo_venta, ma.vta_costo_venta],2,false,true)}
+      ${card('Visitas a la página', fmt(m.vta_visitas), [m.vta_visitas, ma.vta_visitas])}
+      ${card('Costo por visita', mon(m.vta_costo_visita,3), [m.vta_costo_visita, ma.vta_costo_visita],3,false,true)}
+      ${card('Invertido', mon(m.vta_inversion,2), [m.vta_inversion, ma.vta_inversion],2)}
+    </div>`;
+    if(R.some(r=>r.metricas.vta_ventas!=null))
+      h+=grafico('Ventas','Cuántos ejemplares se vendieron.',R.map(r=>r.metricas.vta_ventas),et,'#87863A');
+    h+=grafico('Visitas a la página','Cuánta gente llegó a la página de venta.',R.map(r=>r.metricas.vta_visitas),et,'#E2767C');
+  }
+
+  h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
+    ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
+    ${card('En ventas',mon(m.vta_inversion,2),[m.vta_inversion,ma.vta_inversion],2)}
+    ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.vta_inversion||0),2),null,2,true)}
+  </div>`;
+
+  if(R.length>1){
+    h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
+      <details class="hist"><summary><span class="flecha">▶</span> Ver los ${R.length} reportes</summary><table>
+      <tr><th>Período</th><th>Seguidores</th><th>Nuevos</th><th>Costo x seg.</th><th>Visitas</th><th>Ventas</th><th>Inversión</th></tr>
+      ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
+        <td>${fmt(x.ig_followers_total)}</td><td>${fmt(x.ig_followers_nuevos)}</td><td>${fmt(x.ig_costo_follower,3)}</td>
+        <td>${fmt(x.vta_visitas)}</td><td>${fmt(x.vta_ventas)}</td>
+        <td>${fmt(Number(x.ig_inversion||0)+Number(x.vta_inversion||0),2)}</td></tr>`}).join('')}
+      </table></details>`;
+  }
+  return h;
+}
+
 function pintarMixto(d){
   MON=(d.cliente.moneda||'USD');
   const R=d.reportes||[];
@@ -391,10 +445,11 @@ function pintar(d){
 
 
   let h = (d.cliente.tipo==='mensajes') ? pintarMensajes(d)
+        : (d.cliente.tipo==='ventas') ? pintarVentas(d)
         : (d.cliente.tipo==='mixto') ? pintarMixto(d)
         : `<h1>${d.cliente.nombre}</h1>
   <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
-  if(d.cliente.tipo==='mensajes'||d.cliente.tipo==='mixto'){ return pintarResto(d,h); }
+  if(['mensajes','mixto','ventas'].includes(d.cliente.tipo)){ return pintarResto(d,h); }
 
   h+=`<h2>Instagram</h2><p class="sub">Crecimiento y costo de la pauta.</p><div class="tarj">
     ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
