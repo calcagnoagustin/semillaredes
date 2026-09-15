@@ -430,6 +430,18 @@ function pintar(d){
 
   h+=grafico('Visualizaciones','Cuántas veces se vieron tus videos.',R.map(r=>r.metricas.yt_views),et,'#E2767C');
 
+  const hayLan = R.some(r=>r.metricas.lan_visitas!=null);
+  if(hayLan){
+    h+=`<h2>Lanzamiento</h2><p class="sub">La campaña que lleva gente a escuchar el tema.</p><div class="tarj">
+      ${card('Visitas a la página', fmt(m.lan_visitas), [m.lan_visitas, ma.lan_visitas],0,true)}
+      ${card('Costo por visita', mon(m.lan_costo_visita,2), [m.lan_costo_visita, ma.lan_costo_visita],2,false,true)}
+      ${card('Invertido', mon(m.lan_inversion,2), [m.lan_inversion, ma.lan_inversion],2)}
+      ${m.lan_hypeddit!=null?card('Visitas en Hypeddit', fmt(m.lan_hypeddit), [m.lan_hypeddit, ma.lan_hypeddit]):''}
+      ${m.lan_clics!=null?card('Clics al link', fmt(m.lan_clics), [m.lan_clics, ma.lan_clics]):''}
+    </div>`;
+    h+=grafico('Visitas a la página del lanzamiento','Cuánta gente llegó a escuchar.',R.map(r=>r.metricas.lan_visitas),et,'#E2767C');
+  }
+
   h+=`<h2>Crecimiento</h2><p class="sub">Las tres plataformas juntas.</p>`+multi(R);
 
   h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
