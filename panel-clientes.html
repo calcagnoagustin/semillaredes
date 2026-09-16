@@ -109,7 +109,14 @@ const CAMPOS_STEAM={
  'Campa\u00f1a de seguidores':[['ig_followers_total','Seguidores'],['ig_followers_nuevos','Nuevos'],['ig_visitas','Visitas'],['ig_inversion','Inversi\u00f3n'],['ig_inversion_diaria','Inv. diaria'],['ig_costo_follower','Costo x seguidor']],
  'Campa\u00f1a a Steam':[['stm_visitas','Visitas desde Meta'],['stm_inversion','Inversi\u00f3n'],['stm_costo_visita','Costo x visita'],['stm_visitas_steam','Visitas totales en Steam'],['stm_wishlist','Wishlists'],['stm_costo_wishlist','Costo x wishlist']]
 };
-const CAMPOS_POR_TIPO={musica:CAMPOS_MUSICA, mensajes:CAMPOS_MENSAJES, mixto:CAMPOS_MIXTO, ventas:CAMPOS_VENTAS, steam:CAMPOS_STEAM};
+const CAMPOS_TRAFICO={
+ 'Seguidores':[['ig_followers_total','Seguidores'],['ig_followers_nuevos','Nuevos'],['ig_inversion','Inversión'],['ig_costo_follower','Costo x seguidor']],
+ 'Tráfico (total)':[['tr_visitas','Visitas totales'],['tr_inversion','Inversión'],['tr_costo_visita','Costo x visita'],['tr_alcance','Personas alcanzadas']],
+ 'Audiencia 1 · Decisores institucionales':[['a1_visitas','Visitas'],['a1_costo','Costo x visita'],['a1_inversion','Inversión']],
+ 'Audiencia 2 · Profesionales MD/DO, PA, NP':[['a2_visitas','Visitas'],['a2_costo','Costo x visita'],['a2_inversion','Inversión']],
+ 'Audiencia 3 · Estudiantes y trainees':[['a3_visitas','Visitas'],['a3_costo','Costo x visita'],['a3_inversion','Inversión']]
+};
+const CAMPOS_POR_TIPO={musica:CAMPOS_MUSICA, mensajes:CAMPOS_MENSAJES, mixto:CAMPOS_MIXTO, ventas:CAMPOS_VENTAS, steam:CAMPOS_STEAM, trafico:CAMPOS_TRAFICO};
 let CAMPOS = CAMPOS_MUSICA;
 
 async function entrar(){
@@ -293,6 +300,10 @@ function pintar(){
       <optgroup label="Entradas / tickets">
         <option value="tk_tickets|meta">Ventas de la obra</option>
         <option value="tk_costo_ticket|meta">Costo por venta de la obra (bajar a)</option>
+      </optgroup>
+      <optgroup label="Tráfico">
+        <option value="tr_visitas|meta">Visitas totales</option>
+        <option value="tr_costo_visita|meta">Costo por visita (bajar a)</option>
       </optgroup>
       <optgroup label="Interacción">
         <option value="int_interacciones|meta">Interacciones por período</option>
