@@ -98,7 +98,8 @@ const CAMPOS_MIXTO={
  'Instagram':[['ig_followers_total','Seguidores'],['ig_followers_nuevos','Nuevos'],['ig_visitas','Visitas'],['ig_inversion','Inversión USD'],['ig_inversion_diaria','Inv. diaria'],['ig_costo_follower','Costo x seguidor']],
  'Consultas por productos':[['msj_mensajes','Consultas'],['msj_inversion','Inversión USD'],['msj_costo_mensaje','Costo x consulta'],['msj_potenciales','Potenciales']],
  'Ventas':[['msj_conversiones','Ventas'],['msj_costo_conversion','Costo x venta'],['msj_ingreso','Ingreso'],['msj_roas','ROAS']],
- 'Interacción':[['int_interacciones','Interacciones'],['int_inversion','Inversión'],['int_costo','Costo x interacción']]
+ 'Interacción':[['int_interacciones','Interacciones'],['int_inversion','Inversión'],['int_costo','Costo x interacción']],
+ 'Entradas / tickets':[['tk_nombre','Nombre de la obra'],['tk_tickets','Entradas vendidas'],['tk_inversion','Inversión'],['tk_costo_ticket','Costo x entrada'],['tk_clics','Clics al link'],['tk_ingreso','Ingreso']]
 };
 const CAMPOS_VENTAS={
  'Instagram':[['ig_followers_total','Seguidores'],['ig_followers_nuevos','Nuevos'],['ig_visitas','Visitas'],['ig_inversion','Inversión'],['ig_inversion_diaria','Inv. diaria'],['ig_costo_follower','Costo x seguidor']],
@@ -167,6 +168,7 @@ function parsear(txt){
     if(/^interacci[oó]n/i.test(bajo)){seccion='int';return;}
     if(/^lanzamiento/i.test(bajo)){seccion='lan';return;}
     if(/^venta de libro|^venta del producto|^ventas?:/i.test(bajo)){seccion='vta';return;}
+    if(/^entradas|^tickets|^cuartos oscuros|^los cuartos/i.test(bajo)){seccion='tk';return;}
     if(/^hypedi?tt/i.test(bajo)){seccion='hyp';return;}
     const M={
       'followers': seccion==='ig'?(d.ig_followers_total==null?'ig_followers_total':'ig_followers_nuevos'):'sp_followers',
@@ -188,7 +190,8 @@ function parsear(txt){
       'pba': seccion+'_pba', 'caba': seccion+'_caba',
       'visitas a la página':(seccion==='vta'?'vta_visitas':'lan_visitas'),'visitas a la pagina':(seccion==='vta'?'vta_visitas':'lan_visitas'),
       'costo por visita':(seccion==='vta'?'vta_costo_visita':(seccion==='stm'?'stm_costo_visita':'lan_costo_visita')),
-      'ventas':'vta_ventas','costo por venta':'vta_costo_venta',
+      'ventas':(seccion==='tk'?'tk_tickets':'vta_ventas'),'costo por venta':(seccion==='tk'?'tk_costo_ticket':'vta_costo_venta'),
+      'entradas':'tk_tickets','tickets':'tk_tickets','costo por entrada':'tk_costo_ticket','clics':'tk_clics','clics al link':'tk_clics',
       'hypeditt visits':'lan_hypeddit','visits':'lan_hypeddit','total link clicks':'lan_clics',
       'interacciones':'int_interacciones','x interación':'int_costo','x interacción':'int_costo','costo x interaccion':'int_costo',
       'potenciales':'msj_potenciales','conversiones':'msj_conversiones',
@@ -286,6 +289,10 @@ function pintar(){
         <option value="vta_ventas|meta">Ventas por período</option>
         <option value="vta_costo_venta|meta">Costo por venta (bajar a)</option>
         <option value="vta_visitas|meta">Visitas a la página</option>
+      </optgroup>
+      <optgroup label="Entradas / tickets">
+        <option value="tk_tickets|meta">Entradas vendidas</option>
+        <option value="tk_costo_ticket|meta">Costo por entrada (bajar a)</option>
       </optgroup>
       <optgroup label="Interacción">
         <option value="int_interacciones|meta">Interacciones por período</option>
