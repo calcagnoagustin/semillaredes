@@ -353,7 +353,7 @@ function pintarMixto(d){
 
   const hayTk = R.some(r=>r.metricas.tk_tickets!=null || r.metricas.tk_inversion!=null);
   if(hayTk){
-    h+=`<h2>${m.tk_nombre||'Entradas'}</h2><p class="sub">La campaña que vende entradas.</p><div class="tarj">
+    h+=`<h2>${m.tk_nombre||'Los Cuartos Oscuros'}</h2><p class="sub">La campaña de venta de entradas.</p><div class="tarj">
       ${card('Entradas vendidas', fmt(m.tk_tickets), [m.tk_tickets, ma.tk_tickets],0,true)}
       ${card('Costo por entrada', mon(m.tk_costo_ticket,2), [m.tk_costo_ticket, ma.tk_costo_ticket],2,false,true)}
       ${card('Clics al link', fmt(m.tk_clics), [m.tk_clics, ma.tk_clics])}
