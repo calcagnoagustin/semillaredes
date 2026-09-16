@@ -662,20 +662,7 @@ function pintarResto(d,h){
   }
 
   h+=`<p class="pie">Cualquier duda sobre estos números, escribile a Agus.</p>`;
-  const AL=d.alertas||[];
-  if(AL.length){
-    const cab=`<h2 style="margin-top:4px">Atención</h2><p class="sub">Esto lo detectamos en tus números y conviene mirarlo.</p>`;
-    const cuerpo=AL.map(a=>`<div class="alerta ${a.severidad==='alta'?'':'media'}">
-      <div class="top"><span class="sev">${a.severidad==='alta'?'Importante':'Para mirar'}</span><span class="tt">${a.titulo}</span></div>
-      <div class="dato">${a.dato||''}</div>
-      ${a.causa?`<div class="campo"><b>Posible causa:</b> ${a.causa}</div>`:''}
-      ${a.recomendacion?`<div class="campo"><b>Qué haríamos:</b> ${a.recomendacion}</div>`:''}
-      <div class="cierre">Conversalo con Agus en la próxima reunión.</div>
-    </div>`).join('');
-    // va justo despues del titulo y las fechas
-    const corte=h.indexOf('</p>')+4;
-    h = h.slice(0,corte) + cab + cuerpo + h.slice(corte);
-  }
+  // las alertas se ven solo en el panel de Agus, no en la pagina del cliente
   $('app').innerHTML=h;
   $('cargando').classList.add('oculto'); $('app').classList.remove('oculto');
 
