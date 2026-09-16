@@ -125,6 +125,16 @@ details.hist table{border:0;border-radius:0}
 .hito .x:hover{color:var(--vino)}
 .nuevoHito{background:#fff;border:1px dashed #D8CFBB;border-radius:13px;padding:16px;margin-top:12px}
 .nuevoHito select,.nuevoHito input{width:100%;border:1px solid #DDD6C7;border-radius:9px;background:#FDFCF9;padding:10px 12px;font:inherit;font-size:14.5px;margin-bottom:8px}
+.desglose{background:#fff;border:1px solid var(--linea);border-radius:13px;padding:18px 20px;margin-top:12px}
+.desglose h3{font-size:14px;color:var(--navy);margin:0 0 2px}
+.desglose .leyenda{font-size:12.5px;color:var(--mute);margin:0 0 12px}
+.desglose .fila2{display:grid;grid-template-columns:1fr 70px 90px;gap:10px;padding:10px 0;border-top:1px solid var(--linea);font-size:14.5px;align-items:baseline}
+.desglose .fila2:first-of-type{border-top:0}
+.desglose .nom{color:var(--navy);font-weight:600}
+.desglose .v{text-align:right;font-family:'Playfair Display',serif;font-size:19px;color:var(--navy)}
+.desglose .c{text-align:right;font-size:14px;color:#6E6A78}
+.desglose .cab2{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--oliva);font-weight:700;border:0}
+.desglose .sin{color:var(--mute);font-style:italic;font-size:13.5px}
 .nuevoHito button{border:0;background:var(--oliva);color:#fff;font:inherit;font-weight:600;border-radius:9px;padding:10px 18px;cursor:pointer}
 .hito .falta{font-size:12.5px;color:var(--oliva);font-weight:600;margin-top:6px}
 .hito.logrado .falta{color:var(--vino)}
@@ -300,7 +310,20 @@ function pintarVentas(d){
       ${card('Visitas a la página', fmt(m.vta_visitas), [m.vta_visitas, ma.vta_visitas])}
       ${card('Costo por visita', mon(m.vta_costo_visita,3), [m.vta_costo_visita, ma.vta_costo_visita],3,false,true)}
       ${card('Invertido', mon(m.vta_inversion,2), [m.vta_inversion, ma.vta_inversion],2)}
+      ${m.vta_ingreso!=null?card('Facturación', mon(m.vta_ingreso,0), [m.vta_ingreso, ma.vta_ingreso],0):''}
+      ${m.vta_roas!=null?card('ROAS', fmt(m.vta_roas,2), [m.vta_roas, ma.vta_roas],2,true):''}
     </div>`;
+    if(m.vta_atribuidas!=null) h+=`<p class="sub" style="margin-top:8px">De las ${fmt(m.vta_ventas)} ventas, ${fmt(m.vta_atribuidas)} se atribuyen al pixel.</p>`;
+    const DG=(u&&u.metricas&&u.metricas.desglose)||null;
+    if(DG&&DG.length){
+      h+=`<div class="desglose"><h3>Libro por libro</h3>
+        <p class="leyenda">Cómo rindió cada conjunto de anuncios en este período.</p>
+        <div class="fila2 cab2"><span>Campaña</span><span style="text-align:right">Ventas</span><span style="text-align:right">Costo</span></div>
+        ${DG.map(x=>`<div class="fila2"><span class="nom">${x.nombre}</span>
+          <span class="v">${x.ventas!=null?fmt(x.ventas):'—'}</span>
+          <span class="c">${x.costo!=null?mon(x.costo,2):'<span class=sin>sin ventas</span>'}</span></div>`).join('')}
+      </div>`;
+    }
     if(R.some(r=>r.metricas.vta_ventas!=null))
       h+=grafico('Ventas','Cuántos ejemplares se vendieron.',R.map(r=>r.metricas.vta_ventas),et,'#87863A');
     h+=grafico('Visitas a la página','Cuánta gente llegó a la página de venta.',R.map(r=>r.metricas.vta_visitas),et,'#E2767C');
