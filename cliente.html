@@ -342,13 +342,26 @@ function pintarMixto(d){
 
   const hayConsultas = R.some(r=>r.metricas.msj_mensajes!=null);
   if(hayConsultas){
-    h+=`<h2>Consultas</h2><p class="sub">Gente que escribió preguntando por productos.</p><div class="tarj">
+    h+=`<h2>Consultas</h2><p class="sub">Gente que escribió preguntando por lo que ofrecés.</p><div class="tarj">
       ${card('Consultas', fmt(m.msj_mensajes), [m.msj_mensajes, ma.msj_mensajes],0,true)}
       ${card('Costo por consulta', mon(m.msj_costo_mensaje,2), [m.msj_costo_mensaje, ma.msj_costo_mensaje],2,false,true)}
       ${card('Invertido', mon(m.msj_inversion,2), [m.msj_inversion, ma.msj_inversion],2)}
     </div>`;
     h+=grafico('Consultas','Cuánta gente escribió para comprar.',R.map(r=>r.metricas.msj_mensajes),et,'#87863A');
     h+=grafico('Costo por consulta','Cuánto cuesta cada persona que escribe. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.msj_costo_mensaje),et,'#E2767C',true);
+  }
+
+  const hayTk = R.some(r=>r.metricas.tk_tickets!=null || r.metricas.tk_inversion!=null);
+  if(hayTk){
+    h+=`<h2>${m.tk_nombre||'Entradas'}</h2><p class="sub">La campaña que vende entradas.</p><div class="tarj">
+      ${card('Entradas vendidas', fmt(m.tk_tickets), [m.tk_tickets, ma.tk_tickets],0,true)}
+      ${card('Costo por entrada', mon(m.tk_costo_ticket,2), [m.tk_costo_ticket, ma.tk_costo_ticket],2,false,true)}
+      ${card('Clics al link', fmt(m.tk_clics), [m.tk_clics, ma.tk_clics])}
+      ${card('Invertido', mon(m.tk_inversion,2), [m.tk_inversion, ma.tk_inversion],2)}
+      ${m.tk_ingreso!=null?card('Ingreso', mon(m.tk_ingreso,0), [m.tk_ingreso, ma.tk_ingreso],0):''}
+    </div>`;
+    if(R.filter(r=>r.metricas.tk_tickets!=null).length>1)
+      h+=grafico('Entradas vendidas','Cuántas entradas se vendieron en cada período.',R.map(r=>r.metricas.tk_tickets),et,'#7A1F3A');
   }
 
   const hayInter = R.some(r=>r.metricas.int_interacciones!=null);
@@ -376,7 +389,7 @@ function pintarMixto(d){
   h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
     ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
     ${card('En consultas',mon(m.msj_inversion,2),[m.msj_inversion,ma.msj_inversion],2)}
-    ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.msj_inversion||0)+Number(m.int_inversion||0),2),null,2,true)}
+    ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.msj_inversion||0)+Number(m.int_inversion||0)+Number(m.tk_inversion||0),2),null,2,true)}
   </div>`;
 
   if(R.length>1){
