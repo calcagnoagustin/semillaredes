@@ -390,6 +390,8 @@ function pintarMixto(d){
   h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
     ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
     ${card('En consultas',mon(m.msj_inversion,2),[m.msj_inversion,ma.msj_inversion],2)}
+    ${m.int_inversion!=null?card('En interacción',mon(m.int_inversion,2),[m.int_inversion,ma.int_inversion],2):''}
+    ${m.tk_inversion!=null?card('En '+(m.tk_nombre||'la obra'),mon(m.tk_inversion,2),[m.tk_inversion,ma.tk_inversion],2):''}
     ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.msj_inversion||0)+Number(m.int_inversion||0)+Number(m.tk_inversion||0),2),null,2,true)}
   </div>`;
 
