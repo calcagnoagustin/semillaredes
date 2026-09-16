@@ -37,6 +37,7 @@ iframe{border:0;width:100%;height:100%;display:block}
 <script>
 const BASE='https://semillaredes.com/cliente.html?c=piku-yoga&k=9fdbe4d20ea5';
 const marco=document.getElementById('marco');
+try{ localStorage.setItem('sr_cliente_slug','pikuyoga'); }catch(e){}
 function cargar(){ marco.src = BASE + '&v=' + Date.now(); }
 cargar();
 
