@@ -18,7 +18,9 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--crema);color:var(--tinta);font-family:Inter,system-ui,sans-serif;line-height:1.55}
 .wrap{max-width:880px;margin:0 auto;padding:30px 20px 100px}
-.logo{width:150px;display:block;margin-bottom:20px}
+.cabLogo{display:flex;align-items:center;gap:9px;margin-bottom:20px}
+.logo{width:150px;display:block}
+.beta{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;font-weight:700;color:var(--vino);border:1px solid var(--vino);border-radius:99px;padding:3px 9px;line-height:1}
 h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(30px,5.4vw,42px);line-height:1.08;color:var(--navy);margin:0 0 4px}
 .periodo{font-size:14px;color:var(--mute);margin:0 0 26px}
 h2{font-family:'Playfair Display',serif;font-size:23px;color:var(--navy);margin:36px 0 3px}
@@ -89,8 +91,8 @@ th{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ol
 .reco .items{margin-top:16px}
 .reco .it2{display:flex;gap:14px;padding:15px 0;border-top:1px solid #2E3970}
 .reco .num{flex:none;width:26px;height:26px;border-radius:50%;background:var(--rosa);color:var(--navy);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
-.reco .tt{font-size:16px;font-weight:600;color:var(--crema);margin-bottom:3px}
-.reco .tx{font-size:14.5px;color:#DDD8CC;line-height:1.6}
+.reco .tt{display:block;font-size:16px;font-weight:700;color:var(--crema);margin-bottom:5px;line-height:1.3}
+.reco .tx{display:block;font-size:14.5px;color:#DDD8CC;line-height:1.6}
 .reco .pie2{font-size:12.5px;color:#8A8697;margin-top:16px}
 .camp{background:#fff;border:1px solid var(--linea);border-radius:14px;padding:18px 20px;margin-bottom:12px}
 .camp h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);margin:0 0 2px}
@@ -162,7 +164,7 @@ details.hist table{border:0;border-radius:0}
 </head>
 <body>
 <div class="wrap">
-  <img class="logo" src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semilla-logo-horizontal.png" alt="Semilla Redes">
+  <div class="cabLogo"><img class="logo" src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semilla-logo-horizontal.png" alt="Semilla Redes"><span class="beta">Beta</span></div>
   <div id="cargando">Cargando…</div>
   <div id="app" class="oculto"></div>
   <div id="error" class="err oculto">Este link no es válido. Pedile uno nuevo a Agus.</div>
