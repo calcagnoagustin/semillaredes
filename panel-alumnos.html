@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" type="image/png" href="/icono-192.png">
+<title>Panel Alumnos · Semilla</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--fondo:#2E3A20;--panel:#3B4A2A;--crema:#F2EDE4;--oliva:#A8B168;--rosa:#E2767C;--mute:#B9BFA6;--linea:#4C5C37}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--crema);font-family:Inter,system-ui,sans-serif;line-height:1.5;padding:26px 18px 90px}
+.wrap{max-width:1000px;margin:0 auto}
+.cinta{background:var(--oliva);color:#22301A;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;
+  display:inline-block;padding:5px 13px;border-radius:99px;margin-bottom:12px}
+h1{font-family:'Playfair Display',serif;font-size:31px;margin:0 0 3px}
+.lede{color:var(--mute);font-size:14.5px;margin:0 0 22px}
+.card{background:var(--panel);border:1px solid var(--linea);border-radius:14px;padding:20px;margin:14px 0}
+.card h2{font-family:'Playfair Display',serif;font-size:21px;margin:0 0 3px}
+.meta{font-size:12.5px;color:var(--mute)}
+label{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--mute);display:block;margin-bottom:4px}
+input,textarea{width:100%;border:1px solid var(--linea);background:#22301A;color:var(--crema);border-radius:9px;padding:10px 12px;font:inherit;font-size:14px}
+textarea{min-height:110px;font-family:ui-monospace,monospace;font-size:12.5px}
+button{border:0;background:var(--oliva);color:#22301A;font:inherit;font-size:13.5px;font-weight:700;border-radius:9px;padding:10px 16px;cursor:pointer}
+button.sec{background:#4C5C37;color:var(--crema)}
+button.peligro{background:#7A1F3A;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.acc{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.fila{display:grid;grid-template-columns:1fr 130px 90px 120px;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--linea);font-size:14px}
+.fila:last-child{border-bottom:0}
+.fila .nom{font-weight:600}
+.fila .em{font-size:12.5px;color:var(--mute)}
+.pill{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:99px;padding:3px 10px;display:inline-block}
+.pill.on{background:var(--oliva);color:#22301A}
+.pill.off{background:#5A4A4A;color:#E8C9CE}
+.mini{display:flex;gap:6px}
+.mini button{padding:6px 10px;font-size:12px}
+.ok-msg{color:var(--oliva);font-size:13px;margin-top:10px}
+.oculto{display:none}
+a.link{color:var(--oliva);font-size:12.5px;word-break:break-all}
+@media(max-width:700px){.fila{grid-template-columns:1fr;gap:6px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="cinta">Alumnos · no es el panel de clientes</span>
+  <h1>Panel Alumnos</h1>
+  <p class="lede">Accesos al seguimiento que viene con la suscripción.</p>
+
+  <div id="gate">
+    <label>Token de admin de alumnos</label>
+    <input type="password" id="tok" style="max-width:300px;display:inline-block">
+    <button onclick="entrar()">Entrar</button>
+    <p class="meta" style="margin-top:10px">Es distinto del token del panel de clientes.</p>
+  </div>
+
+  <div id="app" class="oculto"><div id="vista"></div></div>
+</div>
+
+<script>
+const API='https://fdrxsjphlvvwwknnrjtx.supabase.co';
+const KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
+const $=id=>document.getElementById(id);
+const rpc=(fn,a)=>fetch(`${API}/rest/v1/rpc/${fn}`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(a)}).then(r=>r.json());
+let admin='', alumnos=[];
+
+async function entrar(){
+  const t=$('tok').value.trim()||sessionStorage.getItem('sr_admin_alu')||'';
+  const r=await rpc('alu_admin',{p_admin:t});
+  if(r.error){ alert('Token incorrecto'); return; }
+  admin=t; sessionStorage.setItem('sr_admin_alu',t);
+  alumnos=r.alumnos||[];
+  $('gate').classList.add('oculto'); $('app').classList.remove('oculto');
+  pintar();
+}
+
+function pintar(){
+  const activos=alumnos.filter(a=>a.activa).length;
+  let h=`<div class="card"><h2>Alta de alumno</h2>
+    <p class="meta">Se le genera el link de acceso. Si el email ya existe, se reactiva.</p>
+    <div class="grid" style="margin-top:12px">
+      <div><label>Nombre</label><input id="n_nom"></div>
+      <div><label>Email</label><input id="n_mail" type="email"></div>
+      <div><label>Proyecto</label><input id="n_proy"></div>
+      <div><label>Vence</label><input id="n_vence" type="date"></div>
+    </div>
+    <div class="acc"><button onclick="alta()">Crear acceso</button></div>
+    <div id="alta_out"></div></div>`;
+
+  h+=`<div class="card"><h2>Sincronizar con Tiendup</h2>
+    <p class="meta">Pegá los emails de las suscripciones activas, uno por línea. Los que estén en la lista quedan activos; los que no, se desactivan.</p>
+    <textarea id="sync_txt" placeholder="alumno1@mail.com&#10;alumno2@mail.com" style="margin-top:12px"></textarea>
+    <div class="acc"><button class="sec" onclick="sincronizar()">Sincronizar</button></div>
+    <div id="sync_out"></div></div>`;
+
+  h+=`<div class="card"><h2>Alumnos</h2>
+    <p class="meta">${alumnos.length} en total · ${activos} con suscripción activa</p>
+    <div style="margin-top:14px">
+    ${alumnos.map(a=>`<div class="fila">
+      <span><span class="nom">${a.nombre}</span>${a.proyecto?` · ${a.proyecto}`:''}<br><span class="em">${a.email}</span></span>
+      <span><span class="pill ${a.activa?'on':'off'}">${a.activa?'Activa':'Sin acceso'}</span>
+        ${a.vence_en?`<br><span class="em">vence ${a.vence_en}</span>`:''}</span>
+      <span class="em">${a.reportes} períodos${a.ultimo?`<br>últ. ${a.ultimo}`:''}</span>
+      <span class="mini">
+        <button class="sec" data-copiar="https://semillaredes.com/alumno/?a=${a.token}">Link</button>
+        <button class="sec" data-estado="${a.id}" data-val="${a.activa?'0':'1'}">${a.activa?'Cortar':'Activar'}</button>
+        <button class="peligro" data-borrar="${a.id}">×</button>
+      </span>
+    </div>`).join('')||'<p class="meta">Todavía no hay alumnos.</p>'}
+    </div></div>`;
+  $('vista').innerHTML=h;
+
+  document.querySelectorAll('[data-copiar]').forEach(b=>b.onclick=()=>{
+    navigator.clipboard.writeText(b.dataset.copiar);
+    const t=b.textContent; b.textContent='Copiado ✓'; setTimeout(()=>b.textContent=t,1400);
+  });
+  document.querySelectorAll('[data-estado]').forEach(b=>b.onclick=async()=>{
+    const r=await rpc('alu_estado',{p_admin:admin,p_id:b.dataset.estado,p_activa:b.dataset.val==='1'});
+    if(r.ok) entrar();
+  });
+  document.querySelectorAll('[data-borrar]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('¿Borrar este alumno y todo lo que cargó?')) return;
+    const r=await rpc('alu_borrar',{p_admin:admin,p_id:b.dataset.borrar});
+    if(r.ok) entrar();
+  });
+}
+
+async function alta(){
+  const nom=$('n_nom').value.trim(), mail=$('n_mail').value.trim();
+  if(!nom||!mail){ alert('Faltan nombre y email'); return; }
+  const r=await rpc('alu_alta',{p_admin:admin,p_nombre:nom,p_email:mail,
+    p_proyecto:$('n_proy').value.trim()||null, p_vence:$('n_vence').value||null});
+  if(r.ok){
+    $('alta_out').innerHTML=`<div class="ok-msg">Listo. Link: <a class="link" href="${r.link}" target="_blank">${r.link}</a></div>`;
+    setTimeout(entrar,1800);
+  } else alert('No se pudo crear');
+}
+
+async function sincronizar(){
+  const emails=$('sync_txt').value.split('\n').map(x=>x.trim()).filter(x=>x.includes('@'));
+  if(!emails.length){ alert('Pegá al menos un email'); return; }
+  if(!confirm(`Van a quedar activos ${emails.length} alumnos. El resto pierde el acceso. ¿Seguimos?`)) return;
+  const r=await rpc('alu_sincronizar',{p_admin:admin,p_emails:emails});
+  if(r.ok){ $('sync_out').innerHTML=`<div class="ok-msg">${r.activados} activados · ${r.desactivados} dados de baja</div>`; setTimeout(entrar,1800); }
+  else alert('No se pudo sincronizar');
+}
+
+if(sessionStorage.getItem('sr_admin_alu')) entrar();
+</script>
+</body>
+</html>
