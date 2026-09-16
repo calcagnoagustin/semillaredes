@@ -359,6 +359,7 @@ function pintarMixto(d){
       ${card('Clics al link', fmt(m.tk_clics), [m.tk_clics, ma.tk_clics])}
       ${card('Invertido', mon(m.tk_inversion,2), [m.tk_inversion, ma.tk_inversion],2)}
       ${m.tk_ingreso!=null?card('Ingreso', mon(m.tk_ingreso,0), [m.tk_ingreso, ma.tk_ingreso],0):''}
+      ${m.tk_roas!=null?card('ROAS', fmt(m.tk_roas,2), [m.tk_roas, ma.tk_roas],2):''}
     </div>`;
     if(R.filter(r=>r.metricas.tk_tickets!=null).length>1)
       h+=grafico('Entradas vendidas','Cuántas entradas se vendieron en cada período.',R.map(r=>r.metricas.tk_tickets),et,'#7A1F3A');
