@@ -99,7 +99,7 @@ const CAMPOS_MIXTO={
  'Consultas por productos':[['msj_mensajes','Consultas'],['msj_inversion','Inversión USD'],['msj_costo_mensaje','Costo x consulta'],['msj_potenciales','Potenciales']],
  'Ventas':[['msj_conversiones','Ventas'],['msj_costo_conversion','Costo x venta'],['msj_ingreso','Ingreso'],['msj_roas','ROAS']],
  'Interacción':[['int_interacciones','Interacciones'],['int_inversion','Inversión'],['int_costo','Costo x interacción']],
- 'Entradas / tickets':[['tk_nombre','Nombre de la obra'],['tk_tickets','Entradas vendidas'],['tk_inversion','Inversión'],['tk_costo_ticket','Costo x entrada'],['tk_clics','Clics al link'],['tk_ingreso','Ingreso']]
+ 'Obra (solo campaña Venta)':[['tk_nombre','Nombre de la obra'],['tk_tickets','Ventas'],['tk_inversion','Inversión'],['tk_costo_ticket','Costo x venta'],['tk_roas','ROAS'],['tk_ingreso','Ingreso'],['tk_clics','Clics al link']]
 };
 const CAMPOS_VENTAS={
  'Instagram':[['ig_followers_total','Seguidores'],['ig_followers_nuevos','Nuevos'],['ig_visitas','Visitas'],['ig_inversion','Inversión'],['ig_inversion_diaria','Inv. diaria'],['ig_costo_follower','Costo x seguidor']],
@@ -291,8 +291,8 @@ function pintar(){
         <option value="vta_visitas|meta">Visitas a la página</option>
       </optgroup>
       <optgroup label="Entradas / tickets">
-        <option value="tk_tickets|meta">Entradas vendidas</option>
-        <option value="tk_costo_ticket|meta">Costo por entrada (bajar a)</option>
+        <option value="tk_tickets|meta">Ventas de la obra</option>
+        <option value="tk_costo_ticket|meta">Costo por venta de la obra (bajar a)</option>
       </optgroup>
       <optgroup label="Interacción">
         <option value="int_interacciones|meta">Interacciones por período</option>
