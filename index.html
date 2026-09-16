@@ -2,6 +2,19 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+<script>
+// Apps instaladas antes del arreglo: abren la raiz. Si sabemos quien es, lo llevamos a su panel.
+(function(){
+  try{
+    var slug = localStorage.getItem('sr_cliente_slug');
+    var comoApp = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    if (slug && comoApp && location.pathname === '/') {
+      location.replace('/' + slug + '/');
+    }
+  }catch(e){}
+})();
+</script>
+
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-JXRH3E28FF"></script>
   <script>
