@@ -289,59 +289,87 @@ function pintarVentas(d){
   const previo=(k)=>{ let visto=false; for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null){ if(visto) return x; visto=true; } } return null; };
   const m=new Proxy({},{get:(_,k)=>ultimo(k)}), ma=new Proxy({},{get:(_,k)=>previo(k)});
   const et=R.map(r=>fecha(r.hasta));
+  const hay=(k)=>R.some(r=>r.metricas[k]!=null);
 
   let h=`<h1>${d.cliente.nombre}</h1>
     <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
 
-  h+=`<h2>Instagram</h2><p class="sub">Crecimiento de la cuenta.</p><div class="tarj">
-    ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
-    ${card('Nuevos en el período', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos])}
-    ${card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas])}
-    ${card('Costo por seguidor', mon(m.ig_costo_follower,3), [m.ig_costo_follower, ma.ig_costo_follower],3,true,true)}
+  // --- VENTAS primero: es el corazon de este tipo de cliente ---
+  h+=`<h2>Ventas</h2><p class="sub">Lo que generó la campaña en este período.</p><div class="tarj">
+    ${card('Ventas', fmt(m.vta_ventas), [m.vta_ventas, ma.vta_ventas],0,true)}
+    ${hay('vta_ingreso')?card('Facturación', mon(m.vta_ingreso,0), [m.vta_ingreso, ma.vta_ingreso],0):''}
+    ${hay('vta_ganancia')?card('Ganancia neta', mon(m.vta_ganancia,0), [m.vta_ganancia, ma.vta_ganancia],0):''}
+    ${hay('vta_costo_venta')?card('Costo por venta', mon(m.vta_costo_venta,2), [m.vta_costo_venta, ma.vta_costo_venta],2,false,true):''}
+    ${hay('vta_roas')?card('ROAS', fmt(m.vta_roas,2), [m.vta_roas, ma.vta_roas],2):''}
+    ${hay('vta_roi')?card('ROI', fmt(m.vta_roi)+'%', [m.vta_roi, ma.vta_roi]):''}
+    ${hay('vta_inversion')?card('Invertido', mon(m.vta_inversion,2), [m.vta_inversion, ma.vta_inversion],2):''}
+    ${hay('vta_inversion_diaria')?card('Por día', mon(m.vta_inversion_diaria,0), [m.vta_inversion_diaria, ma.vta_inversion_diaria],0):''}
   </div>`;
-  h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
-  h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
+  if(m.vta_atribuidas!=null)
+    h+=`<p class="sub" style="margin-top:9px">De las ${fmt(m.vta_ventas)} ventas, ${fmt(m.vta_atribuidas)} se atribuyen al pixel.</p>`;
+  if(hay('vta_roas'))
+    h+=`<div class="graf"><h3>Qué es el ROAS</h3><p class="leyenda">Por cada dólar puesto en publicidad, cuántos volvieron en ventas. Un ROAS de 5 significa que cada dólar trajo cinco.</p></div>`;
 
-  const hayVta = R.some(r=>r.metricas.vta_visitas!=null);
-  if(hayVta){
-    h+=`<h2>Ventas</h2><p class="sub">La campaña que lleva gente a comprar.</p><div class="tarj">
-      ${card('Ventas', fmt(m.vta_ventas), [m.vta_ventas, ma.vta_ventas],0,true)}
-      ${card('Costo por venta', mon(m.vta_costo_venta,2), [m.vta_costo_venta, ma.vta_costo_venta],2,false,true)}
-      ${card('Visitas a la página', fmt(m.vta_visitas), [m.vta_visitas, ma.vta_visitas])}
-      ${card('Costo por visita', mon(m.vta_costo_visita,3), [m.vta_costo_visita, ma.vta_costo_visita],3,false,true)}
-      ${card('Invertido', mon(m.vta_inversion,2), [m.vta_inversion, ma.vta_inversion],2)}
-      ${m.vta_ingreso!=null?card('Facturación', mon(m.vta_ingreso,0), [m.vta_ingreso, ma.vta_ingreso],0):''}
-      ${m.vta_roas!=null?card('ROAS', fmt(m.vta_roas,2), [m.vta_roas, ma.vta_roas],2,true):''}
-    </div>`;
-    if(m.vta_atribuidas!=null) h+=`<p class="sub" style="margin-top:8px">De las ${fmt(m.vta_ventas)} ventas, ${fmt(m.vta_atribuidas)} se atribuyen al pixel.</p>`;
-    const DG=(u&&u.metricas&&u.metricas.desglose)||null;
-    if(DG&&DG.length){
-      h+=`<div class="desglose"><h3>Libro por libro</h3>
-        <p class="leyenda">Cómo rindió cada conjunto de anuncios en este período.</p>
-        <div class="fila2 cab2"><span>Campaña</span><span style="text-align:right">Ventas</span><span style="text-align:right">Costo</span></div>
-        ${DG.map(x=>`<div class="fila2"><span class="nom">${x.nombre}</span>
-          <span class="v">${x.ventas!=null?fmt(x.ventas):'—'}</span>
-          <span class="c">${x.costo!=null?mon(x.costo,2):'<span class=sin>sin ventas</span>'}</span></div>`).join('')}
-      </div>`;
-    }
-    if(R.some(r=>r.metricas.vta_ventas!=null))
-      h+=grafico('Ventas','Cuántos ejemplares se vendieron.',R.map(r=>r.metricas.vta_ventas),et,'#87863A');
-    h+=grafico('Visitas a la página','Cuánta gente llegó a la página de venta.',R.map(r=>r.metricas.vta_visitas),et,'#E2767C');
+  if(R.filter(r=>r.metricas.vta_ventas!=null).length>1){
+    h+=grafico('Ventas','Cuántas ventas trajo la campaña en cada período.',R.map(r=>r.metricas.vta_ventas),et,'#7A1F3A');
+    if(R.filter(r=>r.metricas.vta_roas!=null).length>1)
+      h+=grafico('ROAS','Cuánto vuelve por cada peso invertido. Cuanto más alta la línea, mejor.',R.map(r=>r.metricas.vta_roas),et,'#87863A');
   }
 
-  h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
-    ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
-    ${card('En ventas',mon(m.vta_inversion,2),[m.vta_inversion,ma.vta_inversion],2)}
-    ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.vta_inversion||0),2),null,2,true)}
-  </div>`;
+  // --- desglose por campaña ---
+  const DG=(u&&u.metricas&&u.metricas.desglose)||null;
+  if(DG&&DG.length){
+    h+=`<div class="desglose"><h3>Campaña por campaña</h3>
+      <p class="leyenda">Cómo rindió cada conjunto de anuncios en este período.</p>
+      <div class="fila2 cab2"><span>Campaña</span><span style="text-align:right">Ventas</span><span style="text-align:right">Costo</span></div>
+      ${DG.map(x=>`<div class="fila2"><span class="nom">${x.nombre}</span>
+        <span class="v">${x.ventas!=null&&x.ventas!==0?fmt(x.ventas):'—'}</span>
+        <span class="c">${x.costo!=null?mon(x.costo,2):'<span class="sin">sin ventas</span>'}</span></div>`).join('')}
+    </div>`;
+  }
+
+  // --- visitas a la pagina, si las hay ---
+  if(hay('vta_visitas')){
+    h+=`<h2>Tráfico</h2><p class="sub">Gente que llegó a la página.</p><div class="tarj">
+      ${card('Visitas a la página', fmt(m.vta_visitas), [m.vta_visitas, ma.vta_visitas],0,true)}
+      ${hay('vta_costo_visita')?card('Costo por visita', mon(m.vta_costo_visita,3), [m.vta_costo_visita, ma.vta_costo_visita],3,false,true):''}
+    </div>`;
+    if(R.filter(r=>r.metricas.vta_visitas!=null).length>1)
+      h+=grafico('Visitas a la página','Cuánta gente llegó a la página de venta.',R.map(r=>r.metricas.vta_visitas),et,'#E2767C');
+  }
+
+  // --- Instagram solo si tiene datos ---
+  if(hay('ig_followers_total')){
+    h+=`<h2>Instagram</h2><p class="sub">Crecimiento de la cuenta.</p><div class="tarj">
+      ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
+      ${card('Nuevos en el período', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos])}
+      ${card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas])}
+      ${card('Costo por seguidor', mon(m.ig_costo_follower,3), [m.ig_costo_follower, ma.ig_costo_follower],3,true,true)}
+    </div>`;
+    h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
+    h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
+  }
+
+  // --- inversion, solo si hay mas de una fuente ---
+  if(hay('ig_inversion')){
+    h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
+      ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
+      ${card('En ventas',mon(m.vta_inversion,2),[m.vta_inversion,ma.vta_inversion],2)}
+      ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.vta_inversion||0),2),null,2,true)}
+    </div>`;
+  }
 
   if(R.length>1){
+    const conIG=hay('ig_followers_total');
     h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
       <details class="hist"><summary><span class="flecha">▶</span> Ver los ${R.length} reportes</summary><table>
-      <tr><th>Período</th><th>Seguidores</th><th>Nuevos</th><th>Costo x seg.</th><th>Visitas</th><th>Ventas</th><th>Inversión</th></tr>
+      <tr><th>Período</th>${conIG?'<th>Seguidores</th>':''}<th>Ventas</th>${hay('vta_ingreso')?'<th>Facturación</th>':''}<th>Costo x venta</th>${hay('vta_roas')?'<th>ROAS</th>':''}<th>Inversión</th></tr>
       ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
-        <td>${fmt(x.ig_followers_total)}</td><td>${fmt(x.ig_followers_nuevos)}</td><td>${fmt(x.ig_costo_follower,3)}</td>
-        <td>${fmt(x.vta_visitas)}</td><td>${fmt(x.vta_ventas)}</td>
+        ${conIG?`<td>${fmt(x.ig_followers_total)}</td>`:''}
+        <td><b>${fmt(x.vta_ventas)}</b></td>
+        ${hay('vta_ingreso')?`<td>${fmt(x.vta_ingreso)}</td>`:''}
+        <td>${fmt(x.vta_costo_venta,2)}</td>
+        ${hay('vta_roas')?`<td>${fmt(x.vta_roas,2)}</td>`:''}
         <td>${fmt(Number(x.ig_inversion||0)+Number(x.vta_inversion||0),2)}</td></tr>`}).join('')}
       </table></details>`;
   }
