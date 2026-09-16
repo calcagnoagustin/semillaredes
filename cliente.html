@@ -120,6 +120,12 @@ details.hist table{border:0;border-radius:0}
 .hito .barra{height:9px;background:#E2DCCF;border-radius:99px;overflow:hidden;margin-top:9px}
 .hito .barra i{display:block;height:100%;border-radius:99px;background:var(--oliva)}
 .hito.logrado .barra i{background:var(--vino)}
+.hito{position:relative}
+.hito .x{position:absolute;top:12px;right:13px;border:0;background:transparent;color:#C9C3B4;font-size:17px;cursor:pointer;line-height:1;padding:2px 5px}
+.hito .x:hover{color:var(--vino)}
+.nuevoHito{background:#fff;border:1px dashed #D8CFBB;border-radius:13px;padding:16px;margin-top:12px}
+.nuevoHito select,.nuevoHito input{width:100%;border:1px solid #DDD6C7;border-radius:9px;background:#FDFCF9;padding:10px 12px;font:inherit;font-size:14.5px;margin-bottom:8px}
+.nuevoHito button{border:0;background:var(--oliva);color:#fff;font:inherit;font-weight:600;border-radius:9px;padding:10px 18px;cursor:pointer}
 .hito .falta{font-size:12.5px;color:var(--oliva);font-weight:600;margin-top:6px}
 .hito.logrado .falta{color:var(--vino)}
 .it .x,.nota .x{flex:none;border:0;background:transparent;color:#C9C3B4;font-size:17px;cursor:pointer;padding:0 4px;line-height:1}
@@ -606,9 +612,18 @@ function pintar(d){
 
 function pintarResto(d,h){
   const R=d.reportes||[]; const u=R[R.length-1]||null; const m=u?u.metricas:{};
+  const NOMBRES={ig_followers_total:'Seguidores en Instagram',ig_followers_nuevos:'Seguidores nuevos por período',
+    ig_visitas:'Visitas al perfil',sp_monthly:'Oyentes mensuales en Spotify',sp_streams:'Streams',
+    sp_followers:'Seguidores en Spotify',sp_playlists:'Playlists',yt_views:'Visualizaciones en YouTube',
+    yt_subs:'Suscriptores en YouTube',msj_mensajes:'Consultas por período',msj_conversiones:'Ventas por período',
+    msj_ingreso:'Ingreso por período',msj_roas:'ROAS',vta_ventas:'Ventas por período',
+    tk_tickets:'Ventas de la obra',int_interacciones:'Interacciones',
+    cal_mensajes:'Mensajes Calificadas',ej_mensajes:'Mensajes Ejecutivo',total_mensajes:'Mensajes totales'};
+  const disponibles=[...new Set(R.flatMap(r=>Object.keys(r.metricas||{})))].filter(k=>NOMBRES[k]);
+
   const HI=d.hitos||[];
-  if(HI.length){
-    h+=`<h2>Hitos</h2><p class="sub">Las metas que nos pusimos para este proyecto.</p>`;
+  {
+    h+=`<h2>Hitos</h2><p class="sub">Las metas que nos pusimos para este proyecto. Podés sumar las tuyas.</p>`;
     HI.forEach(x=>{
       const obj=Number(x.objetivo)||1;
       // valor actual: si es un total calculado, lo sumamos
@@ -623,16 +638,26 @@ function pintarResto(d,h){
         h+=`<div class="hito ${listo?'logrado':''}"><div class="tt">${x.titulo||x.metrica}</div>
           <div class="num">${act>0?`Hoy estás en ${fmt(act,dec)} · la meta es ${fmt(obj,dec)} o menos`:'Todavía sin datos'}</div>
           <div class="barra"><i style="width:${pct}%"></i></div>
-          <div class="falta">${listo?'¡Logrado!':(act>0?`Te falta bajar ${fmt(act-obj,dec)}`:'')}</div></div>`;
+          <div class="falta">${listo?'¡Logrado!':(act>0?`Te falta bajar ${fmt(act-obj,dec)}`:'')}</div>
+          <button class="x" data-delh="${x.id}" title="Borrar">×</button></div>`;
       } else {
         const listo=act>=obj;
         const pct=Math.min(100,Math.round(act/obj*100));
         h+=`<div class="hito ${listo?'logrado':''}"><div class="tt">${x.titulo||x.metrica}</div>
           <div class="num">${fmt(act,dec)} de ${fmt(obj,dec)}</div>
           <div class="barra"><i style="width:${pct}%"></i></div>
-          <div class="falta">${listo?'¡Logrado!':`${pct}% · faltan ${fmt(obj-act,dec)}`}</div></div>`;
+          <div class="falta">${listo?'¡Logrado!':`${pct}% · faltan ${fmt(obj-act,dec)}`}</div>
+          <button class="x" data-delh="${x.id}" title="Borrar">×</button></div>`;
       }
     });
+    if(disponibles.length){
+      h+=`<div class="nuevoHito">
+        <select id="h_met2">${disponibles.map(k=>`<option value="${k}">${NOMBRES[k]}</option>`).join('')}</select>
+        <input id="h_obj2" inputmode="decimal" placeholder="A qué número querés llegar">
+        <input id="h_tit2" placeholder="Cómo querés llamarlo (opcional)">
+        <button id="h_add2">Agregar hito</button>
+      </div>`;
+    }
   }
 
   const T=d.tareas||[];
@@ -699,6 +724,21 @@ function pintarResto(d,h){
     if(!confirm('¿Borrar esta nota?')) return;
     const r=await rpc('sub_nota_borrar',{p_slug:slug,p_k:tok,p_id:b.dataset.deln}); if(r.ok) recargar();
   });
+  document.querySelectorAll('[data-delh]').forEach(b=>b.onclick=async e=>{
+    e.preventDefault(); e.stopPropagation();
+    if(!confirm('¿Borrar este hito?')) return;
+    const r=await rpc('sub_hito_cliente_borrar',{p_slug:slug,p_k:tok,p_id:b.dataset.delh});
+    if(r.ok) recargar();
+  });
+  const ha=$('h_add2');
+  if(ha) ha.onclick=async()=>{
+    const met=$('h_met2').value;
+    const obj=parseFloat(($('h_obj2').value||'').replace(/[^\d.,]/g,'').replace(',','.'));
+    if(!obj){ alert('Poné a qué número querés llegar'); return; }
+    ha.disabled=true; ha.textContent='…';
+    const r=await rpc('sub_hito_cliente_alta',{p_slug:slug,p_k:tok,p_metrica:met,p_objetivo:obj,p_titulo:$('h_tit2').value.trim()||null});
+    if(r.ok) recargar(); else { ha.disabled=false; ha.textContent='Agregar hito'; alert(r.error==='demasiados'?'Ya tenés 8 hitos, borrá alguno primero.':'No se pudo agregar'); }
+  };
   document.querySelectorAll('[data-dela]').forEach(b=>b.onclick=async e=>{
     e.preventDefault(); e.stopPropagation();
     if(!confirm('¿Borrar este activo?')) return;
