@@ -353,16 +353,16 @@ function pintarMixto(d){
 
   const hayTk = R.some(r=>r.metricas.tk_tickets!=null || r.metricas.tk_inversion!=null);
   if(hayTk){
-    h+=`<h2>${m.tk_nombre||'Los Cuartos Oscuros'}</h2><p class="sub">La campaña de venta de entradas.</p><div class="tarj">
-      ${card('Entradas vendidas', fmt(m.tk_tickets), [m.tk_tickets, ma.tk_tickets],0,true)}
-      ${card('Costo por entrada', mon(m.tk_costo_ticket,2), [m.tk_costo_ticket, ma.tk_costo_ticket],2,false,true)}
-      ${card('Clics al link', fmt(m.tk_clics), [m.tk_clics, ma.tk_clics])}
+    h+=`<h2>${m.tk_nombre||'Los Cuartos Oscuros'}</h2><p class="sub">Solo la campaña de venta.</p><div class="tarj">
+      ${card('Ventas', fmt(m.tk_tickets), [m.tk_tickets, ma.tk_tickets],0,true)}
+      ${card('Costo por venta', mon(m.tk_costo_ticket,2), [m.tk_costo_ticket, ma.tk_costo_ticket],2,false,true)}
+      ${m.tk_clics!=null?card('Clics al link', fmt(m.tk_clics), [m.tk_clics, ma.tk_clics]):''}
       ${card('Invertido', mon(m.tk_inversion,2), [m.tk_inversion, ma.tk_inversion],2)}
       ${m.tk_ingreso!=null?card('Ingreso', mon(m.tk_ingreso,0), [m.tk_ingreso, ma.tk_ingreso],0):''}
       ${m.tk_roas!=null?card('ROAS', fmt(m.tk_roas,2), [m.tk_roas, ma.tk_roas],2):''}
     </div>`;
     if(R.filter(r=>r.metricas.tk_tickets!=null).length>1)
-      h+=grafico('Entradas vendidas','Cuántas entradas se vendieron en cada período.',R.map(r=>r.metricas.tk_tickets),et,'#7A1F3A');
+      h+=grafico('Ventas','Cuántas entradas se vendieron en cada período.',R.map(r=>r.metricas.tk_tickets),et,'#7A1F3A');
   }
 
   const hayInter = R.some(r=>r.metricas.int_interacciones!=null);
