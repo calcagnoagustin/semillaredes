@@ -12,7 +12,7 @@
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png">
 <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semillita-oliva.png">
 <title>Tu proyecto · Semilla Redes</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@400;600;700&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--crema:#F2EDE4;--navy:#1A2456;--vino:#7A1F3A;--rosa:#E2767C;--oliva:#87863A;--tinta:#24242C;--mute:#8A8697;--linea:#E5DFD2}
 *{box-sizing:border-box}
@@ -74,6 +74,17 @@ th:first-child,td:first-child{text-align:left}
 th{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--oliva);background:#FBF8F2}
 .err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:26px}
 .oculto{display:none}
+/* Branding Sadhana Comunicación */
+body.sadhana{--crema:#F4F7F9;--navy:#27435A;--vino:#F15C32;--rosa:#F15C32;--oliva:#518BAF;--tinta:#27435A;--mute:#6E8598;--linea:#CBDCE7;
+  font-family:Barlow,system-ui,sans-serif}
+body.sadhana h1,body.sadhana h2,body.sadhana .val,body.sadhana .reco h3,body.sadhana .hito .num,body.sadhana .desglose .v{font-family:Barlow,system-ui,sans-serif;font-weight:700}
+body.sadhana h1{letter-spacing:-.5px}
+body.sadhana .t.destacada{background:#518BAF;border-color:#518BAF}
+body.sadhana .t.destacada .lab{color:#FFD9CC}
+body.sadhana .reco{background:#27435A}
+body.sadhana .reco .num{background:#F15C32;color:#fff}
+body.sadhana .beta{color:#F15C32;border-color:#F15C32}
+body.sadhana .logo{width:90px}
 .alerta{background:#fff;border:1px solid #E8C9CE;border-left:5px solid var(--vino);border-radius:13px;padding:17px 19px;margin-bottom:11px}
 .alerta.media{border-left-color:var(--oliva);border-color:#DDD6C7}
 .alerta .top{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
@@ -281,6 +292,114 @@ function multiCamp(R,et){
     <p class="leyenda">Cuánta gente escribió para reservar en cada campaña.</p>
     <div style="font-size:12.5px;margin-bottom:8px">${ley}</div>
     <svg class="linea" viewBox="0 0 ${W} ${H}">${cuerpo}</svg></div>`;
+}
+
+function aplicarMarca(marca){
+  if(marca==='sadhana'){
+    document.body.classList.add('sadhana');
+    const img=document.querySelector('.logo');
+    if(img){ img.src='https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/sadhana-logo.png'; img.alt='Sadhana Comunicación'; }
+    document.title=document.title.replace('Semilla Redes','Sadhana Comunicación');
+  }
+}
+
+function pintarTrafico(d){
+  MON=(d.cliente.moneda||'USD');
+  aplicarMarca(d.cliente.marca);
+  const R=d.reportes||[];
+  const u=R[R.length-1]||null, a=R.length>1?R[R.length-2]:null;
+  const ultimo=(k)=>{ for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null) return x; } return null; };
+  const previo=(k)=>{ let visto=false; for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null){ if(visto) return x; visto=true; } } return null; };
+  const m=new Proxy({},{get:(_,k)=>ultimo(k)}), ma=new Proxy({},{get:(_,k)=>previo(k)});
+  const et=R.map(r=>fecha(r.hasta));
+  const hay=(k)=>R.some(r=>r.metricas[k]!=null);
+
+  const AUD=[
+    {p:'a1', tit:'1. Decisores institucionales', sub:'Estados Unidos'},
+    {p:'a2', tit:'2. Profesionales MD/DO, PA, NP', sub:'Estados Unidos'},
+    {p:'a3', tit:'3. Estudiantes y trainees de salud', sub:'Estados Unidos'}
+  ];
+
+  let h=`<h1>${d.cliente.nombre}</h1>
+    <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
+
+  if(hay('ig_followers_total')){
+    h+=`<h2>Seguidores</h2><p class="sub">Crecimiento de la cuenta.</p><div class="tarj">
+      ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
+      ${card('Nuevos en el período', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos])}
+      ${hay('ig_costo_follower')?card('Costo por seguidor', mon(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,true,true):''}
+      ${hay('ig_inversion')?card('Invertido', mon(m.ig_inversion,2), [m.ig_inversion, ma.ig_inversion],2):''}
+    </div>`;
+    if(R.filter(r=>r.metricas.ig_followers_total!=null).length>1)
+      h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#518BAF');
+  }
+
+  if(hay('tr_visitas')){
+    h+=`<h2>Tráfico</h2><p class="sub">Gente que llegó al sitio desde la campaña.</p><div class="tarj">
+      ${card('Visitas totales', fmt(m.tr_visitas), [m.tr_visitas, ma.tr_visitas],0,true)}
+      ${hay('tr_costo_visita')?card('Costo por visita', mon(m.tr_costo_visita,2), [m.tr_costo_visita, ma.tr_costo_visita],2,false,true):''}
+      ${hay('tr_inversion')?card('Invertido', mon(m.tr_inversion,2), [m.tr_inversion, ma.tr_inversion],2):''}
+      ${hay('tr_alcance')?card('Personas alcanzadas', fmt(m.tr_alcance), [m.tr_alcance, ma.tr_alcance]):''}
+    </div>`;
+    if(R.filter(r=>r.metricas.tr_visitas!=null).length>1){
+      h+=grafico('Visitas','Cuánta gente llegó al sitio en cada período.',R.map(r=>r.metricas.tr_visitas),et,'#518BAF');
+      h+=grafico('Costo por visita','Cuánto cuesta cada visita. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.tr_costo_visita),et,'#F15C32',true);
+    }
+
+    const conDatos=AUD.filter(x=>hay(x.p+'_visitas'));
+    if(conDatos.length){
+      h+=`<h2>Por audiencia</h2><p class="sub">Cómo rindió cada público en este período.</p>`;
+      conDatos.forEach(x=>{
+        const vis=m[x.p+'_visitas'], cos=m[x.p+'_costo'], inv=m[x.p+'_inversion'];
+        h+=`<div class="camp"><h3>${x.tit}</h3><p class="que">${x.sub}</p>
+          <div class="nums">
+            <div class="n"><div class="l">Visitas</div><div class="v">${fmt(vis)}</div><div class="d">${delta(vis, ma[x.p+'_visitas'])||''}</div></div>
+            <div class="n"><div class="l">Costo por visita</div><div class="v">${fmt(cos,2)}</div><div class="d">${MON}</div></div>
+            ${inv!=null?`<div class="n"><div class="l">Invertido</div><div class="v">${fmt(inv,0)}</div><div class="d">${MON}</div></div>`:''}
+          </div></div>`;
+      });
+      const series=conDatos.map((x,i)=>({k:x.p+'_visitas',lab:x.tit.split('.')[0],color:['#518BAF','#F15C32','#27435A'][i]}))
+        .map(x=>({...x, vals:R.map(r=>r.metricas[x.k]??null)})).filter(x=>x.vals.filter(v=>v!=null).length>1);
+      if(series.length){
+        const W=560,H=175,P=30;
+        const todos=series.flatMap(z=>z.vals).filter(v=>v!=null);
+        const min=Math.min(...todos), max=Math.max(...todos), rango=(max-min)||1;
+        const X=i=>P+(i*(W-P*2)/Math.max(1,R.length-1));
+        const Y=v=>H-P-((v-min)/rango)*(H-P*2);
+        let cuerpo='';
+        series.forEach(z=>{ let dd='';
+          z.vals.forEach((v,i)=>{ if(v==null)return; dd+=(dd?' L ':'M ')+X(i)+' '+Y(v); });
+          cuerpo+=`<path d="${dd}" fill="none" stroke="${z.color}" stroke-width="2.5" stroke-linejoin="round"/>`;
+          z.vals.forEach((v,i)=>{ if(v!=null) cuerpo+=`<circle cx="${X(i)}" cy="${Y(v)}" r="3.5" fill="${z.color}"/>`; });
+        });
+        cuerpo+=R.map((r,i)=>`<text x="${X(i)}" y="${H-8}" font-size="10" fill="#6E8598" text-anchor="middle">${et[i]}</text>`).join('');
+        const ley=series.map(z=>`<span style="display:inline-flex;align-items:center;gap:6px;margin-right:14px"><span style="width:10px;height:10px;border-radius:50%;background:${z.color};display:inline-block"></span>${z.lab}</span>`).join('');
+        h+=`<div class="graf"><h3>Visitas por audiencia</h3><p class="leyenda">Las tres audiencias comparadas.</p>
+          <div style="font-size:12.5px;margin-bottom:8px">${ley}</div>
+          <svg class="linea" viewBox="0 0 ${W} ${H}">${cuerpo}</svg></div>`;
+      }
+    }
+  }
+
+  if(hay('ig_inversion')&&hay('tr_inversion')){
+    h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
+      ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
+      ${card('En tráfico',mon(m.tr_inversion,2),[m.tr_inversion,ma.tr_inversion],2)}
+      ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.tr_inversion||0),2),null,2,true)}
+    </div>`;
+  }
+
+  if(R.length>1){
+    h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
+      <details class="hist"><summary><span class="flecha">▶</span> Ver los ${R.length} reportes</summary><table>
+      <tr><th>Período</th>${hay('ig_followers_total')?'<th>Seguidores</th>':''}<th>Visitas</th><th>Costo x visita</th><th>Inversión</th></tr>
+      ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
+        ${hay('ig_followers_total')?`<td>${fmt(x.ig_followers_total)}</td>`:''}
+        <td><b>${fmt(x.tr_visitas)}</b></td><td>${fmt(x.tr_costo_visita,2)}</td>
+        <td>${fmt(Number(x.ig_inversion||0)+Number(x.tr_inversion||0),2)}</td></tr>`}).join('')}
+      </table></details>`;
+  }
+  return h;
 }
 
 function pintarVentas(d){
@@ -584,10 +703,12 @@ function pintar(d){
   const m=new Proxy({},{get:(_,k)=>ultimo(k)}), ma=new Proxy({},{get:(_,k)=>previo(k)});
   const et=R.map(r=>fecha(r.hasta));
   window.__d=d; MON=(d.cliente.moneda||'USD');
+  aplicarMarca(d.cliente.marca);
   const hay=(k)=>R.some(r=>r.metricas[k]!=null);
 
 
-  let h = (d.cliente.tipo==='mensajes') ? pintarMensajes(d)
+  let h = (d.cliente.tipo==='trafico') ? pintarTrafico(d)
+        : (d.cliente.tipo==='mensajes') ? pintarMensajes(d)
         : (d.cliente.tipo==='ventas') ? pintarVentas(d)
         : (d.cliente.tipo==='mixto') ? pintarMixto(d)
         : (d.cliente.tipo==='steam') ? pintarSteam(d)
