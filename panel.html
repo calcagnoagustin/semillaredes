@@ -48,6 +48,22 @@ input.buscar{flex:1;min-width:180px;border:1px solid var(--linea);background:#1A
 .cli .pie a:hover,.cli .pie button:hover{background:var(--oliva)}
 .cli .pie .url{font-size:11px;color:var(--mute);padding:7px 0;flex:1.4;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
+.alertas{margin-bottom:22px}
+.alertas h2{font-family:'Playfair Display',serif;font-size:23px;margin:0 0 3px}
+.alertas .lede2{color:var(--mute);font-size:13.5px;margin:0 0 12px}
+.al{background:#212B60;border:1px solid var(--linea);border-left:5px solid var(--vino);border-radius:13px;padding:15px 17px;margin-bottom:10px}
+.al.media{border-left-color:var(--oliva)}
+.al .top{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.al .sev{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;color:#fff;background:var(--vino);border-radius:99px;padding:3px 9px}
+.al.media .sev{background:var(--oliva)}
+.al .cli2{font-size:15.5px;font-weight:700;color:var(--crema)}
+.al .tt2{font-size:14.5px;color:var(--rosa);font-weight:600}
+.al .dato2{font-size:13.5px;color:#B9B4C4;margin-top:5px}
+.al .campo2{font-size:13.5px;color:#DDD8CC;margin-top:7px;line-height:1.55}
+.al .campo2 b{color:var(--crema)}
+.al .acc2{display:flex;gap:8px;margin-top:11px}
+.al .acc2 button,.al .acc2 a{border:0;background:#2E3970;color:var(--crema);font:inherit;font-size:12.5px;font-weight:600;border-radius:8px;padding:7px 13px;cursor:pointer;text-decoration:none}
+.al .acc2 .ok2{background:var(--oliva)}
 .volver{background:transparent;border:0;color:var(--rosa);font:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:0;margin-bottom:14px}
 .oculto{display:none}
 .aviso{background:#212B60;border:1px solid var(--linea);border-radius:12px;padding:18px;color:var(--mute);font-size:14px}
@@ -98,6 +114,7 @@ async function entrar(){
   if(r.error){ alert('Token incorrecto'); return; }
   admin=t; sessionStorage.setItem('sr_admin',t);
   datos=r;
+  try{ const ra=await rpc('sub_alertas_admin',{p_admin:t}); datos.alertas=ra.alertas||[]; }catch(e){ datos.alertas=[]; }
   $('gate').classList.add('oculto'); $('app').classList.remove('oculto');
   pintarMenu(); verClientes();
 }
@@ -167,7 +184,24 @@ function verClientes(){
     .filter(c=>filtro==='todos' || (filtro==='setup'&&c.origen==='setup') || (filtro==='sub'&&c.origen==='sub') || (filtro==='sin'&&!(c.kpi_semanas||c.kpi_respuestas)))
     .filter(c=>!busca || c.nombre.toLowerCase().includes(busca.toLowerCase()))
     .sort((a,b)=>a.nombre.localeCompare(b.nombre));
-  $('vista').innerHTML=`
+  const AL=datos.alertas||[];
+  const bloqueAl = AL.length ? `<div class="alertas">
+      <h2>Alertas</h2>
+      <p class="lede2">${AL.length} sin revisar. Detectadas sobre los números, no las ve el cliente.</p>
+      ${AL.map(a=>`<div class="al ${a.severidad==='alta'?'':'media'}">
+        <div class="top"><span class="sev">${a.severidad==='alta'?'Importante':'Para mirar'}</span>
+          <span class="cli2">${a.cliente}</span><span class="tt2">${a.titulo}</span></div>
+        <div class="dato2">${a.dato||''}</div>
+        ${a.causa?`<div class="campo2"><b>Posible causa:</b> ${a.causa}</div>`:''}
+        ${a.recomendacion?`<div class="campo2"><b>Qué haríamos:</b> ${a.recomendacion}</div>`:''}
+        <div class="acc2">
+          <button class="ok2" data-cerrar="${a.id}">Listo, lo trabajé</button>
+          <a href="https://semillaredes.com/${a.slug.replace(/-/g,'')}" target="_blank">Ver status ↗</a>
+        </div>
+      </div>`).join('')}
+    </div>` : '';
+
+  $('vista').innerHTML=bloqueAl+`
     <div class="filtros">
       <span class="chip ${filtro==='todos'?'on':''}" data-f="todos">Todos</span>
       <span class="chip ${filtro==='sub'?'on':''}" data-f="sub">Suscripción y pauta</span>
@@ -178,6 +212,12 @@ function verClientes(){
     <div class="grid">${todos.map(tarjeta).join('')||'<p class="aviso">No hay clientes con ese filtro.</p>'}</div>`;
   document.querySelectorAll('.chip').forEach(ch=>ch.onclick=()=>{filtro=ch.dataset.f;verClientes();});
   $('q').oninput=e=>{busca=e.target.value; const p=e.target.selectionStart; verClientes(); const q=$('q'); q.focus(); q.setSelectionRange(p,p);};
+  document.querySelectorAll('[data-cerrar]').forEach(b=>b.onclick=async()=>{
+    b.disabled=true; b.textContent='…';
+    const r=await rpc('sub_alerta_cerrar',{p_admin:admin,p_id:b.dataset.cerrar});
+    if(r.ok){ datos.alertas=(datos.alertas||[]).filter(x=>x.id!==b.dataset.cerrar); verClientes(); }
+    else { b.disabled=false; b.textContent='Listo, lo trabajé'; }
+  });
   document.querySelectorAll('.cli').forEach(c=>c.onclick=()=>verCliente(c.dataset.slug,c.dataset.origen));
   document.querySelectorAll('[data-copiar]').forEach(b=>b.onclick=(e)=>{
     e.stopPropagation();
