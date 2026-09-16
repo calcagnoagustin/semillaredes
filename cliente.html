@@ -582,6 +582,7 @@ function pintar(d){
   const m=new Proxy({},{get:(_,k)=>ultimo(k)}), ma=new Proxy({},{get:(_,k)=>previo(k)});
   const et=R.map(r=>fecha(r.hasta));
   window.__d=d; MON=(d.cliente.moneda||'USD');
+  const hay=(k)=>R.some(r=>r.metricas[k]!=null);
 
 
   let h = (d.cliente.tipo==='mensajes') ? pintarMensajes(d)
@@ -598,9 +599,11 @@ function pintar(d){
     ${card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas])}
     ${card('Costo por seguidor', mon(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,true,true)}
   </div>`;
-  h+=grafico('Costo por seguidor','Mientras más baja la línea, mejor: cada seguidor nuevo te sale menos.',R.map(r=>r.metricas.ig_costo_follower),et,'#7A1F3A',true);
+  h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
+  h+=grafico('Costo por seguidor','Mientras más baja la línea, mejor: cada seguidor nuevo te sale menos.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
 
-  h+=`<h2>Spotify</h2><p class="sub">Escuchas, oyentes y playlists.</p><div class="tarj">
+  if(hay('sp_monthly')||hay('sp_streams')||hay('sp_followers')){
+    h+=`<h2>Spotify</h2><p class="sub">Escuchas, oyentes y playlists.</p><div class="tarj">
     ${card('Oyentes mensuales', fmt(m.sp_monthly), [m.sp_monthly, ma.sp_monthly])}
     ${card('Streams', fmt(m.sp_streams), [m.sp_streams, ma.sp_streams])}
     ${card('Seguidores', fmt(m.sp_followers), [m.sp_followers, ma.sp_followers])}
@@ -609,8 +612,10 @@ function pintar(d){
     ${card('Costo por stream', mon(m.sp_costo_stream,3), [m.sp_costo_stream, ma.sp_costo_stream],3,true,true)}
   </div>`;
   h+=grafico('Oyentes mensuales','Cuánta gente distinta te escucha por mes. Es el número que mira la industria.',R.map(r=>r.metricas.sp_monthly),et,'#87863A');
+  }
 
-  h+=`<h2>YouTube</h2><p class="sub">Tu canal: gente que llegó y se quedó.</p><div class="tarj">
+  if(hay('yt_views')||hay('yt_subs')||hay('yt_views_ads')){
+    h+=`<h2>YouTube</h2><p class="sub">Tu canal: gente que llegó y se quedó.</p><div class="tarj">
     ${card('Suscriptores', fmt(m.yt_subs), [m.yt_subs, ma.yt_subs])}
     ${card('Nuevos en el período', fmt(m.yt_subs_nuevos), [m.yt_subs_nuevos, ma.yt_subs_nuevos])}
     ${card('Visualizaciones del canal', fmt(m.yt_views), [m.yt_views, ma.yt_views])}
@@ -637,13 +642,15 @@ function pintar(d){
     </div>`;
     h+=grafico('Visitas a la página del lanzamiento','Cuánta gente llegó a escuchar.',R.map(r=>r.metricas.lan_visitas),et,'#E2767C');
   }
+  }
 
-  h+=`<h2>Crecimiento</h2><p class="sub">Las tres plataformas juntas.</p>`+multi(R);
+  const plataformas=[hay('ig_followers_total'),hay('sp_monthly'),hay('yt_views')].filter(Boolean).length;
+  if(plataformas>1) h+=`<h2>Crecimiento</h2><p class="sub">Las plataformas juntas.</p>`+multi(R);
 
   h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
     ${card('En Instagram',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
-    ${card('En Spotify',mon(m.sp_inversion,2),[m.sp_inversion,ma.sp_inversion],2)}
-    ${card('En YouTube',mon(m.yt_inversion,2),[m.yt_inversion,ma.yt_inversion],2)}
+    ${hay('sp_inversion')?card('En Spotify',mon(m.sp_inversion,2),[m.sp_inversion,ma.sp_inversion],2):''}
+    ${hay('yt_inversion')?card('En YouTube',mon(m.yt_inversion,2),[m.yt_inversion,ma.yt_inversion],2):''}
     ${card('Por día',mon(m.ig_inversion_diaria,2),[m.ig_inversion_diaria,ma.ig_inversion_diaria],2)}
     ${card('Total del período',mon((m.ig_inversion||0)+(m.sp_inversion||0)+(m.yt_inversion||0),2),null,2,true)}
   </div>`;
@@ -651,10 +658,10 @@ function pintar(d){
   if(R.length>1){
     h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
       <details class="hist"><summary><span class="flecha">▶</span> Ver los ${R.length} reportes</summary><table>
-      <tr><th>Período</th><th>Seguidores IG</th><th>Nuevos</th><th>Costo x seg.</th><th>Streams</th><th>Costo x stream</th><th>Inversión</th></tr>
+      <tr><th>Período</th><th>Seguidores IG</th><th>Nuevos</th><th>Costo x seg.</th>${hay('sp_streams')?'<th>Streams</th><th>Costo x stream</th>':''}<th>Inversión</th></tr>
       ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
         <td>${fmt(x.ig_followers_total)}</td><td>${fmt(x.ig_followers_nuevos)}</td><td>${fmt(x.ig_costo_follower,2)}</td>
-        <td>${fmt(x.sp_streams)}</td><td>${fmt(x.sp_costo_stream,3)}</td><td>${fmt((x.ig_inversion||0)+(x.sp_inversion||0)+(x.yt_inversion||0),2)}</td></tr>`}).join('')}
+        ${hay('sp_streams')?`<td>${fmt(x.sp_streams)}</td><td>${fmt(x.sp_costo_stream,3)}</td>`:''}<td>${fmt((x.ig_inversion||0)+(x.sp_inversion||0)+(x.yt_inversion||0),2)}</td></tr>`}).join('')}
     </table></details>`;
   }
 
