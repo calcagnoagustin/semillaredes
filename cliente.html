@@ -906,7 +906,7 @@ function pintarResto(d,h){
 
   const RC=d.recomendaciones&&d.recomendaciones.recomendaciones;
   if(RC&&RC.length){
-    h+=`<h2>Recomendaciones</h2><p class="sub">Lo que vemos en tus números y qué haríamos ahora.</p>
+    h+=`<h2>Recomendaciones de la IA</h2><p class="sub">Análisis de tu proyecto cotejado con nuestra base de proyectos y con el Método Semilla.</p>
       <div class="reco">
         <div class="cab"><h3>Tres cosas para arrancar</h3>
         ${d.recomendaciones_fecha?`<span class="cuando">${new Date(d.recomendaciones_fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</span>`:''}</div>
@@ -914,7 +914,7 @@ function pintarResto(d,h){
           ${RC.slice(0,3).map((r,i)=>`<div class="it2"><span class="num">${i+1}</span>
             <span><span class="tt">${r.titulo||''}</span><span class="tx">${r.texto||''}</span></span></div>`).join('')}
         </div>
-        <p class="pie2">Análisis automático sobre tus métricas. Cualquier duda, hablamos en la reunión.</p>
+        <p class="pie2">Se actualiza todos los domingos. Cualquier duda, hablamos en la reunión.</p>
       </div>`;
   }
 
