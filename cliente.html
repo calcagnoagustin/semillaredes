@@ -127,6 +127,9 @@ body.sadhana .beta{color:#fff;border-color:rgba(255,255,255,.75);background:tran
 .zona b{color:var(--navy);font-weight:700}
 .camp.destacada .zona{border-top-color:#2E3970;color:#B9B4C4}
 .camp.destacada .zona b{color:var(--crema)}
+.camp.dentro{margin-left:18px;border-left:3px solid var(--oliva);background:#FBF8F2}
+.camp.dentro h3{font-size:17px}
+.camp.dentro .que{color:var(--oliva);font-weight:600}
 details.hist{background:#fff;border:1px solid var(--linea);border-radius:13px;overflow:hidden}
 details.hist summary{list-style:none;cursor:pointer;padding:15px 18px;display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--navy)}
 details.hist summary::-webkit-details-marker{display:none}
@@ -282,12 +285,13 @@ const card=(lab,val,ant,dec,dest,inv)=>`<div class="t ${dest?'destacada':''}"><d
 
 const CAMPS=[
   {p:'ej', tit:'Reservas Ejecutivo', que:'Campaña para el público ejecutivo.'},
-  {p:'cal', tit:'Reservas Calificadas', que:'La campaña principal.', dest:true},
+  {p:'cal', tit:'Reservas Calificadas', que:'La campaña principal: incluye famosos y general.', dest:true},
+  {p:'fam', tit:'Famosos', que:'Va adentro de Calificadas. Se muestra aparte para verlo solo.', dentro:true},
   {p:'esp', tit:'Campaña especial', que:'Acción puntual por fecha.'}
 ];
 
 function multiCamp(R,et){
-  const series=[{k:'ej_mensajes',lab:'Ejecutivo',color:'#7A1F3A'},{k:'cal_mensajes',lab:'Calificadas',color:'#87863A'}]
+  const series=[{k:'ej_mensajes',lab:'Ejecutivo',color:'#7A1F3A'},{k:'cal_mensajes',lab:'Calificadas',color:'#87863A'},{k:'fam_mensajes',lab:'Famosos (dentro de Calificadas)',color:'#E2767C'}]
     .map(x=>({...x, vals:R.map(r=>r.metricas[x.k]??null)}))
     .filter(x=>x.vals.filter(v=>v!=null).length>1);
   if(!series.length) return '';
@@ -624,6 +628,7 @@ function pintarMensajes(d){
   const previo=(k)=>{ let visto=false; for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null){ if(visto) return x; visto=true; } } return null; };
   const m=new Proxy({},{get:(_,k)=>ultimo(k)}), ma=new Proxy({},{get:(_,k)=>previo(k)});
   const et=R.map(r=>fecha(r.hasta));
+  // Famosos esta dentro de Calificadas: no se suma para no contarlo dos veces
   const tot=x=>(Number(x.ej_mensajes||0)+Number(x.cal_mensajes||0)+Number(x.esp_mensajes||0));
   const inv=x=>(Number(x.ej_inversion||0)+Number(x.cal_inversion||0)+Number(x.esp_inversion||0));
 
@@ -645,7 +650,7 @@ function pintarMensajes(d){
     const men=m[c.p+'_mensajes'], costo=m[c.p+'_costo_mensaje'], alc=m[c.p+'_alcance'], invc=m[c.p+'_inversion'];
     if(men==null && invc==null) return;
     const titulo = (c.p==='esp' && m.esp_nombre) ? m.esp_nombre : c.tit;
-    h+=`<div class="camp ${c.dest?'destacada':''}"><h3>${titulo}</h3><p class="que">${c.que}</p>
+    h+=`<div class="camp ${c.dest?'destacada':''} ${c.dentro?'dentro':''}"><h3>${titulo}</h3><p class="que">${c.que}</p>
       <div class="nums">
         <div class="n"><div class="l">Mensajes</div><div class="v">${fmt(men)}</div><div class="d">${delta(men, ma[c.p+'_mensajes'])||''}</div></div>
         <div class="n"><div class="l">Costo x mensaje</div><div class="v">${fmt(costo,2)}</div><div class="d">USD</div></div>
@@ -659,9 +664,9 @@ function pintarMensajes(d){
   if(R.length>1){
     h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
       <details class="hist"><summary><span class="flecha">▶</span> Ver los ${R.length} reportes</summary><table>
-      <tr><th>Período</th><th>Ejecutivo</th><th>Calificadas</th><th>Total</th><th>Costo x mje.</th><th>Inversión</th></tr>
+      <tr><th>Período</th><th>Ejecutivo</th><th>Calificadas</th><th>de esas, Famosos</th><th>Total</th><th>Costo x mje.</th><th>Inversión</th></tr>
       ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
-        <td>${fmt(x.ej_mensajes)}</td><td>${fmt(x.cal_mensajes)}</td>
+        <td>${fmt(x.ej_mensajes)}</td><td>${fmt(x.cal_mensajes)}</td><td>${fmt(x.fam_mensajes)}</td>
         <td><b>${fmt(tot(x))}</b></td><td>${fmt(inv(x)/(tot(x)||1),2)}</td><td>${fmt(inv(x),2)}</td></tr>`}).join('')}
       </table></details>`;
   }
