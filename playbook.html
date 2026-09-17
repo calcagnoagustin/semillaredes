@@ -38,6 +38,19 @@ h2{font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin:
 .card.aprob h2{font-size:17px;margin:0}
 .card.aprob .txt{font-size:14px;color:#55525F}
 .oculto{display:none}
+.chat{margin-top:16px;border-top:1px solid var(--linea);padding-top:14px}
+.chat .hilo{display:flex;flex-direction:column;gap:9px;margin-bottom:11px}
+.burb{max-width:88%;padding:10px 13px;border-radius:13px;font-size:14.5px;line-height:1.5}
+.burb.yo{align-self:flex-end;background:var(--navy);color:var(--crema);border-bottom-right-radius:4px}
+.burb.ia{align-self:flex-start;background:#F6F2E9;color:#3E3B49;border-bottom-left-radius:4px}
+.chat .fila{display:flex;gap:8px}
+.chat input{flex:1;max-width:none;font-size:14.5px}
+.chat button{padding:10px 15px;font-size:14px}
+.prop{margin-top:11px;background:#FBF8F2;border:1px dashed var(--oliva);border-radius:11px;padding:14px}
+.prop .et{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--oliva);font-weight:700;margin-bottom:5px}
+.prop h4{font-size:16px;color:var(--navy);margin:0 0 5px;font-family:'Playfair Display',serif}
+.prop .tx{font-size:14.5px;color:#3E3B49}
+.pensando{font-size:13.5px;color:var(--mute);font-style:italic}
 .msg{font-size:14px;color:var(--oliva);font-weight:600;margin-top:12px}
 </style>
 </head>
@@ -93,6 +106,15 @@ function pintar(){
         <div class="acc">
           <button class="si" data-ok="${x.id}">Sirve, sumalo</button>
           <button class="no" data-no="${x.id}">Descartar</button>
+          <button class="no" data-chat="${x.id}">Conversarlo</button>
+        </div>
+        <div class="chat oculto" id="chat_${x.id}">
+          <div class="hilo" id="hilo_${x.id}"></div>
+          <div class="fila">
+            <input id="in_${x.id}" placeholder="Preguntale, discutilo o pedile que lo cambie…">
+            <button data-enviar="${x.id}">Enviar</button>
+          </div>
+          <div id="prop_${x.id}"></div>
         </div>
       </div>`;
     }).join('');
@@ -114,8 +136,51 @@ function pintar(){
   h+=`<div class="acc" style="margin-top:28px"><button onclick="buscar()" id="btnBuscar">Buscar patrones nuevos</button></div><div id="out"></div>`;
   $('vista').innerHTML=h;
 
+  document.querySelectorAll('[data-chat]').forEach(b=>b.onclick=async()=>{
+    const id=b.dataset.chat, caja=document.getElementById('chat_'+id);
+    caja.classList.toggle('oculto');
+    if(!caja.classList.contains('oculto')){
+      b.textContent='Cerrar';
+      const r=await rpc('playbook_chat_ver',{p_admin:admin,p_id:id});
+      pintarHilo(id, r.mensajes||[]);
+      document.getElementById('in_'+id).focus();
+    } else b.textContent='Conversarlo';
+  });
+  document.querySelectorAll('[data-enviar]').forEach(b=>b.onclick=()=>enviar(b.dataset.enviar));
+  document.querySelectorAll('input[id^="in_"]').forEach(i=>i.onkeydown=e=>{ if(e.key==='Enter') enviar(i.id.slice(3)); });
   document.querySelectorAll('[data-ok]').forEach(b=>b.onclick=()=>cambiar(b.dataset.ok,'aprobado'));
   document.querySelectorAll('[data-no]').forEach(b=>b.onclick=()=>cambiar(b.dataset.no,'descartado'));
+}
+
+function pintarHilo(id, msgs){
+  const h=document.getElementById('hilo_'+id);
+  h.innerHTML=msgs.map(m=>`<div class="burb ${m.rol==='agus'?'yo':'ia'}">${m.texto}</div>`).join('');
+}
+
+async function enviar(id){
+  const inp=document.getElementById('in_'+id);
+  const txt=(inp.value||'').trim(); if(!txt) return;
+  const hilo=document.getElementById('hilo_'+id);
+  hilo.innerHTML += `<div class="burb yo">${txt}</div><div class="burb ia pensando" id="esp_${id}">pensando…</div>`;
+  inp.value=''; inp.disabled=true;
+  const r=await fetch(`${API}/functions/v1/playbook-conversar`,{method:'POST',
+    headers:{apikey:KEY,'Content-Type':'application/json'},
+    body:JSON.stringify({admin,id,mensaje:txt})}).then(x=>x.json()).catch(()=>({}));
+  inp.disabled=false;
+  const esp=document.getElementById('esp_'+id); if(esp) esp.remove();
+  if(!r.ok){ hilo.innerHTML += `<div class="burb ia">No pude responder, probá de nuevo.</div>`; return; }
+  hilo.innerHTML += `<div class="burb ia">${r.respuesta}</div>`;
+  const caja=document.getElementById('prop_'+id);
+  if(r.propuesta){
+    caja.innerHTML=`<div class="prop"><div class="et">Versión nueva que propone</div>
+      <h4>${r.propuesta.titulo||''}</h4><div class="tx">${r.propuesta.contenido||''}</div>
+      <div class="acc"><button class="si" id="apl_${id}">Usar esta versión</button></div></div>`;
+    document.getElementById('apl_'+id).onclick=async()=>{
+      const x=await rpc('playbook_editar',{p_admin:admin,p_id:id,p_titulo:r.propuesta.titulo,p_contenido:r.propuesta.contenido});
+      if(x.ok) entrar();
+    };
+  } else caja.innerHTML='';
+  inp.focus();
 }
 
 async function cambiar(id,estado){
