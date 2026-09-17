@@ -524,13 +524,14 @@ function pintarMixto(d){
 
   const hayConsultas = R.some(r=>r.metricas.msj_mensajes!=null);
   if(hayConsultas){
-    h+=`<h2>Consultas</h2><p class="sub">Gente que escribió preguntando por lo que ofrecés.</p><div class="tarj">
-      ${card('Consultas', fmt(m.msj_mensajes), [m.msj_mensajes, ma.msj_mensajes],0,true)}
-      ${card('Costo por consulta', mon(m.msj_costo_mensaje,2), [m.msj_costo_mensaje, ma.msj_costo_mensaje],2,false,true)}
+    h+=`<h2>${m.msj_nombre||'Consultas'}</h2><p class="sub">${m.msj_nombre?'Todo lo que trajo esta campaña.':'Gente que escribió preguntando por lo que ofrecés.'}</p><div class="tarj">
+      ${card('Mensajes', fmt(m.msj_mensajes), [m.msj_mensajes, ma.msj_mensajes],0,true)}
+      ${card('Costo por mensaje', mon(m.msj_costo_mensaje,2), [m.msj_costo_mensaje, ma.msj_costo_mensaje],2,false,true)}
       ${card('Invertido', mon(m.msj_inversion,2), [m.msj_inversion, ma.msj_inversion],2)}
+      ${hay('msj_seguidores')?card('Seguidores que trajo', fmt(m.msj_seguidores), [m.msj_seguidores, ma.msj_seguidores]):''}
     </div>`;
-    h+=grafico('Consultas','Cuánta gente escribió para comprar.',R.map(r=>r.metricas.msj_mensajes),et,'#87863A');
-    h+=grafico('Costo por consulta','Cuánto cuesta cada persona que escribe. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.msj_costo_mensaje),et,'#E2767C',true);
+    h+=grafico('Mensajes','Cuánta gente escribió en cada período.',R.map(r=>r.metricas.msj_mensajes),et,'#87863A');
+    h+=grafico('Costo por mensaje','Cuánto cuesta cada persona que escribe. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.msj_costo_mensaje),et,'#E2767C',true);
   }
 
   const hayTk = R.some(r=>r.metricas.tk_tickets!=null || r.metricas.tk_inversion!=null);
@@ -571,7 +572,7 @@ function pintarMixto(d){
 
   h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
     ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
-    ${card('En consultas',mon(m.msj_inversion,2),[m.msj_inversion,ma.msj_inversion],2)}
+    ${card('En '+(m.msj_nombre||'consultas'),mon(m.msj_inversion,2),[m.msj_inversion,ma.msj_inversion],2)}
     ${m.int_inversion!=null?card('En interacción',mon(m.int_inversion,2),[m.int_inversion,ma.int_inversion],2):''}
     ${m.tk_inversion!=null?card('En '+(m.tk_nombre||'la obra'),mon(m.tk_inversion,2),[m.tk_inversion,ma.tk_inversion],2):''}
     ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.msj_inversion||0)+Number(m.int_inversion||0)+Number(m.tk_inversion||0),2),null,2,true)}
