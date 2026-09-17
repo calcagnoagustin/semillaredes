@@ -121,6 +121,10 @@ async function entrar(){
     const n=(r.items||[]).length, el=document.getElementById('pbNuevos');
     if(el && n) el.textContent=n+' sin leer';
   }).catch(()=>{});
+  rpc('playbook_ver',{p_admin:t,p_estado:'propuesto'}).then(r=>{
+    const n=(r.items||[]).length, el=document.getElementById('pbNuevos');
+    if(el && n) el.textContent=n+' sin leer';
+  }).catch(()=>{});
 }
 
 function pintarMenu(){
@@ -130,6 +134,7 @@ function pintarMenu(){
     <button class="mb" data-s="setup">Briefings <span class="n">${datos.setup.length}</span></button>
     <button class="mb" data-s="reportes">Cargar semana</button>
     <button class="mb" data-s="patrones">Patrones</button>
+    <button class="mb" data-s="playbook">Playbook <span class="n" id="pbNuevos"></span></button>
     <button class="mb" data-s="playbook">Playbook <span class="n" id="pbNuevos"></span></button>`;
   document.querySelectorAll('.mb').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('.mb').forEach(x=>x.classList.remove('on')); b.classList.add('on');
@@ -137,6 +142,7 @@ function pintarMenu(){
     if(s==='clientes') verClientes();
     if(s==='setup') abrirPanel('https://semillaredes.com/panel-setup.html');
     if(s==='reportes') abrirPanel('https://semillaredes.com/panel-clientes.html');
+    if(s==='playbook') abrirPanel('https://semillaredes.com/playbook.html');
     if(s==='patrones') abrirPanel('https://semillaredes.com/panel-setup.html#patrones');
   });
 }
