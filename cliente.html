@@ -504,6 +504,7 @@ function pintarVentas(d){
 function pintarMixto(d){
   MON=(d.cliente.moneda||'USD');
   const R=d.reportes||[];
+  const hay=(k)=>R.some(r=>r.metricas[k]!=null);
   const u=R[R.length-1]||null, a=R.length>1?R[R.length-2]:null;
   const ultimo=(k)=>{ for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null) return x; } return null; };
   const previo=(k)=>{ let visto=false; for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null){ if(visto) return x; visto=true; } } return null; };
