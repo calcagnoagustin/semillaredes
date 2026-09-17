@@ -533,6 +533,8 @@ function pintarMixto(d){
     </div>`;
     h+=grafico('Mensajes','Cuánta gente escribió en cada período.',R.map(r=>r.metricas.msj_mensajes),et,'#87863A');
     h+=grafico('Costo por mensaje','Cuánto cuesta cada persona que escribe. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.msj_costo_mensaje),et,'#E2767C',true);
+    if(hay('msj_seguidores'))
+      h+=grafico('Seguidores que trajo'+(m.msj_nombre?' '+m.msj_nombre:''),'Seguidores nuevos que sumó esta campaña, además de los mensajes.',R.map(r=>r.metricas.msj_seguidores),et,'#1A2456');
   }
 
   const hayTk = R.some(r=>r.metricas.tk_tickets!=null || r.metricas.tk_inversion!=null);
