@@ -117,6 +117,10 @@ async function entrar(){
   try{ const ra=await rpc('sub_alertas_admin',{p_admin:t}); datos.alertas=ra.alertas||[]; }catch(e){ datos.alertas=[]; }
   $('gate').classList.add('oculto'); $('app').classList.remove('oculto');
   pintarMenu(); verClientes();
+  rpc('playbook_ver',{p_admin:t,p_estado:'propuesto'}).then(r=>{
+    const n=(r.items||[]).length, el=document.getElementById('pbNuevos');
+    if(el && n) el.textContent=n+' sin leer';
+  }).catch(()=>{});
 }
 
 function pintarMenu(){
@@ -125,7 +129,8 @@ function pintarMenu(){
     <button class="mb on" data-s="clientes">Clientes <span class="n">${total}</span></button>
     <button class="mb" data-s="setup">Briefings <span class="n">${datos.setup.length}</span></button>
     <button class="mb" data-s="reportes">Cargar semana</button>
-    <button class="mb" data-s="patrones">Patrones</button>`;
+    <button class="mb" data-s="patrones">Patrones</button>
+    <button class="mb" data-s="playbook">Playbook <span class="n" id="pbNuevos"></span></button>`;
   document.querySelectorAll('.mb').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('.mb').forEach(x=>x.classList.remove('on')); b.classList.add('on');
     const s=b.dataset.s;
