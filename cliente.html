@@ -16,6 +16,7 @@
 <style>
 :root{--crema:#F2EDE4;--navy:#1A2456;--vino:#7A1F3A;--rosa:#E2767C;--oliva:#87863A;--tinta:#24242C;--mute:#8A8697;--linea:#E5DFD2}
 *{box-sizing:border-box}
+html{background:#F2EDE4}
 body{margin:0;background:var(--crema);color:var(--tinta);font-family:Inter,system-ui,sans-serif;line-height:1.55}
 .wrap{max-width:880px;margin:0 auto;padding:30px 20px 100px}
 .cabLogo{display:flex;align-items:center;gap:9px;margin-bottom:20px}
@@ -75,6 +76,7 @@ th{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ol
 .err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:26px}
 .oculto{display:none}
 /* Branding Sadhana Comunicación */
+html:has(body.sadhana){background:#F4F7F9}
 body.sadhana{--crema:#F4F7F9;--navy:#27435A;--vino:#F15C32;--rosa:#F15C32;--oliva:#518BAF;--tinta:#27435A;--mute:#6E8598;--linea:#CBDCE7;
   font-family:Barlow,system-ui,sans-serif}
 body.sadhana h1,body.sadhana h2,body.sadhana .val,body.sadhana .reco h3,body.sadhana .hito .num,body.sadhana .desglose .v{font-family:Barlow,system-ui,sans-serif;font-weight:700}
@@ -189,6 +191,17 @@ details.hist table{border:0;border-radius:0}
 const API='https://fdrxsjphlvvwwknnrjtx.supabase.co';
 const KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
 const qs=new URLSearchParams(location.search);
+// la marca se aplica de entrada, para que no haya un parpadeo de color
+(function(){
+  try{
+    const mk=new URLSearchParams(location.search).get('marca');
+    if(mk==='sadhana'){
+      document.documentElement.style.background='#F4F7F9';
+      document.addEventListener('DOMContentLoaded',()=>document.body.classList.add('sadhana'));
+      if(document.body) document.body.classList.add('sadhana');
+    }
+  }catch(e){}
+})();
 const slug=qs.get('c')||'', tok=qs.get('k')||'';
 const $=id=>document.getElementById(id);
 const rpc=(fn,a)=>fetch(`${API}/rest/v1/rpc/${fn}`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(a)}).then(r=>r.json());
