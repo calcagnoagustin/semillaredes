@@ -319,27 +319,17 @@ function pintarTrafico(d){
   const hay=(k)=>R.some(r=>r.metricas[k]!=null);
 
   const AUD=[
-    {p:'a1', tit:'1. Decisores institucionales', sub:'Estados Unidos'},
-    {p:'a2', tit:'2. Profesionales MD/DO, PA, NP', sub:'Estados Unidos'},
-    {p:'a3', tit:'3. Estudiantes y trainees de salud', sub:'Estados Unidos'}
+    {p:'a1', tit:'1. Decisores institucionales', sub:'Estados Unidos', color:'#518BAF'},
+    {p:'a2', tit:'2. Profesionales MD/DO, PA, NP', sub:'Estados Unidos', color:'#F15C32'},
+    {p:'a3', tit:'3. Estudiantes y trainees de salud', sub:'Estados Unidos', color:'#27435A'}
   ];
 
   let h=`<h1>${d.cliente.nombre}</h1>
     <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
 
-  if(hay('ig_followers_total')){
-    h+=`<h2>Seguidores</h2><p class="sub">Crecimiento de la cuenta.</p><div class="tarj">
-      ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
-      ${card('Nuevos en el período', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos])}
-      ${hay('ig_costo_follower')?card('Costo por seguidor', mon(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,true,true):''}
-      ${hay('ig_inversion')?card('Invertido', mon(m.ig_inversion,2), [m.ig_inversion, ma.ig_inversion],2):''}
-    </div>`;
-    if(R.filter(r=>r.metricas.ig_followers_total!=null).length>1)
-      h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#518BAF');
-  }
-
-  if(hay('tr_visitas')){
-    h+=`<h2>Tráfico</h2><p class="sub">Gente que llegó al sitio desde la campaña.</p><div class="tarj">
+  // ===== 1. TRAFICO =====
+  if(hay('tr_visitas')||hay('a1_visitas')||hay('a2_visitas')||hay('a3_visitas')){
+    h+=`<h2>Tráfico a la página</h2><p class="sub">Gente que llegó al sitio desde la campaña.</p><div class="tarj">
       ${card('Visitas totales', fmt(m.tr_visitas), [m.tr_visitas, ma.tr_visitas],0,true)}
       ${hay('tr_costo_visita')?card('Costo por visita', mon(m.tr_costo_visita,2), [m.tr_costo_visita, ma.tr_costo_visita],2,false,true):''}
       ${hay('tr_inversion')?card('Invertido', mon(m.tr_inversion,2), [m.tr_inversion, ma.tr_inversion],2):''}
@@ -352,18 +342,20 @@ function pintarTrafico(d){
 
     const conDatos=AUD.filter(x=>hay(x.p+'_visitas'));
     if(conDatos.length){
-      h+=`<h2>Por audiencia</h2><p class="sub">Cómo rindió cada público en este período.</p>`;
+      h+=`<h2>Los tres públicos</h2><p class="sub">Cómo rindió cada uno en este período.</p>`;
       conDatos.forEach(x=>{
-        const vis=m[x.p+'_visitas'], cos=m[x.p+'_costo'], inv=m[x.p+'_inversion'];
+        const vis=m[x.p+'_visitas'], cos=m[x.p+'_costo'], inv=m[x.p+'_inversion'], alc=m[x.p+'_alcance'];
         h+=`<div class="camp"><h3>${x.tit}</h3><p class="que">${x.sub}</p>
           <div class="nums">
             <div class="n"><div class="l">Visitas</div><div class="v">${fmt(vis)}</div><div class="d">${delta(vis, ma[x.p+'_visitas'])||''}</div></div>
             <div class="n"><div class="l">Costo por visita</div><div class="v">${fmt(cos,2)}</div><div class="d">${MON}</div></div>
             ${inv!=null?`<div class="n"><div class="l">Invertido</div><div class="v">${fmt(inv,0)}</div><div class="d">${MON}</div></div>`:''}
+            ${alc!=null?`<div class="n"><div class="l">Alcance</div><div class="v">${fmt(alc)}</div><div class="d">personas</div></div>`:''}
           </div></div>`;
       });
-      const series=conDatos.map((x,i)=>({k:x.p+'_visitas',lab:x.tit.split('.')[0],color:['#518BAF','#F15C32','#27435A'][i]}))
-        .map(x=>({...x, vals:R.map(r=>r.metricas[x.k]??null)})).filter(x=>x.vals.filter(v=>v!=null).length>1);
+
+      const series=conDatos.map(x=>({lab:x.tit.split('.')[0], color:x.color, vals:R.map(r=>r.metricas[x.p+'_visitas']??null)}))
+        .filter(x=>x.vals.filter(v=>v!=null).length>1);
       if(series.length){
         const W=560,H=175,P=30;
         const todos=series.flatMap(z=>z.vals).filter(v=>v!=null);
@@ -377,18 +369,35 @@ function pintarTrafico(d){
           z.vals.forEach((v,i)=>{ if(v!=null) cuerpo+=`<circle cx="${X(i)}" cy="${Y(v)}" r="3.5" fill="${z.color}"/>`; });
         });
         cuerpo+=R.map((r,i)=>`<text x="${X(i)}" y="${H-8}" font-size="10" fill="#6E8598" text-anchor="middle">${et[i]}</text>`).join('');
-        const ley=series.map(z=>`<span style="display:inline-flex;align-items:center;gap:6px;margin-right:14px"><span style="width:10px;height:10px;border-radius:50%;background:${z.color};display:inline-block"></span>${z.lab}</span>`).join('');
-        h+=`<div class="graf"><h3>Visitas por audiencia</h3><p class="leyenda">Las tres audiencias comparadas.</p>
+        const ley=series.map(z=>`<span style="display:inline-flex;align-items:center;gap:6px;margin-right:14px"><span style="width:10px;height:10px;border-radius:50%;background:${z.color};display:inline-block"></span>Público ${z.lab}</span>`).join('');
+        h+=`<div class="graf"><h3>Visitas por público</h3><p class="leyenda">Los tres públicos comparados.</p>
           <div style="font-size:12.5px;margin-bottom:8px">${ley}</div>
           <svg class="linea" viewBox="0 0 ${W} ${H}">${cuerpo}</svg></div>`;
       }
     }
   }
 
+  // ===== 2. SEGUIDORES =====
+  if(hay('ig_followers_total')||hay('ig_followers_nuevos')){
+    h+=`<h2>Seguidores</h2><p class="sub">Crecimiento de la cuenta.</p><div class="tarj">
+      ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
+      ${card('Nuevos en el período', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos])}
+      ${hay('ig_visitas')?card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas]):''}
+      ${hay('ig_costo_follower')?card('Costo por seguidor', mon(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,true,true):''}
+      ${hay('ig_inversion')?card('Invertido', mon(m.ig_inversion,2), [m.ig_inversion, ma.ig_inversion],2):''}
+    </div>`;
+    if(R.filter(r=>r.metricas.ig_followers_total!=null).length>1){
+      h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#518BAF');
+      if(hay('ig_costo_follower'))
+        h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#F15C32',true);
+    }
+  }
+
+  // ===== inversion =====
   if(hay('ig_inversion')&&hay('tr_inversion')){
     h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
-      ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
       ${card('En tráfico',mon(m.tr_inversion,2),[m.tr_inversion,ma.tr_inversion],2)}
+      ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
       ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.tr_inversion||0),2),null,2,true)}
     </div>`;
   }
@@ -396,10 +405,10 @@ function pintarTrafico(d){
   if(R.length>1){
     h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
       <details class="hist"><summary><span class="flecha">▶</span> Ver los ${R.length} reportes</summary><table>
-      <tr><th>Período</th>${hay('ig_followers_total')?'<th>Seguidores</th>':''}<th>Visitas</th><th>Costo x visita</th><th>Inversión</th></tr>
+      <tr><th>Período</th><th>Visitas</th><th>Costo x visita</th>${hay('ig_followers_total')?'<th>Seguidores</th><th>Nuevos</th>':''}<th>Inversión</th></tr>
       ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
-        ${hay('ig_followers_total')?`<td>${fmt(x.ig_followers_total)}</td>`:''}
         <td><b>${fmt(x.tr_visitas)}</b></td><td>${fmt(x.tr_costo_visita,2)}</td>
+        ${hay('ig_followers_total')?`<td>${fmt(x.ig_followers_total)}</td><td>${fmt(x.ig_followers_nuevos)}</td>`:''}
         <td>${fmt(Number(x.ig_inversion||0)+Number(x.tr_inversion||0),2)}</td></tr>`}).join('')}
       </table></details>`;
   }
