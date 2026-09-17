@@ -200,6 +200,8 @@ const qs=new URLSearchParams(location.search);
     const mk=new URLSearchParams(location.search).get('marca');
     if(mk==='sadhana'){
       document.documentElement.style.background='#F4F7F9';
+      const ic=document.querySelector('link[rel="icon"]');
+      if(ic) ic.href='https://sadhanacomunicacion.com/icono-sadhana-64.png';
       document.addEventListener('DOMContentLoaded',()=>document.body.classList.add('sadhana'));
       if(document.body) document.body.classList.add('sadhana');
     }
