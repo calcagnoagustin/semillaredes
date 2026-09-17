@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" type="image/png" href="/icono-192.png">
+<title>Playbook · Semilla</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--crema:#F2EDE4;--navy:#1A2456;--vino:#7A1F3A;--oliva:#87863A;--rosa:#E2767C;--mute:#8A8697;--linea:#E5DFD2}
+*{box-sizing:border-box}
+body{margin:0;background:var(--crema);color:#24242C;font-family:Inter,system-ui,sans-serif;line-height:1.55;padding:30px 20px 90px}
+.wrap{max-width:720px;margin:0 auto}
+h1{font-family:'Playfair Display',serif;font-size:32px;color:var(--navy);margin:0 0 3px}
+.lede{color:var(--mute);font-size:14.5px;margin:0 0 26px}
+input{border:1px solid var(--linea);background:#fff;border-radius:10px;padding:11px 13px;font:inherit;max-width:280px}
+button{border:0;background:var(--vino);color:#fff;font:inherit;font-weight:600;border-radius:10px;padding:11px 18px;cursor:pointer}
+.card{background:#fff;border:1px solid var(--linea);border-radius:15px;padding:22px 24px;margin-bottom:14px}
+.top{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:9px}
+.pil{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;font-weight:700;border-radius:99px;padding:3px 10px;color:#fff}
+.pil.negocio{background:var(--oliva)}.pil.comunicacion{background:var(--vino)}.pil.publicidad{background:var(--navy)}
+.conf{font-size:11.5px;color:var(--mute)}
+h2{font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin:0 0 8px;line-height:1.25}
+.txt{font-size:15.5px;color:#3E3B49;white-space:pre-line}
+.ev{margin-top:14px;background:#FBF8F2;border-radius:11px;padding:13px 15px;font-size:13.5px;color:#5B5766}
+.ev b{color:var(--navy)}
+.ev ul{margin:7px 0 0;padding-left:18px}
+.ev li{margin-bottom:3px}
+.acc{display:flex;gap:9px;margin-top:16px;flex-wrap:wrap}
+.acc button{font-size:14px;padding:10px 18px}
+.si{background:var(--oliva)}
+.no{background:#E5DFD2;color:#55525F}
+.vacio{background:#fff;border:1px dashed #D8CFBB;border-radius:14px;padding:26px;text-align:center;color:var(--mute)}
+.sec{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--oliva);font-weight:700;margin:32px 0 12px}
+.card.aprob{opacity:.72;padding:16px 20px}
+.card.aprob h2{font-size:17px;margin:0}
+.card.aprob .txt{font-size:14px;color:#55525F}
+.oculto{display:none}
+.msg{font-size:14px;color:var(--oliva);font-weight:600;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Playbook</h1>
+  <p class="lede">Lo que el sistema aprende de todos los proyectos. Nada se aplica hasta que lo apruebes.</p>
+
+  <div id="gate">
+    <input type="password" id="tok" placeholder="Token de admin">
+    <button onclick="entrar()">Entrar</button>
+  </div>
+
+  <div id="app" class="oculto"><div id="vista"></div></div>
+</div>
+
+<script>
+const API='https://fdrxsjphlvvwwknnrjtx.supabase.co';
+const KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
+const $=id=>document.getElementById(id);
+const rpc=(fn,a)=>fetch(`${API}/rest/v1/rpc/${fn}`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(a)}).then(r=>r.json());
+let admin='', items=[];
+
+async function entrar(){
+  const t=$('tok').value.trim()||sessionStorage.getItem('sr_admin')||'';
+  const r=await rpc('playbook_ver',{p_admin:t,p_estado:null});
+  if(r.error){ alert('Token incorrecto'); return; }
+  admin=t; sessionStorage.setItem('sr_admin',t);
+  items=r.items||[];
+  $('gate').classList.add('oculto'); $('app').classList.remove('oculto');
+  pintar();
+}
+
+function limpio(txt){ return (txt||'').replace(/\n*\[patron:[^\]]*\][\s\S]*$/,'').trim(); }
+
+function pintar(){
+  const nuevos=items.filter(x=>x.estado==='propuesto');
+  const aprobados=items.filter(x=>x.estado==='aprobado');
+
+  let h='';
+  if(nuevos.length){
+    h+=`<div class="sec">Para revisar · ${nuevos.length}</div>`;
+    h+=nuevos.map(x=>{
+      const ev=x.evidencia||{};
+      return `<div class="card">
+        <div class="top"><span class="pil ${x.pilar||'publicidad'}">${x.pilar||''}</span>
+          <span class="conf">confianza ${x.confianza}</span></div>
+        <h2>${x.titulo}</h2>
+        <div class="txt">${limpio(x.contenido)}</div>
+        ${ev.dato?`<div class="ev"><b>En qué se basa:</b> ${ev.dato}
+          ${(ev.casos&&ev.casos.length)?`<ul>${ev.casos.slice(0,4).map(c=>`<li>${c}</li>`).join('')}</ul>`:''}
+        </div>`:''}
+        <div class="acc">
+          <button class="si" data-ok="${x.id}">Sirve, sumalo</button>
+          <button class="no" data-no="${x.id}">Descartar</button>
+        </div>
+      </div>`;
+    }).join('');
+  } else {
+    h+=`<div class="vacio">No hay nada nuevo para revisar.</div>`;
+  }
+
+  if(aprobados.length){
+    h+=`<div class="sec">En el playbook · ${aprobados.length}</div>`;
+    h+=aprobados.map(x=>`<div class="card aprob">
+      <div class="top"><span class="pil ${x.pilar||'publicidad'}">${x.pilar||''}</span>
+        ${x.tipo==='principio'?'<span class="conf">principio del Método</span>':''}</div>
+      <h2>${x.titulo}</h2>
+      <div class="txt" style="margin-top:6px">${limpio(x.contenido)}</div>
+      ${x.tipo!=='principio'?`<div class="acc"><button class="no" data-no="${x.id}">Sacar del playbook</button></div>`:''}
+    </div>`).join('');
+  }
+
+  h+=`<div class="acc" style="margin-top:28px"><button onclick="buscar()" id="btnBuscar">Buscar patrones nuevos</button></div><div id="out"></div>`;
+  $('vista').innerHTML=h;
+
+  document.querySelectorAll('[data-ok]').forEach(b=>b.onclick=()=>cambiar(b.dataset.ok,'aprobado'));
+  document.querySelectorAll('[data-no]').forEach(b=>b.onclick=()=>cambiar(b.dataset.no,'descartado'));
+}
+
+async function cambiar(id,estado){
+  const r=await rpc('playbook_estado',{p_admin:admin,p_id:id,p_estado:estado});
+  if(r.ok) entrar();
+}
+
+async function buscar(){
+  const b=$('btnBuscar'); b.disabled=true; b.textContent='Buscando…';
+  const r=await fetch(`${API}/functions/v1/playbook-aprender`,{method:'POST',
+    headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({admin})}).then(x=>x.json());
+  b.disabled=false; b.textContent='Buscar patrones nuevos';
+  $('out').innerHTML=`<div class="msg">${r.ok?`${r.patrones} patrones revisados · ${r.nuevos} nuevos para leer`:'No se pudo'}</div>`;
+  if(r.ok && r.nuevos) setTimeout(entrar,1200);
+}
+
+if(sessionStorage.getItem('sr_admin')) entrar();
+</script>
+</body>
+</html>
