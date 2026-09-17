@@ -96,7 +96,7 @@ const CAMPOS_MENSAJES={
 };
 const CAMPOS_MIXTO={
  'Instagram':[['ig_followers_total','Seguidores'],['ig_followers_nuevos','Nuevos'],['ig_visitas','Visitas'],['ig_inversion','Inversión USD'],['ig_inversion_diaria','Inv. diaria'],['ig_costo_follower','Costo x seguidor']],
- 'Consultas por productos':[['msj_mensajes','Consultas'],['msj_inversion','Inversión USD'],['msj_costo_mensaje','Costo x consulta'],['msj_potenciales','Potenciales']],
+ 'Campaña de mensajes':[['msj_nombre','Nombre de la campaña'],['msj_mensajes','Mensajes'],['msj_inversion','Inversión'],['msj_costo_mensaje','Costo x mensaje'],['msj_potenciales','Potenciales'],['msj_seguidores','Seguidores que trajo']],
  'Ventas':[['msj_conversiones','Ventas'],['msj_costo_conversion','Costo x venta'],['msj_ingreso','Ingreso'],['msj_roas','ROAS']],
  'Interacción':[['int_interacciones','Interacciones'],['int_inversion','Inversión'],['int_costo','Costo x interacción']],
  'Obra (solo campaña Venta)':[['tk_nombre','Nombre de la obra'],['tk_tickets','Ventas'],['tk_inversion','Inversión'],['tk_costo_ticket','Costo x venta'],['tk_roas','ROAS'],['tk_ingreso','Ingreso'],['tk_clics','Clics al link']]
@@ -169,6 +169,7 @@ function parsear(txt){
     if(/^famosos/i.test(bajo)){seccion='fam';return;}
     if(/^reservas /i.test(bajo)){seccion='esp';return;}
     if(/^mensajes \(productos\)/i.test(bajo)){seccion='msj';return;}
+    if(/^mensajes espacio|^espacio disparos/i.test(bajo)){seccion='msj';return;}
     if(/^followers?\s*:?\s*$|^campa[nñ]a de seguidores/i.test(bajo)){seccion='ig';return;}
     if(/^meta a steam|^campa[nñ]a a steam|^steam \(meta\)/i.test(bajo)){seccion='stm';return;}
     if(/^steam\s*:?\s*$/i.test(bajo)){seccion='stmn';return;}
@@ -200,6 +201,8 @@ function parsear(txt){
       'ventas':(seccion==='tk'?'tk_tickets':'vta_ventas'),'costo por venta':(seccion==='tk'?'tk_costo_ticket':'vta_costo_venta'),
       'entradas':'tk_tickets','tickets':'tk_tickets','costo por entrada':'tk_costo_ticket','clics':'tk_clics','clics al link':'tk_clics',
       'hypeditt visits':'lan_hypeddit','visits':'lan_hypeddit','total link clicks':'lan_clics',
+      'seguidores':(seccion==='msj'?'msj_seguidores':'ig_followers_total'),
+      'facturación':'msj_ingreso','facturacion':'msj_ingreso',
       'interacciones':'int_interacciones','x interación':'int_costo','x interacción':'int_costo','costo x interaccion':'int_costo',
       'potenciales':'msj_potenciales','conversiones':'msj_conversiones',
       'costo conversión':'msj_costo_conversion','costo conversion':'msj_costo_conversion',
