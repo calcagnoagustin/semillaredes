@@ -75,6 +75,13 @@ th:first-child,td:first-child{text-align:left}
 th{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--oliva);background:#FBF8F2}
 .err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:26px}
 .oculto{display:none}
+.avisoActualiza{background:#fff;border:1px solid var(--linea);border-left:5px solid var(--oliva);
+  border-radius:12px;padding:16px 18px;margin:14px 0 26px}
+.avisoActualiza .tit{font-size:16.5px;font-weight:700;color:var(--navy);line-height:1.35;margin-bottom:5px}
+.avisoActualiza .sub{font-size:14px;color:#55525F;margin:0}
+body.sadhana .avisoActualiza{border-left-color:#F15C32;background:#fff}
+body.sadhana .avisoActualiza .tit{color:#27435A}
+@media(min-width:760px){ .avisoActualiza .tit{font-size:18px} }
 /* Branding Sadhana Comunicación */
 html:has(body.sadhana){background:#F4F7F9}
 body.sadhana{--crema:#F4F7F9;--navy:#27435A;--vino:#F15C32;--rosa:#F15C32;--oliva:#518BAF;--tinta:#27435A;--mute:#6E8598;--linea:#CBDCE7;
@@ -344,7 +351,11 @@ function pintarTrafico(d){
   ];
 
   let h=`<h1>${d.cliente.nombre}</h1>
-    <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
+    <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>
+    <div class="avisoActualiza">
+      <div class="tit">Este informe se actualiza todos los jueves.</div>
+      <p class="sub">Los números que ves no son en vivo: corresponden al último período cerrado.</p>
+    </div>`;
 
   // ===== 1. TRAFICO =====
   if(hay('tr_visitas')||hay('a1_visitas')||hay('a2_visitas')||hay('a3_visitas')){
