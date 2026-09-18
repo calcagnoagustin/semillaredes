@@ -773,6 +773,10 @@
       font-style: italic;
     }
 
+    .testi-stars { color: #E2A93B; font-size: 15px; letter-spacing: 2px; display:block; margin-bottom: 12px; }
+    .testi-sub { font-size: 15px; color: #555; margin: -32px 0 40px; }
+    .testi-sub a { color: var(--navy); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--navy); }
+    .testimonios h2 { margin-bottom: 44px; }
     .testi-author {
       font-size: 13px;
       font-weight: 700;
@@ -1069,16 +1073,12 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
     </a>
   </section>
 
-      <!-- CHARLA DE PRESENTACION GRATUITA -->
-      <section class="charla-countdown" style="background:var(--cream);color:var(--navy);padding:56px 24px;text-align:center;">
-    <div style="max-width:620px;margin:0 auto 30px;">
-      <p style="color:var(--navy);font-size:clamp(20px,3.4vw,32px);font-weight:800;line-height:1.25;margin:0 0 12px;">Charla de presentaci&oacute;n gratuita: jueves 1 de octubre, 17 hs.</p>
-      <p style="color:rgba(26,36,86,0.75);font-size:clamp(15px,2.4vw,19px);line-height:1.5;margin:0;">Una hora online para contarte c&oacute;mo funciona la Formaci&oacute;n y responder tus preguntas.</p>
-    </div>
-    <a href="https://semillaredes.com/charla.html" target="_blank" class="btn-primary" style="background:var(--olive);color:var(--white);">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      ANOTARME A LA CHARLA
-    </a>
+  <!-- MOCKUP: ASÍ SE VE UNA CLASE -->
+  <section class="mockup-clase" style="background:var(--cream);padding:0 0 8px;">
+    <picture>
+      <source srcset="assets/formacion-mockup.webp" type="image/webp">
+      <img src="assets/formacion-mockup.jpg" alt="Una clase de la Formación Semilla vista en notebook, tablet y celular" style="display:block;width:100%;height:auto;" loading="lazy">
+    </picture>
   </section>
   
 
@@ -1164,6 +1164,17 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
         <div class="paso-num">04</div>
         <h4>Materiales y plantillas</h4>
         <p>Plantilla de control de campañas, planilla de negocio digital, planner de contenidos, briefing de artista y más recursos para implementar desde el día uno.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRIMERA CLASE GRATIS -->
+  <section class="video-section-form" style="background:var(--navy);">
+    <div class="video-form-inner">
+      <p class="section-label" style="color:var(--rose);">Clase 1 completa</p>
+      <h2 style="color:var(--cream);">Mirá la primera clase gratis.</h2>
+      <div class="video-embed-form">
+        <iframe src="https://www.youtube.com/embed/HE8pjQ0pbV8" title="Primera clase de la Formación Semilla" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
       </div>
     </div>
   </section>
@@ -1317,22 +1328,45 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
   <!-- TESTIMONIOS -->
   <section class="testimonios">
     <div class="testimonios-inner">
-      <h2>Lo que dicen quienes pasaron por Semilla</h2>
+      <p class="section-label" style="color:var(--olive);letter-spacing:0.15em;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:12px;">Opiniones</p>
+      <h2>Lo que dicen en Google: 5,0 de 5</h2>
+      <p class="testi-sub">13 reseñas de artistas y proyectos que trabajaron con Semilla. <a href="https://www.google.com/maps/search/semillaredes+agencia+de+marketing" target="_blank" rel="noopener">Ver todas en Google →</a></p>
       <div class="testimonios-grid">
         <div class="testi-card">
-          <p class="testi-quote">"Antes pensaba que mis redes no funcionaban porque no posteaba suficiente. Semilla me mostró que el problema era que no sabía qué vender ni a quién."</p>
-          <div class="testi-author">Lara Fichera</div>
-          <div class="testi-role">Artista visual</div>
+          <span class="testi-stars" aria-label="5 estrellas">★★★★★</span>
+          <p class="testi-quote">"La formación ofrecida en Semilla Redes es una gran herramienta, una bajada a tierra para desarrollarnos como artistas en este nuevo mundo virtual en el que todos vivimos."</p>
+          <div class="testi-author">Joaquin Bosisio</div>
+          <div class="testi-role">Reseña en Google</div>
         </div>
         <div class="testi-card">
-          <p class="testi-quote">"El grupo me dio una perspectiva que no podría haber tenido sola. Ver cómo Agus trabaja el proyecto de otro artista me enseñó tanto como trabajar el mío."</p>
-          <div class="testi-author">María Marta Crespo</div>
-          <div class="testi-role">Música</div>
+          <span class="testi-stars" aria-label="5 estrellas">★★★★★</span>
+          <p class="testi-quote">"Muy bueno lo que da Agus para artistas, me hizo ver mi proyecto desde otro lugar y al cambiar las perspectivas el proyecto artístico evoluciona y empecé a tener más claridad y obtener mejores resultados."</p>
+          <div class="testi-author">Mayra Dómine</div>
+          <div class="testi-role">Reseña en Google</div>
         </div>
         <div class="testi-card">
-          <p class="testi-quote">"En dos meses de grupo entendí mi negocio mejor que en los últimos tres años. Hay algo en el acompañamiento semanal que no tiene ningún curso grabado."</p>
-          <div class="testi-author">Manu Durañona</div>
-          <div class="testi-role">Músico y compositor</div>
+          <span class="testi-stars" aria-label="5 estrellas">★★★★★</span>
+          <p class="testi-quote">"Si sos artista, Semillaredes es el mejor lugar, te soluciona las redes y sus cursos son amenos y divertidos."</p>
+          <div class="testi-author">Maria Laura Delgue</div>
+          <div class="testi-role">Reseña en Google</div>
+        </div>
+        <div class="testi-card">
+          <span class="testi-stars" aria-label="5 estrellas">★★★★★</span>
+          <p class="testi-quote">"Excelente! Mucha información específica para artistas y conocimiento del medio. Muy recomendable!!"</p>
+          <div class="testi-author">Soledad Lazcano</div>
+          <div class="testi-role">Reseña en Google</div>
+        </div>
+        <div class="testi-card">
+          <span class="testi-stars" aria-label="5 estrellas">★★★★★</span>
+          <p class="testi-quote">"Muy recomendable esta propuesta!! Excelente la didáctica y generosidad de Agustín."</p>
+          <div class="testi-author">Carolina di Paola</div>
+          <div class="testi-role">Reseña en Google</div>
+        </div>
+        <div class="testi-card">
+          <span class="testi-stars" aria-label="5 estrellas">★★★★★</span>
+          <p class="testi-quote">"Hace bastante que trabajo mi proyecto con Semillaredes, y realmente es excelente. Lo recomiendo al 100%."</p>
+          <div class="testi-author">A N G E</div>
+          <div class="testi-role">Reseña en Google</div>
         </div>
       </div>
     </div>
