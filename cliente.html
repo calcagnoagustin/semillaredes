@@ -445,6 +445,86 @@ function pintarTrafico(d){
   return h;
 }
 
+function pintarSemilla(d){
+  MON=(d.cliente.moneda||'USD');
+  const R=d.reportes||[];
+  const u=R[R.length-1]||null;
+  const ultimo=(k)=>{ for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null) return x; } return null; };
+  const previo=(k)=>{ let v=false; for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null){ if(v) return x; v=true; } } return null; };
+  const m=new Proxy({},{get:(_,k)=>ultimo(k)}), ma=new Proxy({},{get:(_,k)=>previo(k)});
+  const et=R.map(r=>fecha(r.hasta));
+  const hay=(k)=>R.some(r=>r.metricas[k]!=null);
+
+  let h=`<h1>${d.cliente.nombre}</h1>
+    <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
+
+  // ===== SEGUIDORES =====
+  if(hay('ig_inversion')||hay('ig_followers_total')){
+    h+=`<h2>Seguidores</h2><p class="sub">La campaña de crecimiento de la cuenta.</p><div class="tarj">
+      ${hay('ig_followers_total')?card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total],0,true):''}
+      ${hay('ig_followers_nuevos')?card('Nuevos', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos]):''}
+      ${hay('ig_costo_follower')?card('Costo por seguidor', mon(m.ig_costo_follower,3), [m.ig_costo_follower, ma.ig_costo_follower],3,false,true):''}
+      ${card('Invertido', mon(m.ig_inversion,2), [m.ig_inversion, ma.ig_inversion],2)}
+      ${hay('ig_alcance')?card('Personas alcanzadas', fmt(m.ig_alcance), [m.ig_alcance, ma.ig_alcance]):''}
+    </div>`;
+    if(R.filter(r=>r.metricas.ig_inversion!=null).length>1)
+      h+=grafico('Inversión en seguidores','Lo que se puso en la campaña en cada período.',R.map(r=>r.metricas.ig_inversion),et,'#87863A');
+  }
+
+  // ===== FORMACION =====
+  if(hay('frm_inversion')){
+    h+=`<h2>Formación</h2><p class="sub">Todo lo que empuja la Formación Semilla.</p><div class="tarj">
+      ${card('Invertido en Formación', mon(m.frm_inversion,2), [m.frm_inversion, ma.frm_inversion],2,true)}
+      ${hay('ftr_visitas')?card('Visitas a la página', fmt(m.ftr_visitas), [m.ftr_visitas, ma.ftr_visitas]):''}
+      ${hay('ftr_costo_visita')?card('Costo por visita', mon(m.ftr_costo_visita,3), [m.ftr_costo_visita, ma.ftr_costo_visita],3,false,true):''}
+    </div>`;
+
+    const bloques=[
+      {p:'ftr', t:'Tráfico a la página', q:'Gente que llega a la landing de la Formación.',
+        n:[['ftr_visitas','Visitas',0],['ftr_costo_visita','Costo por visita',3],['ftr_inversion','Invertido',2],['ftr_alcance','Alcance',0]]},
+      {p:'fmsj', t:'Mensajes', q:'Consultas que llegan por mensaje.',
+        n:[['fmsj_mensajes','Mensajes',0],['fmsj_costo_mensaje','Costo por mensaje',2],['fmsj_inversion','Invertido',2],['fmsj_alcance','Alcance',0]]},
+      {p:'fvta', t:'Ventas', q:'La campaña orientada a la inscripción.',
+        n:[['fvta_ventas','Ventas',0],['fvta_costo_venta','Costo por venta',2],['fvta_visitas','Visitas',0],['fvta_inversion','Invertido',2]]},
+      {p:'fpub', t:'Publicaciones promocionadas', q:'Posteos de la Formación con pauta.',
+        n:[['fpub_visitas','Visitas',0],['fpub_inversion','Invertido',2],['fpub_alcance','Alcance',0]]}
+    ];
+    bloques.forEach(b=>{
+      if(!hay(b.p+'_inversion')) return;
+      const nums=b.n.filter(([k])=>m[k]!=null).map(([k,l,dec])=>{
+        const esPlata=k.includes('inversion')||k.includes('costo');
+        return `<div class="n"><div class="l">${l}</div><div class="v">${fmt(m[k],dec)}</div><div class="d">${esPlata?MON:(delta(m[k],ma[k])||'')}</div></div>`;
+      }).join('');
+      h+=`<div class="camp"><h3>${b.t}</h3><p class="que">${b.q}</p><div class="nums">${nums}</div></div>`;
+    });
+
+    if(R.filter(r=>r.metricas.frm_inversion!=null).length>1)
+      h+=grafico('Inversión en Formación','Cómo creció la pauta de la Formación.',R.map(r=>r.metricas.frm_inversion??null),et,'#7A1F3A');
+    if(R.filter(r=>r.metricas.ftr_visitas!=null).length>1)
+      h+=grafico('Visitas a la página','Gente que llegó a la landing en cada período.',R.map(r=>r.metricas.ftr_visitas??null),et,'#1A2456');
+  }
+
+  // ===== INVERSION TOTAL =====
+  if(hay('ig_inversion')&&hay('frm_inversion')){
+    h+=`<h2>Inversión</h2><p class="sub">El reparto de la pauta en este período.</p><div class="tarj">
+      ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
+      ${card('En Formación',mon(m.frm_inversion,2),[m.frm_inversion,ma.frm_inversion],2)}
+      ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.frm_inversion||0),2),null,2,true)}
+    </div>`;
+  }
+
+  if(R.length>1){
+    h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
+      <details class="hist"><summary><span class="flecha">▶</span> Ver los ${R.length} reportes</summary><table>
+      <tr><th>Período</th><th>Seguidores</th><th>Inv. seguidores</th><th>Visitas Formación</th><th>Inv. Formación</th></tr>
+      ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
+        <td>${fmt(x.ig_followers_total)}</td><td>${fmt(x.ig_inversion,2)}</td>
+        <td><b>${fmt(x.ftr_visitas)}</b></td><td>${fmt(x.frm_inversion,2)}</td></tr>`}).join('')}
+      </table></details>`;
+  }
+  return h;
+}
+
 function pintarVentas(d){
   MON=(d.cliente.moneda||'USD');
   const R=d.reportes||[];
@@ -755,7 +835,8 @@ function pintar(d){
   const hay=(k)=>R.some(r=>r.metricas[k]!=null);
 
 
-  let h = (d.cliente.tipo==='trafico') ? pintarTrafico(d)
+  let h = (d.cliente.tipo==='semilla') ? pintarSemilla(d)
+        : (d.cliente.tipo==='trafico') ? pintarTrafico(d)
         : (d.cliente.tipo==='mensajes') ? pintarMensajes(d)
         : (d.cliente.tipo==='ventas') ? pintarVentas(d)
         : (d.cliente.tipo==='mixto') ? pintarMixto(d)
