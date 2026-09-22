@@ -953,6 +953,8 @@ function pintar(d){
       ${card('Costo por visita', mon(m.lan_costo_visita,2), [m.lan_costo_visita, ma.lan_costo_visita],2,false,true)}
       ${card('Invertido', mon(m.lan_inversion,2), [m.lan_inversion, ma.lan_inversion],2)}
       ${m.lan_hypeddit!=null?card('Visitas en Hypeddit', fmt(m.lan_hypeddit), [m.lan_hypeddit, ma.lan_hypeddit]):''}
+      ${m.lan_hypeddit_clics!=null?card('Clics en Hypeddit', fmt(m.lan_hypeddit_clics), [m.lan_hypeddit_clics, ma.lan_hypeddit_clics]):''}
+      ${m.lan_hypeddit_eng!=null?card('Interacción en Hypeddit', fmt(m.lan_hypeddit_eng,2)+'%', [m.lan_hypeddit_eng, ma.lan_hypeddit_eng],2):''}
       ${m.lan_clics!=null?card('Clics al link', fmt(m.lan_clics), [m.lan_clics, ma.lan_clics]):''}
     </div>`;
     h+=grafico('Visitas a la página del lanzamiento','Cuánta gente llegó a escuchar.',R.map(r=>r.metricas.lan_visitas),et,'#E2767C');
