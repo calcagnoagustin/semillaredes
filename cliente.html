@@ -645,12 +645,17 @@ function pintarMixto(d){
   let h=`<h1>${d.cliente.nombre}</h1>
     <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
 
+  // cada tarjeta aparece solo si hay dato: nada de cajas vacias
+  if(hay('ig_followers_total')||hay('ig_inversion')){
   h+=`<h2>Instagram</h2><p class="sub">Crecimiento de la cuenta.</p><div class="tarj">
-    ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
-    ${card('Nuevos en el período', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos])}
-    ${card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas])}
-    ${card('Costo por seguidor', mon(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,true,true)}
+    ${hay('ig_followers_total')?card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total]):''}
+    ${hay('ig_followers_nuevos')?card('Nuevos en el período', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos]):''}
+    ${hay('ig_visitas')?card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas]):''}
+    ${hay('ig_costo_follower')?card('Costo por seguidor', mon(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,true,true):''}
+    ${hay('ig_inversion')&&!hay('ig_costo_follower')?card('Invertido en seguidores', mon(m.ig_inversion,0), [m.ig_inversion, ma.ig_inversion],0):''}
+    ${hay('ig_alcance')&&!hay('ig_visitas')?card('Personas alcanzadas', fmt(m.ig_alcance), [m.ig_alcance, ma.ig_alcance]):''}
   </div>`;
+  }
   // conjuntos de anuncios de la campaña de seguidores, adentro del total (como Famosos en Alamesa)
   const CONJ=[{p:'sc',t:'Seguidores CABA'},{p:'si',t:'Seguidores Interior'}];
   CONJ.forEach(x=>{
@@ -661,8 +666,12 @@ function pintarMixto(d){
     </div></div>`;
   });
 
-  h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
-  h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
+  if(R.filter(r=>r.metricas.ig_followers_total!=null).length>1)
+    h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
+  if(R.filter(r=>r.metricas.ig_costo_follower!=null).length>1)
+    h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
+  else if(R.filter(r=>r.metricas.ig_inversion!=null).length>1)
+    h+=grafico('Inversión en seguidores','Lo que se puso en la campaña de seguidores cada período.',R.map(r=>r.metricas.ig_inversion??null),et,'#87863A');
 
   // campaña de Meta hacia YouTube
   if(hay('ytad_inversion')){
