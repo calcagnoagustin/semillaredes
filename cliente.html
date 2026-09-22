@@ -75,21 +75,18 @@ th:first-child,td:first-child{text-align:left}
 th{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--oliva);background:#FBF8F2}
 .err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:26px}
 .oculto{display:none}
-/* indice de secciones */
-.indice{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;margin:0 -20px 18px;padding:10px 20px;
-  background:rgba(242,237,228,.86);-webkit-backdrop-filter:saturate(1.4) blur(10px);backdrop-filter:saturate(1.4) blur(10px);
-  border-bottom:1px solid transparent;transition:border-color .2s}
-.indice.pegado{border-bottom-color:var(--linea)}
-.indice .fila{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.indice .fila::-webkit-scrollbar{display:none}
-.indice a{flex:0 0 auto;font-size:12.5px;font-weight:600;letter-spacing:.2px;color:var(--navy);text-decoration:none;
-  background:#fff;border:1px solid var(--linea);border-radius:99px;padding:6px 13px;white-space:nowrap;transition:all .15s}
+/* indice de secciones: todo visible de una, en varias lineas */
+.indice{margin:4px 0 22px}
+.indice .fila{display:flex;flex-wrap:wrap;gap:6px}
+.indice a{font-size:12.5px;font-weight:600;letter-spacing:.2px;color:var(--navy);text-decoration:none;
+  background:#fff;border:1px solid var(--linea);border-radius:99px;padding:6px 12px;white-space:nowrap;transition:all .15s}
 .indice a:hover{border-color:var(--oliva);color:var(--oliva)}
-.indice a.activo{background:var(--navy);border-color:var(--navy);color:var(--crema)}
-h2[id]{scroll-margin-top:calc(64px + env(safe-area-inset-top,0px))}
-body.sadhana .indice{background:rgba(244,247,249,.88)}
-body.sadhana .indice a.activo{background:#518BAF;border-color:#518BAF;color:#fff}
-body.sadhana .indice a:hover{border-color:#F15C32;color:#F15C32}
+@media(max-width:560px){ .indice .fila{gap:5px} .indice a{font-size:11.5px;padding:5px 10px} }
+h2[id]{scroll-margin-top:calc(16px + env(safe-area-inset-top,0px));display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+h2 .volver{font-family:Inter,system-ui,sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.3px;color:var(--mute);
+  text-decoration:none;white-space:nowrap;padding:3px 9px;border:1px solid var(--linea);border-radius:99px;background:rgba(255,255,255,.6);flex:0 0 auto}
+h2 .volver:hover{color:var(--oliva);border-color:var(--oliva)}
+body.sadhana .indice a:hover,body.sadhana h2 .volver:hover{border-color:#F15C32;color:#F15C32}
 .avisoActualiza{background:#fff;border:1px solid var(--linea);border-left:5px solid var(--oliva);
   border-radius:12px;padding:16px 18px;margin:14px 0 26px}
 .avisoActualiza .tit{font-size:16.5px;font-weight:700;color:var(--navy);line-height:1.35;margin-bottom:5px}
@@ -1141,38 +1138,30 @@ rpc('sub_get',{p_slug:slug,p_k:tok}).then(d=>{
 function armarIndice(){
   const app=$('app'); if(!app) return;
   const viejo=app.querySelector('.indice'); if(viejo) viejo.remove();
+  app.querySelectorAll('h2 .volver').forEach(x=>x.remove());
   const hs=[...app.querySelectorAll('h2')];
   if(hs.length<3) return;
   const corto={'Recomendaciones de la IA':'Recomendaciones','Tarea para el hogar':'Tareas','Tus activos':'Activos','Tus notas':'Notas'};
-  hs.forEach((h,i)=>{ h.id='sec-'+i; });
-  const nav=document.createElement('nav'); nav.className='indice'; nav.setAttribute('aria-label','Secciones');
+  const nav=document.createElement('nav'); nav.className='indice'; nav.id='indice'; nav.setAttribute('aria-label','Secciones');
   nav.innerHTML='<div class="fila">'+hs.map((h,i)=>{
-    const t=h.textContent.trim(); return `<a href="#sec-${i}" data-i="${i}">${corto[t]||t}</a>`;
+    const t=h.textContent.trim(); h.id='sec-'+i;
+    return `<a href="#sec-${i}" data-i="${i}">${corto[t]||t}</a>`;
   }).join('')+'</div>';
   const primero=app.querySelector('.periodo')||app.querySelector('h1');
-  const ancla=primero && primero.nextElementSibling && primero.nextElementSibling.classList.contains('avisoActualiza') ? primero.nextElementSibling : primero;
+  const sig=primero && primero.nextElementSibling;
+  const ancla=(sig && sig.classList.contains('avisoActualiza')) ? sig : primero;
   if(ancla) ancla.after(nav); else app.prepend(nav);
-  const links=[...nav.querySelectorAll('a')];
-  links.forEach(a=>a.onclick=e=>{
+  nav.querySelectorAll('a').forEach(a=>a.onclick=e=>{
     e.preventDefault();
-    const alto=nav.offsetHeight+10;
-    const y=hs[+a.dataset.i].getBoundingClientRect().top+window.scrollY-alto;
+    const y=hs[+a.dataset.i].getBoundingClientRect().top+window.scrollY-14;
     window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
   });
-  const marcar=()=>{
-    // posicion real de cada titulo respecto de la pantalla (offsetTop es relativo al contenedor)
-    const limite=nav.offsetHeight+40; let act=0;
-    hs.forEach((h,i)=>{ if(h.getBoundingClientRect().top<=limite) act=i; });
-    links.forEach((a,i)=>a.classList.toggle('activo',i===act));
-    nav.classList.toggle('pegado', nav.getBoundingClientRect().top<=2);
-    // centro el boton activo sin animacion: un scroll suave aca cortaria el de la ventana
-    const a=links[act]; if(a){ const f=nav.firstChild; const r=a.offsetLeft-f.clientWidth/2+a.clientWidth/2; if(Math.abs(f.scrollLeft-r)>40) f.scrollLeft=r; }
-  };
-  window.removeEventListener('scroll',window.__indiceScroll||(()=>{}));
-  let espera=null;
-  window.__indiceScroll=()=>{ if(espera) return; espera=setTimeout(()=>{ espera=null; marcar(); },60); };
-  window.addEventListener('scroll',window.__indiceScroll,{passive:true});
-  marcar();
+  // en cada seccion, un volver arriba
+  hs.forEach(h=>{
+    const v=document.createElement('a'); v.className='volver'; v.href='#indice'; v.textContent='↑ Arriba';
+    v.onclick=e=>{ e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'}); };
+    h.appendChild(v);
+  });
 }
 </script>
 </body>
