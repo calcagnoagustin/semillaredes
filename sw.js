@@ -1,7 +1,7 @@
 // Service worker de Semilla — v3
 // Regla: el HTML y los datos SIEMPRE se piden a la red.
 // El cache solo sirve de respaldo cuando no hay internet.
-const CACHE = 'semilla-v3';
+const CACHE = 'semilla-v4';
 
 self.addEventListener('install', e => { self.skipWaiting(); });
 
