@@ -639,6 +639,16 @@ function pintarMixto(d){
     ${card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas])}
     ${card('Costo por seguidor', mon(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,true,true)}
   </div>`;
+  // conjuntos de anuncios de la campaña de seguidores, adentro del total (como Famosos en Alamesa)
+  const CONJ=[{p:'sc',t:'Seguidores CABA'},{p:'si',t:'Seguidores Interior'}];
+  CONJ.forEach(x=>{
+    if(!hay(x.p+'_inversion')) return;
+    const f=(k,l,dec,plata)=>m[x.p+'_'+k]!=null?`<div class="n"><div class="l">${l}</div><div class="v">${fmt(m[x.p+'_'+k],dec)}</div><div class="d">${plata?MON:(delta(m[x.p+'_'+k],ma[x.p+'_'+k])||'')}</div></div>`:'';
+    h+=`<div class="camp dentro"><h3>${x.t}</h3><p class="que">Conjunto de anuncios dentro de la campaña de seguidores.</p><div class="nums">
+      ${f('inversion','Invertido',0,true)}${f('alcance','Personas alcanzadas',0)}${f('clics','Clics',0)}${f('costo_clic','Costo por clic',2,true)}
+    </div></div>`;
+  });
+
   h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
   h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
 
