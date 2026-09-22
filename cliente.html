@@ -971,8 +971,9 @@ function pintarResto(d,h){
   }
 
   const T=d.tareas||[];
-  if(T.length){
-    h+=`<h2>Tarea para el hogar</h2><p class="sub">Lo que ya está hecho y lo que sigue.</p><div class="tar">
+  {
+    h+=`<h2>Tarea para el hogar</h2><p class="sub">Lo que ya está hecho y lo que sigue.</p>
+    ${T.length?'':'<p class="pista">Todavía no hay tareas. Sumá la primera acá abajo.</p>'}<div class="tar">
       ${T.map(t=>`<div class="it ${t.estado}"><span class="mark ${t.estado}" data-tid="${t.id}" data-est="${t.estado}"></span><span class="tx" data-tid2="${t.id}" data-est2="${t.estado}"><span class="tt">${t.titulo}</span>${t.detalle?`<span class="de">${t.detalle}</span>`:''}</span><button class="x" data-delt="${t.id}" title="Borrar">×</button></div>`).join('')}
     </div>
     <div class="agregarT"><input id="t_nueva" placeholder="Agregar algo que quieras hacer o pedirnos"><button id="t_add">Agregar</button></div>
@@ -980,8 +981,9 @@ function pintarResto(d,h){
   }
 
   const A=d.activos||[];
-  if(A.length){
-    h+=`<h2>Tus activos</h2><p class="sub">Todo lo que vamos construyendo y queda tuyo. Podés sumar los tuyos.</p><div class="act">
+  {
+    h+=`<h2>Tus activos</h2><p class="sub">Tus enlaces a mano: carpetas, materiales, links importantes. Podés sumar los tuyos.</p>
+    ${A.length?'':'<p class="pista">Todavía no hay enlaces. Pegá el primero acá abajo.</p>'}<div class="act">
       ${A.map(x=>x.url?`<a class="a" href="${x.url}" target="_blank"><span class="tt">${x.titulo}</span><div class="de">${x.descripcion||''}</div><div class="go">Abrir →</div><button class="x" data-dela="${x.id}" title="Borrar">×</button></a>`
         :`<div class="a sinlink"><span class="tt">${x.titulo}</span><div class="de">${x.descripcion||''}</div><div class="go">En preparación</div><button class="x" data-dela="${x.id}" title="Borrar">×</button></div>`).join('')}
     </div>
