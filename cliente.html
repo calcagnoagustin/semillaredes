@@ -479,15 +479,17 @@ function pintarSemilla(d){
 
   // ===== SEGUIDORES =====
   if(hay('ig_inversion')||hay('ig_followers_total')){
-    h+=`<h2>Seguidores</h2><p class="sub">La campaña de crecimiento de la cuenta.</p><div class="tarj">
+    h+=`<h2>Seguidores</h2><p class="sub">La campaña de crecimiento de la cuenta, desde el 1 del mes.</p><div class="tarj">
       ${hay('ig_followers_total')?card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total],0,true):''}
-      ${hay('ig_followers_nuevos')?card('Nuevos', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos]):''}
+      ${hay('ig_followers_nuevos')?card('Nuevos en el mes', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos]):''}
       ${hay('ig_costo_follower')?card('Costo por seguidor', mon(m.ig_costo_follower,3), [m.ig_costo_follower, ma.ig_costo_follower],3,false,true):''}
       ${card('Invertido', mon(m.ig_inversion,2), [m.ig_inversion, ma.ig_inversion],2)}
       ${hay('ig_alcance')?card('Personas alcanzadas', fmt(m.ig_alcance), [m.ig_alcance, ma.ig_alcance]):''}
     </div>`;
+    if(R.filter(r=>r.metricas.ig_costo_follower!=null).length>1)
+      h+=grafico('Costo por seguidor','Cuánto costó cada seguidor nuevo mes a mes. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower??null),et,'#1A2456',true);
     if(R.filter(r=>r.metricas.ig_inversion!=null).length>1)
-      h+=grafico('Inversión en seguidores','Lo que se puso en la campaña en cada período.',R.map(r=>r.metricas.ig_inversion),et,'#87863A');
+      h+=grafico('Inversión en seguidores','Lo que se puso en la campaña cada mes.',R.map(r=>r.metricas.ig_inversion),et,'#87863A');
   }
 
   // ===== FORMACION =====
@@ -555,10 +557,10 @@ function pintarSemilla(d){
   if(R.length>1){
     h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
       <details class="hist"><summary><span class="flecha">▶</span> Ver los ${R.length} reportes</summary><table>
-      <tr><th>Período</th><th>Seguidores</th><th>Inv. seguidores</th><th>Visitas Formación</th><th>Inv. Formación</th></tr>
+      <tr><th>Mes</th><th>Seguidores</th><th>Nuevos</th><th>Costo x seg.</th><th>Inv. seguidores</th><th>Mensajes</th><th>Visitas Formación</th><th>Inv. Formación</th></tr>
       ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
-        <td>${fmt(x.ig_followers_total)}</td><td>${fmt(x.ig_inversion,2)}</td>
-        <td><b>${fmt(x.ftr_visitas)}</b></td><td>${fmt(x.frm_inversion,2)}</td></tr>`}).join('')}
+        <td>${fmt(x.ig_followers_total)}</td><td>${fmt(x.ig_followers_nuevos)}</td><td>${fmt(x.ig_costo_follower,3)}</td><td>${fmt(x.ig_inversion,2)}</td>
+        <td>${fmt(x.frm_mensajes)}</td><td><b>${fmt(x.frm_visitas)}</b></td><td>${fmt(x.frm_inversion,2)}</td></tr>`}).join('')}
       </table></details>`;
   }
   return h;
