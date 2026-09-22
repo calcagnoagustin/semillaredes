@@ -492,11 +492,20 @@ function pintarSemilla(d){
 
   // ===== FORMACION =====
   if(hay('frm_inversion')){
-    h+=`<h2>Formación</h2><p class="sub">Todo lo que empuja la Formación Semilla.</p><div class="tarj">
+    h+=`<h2>Formación</h2><p class="sub">Todo lo que empuja la Formación Semilla, sumando sus campañas.</p><div class="tarj">
       ${card('Invertido en Formación', mon(m.frm_inversion,2), [m.frm_inversion, ma.frm_inversion],2,true)}
+      ${hay('frm_mensajes')?card('Mensajes', fmt(m.frm_mensajes), [m.frm_mensajes, ma.frm_mensajes]):''}
+      ${hay('frm_costo_mensaje')?card('Costo por mensaje', mon(m.frm_costo_mensaje,2), [m.frm_costo_mensaje, ma.frm_costo_mensaje],2,false,true):''}
+      ${hay('frm_visitas')?card('Visitas a la página', fmt(m.frm_visitas), [m.frm_visitas, ma.frm_visitas]):''}
+      ${hay('frm_costo_visita')?card('Costo por visita', mon(m.frm_costo_visita,3), [m.frm_costo_visita, ma.frm_costo_visita],3,false,true):''}
+      ${hay('frm_clics')?card('Clics', fmt(m.frm_clics), [m.frm_clics, ma.frm_clics]):''}
       ${hay('ftr_visitas')?card('Visitas a la página', fmt(m.ftr_visitas), [m.ftr_visitas, ma.ftr_visitas]):''}
       ${hay('ftr_costo_visita')?card('Costo por visita', mon(m.ftr_costo_visita,3), [m.ftr_costo_visita, ma.ftr_costo_visita],3,false,true):''}
     </div>`;
+    if(R.filter(r=>r.metricas.frm_visitas!=null).length>1)
+      h+=grafico('Visitas a la página','Gente que llegó a la página de la Formación cada mes.',R.map(r=>r.metricas.frm_visitas??null),et,'#1A2456');
+    if(R.filter(r=>r.metricas.frm_mensajes!=null).length>1)
+      h+=grafico('Mensajes','Consultas que llegaron por la Formación.',R.map(r=>r.metricas.frm_mensajes??null),et,'#E2767C');
 
     const bloques=[
       {p:'ftr', t:'Tráfico a la página', q:'Gente que llega a la landing de la Formación.',
@@ -530,6 +539,17 @@ function pintarSemilla(d){
       ${card('En Formación',mon(m.frm_inversion,2),[m.frm_inversion,ma.frm_inversion],2)}
       ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.frm_inversion||0),2),null,2,true)}
     </div>`;
+  }
+
+  // presupuesto que esta corriendo hoy
+  if(hay('pres_diario')){
+    const dias=new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate();
+    h+=`<h2>Presupuesto</h2><p class="sub">Lo que hay cargado hoy en las campañas activas.</p><div class="tarj">
+      ${card('Presupuesto diario', mon(m.pres_diario,2), [m.pres_diario, ma.pres_diario],2,true)}
+      ${card('Estimado del mes', mon(Number(m.pres_diario||0)*dias,0), null,0)}
+      ${hay('pres_gastado')?card('Gastado hasta hoy', mon(m.pres_gastado,2), [m.pres_gastado, ma.pres_gastado],2):''}
+    </div>
+    <p class="sub" style="margin-top:9px">El estimado supone que el presupuesto diario se mantiene los ${dias} días del mes.</p>`;
   }
 
   if(R.length>1){
