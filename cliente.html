@@ -652,6 +652,19 @@ function pintarMixto(d){
   h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
   h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
 
+  // campaña de Meta hacia YouTube
+  if(hay('ytad_inversion')){
+    h+=`<h2>Campaña a YouTube</h2><p class="sub">Anuncios en Meta que llevan gente a tu canal.</p><div class="tarj">
+      ${hay('ytad_visitas')?card('Visitas al canal', fmt(m.ytad_visitas), [m.ytad_visitas, ma.ytad_visitas],0,true):''}
+      ${hay('ytad_costo_visita')?card('Costo por visita', mon(m.ytad_costo_visita,2), [m.ytad_costo_visita, ma.ytad_costo_visita],2,false,true):''}
+      ${card('Invertido', mon(m.ytad_inversion,2), [m.ytad_inversion, ma.ytad_inversion],2)}
+      ${hay('ytad_alcance')?card('Personas alcanzadas', fmt(m.ytad_alcance), [m.ytad_alcance, ma.ytad_alcance]):''}
+      ${hay('ytad_reproducciones')?card('Reproducciones del video', fmt(m.ytad_reproducciones), [m.ytad_reproducciones, ma.ytad_reproducciones]):''}
+    </div>`;
+    if(R.filter(r=>r.metricas.ytad_visitas!=null).length>1)
+      h+=grafico('Visitas al canal','Gente que llegó a YouTube desde los anuncios.',R.map(r=>r.metricas.ytad_visitas??null),et,'#7A1F3A');
+  }
+
   const hayConsultas = R.some(r=>r.metricas.msj_mensajes!=null);
   if(hayConsultas){
     h+=`<h2>${m.msj_nombre||'Consultas'}</h2><p class="sub">${m.msj_nombre?'Todo lo que trajo esta campaña.':'Gente que escribió preguntando por lo que ofrecés.'}</p><div class="tarj">
