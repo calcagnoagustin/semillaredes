@@ -1069,7 +1069,7 @@ function pintarResto(d,h){
 
   const RC=d.recomendaciones&&d.recomendaciones.recomendaciones;
   if(RC&&RC.length){
-    h+=`<h2>Recomendaciones de la IA</h2><p class="sub">Análisis de tu proyecto cotejado con nuestra base de proyectos y con el Método Semilla.</p>
+    h+=`<h2>Consejos de la Inteligencia colectiva</h2><p class="sub">Surgen de la experiencia de otros artistas de la comunidad y los procesa una inteligencia artificial entrenada en el Método Semilla. Todos los domingos el bot te manda nuevas recomendaciones.</p>
       <div class="reco">
         <div class="cab"><h3>Tres cosas para arrancar</h3>
         ${d.recomendaciones_fecha?`<span class="cuando">${new Date(d.recomendaciones_fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</span>`:''}</div>
@@ -1162,7 +1162,7 @@ function armarIndice(){
   app.querySelectorAll('h2 .volver').forEach(x=>x.remove());
   const hs=[...app.querySelectorAll('h2')];
   if(hs.length<3) return;
-  const corto={'Recomendaciones de la IA':'Recomendaciones','Tarea para el hogar':'Tareas','Tus activos':'Activos','Tus notas':'Notas'};
+  const corto={'Consejos de la Inteligencia colectiva':'Consejos','Tarea para el hogar':'Tareas','Tus activos':'Activos','Tus notas':'Notas'};
   const nav=document.createElement('nav'); nav.className='indice'; nav.id='indice'; nav.setAttribute('aria-label','Secciones');
   nav.innerHTML='<div class="fila">'+hs.map((h,i)=>{
     const t=h.textContent.trim(); h.id='sec-'+i;
