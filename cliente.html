@@ -889,6 +889,16 @@ function pintar(d){
   h+=grafico('Oyentes mensuales','Cuánta gente distinta te escucha por mes. Es el número que mira la industria.',R.map(r=>r.metricas.sp_monthly),et,'#87863A');
   }
 
+  // campaña de Meta que lleva gente a Spotify
+  if(hay('spad_inversion')){
+    h+=`<h2>Campaña a Spotify</h2><p class="sub">Anuncios en Meta que llevan gente a escucharte.</p><div class="tarj">
+      ${hay('spad_visitas')?card('Llegaron a Spotify', fmt(m.spad_visitas), [m.spad_visitas, ma.spad_visitas],0,true):''}
+      ${hay('spad_costo_visita')?card('Costo por visita', mon(m.spad_costo_visita,2), [m.spad_costo_visita, ma.spad_costo_visita],2,false,true):''}
+      ${card('Invertido', mon(m.spad_inversion,2), [m.spad_inversion, ma.spad_inversion],2)}
+      ${hay('spad_alcance')?card('Personas alcanzadas', fmt(m.spad_alcance), [m.spad_alcance, ma.spad_alcance]):''}
+    </div>`;
+  }
+
   if(hay('yt_views')||hay('yt_subs')||hay('yt_views_ads')){
     h+=`<h2>YouTube</h2><p class="sub">Tu canal: gente que llegó y se quedó.</p><div class="tarj">
     ${card('Suscriptores', fmt(m.yt_subs), [m.yt_subs, ma.yt_subs])}
