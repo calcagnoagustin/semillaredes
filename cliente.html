@@ -1160,8 +1160,9 @@ function armarIndice(){
     window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
   });
   const marcar=()=>{
-    const y=window.scrollY+120; let act=0;
-    hs.forEach((h,i)=>{ if(h.offsetTop<=y) act=i; });
+    // posicion real de cada titulo respecto de la pantalla (offsetTop es relativo al contenedor)
+    const limite=nav.offsetHeight+40; let act=0;
+    hs.forEach((h,i)=>{ if(h.getBoundingClientRect().top<=limite) act=i; });
     links.forEach((a,i)=>a.classList.toggle('activo',i===act));
     nav.classList.toggle('pegado', nav.getBoundingClientRect().top<=2);
     // centro el boton activo sin animacion: un scroll suave aca cortaria el de la ventana
