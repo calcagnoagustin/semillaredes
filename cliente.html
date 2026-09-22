@@ -75,6 +75,21 @@ th:first-child,td:first-child{text-align:left}
 th{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--oliva);background:#FBF8F2}
 .err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:26px}
 .oculto{display:none}
+/* indice de secciones */
+.indice{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;margin:0 -20px 18px;padding:10px 20px;
+  background:rgba(242,237,228,.86);-webkit-backdrop-filter:saturate(1.4) blur(10px);backdrop-filter:saturate(1.4) blur(10px);
+  border-bottom:1px solid transparent;transition:border-color .2s}
+.indice.pegado{border-bottom-color:var(--linea)}
+.indice .fila{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.indice .fila::-webkit-scrollbar{display:none}
+.indice a{flex:0 0 auto;font-size:12.5px;font-weight:600;letter-spacing:.2px;color:var(--navy);text-decoration:none;
+  background:#fff;border:1px solid var(--linea);border-radius:99px;padding:6px 13px;white-space:nowrap;transition:all .15s}
+.indice a:hover{border-color:var(--oliva);color:var(--oliva)}
+.indice a.activo{background:var(--navy);border-color:var(--navy);color:var(--crema)}
+h2[id]{scroll-margin-top:calc(64px + env(safe-area-inset-top,0px))}
+body.sadhana .indice{background:rgba(244,247,249,.88)}
+body.sadhana .indice a.activo{background:#518BAF;border-color:#518BAF;color:#fff}
+body.sadhana .indice a:hover{border-color:#F15C32;color:#F15C32}
 .avisoActualiza{background:#fff;border:1px solid var(--linea);border-left:5px solid var(--oliva);
   border-radius:12px;padding:16px 18px;margin:14px 0 26px}
 .avisoActualiza .tit{font-size:16.5px;font-weight:700;color:var(--navy);line-height:1.35;margin-bottom:5px}
@@ -1051,6 +1066,7 @@ function pintarResto(d,h){
   h+=`<p class="pie">Cualquier duda sobre estos números, escribile a Agus.</p>`;
   // las alertas se ven solo en el panel de Agus, no en la pagina del cliente
   $('app').innerHTML=h;
+  armarIndice();
   $('cargando').classList.add('oculto'); $('app').classList.remove('oculto');
 
   const ciclo={pendiente:'en_curso',en_curso:'hecha',hecha:'pendiente'};
@@ -1121,6 +1137,35 @@ rpc('sub_get',{p_slug:slug,p_k:tok}).then(d=>{
   if(d.error){ $('cargando').classList.add('oculto'); $('error').classList.remove('oculto'); return; }
   pintar(d);
 }).catch(()=>{ $('cargando').classList.add('oculto'); $('error').classList.remove('oculto'); });
+
+function armarIndice(){
+  const app=$('app'); if(!app) return;
+  const viejo=app.querySelector('.indice'); if(viejo) viejo.remove();
+  const hs=[...app.querySelectorAll('h2')];
+  if(hs.length<3) return;
+  const corto={'Recomendaciones de la IA':'Recomendaciones','Tarea para el hogar':'Tareas','Tus activos':'Activos','Tus notas':'Notas'};
+  hs.forEach((h,i)=>{ h.id='sec-'+i; });
+  const nav=document.createElement('nav'); nav.className='indice'; nav.setAttribute('aria-label','Secciones');
+  nav.innerHTML='<div class="fila">'+hs.map((h,i)=>{
+    const t=h.textContent.trim(); return `<a href="#sec-${i}" data-i="${i}">${corto[t]||t}</a>`;
+  }).join('')+'</div>';
+  const primero=app.querySelector('.periodo')||app.querySelector('h1');
+  const ancla=primero && primero.nextElementSibling && primero.nextElementSibling.classList.contains('avisoActualiza') ? primero.nextElementSibling : primero;
+  if(ancla) ancla.after(nav); else app.prepend(nav);
+  const links=[...nav.querySelectorAll('a')];
+  links.forEach(a=>a.onclick=e=>{ e.preventDefault(); hs[+a.dataset.i].scrollIntoView({behavior:'smooth',block:'start'}); });
+  const marcar=()=>{
+    const y=window.scrollY+120; let act=0;
+    hs.forEach((h,i)=>{ if(h.offsetTop<=y) act=i; });
+    links.forEach((a,i)=>a.classList.toggle('activo',i===act));
+    nav.classList.toggle('pegado', nav.getBoundingClientRect().top<=2);
+    const a=links[act]; if(a){ const f=nav.firstChild; const r=a.offsetLeft-f.clientWidth/2+a.clientWidth/2; if(Math.abs(f.scrollLeft-r)>40) f.scrollTo({left:r,behavior:'smooth'}); }
+  };
+  window.removeEventListener('scroll',window.__indiceScroll||(()=>{}));
+  window.__indiceScroll=()=>requestAnimationFrame(marcar);
+  window.addEventListener('scroll',window.__indiceScroll,{passive:true});
+  marcar();
+}
 </script>
 </body>
 </html>
