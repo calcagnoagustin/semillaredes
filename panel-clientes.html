@@ -83,6 +83,7 @@ const rpc=(fn,a)=>fetch(`${API}/rest/v1/rpc/${fn}`,{method:'POST',headers:{apike
 let admin='', clientes=[], sel=null;
 
 const CAMPOS_MUSICA={
+ 'Campaña a Spotify':[['spad_visitas','Llegaron a Spotify'],['spad_costo_visita','Costo x visita'],['spad_inversion','Invertido'],['spad_alcance','Alcance']],
  'Instagram':[['ig_followers_total','Seguidores'],['ig_followers_nuevos','Nuevos'],['ig_visitas','Visitas'],['ig_inversion','Inversión USD'],['ig_inversion_diaria','Inv. diaria'],['ig_costo_follower','Costo x seguidor']],
  'Spotify':[['sp_monthly','Oyentes mensuales'],['sp_listeners','Listeners'],['sp_streams','Streams'],['sp_stream_listener','Streams x listener'],['sp_guardados','Guardados'],['sp_playlists','Playlists'],['sp_followers','Seguidores'],['sp_meta_visitas','Visitas desde Meta'],['sp_inversion','Inversión USD'],['sp_costo_stream','Costo x stream']],
  'YouTube (canal)':[['yt_subs','Suscriptores'],['yt_subs_nuevos','Nuevos'],['yt_views','Views del canal'],['yt_horas','Horas vistas']],
