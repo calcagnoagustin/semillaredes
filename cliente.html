@@ -486,6 +486,10 @@ function pintarSemilla(d){
       ${card('Invertido', mon(m.ig_inversion,2), [m.ig_inversion, ma.ig_inversion],2)}
       ${hay('ig_alcance')?card('Personas alcanzadas', fmt(m.ig_alcance), [m.ig_alcance, ma.ig_alcance]):''}
     </div>`;
+    {
+      const DI=(u&&u.metricas&&u.metricas.dias)||[];
+      if(DI.length>1) h+=graficoDia(DI,'ig','Inversión día por día','Lo que se gastó cada día en la campaña de seguidores.','#87863A',true);
+    }
     if(R.filter(r=>r.metricas.ig_costo_follower!=null).length>1)
       h+=grafico('Costo por seguidor','Cuánto costó cada seguidor nuevo mes a mes. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower??null),et,'#1A2456',true);
     if(R.filter(r=>r.metricas.ig_inversion!=null).length>1)
@@ -504,8 +508,14 @@ function pintarSemilla(d){
       ${hay('ftr_visitas')?card('Visitas a la página', fmt(m.ftr_visitas), [m.ftr_visitas, ma.ftr_visitas]):''}
       ${hay('ftr_costo_visita')?card('Costo por visita', mon(m.ftr_costo_visita,3), [m.ftr_costo_visita, ma.ftr_costo_visita],3,false,true):''}
     </div>`;
+    const DIAS=(u&&u.metricas&&u.metricas.dias)||[];
+    if(DIAS.length>1){
+      h+=graficoDia(DIAS,'frm','Inversión día por día','Lo que se gastó cada día en la Formación.','#7A1F3A',true);
+      h+=graficoDia(DIAS,'vis','Visitas día por día','Cuánta gente llegó a la página cada día.','#1A2456');
+      h+=graficoDia(DIAS,'msj','Mensajes día por día','Consultas que entraron cada día.','#E2767C');
+    }
     if(R.filter(r=>r.metricas.frm_visitas!=null).length>1)
-      h+=grafico('Visitas a la página','Gente que llegó a la página de la Formación cada mes.',R.map(r=>r.metricas.frm_visitas??null),et,'#1A2456');
+      h+=grafico('Visitas a la página','Gente que llegó a la página de la Formación mes a mes.',R.map(r=>r.metricas.frm_visitas??null),et,'#1A2456');
     if(R.filter(r=>r.metricas.frm_mensajes!=null).length>1)
       h+=grafico('Mensajes','Consultas que llegaron por la Formación.',R.map(r=>r.metricas.frm_mensajes??null),et,'#E2767C');
 
@@ -1244,6 +1254,31 @@ document.addEventListener('click', async e=>{
   if(r&&r.ok) rpc('sub_get',{p_slug:slug,p_k:tok}).then(pintar);
   else { b.disabled=false; b.textContent='Guardar'; alert('No se pudo guardar'); }
 });
+
+function graficoDia(dias, campo, titulo, leyenda, color, esPlata){
+  const vals=dias.map(d=>Number(d[campo]||0));
+  if(vals.filter(v=>v>0).length<2) return '';
+  const W=560,H=180,P=32;
+  const max=Math.max(...vals), min=0, rango=(max-min)||1;
+  const X=i=>P+(i*(W-P*2)/Math.max(1,vals.length-1));
+  const Y=v=>H-P-((v-min)/rango)*(H-P*2);
+  let d='', area='';
+  vals.forEach((v,i)=>{ d+=(d?' L ':'M ')+X(i)+' '+Y(v); });
+  area=`${d} L ${X(vals.length-1)} ${H-P} L ${X(0)} ${H-P} Z`;
+  const pts=vals.map((v,i)=>`<circle cx="${X(i)}" cy="${Y(v)}" r="2.5" fill="${color}"/>`).join('');
+  // etiqueto el maximo y el ultimo
+  const iMax=vals.indexOf(max), iUlt=vals.length-1;
+  const et=[iMax,iUlt].filter((v,i,a)=>a.indexOf(v)===i).map(i=>
+    `<text x="${X(i)}" y="${Y(vals[i])-12}" font-size="15" font-weight="700" fill="${color}" text-anchor="middle">${esPlata?fmt(vals[i],2):fmt(vals[i])}</text>`).join('');
+  // fechas: primera, mitad y ultima
+  const dias_et=[0,Math.floor(vals.length/2),vals.length-1].filter((v,i,a)=>a.indexOf(v)===i)
+    .map(i=>`<text x="${X(i)}" y="${H-8}" font-size="13" fill="#8A8697" text-anchor="${i===0?'start':(i===vals.length-1?'end':'middle')}">${dias[i].f.slice(8)}/${dias[i].f.slice(5,7)}</text>`).join('');
+  return `<div class="graf"><h3>${titulo}</h3><p class="leyenda">${leyenda}</p>
+    <svg class="linea" viewBox="0 0 ${W} ${H}">
+      <path d="${area}" fill="${color}" opacity=".08"/>
+      <path d="${d}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>
+      ${pts}${et}${dias_et}</svg></div>`;
+}
 </script>
 </body>
 </html>
