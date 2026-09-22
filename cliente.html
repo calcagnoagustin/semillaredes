@@ -972,7 +972,7 @@ function pintarResto(d,h){
 
   const T=d.tareas||[];
   if(T.length){
-    h+=`<h2>En qué estamos</h2><p class="sub">Lo que ya está hecho y lo que sigue.</p><div class="tar">
+    h+=`<h2>Tarea para el hogar</h2><p class="sub">Lo que ya está hecho y lo que sigue.</p><div class="tar">
       ${T.map(t=>`<div class="it ${t.estado}"><span class="mark ${t.estado}" data-tid="${t.id}" data-est="${t.estado}"></span><span class="tx" data-tid2="${t.id}" data-est2="${t.estado}"><span class="tt">${t.titulo}</span>${t.detalle?`<span class="de">${t.detalle}</span>`:''}</span><button class="x" data-delt="${t.id}" title="Borrar">×</button></div>`).join('')}
     </div>
     <div class="agregarT"><input id="t_nueva" placeholder="Agregar algo que quieras hacer o pedirnos"><button id="t_add">Agregar</button></div>
