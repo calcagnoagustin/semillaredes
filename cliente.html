@@ -1066,8 +1066,8 @@ function pintarResto(d,h){
   h+=`<p class="pie">Cualquier duda sobre estos números, escribile a Agus.</p>`;
   // las alertas se ven solo en el panel de Agus, no en la pagina del cliente
   $('app').innerHTML=h;
-  armarIndice();
   $('cargando').classList.add('oculto'); $('app').classList.remove('oculto');
+  armarIndice();   // despues de mostrar la pagina: oculta, todo mide cero
 
   const ciclo={pendiente:'en_curso',en_curso:'hecha',hecha:'pendiente'};
   const cambiar=async(id,est,fila)=>{
@@ -1169,7 +1169,8 @@ function armarIndice(){
     const a=links[act]; if(a){ const f=nav.firstChild; const r=a.offsetLeft-f.clientWidth/2+a.clientWidth/2; if(Math.abs(f.scrollLeft-r)>40) f.scrollLeft=r; }
   };
   window.removeEventListener('scroll',window.__indiceScroll||(()=>{}));
-  window.__indiceScroll=()=>requestAnimationFrame(marcar);
+  let espera=null;
+  window.__indiceScroll=()=>{ if(espera) return; espera=setTimeout(()=>{ espera=null; marcar(); },60); };
   window.addEventListener('scroll',window.__indiceScroll,{passive:true});
   marcar();
 }
