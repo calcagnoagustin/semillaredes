@@ -1153,13 +1153,19 @@ function armarIndice(){
   const ancla=primero && primero.nextElementSibling && primero.nextElementSibling.classList.contains('avisoActualiza') ? primero.nextElementSibling : primero;
   if(ancla) ancla.after(nav); else app.prepend(nav);
   const links=[...nav.querySelectorAll('a')];
-  links.forEach(a=>a.onclick=e=>{ e.preventDefault(); hs[+a.dataset.i].scrollIntoView({behavior:'smooth',block:'start'}); });
+  links.forEach(a=>a.onclick=e=>{
+    e.preventDefault();
+    const alto=nav.offsetHeight+10;
+    const y=hs[+a.dataset.i].getBoundingClientRect().top+window.scrollY-alto;
+    window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
+  });
   const marcar=()=>{
     const y=window.scrollY+120; let act=0;
     hs.forEach((h,i)=>{ if(h.offsetTop<=y) act=i; });
     links.forEach((a,i)=>a.classList.toggle('activo',i===act));
     nav.classList.toggle('pegado', nav.getBoundingClientRect().top<=2);
-    const a=links[act]; if(a){ const f=nav.firstChild; const r=a.offsetLeft-f.clientWidth/2+a.clientWidth/2; if(Math.abs(f.scrollLeft-r)>40) f.scrollTo({left:r,behavior:'smooth'}); }
+    // centro el boton activo sin animacion: un scroll suave aca cortaria el de la ventana
+    const a=links[act]; if(a){ const f=nav.firstChild; const r=a.offsetLeft-f.clientWidth/2+a.clientWidth/2; if(Math.abs(f.scrollLeft-r)>40) f.scrollLeft=r; }
   };
   window.removeEventListener('scroll',window.__indiceScroll||(()=>{}));
   window.__indiceScroll=()=>requestAnimationFrame(marcar);
