@@ -75,6 +75,13 @@ th:first-child,td:first-child{text-align:left}
 th{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--oliva);background:#FBF8F2}
 .err{background:#FDF0F0;border:1px solid var(--rosa);color:var(--vino);border-radius:12px;padding:16px;margin-top:26px}
 .oculto{display:none}
+.ventaBox{border-left:4px solid var(--oliva)}
+.ventaBox .formv{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:12px;padding-top:12px;border-top:1px dashed var(--linea)}
+.ventaBox .formv label{font-size:10.5px;letter-spacing:1.3px;text-transform:uppercase;color:var(--oliva);font-weight:700;display:block;margin-bottom:4px}
+.ventaBox .formv input{border:1px solid var(--linea);border-radius:9px;padding:9px 11px;font:inherit;font-size:14.5px;width:150px;background:#FDFCF9}
+.ventaBox .formv button{border:0;background:var(--navy);color:var(--crema);font:inherit;font-weight:600;font-size:14px;border-radius:9px;padding:10px 16px;cursor:pointer}
+.ventaBox .roas.bien{color:var(--oliva)}.ventaBox .roas.mal{color:var(--vino)}
+.ventaBox .act{font-size:12px;color:var(--mute);margin-top:8px}
 /* indice de secciones: todo visible de una, en varias lineas */
 .indice{margin:4px 0 22px}
 .indice .fila{display:flex;flex-wrap:wrap;gap:6px}
@@ -694,6 +701,7 @@ function pintarMixto(d){
       ${card('Invertido', mon(m.msj_inversion,2), [m.msj_inversion, ma.msj_inversion],2)}
       ${hay('msj_seguidores')?card('Seguidores que trajo', fmt(m.msj_seguidores), [m.msj_seguidores, ma.msj_seguidores]):''}
     </div>`;
+    h+=bloqueVentas(d, m.msj_nombre||'Campaña de mensajes', R.filter(r=>(r.metricas.msj_nombre||'Campaña de mensajes')===(m.msj_nombre||'Campaña de mensajes')).reduce((t,r)=>t+Number(r.metricas.msj_inversion||0),0));
     h+=grafico('Mensajes','Cuánta gente escribió en cada período.',R.map(r=>r.metricas.msj_mensajes),et,'#87863A');
     h+=grafico('Costo por mensaje','Cuánto cuesta cada persona que escribe. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.msj_costo_mensaje),et,'#E2767C',true);
     if(hay('msj_seguidores'))
@@ -1172,6 +1180,44 @@ function armarIndice(){
     h.appendChild(v);
   });
 }
+
+function bloqueVentas(d, campania, invTotal){
+  const v=(d.cliente.ventas||{})[campania];
+  const ing=v?Number(v.ingreso):null, nv=v?Number(v.ventas||0):null;
+  const roas=(ing!=null&&invTotal>0)?ing/invTotal:null;
+  const cpv=(nv&&invTotal>0)?invTotal/nv:null;
+  const nums = v ? `<div class="nums">
+      <div class="n"><div class="l">Facturado</div><div class="v">${fmt(ing,0)}</div><div class="d">${MON}</div></div>
+      <div class="n"><div class="l">Ventas</div><div class="v">${fmt(nv,0)}</div><div class="d">&nbsp;</div></div>
+      <div class="n"><div class="l">ROAS</div><div class="v roas ${roas>=1?'bien':'mal'}">${roas!=null?fmt(roas,2):'—'}</div><div class="d">por cada peso invertido</div></div>
+      ${cpv?`<div class="n"><div class="l">Costo por venta</div><div class="v">${fmt(cpv,0)}</div><div class="d">${MON}</div></div>`:''}
+      <div class="n"><div class="l">Invertido total</div><div class="v">${fmt(invTotal,0)}</div><div class="d">${MON}</div></div>
+    </div>` : '';
+  const fecha_act = v&&v.actualizado ? new Date(v.actualizado).toLocaleDateString('es-AR',{day:'numeric',month:'long'}) : '';
+  return `<div class="camp ventaBox"><h3>Lo que facturó la campaña</h3>
+    <p class="que">Cargá cuánto llevás vendido con esta campaña y el ROAS se calcula solo.</p>
+    ${nums}
+    ${fecha_act?`<div class="act">Última carga: ${fecha_act}</div>`:''}
+    <div class="formv">
+      <div><label>Facturado en ${MON}</label><input type="text" inputmode="decimal" data-vi="${campania}" placeholder="${ing!=null?fmt(ing,0):'Ej: 250.000'}"></div>
+      <div><label>Ventas</label><input type="text" inputmode="numeric" data-vn="${campania}" placeholder="${nv!=null?nv:'Ej: 3'}" style="width:90px"></div>
+      <button data-vguardar="${campania}">Guardar</button>
+    </div>
+  </div>`;
+}
+document.addEventListener('click', async e=>{
+  const b=e.target.closest('[data-vguardar]'); if(!b) return;
+  const camp=b.dataset.vguardar;
+  const limpia=x=>{ x=(x||'').trim().replace(/[^\d.,]/g,''); if(!x) return null;
+    if(x.includes(',')) x=x.replace(/\./g,'').replace(',','.'); else x=x.replace(/\./g,''); const n=parseFloat(x); return isNaN(n)?null:n; };
+  const ing=limpia(document.querySelector(`[data-vi="${camp}"]`).value);
+  const nv=limpia(document.querySelector(`[data-vn="${camp}"]`).value);
+  if(ing==null){ alert('Poné cuánto facturaste'); return; }
+  b.disabled=true; b.textContent='Guardando…';
+  const r=await rpc('sub_venta_cliente',{p_slug:slug,p_k:tok,p_campania:camp,p_ingreso:ing,p_ventas:nv==null?0:Math.round(nv)});
+  if(r&&r.ok) rpc('sub_get',{p_slug:slug,p_k:tok}).then(pintar);
+  else { b.disabled=false; b.textContent='Guardar'; alert('No se pudo guardar'); }
+});
 </script>
 </body>
 </html>
