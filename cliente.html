@@ -261,8 +261,8 @@ function linea(datos, etiquetas, color, invertido){
   const y=v=>H-P-((v-min)/rango)*(H-P*2);
   let d='',pts='';
   datos.forEach((v,i)=>{ if(v==null)return; d+=(d?' L ':'M ')+x(i)+' '+y(v); pts+=`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="${color}"/>`; });
-  const labs=etiquetas.map((e,i)=>`<text x="${x(i)}" y="${H-6}" font-size="10" fill="#8A8697" text-anchor="middle">${e}</text>`).join('');
-  const valsTxt=datos.map((v,i)=>v==null?'':`<text x="${x(i)}" y="${y(v)-11}" font-size="11" font-weight="700" fill="${color}" text-anchor="middle">${v}</text>`).join('');
+  const labs=etiquetas.map((e,i)=>`<text x="${x(i)}" y="${H-6}" font-size="13" fill="#8A8697" text-anchor="middle">${e}</text>`).join('');
+  const valsTxt=datos.map((v,i)=>v==null?'':`<text x="${x(i)}" y="${y(v)-13}" font-size="15" font-weight="700" fill="${color}" text-anchor="middle">${v}</text>`).join('');
   return `<svg class="linea" viewBox="0 0 ${W} ${H}"><path d="${d}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>${pts}${valsTxt}${labs}</svg>`;
 }
 
@@ -293,9 +293,9 @@ function multi(R){
     cuerpo+=`<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2.5" stroke-linejoin="round"/>`;
     s.idx.forEach((v,i)=>{ if(v!=null) cuerpo+=`<circle cx="${x(i)}" cy="${y(v)}" r="3.5" fill="${s.color}"/>`; });
     const ultimo=[...s.idx].reverse().find(v=>v!=null);
-    cuerpo+=`<text x="${W-P+5}" y="${y(ultimo)+4}" font-size="11" font-weight="700" fill="${s.color}">${ultimo}</text>`;
+    cuerpo+=`<text x="${W-P+5}" y="${y(ultimo)+4}" font-size="15" font-weight="700" fill="${s.color}">${ultimo}</text>`;
   });
-  cuerpo+=R.map((r,i)=>`<text x="${x(i)}" y="${H-8}" font-size="10" fill="#8A8697" text-anchor="middle">${fecha(r.hasta)}</text>`).join('');
+  cuerpo+=R.map((r,i)=>`<text x="${x(i)}" y="${H-8}" font-size="13" fill="#8A8697" text-anchor="middle">${fecha(r.hasta)}</text>`).join('');
   const ley=series.map(s=>`<span style="display:inline-flex;align-items:center;gap:6px;margin-right:14px"><span style="width:10px;height:10px;border-radius:50%;background:${s.color};display:inline-block"></span>${s.lab} <b style="color:${s.color}">${s.vals.filter(v=>v!=null).slice(-1)[0]}</b></span>`).join('');
   return `<div class="graf"><h3>Curva de crecimiento</h3>
     <p class="leyenda">Las tres plataformas arrancan en 100 en el primer período, así se ve cuál crece más rápido sin que los números grandes tapen a los chicos.</p>
@@ -335,7 +335,7 @@ function multiCamp(R,et){
     cuerpo+=`<path d="${d2}" fill="none" stroke="${s.color}" stroke-width="2.5" stroke-linejoin="round"/>`;
     s.vals.forEach((v,i)=>{ if(v!=null) cuerpo+=`<circle cx="${x(i)}" cy="${y(v)}" r="3.5" fill="${s.color}"/><text x="${x(i)}" y="${y(v)-10}" font-size="10.5" font-weight="700" fill="${s.color}" text-anchor="middle">${v}</text>`; });
   });
-  cuerpo+=R.map((r,i)=>`<text x="${x(i)}" y="${H-8}" font-size="10" fill="#8A8697" text-anchor="middle">${et[i]}</text>`).join('');
+  cuerpo+=R.map((r,i)=>`<text x="${x(i)}" y="${H-8}" font-size="13" fill="#8A8697" text-anchor="middle">${et[i]}</text>`).join('');
   const ley=series.map(s=>`<span style="display:inline-flex;align-items:center;gap:6px;margin-right:16px"><span style="width:10px;height:10px;border-radius:50%;background:${s.color};display:inline-block"></span>${s.lab}</span>`).join('');
   return `<div class="graf"><h3>Mensajes por campaña</h3>
     <p class="leyenda">Cuánta gente escribió para reservar en cada campaña.</p>
@@ -417,7 +417,7 @@ function pintarTrafico(d){
           cuerpo+=`<path d="${dd}" fill="none" stroke="${z.color}" stroke-width="2.5" stroke-linejoin="round"/>`;
           z.vals.forEach((v,i)=>{ if(v!=null) cuerpo+=`<circle cx="${X(i)}" cy="${Y(v)}" r="3.5" fill="${z.color}"/>`; });
         });
-        cuerpo+=R.map((r,i)=>`<text x="${X(i)}" y="${H-8}" font-size="10" fill="#6E8598" text-anchor="middle">${et[i]}</text>`).join('');
+        cuerpo+=R.map((r,i)=>`<text x="${X(i)}" y="${H-8}" font-size="13" fill="#6E8598" text-anchor="middle">${et[i]}</text>`).join('');
         const ley=series.map(z=>`<span style="display:inline-flex;align-items:center;gap:6px;margin-right:14px"><span style="width:10px;height:10px;border-radius:50%;background:${z.color};display:inline-block"></span>Público ${z.lab}</span>`).join('');
         h+=`<div class="graf"><h3>Visitas por público</h3><p class="leyenda">Los tres públicos comparados.</p>
           <div style="font-size:12.5px;margin-bottom:8px">${ley}</div>
