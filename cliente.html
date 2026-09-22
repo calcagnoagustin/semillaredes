@@ -878,7 +878,7 @@ function pintar(d){
         : (d.cliente.tipo==='steam') ? pintarSteam(d)
         : `<h1>${d.cliente.nombre}</h1>
   <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
-  if(['mensajes','mixto','ventas','steam'].includes(d.cliente.tipo)){ return pintarResto(d,h); }
+  if(['mensajes','mixto','ventas','steam','trafico','semilla'].includes(d.cliente.tipo)){ return pintarResto(d,h); }
 
   h+=`<h2>Instagram</h2><p class="sub">Crecimiento y costo de la pauta.</p><div class="tarj">
     ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
