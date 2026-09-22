@@ -881,6 +881,7 @@ function pintar(d){
     h+=`<h2>Spotify</h2><p class="sub">Escuchas, oyentes y playlists.</p><div class="tarj">
     ${card('Oyentes mensuales', fmt(m.sp_monthly), [m.sp_monthly, ma.sp_monthly])}
     ${card('Streams', fmt(m.sp_streams), [m.sp_streams, ma.sp_streams])}
+    ${hay('sp_stream_listener')?card('Streams por oyente', fmt(m.sp_stream_listener,1), [m.sp_stream_listener, ma.sp_stream_listener],1):''}
     ${card('Seguidores', fmt(m.sp_followers), [m.sp_followers, ma.sp_followers])}
     ${card('Guardados', fmt(m.sp_guardados), [m.sp_guardados, ma.sp_guardados])}
     ${card('Playlists', fmt(m.sp_playlists), [m.sp_playlists, ma.sp_playlists])}
