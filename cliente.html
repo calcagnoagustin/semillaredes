@@ -557,7 +557,19 @@ function pintarVentas(d){
   let h=`<h1>${d.cliente.nombre}</h1>
     <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
 
-  // --- VENTAS primero: es el corazon de este tipo de cliente ---
+  // --- Seguidores primero (pedido de Agus) ---
+  if(hay('ig_followers_total')){
+    h+=`<h2>Instagram</h2><p class="sub">Crecimiento de la cuenta.</p><div class="tarj">
+      ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
+      ${card('Nuevos en el período', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos])}
+      ${card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas])}
+      ${card('Costo por seguidor', mon(m.ig_costo_follower,3), [m.ig_costo_follower, ma.ig_costo_follower],3,true,true)}
+    </div>`;
+    h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
+    h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
+  }
+
+  // --- despues, las ventas ---
   h+=`<h2>Ventas</h2><p class="sub">Lo que generó la campaña en este período.</p><div class="tarj">
     ${card('Ventas', fmt(m.vta_ventas), [m.vta_ventas, ma.vta_ventas],0,true)}
     ${hay('vta_ingreso')?card('Facturación', mon(m.vta_ingreso,0), [m.vta_ingreso, ma.vta_ingreso],0):''}
@@ -572,6 +584,8 @@ function pintarVentas(d){
     h+=`<p class="sub" style="margin-top:9px">De las ${fmt(m.vta_ventas)} ventas, ${fmt(m.vta_atribuidas)} se atribuyen al pixel.</p>`;
   if(hay('vta_roas'))
     h+=`<div class="graf"><h3>Qué es el ROAS</h3><p class="leyenda">Por cada dólar puesto en publicidad, cuántos volvieron en ventas. Un ROAS de 5 significa que cada dólar trajo cinco.</p></div>`;
+
+  h+=bloqueVentas(d, m.vta_nombre||'Campaña de venta', R.reduce((t,r)=>t+Number(r.metricas.vta_inversion||0),0));
 
   if(R.filter(r=>r.metricas.vta_ventas!=null).length>1){
     h+=grafico('Ventas','Cuántas ventas trajo la campaña en cada período.',R.map(r=>r.metricas.vta_ventas),et,'#7A1F3A');
@@ -599,18 +613,6 @@ function pintarVentas(d){
     </div>`;
     if(R.filter(r=>r.metricas.vta_visitas!=null).length>1)
       h+=grafico('Visitas a la página','Cuánta gente llegó a la página de venta.',R.map(r=>r.metricas.vta_visitas),et,'#E2767C');
-  }
-
-  // --- Instagram solo si tiene datos ---
-  if(hay('ig_followers_total')){
-    h+=`<h2>Instagram</h2><p class="sub">Crecimiento de la cuenta.</p><div class="tarj">
-      ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
-      ${card('Nuevos en el período', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos])}
-      ${card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas])}
-      ${card('Costo por seguidor', mon(m.ig_costo_follower,3), [m.ig_costo_follower, ma.ig_costo_follower],3,true,true)}
-    </div>`;
-    h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
-    h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
   }
 
   // --- inversion, solo si hay mas de una fuente ---
