@@ -309,6 +309,12 @@ function grafico(titulo, leyenda, datos, etiquetas, color, invertido){
     ${svg||`<div class="aviso">Con un solo período cargado todavía no hay línea de tendencia. A partir del segundo reporte vas a ver cómo evoluciona.</div>`}</div>`;
 }
 
+// tasa de conversion visita -> seguidor, siempre con nuevos y visitas del mismo reporte
+const convIG=(R)=>{ const L=(R||[]).filter(r=>Number(r.metricas.ig_visitas)>0&&r.metricas.ig_followers_nuevos!=null);
+  if(!L.length) return '';
+  const f=r=>Number(r.metricas.ig_followers_nuevos)/Number(r.metricas.ig_visitas)*100;
+  const c=f(L[L.length-1]), p=L.length>1?f(L[L.length-2]):null;
+  return card('Conversión de visitas', fmt(c,1)+'%', [c,p],1); };
 const card=(lab,val,ant,dec,dest,inv)=>`<div class="t ${dest?'destacada':''}"><div class="lab">${lab}</div><div class="val">${val}</div>${delta(ant?.[0],ant?.[1],inv)}</div>`;
 
 const CAMPS=[
@@ -432,6 +438,7 @@ function pintarTrafico(d){
       ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
       ${card('Nuevos en el período', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos])}
       ${hay('ig_visitas')?card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas]):''}
+      ${convIG(R)}
       ${hay('ig_costo_follower')?card('Costo por seguidor', mon(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,true,true):''}
       ${hay('ig_inversion')?card('Invertido', mon(m.ig_inversion,2), [m.ig_inversion, ma.ig_inversion],2):''}
     </div>`;
@@ -596,6 +603,7 @@ function pintarVentas(d){
       ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
       ${card('Nuevos en el período', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos])}
       ${card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas])}
+      ${convIG(R)}
       ${card('Costo por seguidor', mon(m.ig_costo_follower,3), [m.ig_costo_follower, ma.ig_costo_follower],3,true,true)}
     </div>`;
     h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
@@ -693,6 +701,7 @@ function pintarMixto(d){
     ${hay('ig_followers_total')?card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total]):''}
     ${hay('ig_followers_nuevos')?card('Nuevos en el período', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos]):''}
     ${hay('ig_visitas')?card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas]):''}
+    ${convIG(R)}
     ${hay('ig_costo_follower')?card('Costo por seguidor', mon(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,true,true):''}
     ${hay('ig_inversion')&&!hay('ig_costo_follower')?card('Invertido en seguidores', mon(m.ig_inversion,0), [m.ig_inversion, ma.ig_inversion],0):''}
     ${hay('ig_alcance')&&!hay('ig_visitas')?card('Personas alcanzadas', fmt(m.ig_alcance), [m.ig_alcance, ma.ig_alcance]):''}
@@ -869,6 +878,7 @@ function pintarSteam(d){
     ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
     ${card('Nuevos en el per&iacute;odo', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos],0,true)}
     ${card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas])}
+    ${convIG(R)}
     ${card('Costo por seguidor', mon(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,false,true)}
     ${card('Invertido', mon(m.ig_inversion,2), [m.ig_inversion, ma.ig_inversion],2)}
     ${card('Inversi&oacute;n diaria', mon(m.ig_inversion_diaria,2), [m.ig_inversion_diaria, ma.ig_inversion_diaria],2)}
@@ -936,6 +946,7 @@ function pintar(d){
     ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
     ${card('Nuevos en el período', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos])}
     ${card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas])}
+    ${convIG(R)}
     ${card('Costo por seguidor', mon(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,true,true)}
   </div>`;
   h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
