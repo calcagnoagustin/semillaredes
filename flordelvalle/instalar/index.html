@@ -55,7 +55,7 @@ else if(ios && inApp){
   location.href='x-safari-https://semillaredes.com/'+CORTO+'/instalar/';
 }
 if(ios){
-  btn.href='/'+CORTO+'/semilla.mobileconfig';
+  btn.href='https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/perfil-ios?c='+CORTO;
   btn.textContent='Instalar en el iPhone';
   btn.addEventListener('click',()=>{ setTimeout(()=>{ document.getElementById('pasoIOS').style.display='block'; sub.textContent='Si te pregunta, tocá Permitir.'; },600); });
 }else if(android){
