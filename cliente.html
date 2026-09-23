@@ -192,7 +192,16 @@ details.hist table{border:0;border-radius:0}
 .nota .x{position:absolute;top:10px;right:12px}
 .agregarT{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}
 .agregarT input{border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:11px 13px;font:inherit;font-size:15px}
-.agregarT button{border:0;background:var(--oliva);color:#fff;font:inherit;font-weight:600;border-radius:10px;padding:11px 18px;cursor:pointer}
+.it.vl{align-items:center}
+.vf{flex:none;width:46px;font-size:13px;color:#8A8577;font-variant-numeric:tabular-nums}
+.it.vl .tx{flex:1;min-width:0}
+.vm{flex:none;font-weight:600;color:var(--navy);font-variant-numeric:tabular-nums;white-space:nowrap}
+.vtot{margin:0 0 10px;font-size:15px;color:var(--tinta)}
+.vtot b{color:var(--navy)}
+.agregarV{display:grid;grid-template-columns:150px 1fr 130px auto;gap:8px;margin-top:10px}
+.agregarV input{border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:11px 13px;font:inherit;font-size:15px;min-width:0}
+@media(max-width:640px){.agregarV{grid-template-columns:1fr 1fr}.agregarV #v_det{grid-column:1/-1;order:-1}}
+.agregarV button,.agregarT button{border:0;background:var(--oliva);color:#fff;font:inherit;font-weight:600;border-radius:10px;padding:11px 18px;cursor:pointer}
 .tar .it{cursor:pointer;transition:background .15s}
 .tar .it:hover{background:#FBF8F2}
 .mark{transition:all .15s}
@@ -1110,6 +1119,20 @@ function pintarResto(d,h){
     }
   }
 
+  const VL=d.ventas_log||[];
+  if(d.cliente.ventas_log_on||VL.length){
+    const escV=s=>String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+    const monV=v=>v==null?'':((d.cliente.moneda||'USD')==='ARS'?'$ ':'USD ')+Number(v).toLocaleString('es-AR',{maximumFractionDigits:2});
+    const fV=f=>{const p=String(f).split('-');return p[2]+'/'+p[1];};
+    const totV=VL.reduce((s,x)=>s+Number(x.monto||0),0);
+    const hoyV=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+    h+=`<h2>Ventas</h2><p class="sub">Cada venta, anotada. Sumá las nuevas acá abajo.</p>
+    ${VL.length?`<p class="vtot"><b>${VL.length}</b> ${VL.length===1?'venta':'ventas'}${totV?` · <b>${monV(totV)}</b>`:''}</p>
+      <div class="tar">${VL.map(x=>`<div class="it vl"><span class="vf">${fV(x.fecha)}</span><span class="tx"><span class="tt">${escV(x.detalle||'Venta')}</span></span><span class="vm">${monV(x.monto)}</span><button class="x" data-delv="${x.id}" title="Borrar">×</button></div>`).join('')}</div>`
+      :'<p class="pista">Todavía no hay ventas anotadas. Sumá la primera acá abajo.</p>'}
+    <div class="agregarV"><input id="v_fecha" type="date" value="${hoyV}"><input id="v_det" placeholder="Qué se vendió (y a quién, si querés)"><input id="v_monto" inputmode="decimal" placeholder="Monto"><button id="v_add">Agregar</button></div>`;
+  }
+
   const T=d.tareas||[];
   {
     h+=`<h2>Tarea para el hogar</h2><p class="sub">Lo que ya está hecho y lo que sigue.</p>
@@ -1205,6 +1228,18 @@ function pintarResto(d,h){
     const r=await rpc('sub_activo_cliente_alta',{p_slug:slug,p_k:tok,p_titulo:t,p_url:$('a_url').value.trim()||null});
     if(r.ok) recargar(); else { aa.disabled=false; aa.textContent='Agregar activo'; }
   };
+  const va=$('v_add');
+  if(va) va.onclick=async()=>{
+    const det=$('v_det').value.trim(), mt=$('v_monto').value.trim().replace(/\./g,'').replace(',','.');
+    if(!det&&!mt) return;
+    va.disabled=true; va.textContent='…';
+    const r=await rpc('sub_vlog_alta',{p_slug:slug,p_k:tok,p_fecha:$('v_fecha').value||null,p_detalle:det,p_monto:mt===''?null:Number(mt)});
+    if(r.ok) recargar(); else { va.disabled=false; va.textContent='Agregar'; }
+  };
+  document.querySelectorAll('[data-delv]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('¿Borrar esta venta?')) return;
+    const r=await rpc('sub_vlog_borrar',{p_slug:slug,p_k:tok,p_id:b.dataset.delv}); if(r.ok) recargar();
+  });
   const ta=$('t_add');
   if(ta) ta.onclick=async()=>{
     const t=$('t_nueva').value.trim(); if(!t) return;
@@ -1235,7 +1270,7 @@ function armarIndice(){
   app.querySelectorAll('h2 .volver').forEach(x=>x.remove());
   const hs=[...app.querySelectorAll('h2')];
   if(hs.length<3) return;
-  const corto={'Consejos de la Inteligencia colectiva':'Consejos','Tarea para el hogar':'Tareas','Tus activos':'Activos','Tus notas':'Notas'};
+  const corto={'Consejos de la Inteligencia colectiva':'Consejos','Tarea para el hogar':'Tareas','Ventas':'Ventas','Tus activos':'Activos','Tus notas':'Notas'};
   const nav=document.createElement('nav'); nav.className='indice'; nav.id='indice'; nav.setAttribute('aria-label','Secciones');
   nav.innerHTML='<div class="fila">'+hs.map((h,i)=>{
     const t=h.textContent.trim(); h.id='sec-'+i;
