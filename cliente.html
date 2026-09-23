@@ -1035,6 +1035,8 @@ function pintar(d){
     if(tS) h+=`<div class="tarj">${tS}</div>`;
     if(hay('sp_oyentes_perfil'))
       h+=grafico('Oyentes mensuales','Los que muestra tu perfil público de Spotify. Es el número que mira la industria.',R.map(r=>r.metricas.sp_oyentes_perfil??null),et,'#87863A');
+    if(R.filter(r=>r.metricas.sp_streams!=null).length>1)
+      h+=grafico('Streams','Cuántas veces se escucharon tus temas en cada período.',R.map(r=>r.metricas.sp_streams??null),et,'#1A2456');
   }
 
   // campaña de Meta que lleva gente a Spotify
