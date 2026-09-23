@@ -85,10 +85,12 @@ let admin='', clientes=[], sel=null;
 const CAMPOS_MUSICA={
  'Campaña a Spotify':[['spad_visitas','Llegaron a Spotify'],['spad_costo_visita','Costo x visita'],['spad_inversion','Invertido'],['spad_alcance','Alcance']],
  'Instagram':[['ig_followers_total','Seguidores'],['ig_followers_nuevos','Nuevos'],['ig_visitas','Visitas'],['ig_inversion','Inversión USD'],['ig_inversion_diaria','Inv. diaria'],['ig_costo_follower','Costo x seguidor']],
- 'Spotify':[['sp_monthly','Oyentes mensuales'],['sp_listeners','Listeners'],['sp_streams','Streams'],['sp_stream_listener','Streams x listener'],['sp_guardados','Guardados'],['sp_playlists','Playlists'],['sp_followers','Seguidores'],['sp_meta_visitas','Visitas desde Meta'],['sp_inversion','Inversión USD'],['sp_costo_stream','Costo x stream']],
+ 'Spotify (perfil público)':[['sp_oyentes_perfil','Oyentes mensuales del perfil']],
+ 'Spotify for Artists · 7 días':[['sp_listeners','Listeners'],['sp_monthly','Monthly active listeners'],['sp_streams','Streams'],['sp_stream_listener','Streams / Listener'],['sp_guardados','Saves'],['sp_playlists','Playlist adds'],['sp_followers','Followers']],
+ 'Pauta a Spotify (viejo)':[['sp_meta_visitas','Visitas desde Meta'],['sp_inversion','Inversión USD'],['sp_costo_stream','Costo x stream']],
  'YouTube (canal)':[['yt_subs','Suscriptores'],['yt_subs_nuevos','Nuevos'],['yt_views','Views del canal'],['yt_horas','Horas vistas']],
- 'YouTube (pauta)':[['yt_views_ads','Views del anuncio'],['yt_inversion','Inversión'],['yt_costo_view','Costo x view'],['yt_ads_alcance','Alcance'],['yt_ads_subs','Suscriptores que trajo']],
- 'YouTube · principales videos':[['yt_v1_nombre','Video 1'],['yt_v1_views','Views 1'],['yt_v2_nombre','Video 2'],['yt_v2_views','Views 2'],['yt_v3_nombre','Video 3'],['yt_v3_views','Views 3'],['yt_v4_nombre','Video 4'],['yt_v4_views','Views 4'],['yt_v5_nombre','Video 5'],['yt_v5_views','Views 5']],
+ 'YouTube (pauta)':[['yt_views_ads','Views del anuncio'],['yt_inversion','Inversión'],['yt_costo_view','Costo x view'],['yt_ads_impresiones','Impresiones'],['yt_ads_alcance','Alcance'],['yt_ads_subs','Suscriptores que trajo']],
+  'YouTube · principales videos':[['yt_top_texto','Aclaración (opcional)'],['yt_v1_nombre','Video 1'],['yt_v1_views','Views 1'],['yt_v2_nombre','Video 2'],['yt_v2_views','Views 2'],['yt_v3_nombre','Video 3'],['yt_v3_views','Views 3'],['yt_v4_nombre','Video 4'],['yt_v4_views','Views 4'],['yt_v5_nombre','Video 5'],['yt_v5_views','Views 5']],
  'Lanzamiento':[['lan_visitas','Visitas a la página'],['lan_inversion','Inversión'],['lan_costo_visita','Costo x visita'],['lan_hypeddit','Visitas Hypeddit'],['lan_hypeddit_clics','Clics Hypeddit'],['lan_hypeddit_eng','Interacción Hypeddit %'],['lan_clics','Clics al link']]
 };
 const CAMPOS_MENSAJES={
@@ -193,7 +195,7 @@ function parsear(txt){
       'meta visitas':'sp_meta_visitas',
       'inversión': seccion+'_inversion', 'inversion': seccion+'_inversion',
       'costo por follower':'ig_costo_follower','inversión diaria':(seccion==='ig'?'ig_inversion_diaria':seccion+'_inv_diaria'),'inversion diaria':(seccion==='ig'?'ig_inversion_diaria':seccion+'_inv_diaria'),
-      'listeners':'sp_listeners','monthly':'sp_monthly','streams':'sp_streams','stream/listener':'sp_stream_listener',
+      'listeners':'sp_listeners','monthly':'sp_monthly','monthly active listeners':'sp_monthly','saves':'sp_guardados','playlist adds':'sp_playlists','streams / listener':'sp_stream_listener','oyentes mensuales':'sp_oyentes_perfil','monthly listeners':'sp_oyentes_perfil','impresiones':'yt_ads_impresiones','streams':'sp_streams','stream/listener':'sp_stream_listener',
       'guardados':'sp_guardados','playlists':'sp_playlists','costo por stream':'sp_costo_stream',
       'suscriptores':'yt_subs','views':'yt_views','visualizaciones':'yt_views','horas':'yt_horas','costo por view':'yt_costo_view',
       'mensajes': (seccion==='msj'?'msj_mensajes':seccion+'_mensajes'),
@@ -232,7 +234,8 @@ function pintar(){
   CAMPOS = CAMPOS_POR_TIPO[c.tipo] || CAMPOS_MUSICA;
   let h=`<div class="card"><h2>${c.nombre}</h2>
     <div class="meta">semillaredes.com/cliente.html?c=${c.slug}&k=${c.token}</div>
-    <div class="acc"><button class="sec" id="cp">Copiar link</button><button class="sec" id="wa">Mandar por WhatsApp</button></div></div>`;
+    <div class="acc"><button class="sec" id="cp">Copiar link</button><button class="sec" id="wa">Mandar por WhatsApp</button></div>
+    ${c.tipo==='musica'?`<label style="margin-top:12px">Perfil público de Spotify (para traer los oyentes mensuales)</label><input id="sp_url" placeholder="https://open.spotify.com/artist/...">`:''}</div>`;
 
   h+=`<div class="card"><h2>Cargar la semana</h2>
     <p class="meta">Pegá el reporte tal cual lo escribís y se completa solo. O cargá los campos a mano.</p>
@@ -243,7 +246,7 @@ function pintar(){
     <div class="grid"><div><label>Desde</label><input type="date" id="f_desde"></div><div><label>Hasta</label><input type="date" id="f_hasta"></div></div>`;
   Object.entries(CAMPOS).forEach(([plat,cs])=>{
     h+=`<div class="plat">${plat}</div><div class="grid">`;
-    cs.forEach(([k,l])=>{ h+=`<div><label>${l}</label><input type="text" inputmode="${k.endsWith('_nombre')?'text':'decimal'}" id="m_${k}" value="${ult&&ult.metricas[k]!=null?'':''}"></div>`; });
+    cs.forEach(([k,l])=>{ h+=`<div><label>${l}</label><input type="text" inputmode="${/_(nombre|texto)$/.test(k)?'text':'decimal'}" id="m_${k}" value="${ult&&ult.metricas[k]!=null?'':''}"></div>`; });
     h+=`</div>`;
   });
   h+=`<div class="acc"><button onclick="guardarReporte()">Guardar semana</button></div><div id="g_out"></div></div>`;
@@ -331,6 +334,8 @@ function pintar(){
 
   v.innerHTML=h;
   const link=`https://semillaredes.com/cliente.html?c=${c.slug}&k=${c.token}`;
+  if($('sp_url')){ rpc('spotify_clientes',{p_admin:admin}).then(L=>{ const x=(Array.isArray(L)?L:[]).find(z=>z.slug===c.slug); if(x&&x.url) $('sp_url').value=x.url; });
+    $('sp_url').onblur=async()=>{ const r=await rpc('meta_set_spotify',{p_admin:admin,p_slug:c.slug,p_url:$('sp_url').value}); $('sp_url').style.borderColor=r.ok?'#87863A':'#E2767C'; }; }
   $('cp').onclick=()=>{navigator.clipboard.writeText(link);$('cp').textContent='Copiado ✓';};
   $('wa').onclick=()=>window.open('https://wa.me/?text='+encodeURIComponent('Te dejo el panel de tu proyecto, se actualiza todas las semanas: '+link),'_blank');
   document.querySelectorAll('[data-del-tarea]').forEach(b=>b.onclick=async()=>{ if(!confirm('¿Borrar esta tarea?'))return; const r=await rpc('sub_borrar',{p_admin:admin,p_que:'tarea',p_id:b.dataset.delTarea}); if(r.ok) entrar(); });
@@ -381,7 +386,7 @@ async function guardarReporte(){
   if(!desde||!hasta){ alert('Faltan las fechas'); return; }
   const m={};
   Object.values(CAMPOS).flat().forEach(([k])=>{ let v=$('m_'+k).value.trim(); if(v==='') return;
-    if(k.endsWith('_nombre')){ m[k]=v; return; }
+    if(/_(nombre|texto)$/.test(k)){ m[k]=v; return; }
     v=v.replace(/\s/g,'').replace(/[^\d.,-]/g,'');
     const hayC=v.includes(','), hayP=v.includes('.');
     if(hayC&&hayP) v = v.lastIndexOf(',')>v.lastIndexOf('.') ? v.replace(/\./g,'').replace(',','.') : v.replace(/,/g,'');
