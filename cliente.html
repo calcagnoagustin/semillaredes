@@ -959,6 +959,7 @@ function pintar(d){
     const tS=[
       hay('sp_listeners')?card('Oyentes', fmt(m.sp_listeners), [m.sp_listeners, ma.sp_listeners]):'',
       hay('sp_monthly')?card('Oyentes mensuales activos', fmt(m.sp_monthly), [m.sp_monthly, ma.sp_monthly]):'',
+      hay('sp_superlisteners')?card('Superlisteners', fmt(m.sp_superlisteners), [m.sp_superlisteners, ma.sp_superlisteners]):'',
       hay('sp_streams')?card('Streams', fmt(m.sp_streams), [m.sp_streams, ma.sp_streams]):'',
       hay('sp_stream_listener')?card('Streams por oyente', fmt(m.sp_stream_listener,1), [m.sp_stream_listener, ma.sp_stream_listener],1):'',
       hay('sp_guardados')?card('Guardados', fmt(m.sp_guardados), [m.sp_guardados, ma.sp_guardados]):'',
@@ -1062,7 +1063,7 @@ function pintar(d){
 function pintarResto(d,h){
   const R=d.reportes||[]; const u=R[R.length-1]||null; const m=u?u.metricas:{};
   const NOMBRES={ig_followers_total:'Seguidores en Instagram',ig_followers_nuevos:'Seguidores nuevos por período',
-    ig_visitas:'Visitas al perfil',sp_monthly:'Oyentes mensuales activos en Spotify',sp_oyentes_perfil:'Oyentes mensuales en Spotify (perfil)',sp_streams:'Streams',
+    ig_visitas:'Visitas al perfil',sp_monthly:'Oyentes mensuales activos en Spotify',sp_oyentes_perfil:'Oyentes mensuales en Spotify (perfil)',sp_superlisteners:'Superlisteners en Spotify',sp_streams:'Streams',
     sp_followers:'Seguidores en Spotify',sp_playlists:'Playlists',yt_views:'Visualizaciones en YouTube',
     yt_subs:'Suscriptores en YouTube',msj_mensajes:'Consultas por período',msj_conversiones:'Ventas por período',
     msj_ingreso:'Ingreso por período',msj_roas:'ROAS',vta_ventas:'Ventas por período',
