@@ -269,7 +269,7 @@ function linea(datos, etiquetas, color, invertido){
 function multi(R){
   const series=[
     {k:'ig_followers_total',lab:'Instagram',color:'#7A1F3A'},
-    {k:'sp_monthly',lab:'Spotify',color:'#87863A'},
+    {k:(R.filter(r=>r.metricas.sp_oyentes_perfil!=null).length>1?'sp_oyentes_perfil':'sp_monthly'),lab:'Spotify',color:'#87863A'},
     {k:'yt_views',lab:'YouTube',color:'#E2767C'}
   ].map(x=>{
     const vals=R.map(r=>r.metricas[x.k]??null);
@@ -941,17 +941,22 @@ function pintar(d){
   h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
   h+=grafico('Costo por seguidor','Mientras más baja la línea, mejor: cada seguidor nuevo te sale menos.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
 
-  if(hay('sp_monthly')||hay('sp_streams')||hay('sp_followers')){
-    h+=`<h2>Spotify</h2><p class="sub">Escuchas, oyentes y playlists.</p><div class="tarj">
-    ${card('Oyentes mensuales', fmt(m.sp_monthly), [m.sp_monthly, ma.sp_monthly])}
-    ${card('Streams', fmt(m.sp_streams), [m.sp_streams, ma.sp_streams])}
-    ${hay('sp_stream_listener')?card('Streams por oyente', fmt(m.sp_stream_listener,1), [m.sp_stream_listener, ma.sp_stream_listener],1):''}
-    ${card('Seguidores', fmt(m.sp_followers), [m.sp_followers, ma.sp_followers])}
-    ${card('Guardados', fmt(m.sp_guardados), [m.sp_guardados, ma.sp_guardados])}
-    ${card('Playlists', fmt(m.sp_playlists), [m.sp_playlists, ma.sp_playlists])}
-    ${card('Costo por stream', mon(m.sp_costo_stream,3), [m.sp_costo_stream, ma.sp_costo_stream],3,true,true)}
-  </div>`;
-  h+=grafico('Oyentes mensuales','Cuánta gente distinta te escucha por mes. Es el número que mira la industria.',R.map(r=>r.metricas.sp_monthly),et,'#87863A');
+  if(hay('sp_oyentes_perfil')||hay('sp_listeners')||hay('sp_monthly')||hay('sp_streams')||hay('sp_followers')){
+    h+=`<h2>Spotify</h2><p class="sub">Los mismos números que ves en Spotify for Artists, últimos 7 días.</p>`;
+    if(hay('sp_oyentes_perfil')) h+=`<div class="tarj">${card('Oyentes mensuales', fmt(m.sp_oyentes_perfil), [m.sp_oyentes_perfil, ma.sp_oyentes_perfil],0,true)}</div>
+      <p class="sub" style="margin-top:9px">Es el número que aparece en tu perfil público de Spotify.</p>`;
+    const tS=[
+      hay('sp_listeners')?card('Oyentes', fmt(m.sp_listeners), [m.sp_listeners, ma.sp_listeners]):'',
+      hay('sp_monthly')?card('Oyentes mensuales activos', fmt(m.sp_monthly), [m.sp_monthly, ma.sp_monthly]):'',
+      hay('sp_streams')?card('Streams', fmt(m.sp_streams), [m.sp_streams, ma.sp_streams]):'',
+      hay('sp_stream_listener')?card('Streams por oyente', fmt(m.sp_stream_listener,1), [m.sp_stream_listener, ma.sp_stream_listener],1):'',
+      hay('sp_guardados')?card('Guardados', fmt(m.sp_guardados), [m.sp_guardados, ma.sp_guardados]):'',
+      hay('sp_playlists')?card('Agregados a playlists', fmt(m.sp_playlists), [m.sp_playlists, ma.sp_playlists]):'',
+      hay('sp_followers')?card('Seguidores', fmt(m.sp_followers), [m.sp_followers, ma.sp_followers]):''
+    ].join('');
+    if(tS) h+=`<div class="tarj">${tS}</div>`;
+    if(hay('sp_oyentes_perfil'))
+      h+=grafico('Oyentes mensuales','Los que muestra tu perfil público de Spotify. Es el número que mira la industria.',R.map(r=>r.metricas.sp_oyentes_perfil??null),et,'#87863A');
   }
 
   // campaña de Meta que lleva gente a Spotify
@@ -978,7 +983,7 @@ function pintar(d){
     if(tY) h+=`<div class="tarj">${tY}</div>`;
     if(vidsY.length){
       h+=`<div class="desglose"><h3>Principales videos</h3>
-        <p class="leyenda">Los videos más vistos del canal en el período ${fecha(uvY.desde)} al ${fecha(uvY.hasta)}.</p>
+        <p class="leyenda">${uvY.metricas.yt_top_texto?escY(uvY.metricas.yt_top_texto):`Los videos más vistos del canal en el período ${fecha(uvY.desde)} al ${fecha(uvY.hasta)}.`}</p>
         <div class="fila2 cab2"><span>Video</span><span></span><span style="text-align:right">Views</span></div>
         ${vidsY.map(x=>`<div class="fila2"><span class="nom">${escY(x.n)}</span><span></span><span class="v">${x.v!=null?fmt(x.v):''}</span></div>`).join('')}
       </div>`;
@@ -989,7 +994,8 @@ function pintar(d){
   if(hay('yt_views_ads')||hay('yt_inversion')){
     h+=`<h2>Campaña en YouTube Ads</h2><p class="sub">Anuncios dentro de YouTube. Son visualizaciones del anuncio, no del canal.</p><div class="tarj">
       ${hay('yt_views_ads')?card('Views del anuncio', fmt(m.yt_views_ads), [m.yt_views_ads, ma.yt_views_ads],0,true):''}
-      ${hay('yt_costo_view')?card('Costo por view', mon(m.yt_costo_view,3), [m.yt_costo_view, ma.yt_costo_view],3,false,true):''}
+      ${hay('yt_costo_view')?card('Costo por view', mon(m.yt_costo_view,4), [m.yt_costo_view, ma.yt_costo_view],4,false,true):''}
+      ${hay('yt_ads_impresiones')?card('Impresiones', fmt(m.yt_ads_impresiones), [m.yt_ads_impresiones, ma.yt_ads_impresiones]):''}
       ${hay('yt_inversion')?card('Invertido', mon(m.yt_inversion,2), [m.yt_inversion, ma.yt_inversion],2):''}
       ${hay('yt_ads_alcance')?card('Personas alcanzadas', fmt(m.yt_ads_alcance), [m.yt_ads_alcance, ma.yt_ads_alcance]):''}
       ${hay('yt_ads_subs')?card('Suscriptores que trajo', fmt(m.yt_ads_subs), [m.yt_ads_subs, ma.yt_ads_subs]):''}
@@ -1012,16 +1018,22 @@ function pintar(d){
     h+=grafico('Visitas a la página del lanzamiento','Cuánta gente llegó a escuchar.',R.map(r=>r.metricas.lan_visitas),et,'#E2767C');
   }
 
-  const plataformas=[hay('ig_followers_total'),hay('sp_monthly'),hay('yt_views')].filter(Boolean).length;
+  const plataformas=[hay('ig_followers_total'),hay('sp_monthly')||hay('sp_oyentes_perfil'),hay('yt_views')].filter(Boolean).length;
   if(plataformas>1) h+=`<h2>Crecimiento</h2><p class="sub">Las plataformas juntas.</p>`+multi(R);
 
-  h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
-    ${card('En Instagram',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
-    ${hay('sp_inversion')?card('En Spotify',mon(m.sp_inversion,2),[m.sp_inversion,ma.sp_inversion],2):''}
-    ${hay('yt_inversion')?card('En YouTube',mon(m.yt_inversion,2),[m.yt_inversion,ma.yt_inversion],2):''}
-    ${card('Por día',mon(m.ig_inversion_diaria,2),[m.ig_inversion_diaria,ma.ig_inversion_diaria],2)}
-    ${card('Total del período',mon((m.ig_inversion||0)+(m.sp_inversion||0)+(m.yt_inversion||0),2),null,2,true)}
-  </div>`;
+  {
+    const cu=u?u.metricas:{}, ca=a?a.metricas:{};
+    const tot=Number(cu.ig_inversion||0)+Number(cu.sp_inversion||0)+Number(cu.yt_inversion||0);
+    if(tot>0){
+      h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
+        ${cu.ig_inversion!=null?card('En Instagram',mon(cu.ig_inversion,2),[cu.ig_inversion,ca.ig_inversion],2):''}
+        ${cu.sp_inversion!=null?card('En Spotify',mon(cu.sp_inversion,2),[cu.sp_inversion,ca.sp_inversion],2):''}
+        ${cu.yt_inversion!=null?card('En YouTube',mon(cu.yt_inversion,2),[cu.yt_inversion,ca.yt_inversion],2):''}
+        ${cu.ig_inversion_diaria!=null?card('Por día en Instagram',mon(cu.ig_inversion_diaria,2),[cu.ig_inversion_diaria,ca.ig_inversion_diaria],2):''}
+        ${card('Total del período',mon(tot,2),null,2,true)}
+      </div>`;
+    }
+  }
 
   if(R.length>1){
     h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
@@ -1039,7 +1051,7 @@ function pintar(d){
 function pintarResto(d,h){
   const R=d.reportes||[]; const u=R[R.length-1]||null; const m=u?u.metricas:{};
   const NOMBRES={ig_followers_total:'Seguidores en Instagram',ig_followers_nuevos:'Seguidores nuevos por período',
-    ig_visitas:'Visitas al perfil',sp_monthly:'Oyentes mensuales en Spotify',sp_streams:'Streams',
+    ig_visitas:'Visitas al perfil',sp_monthly:'Oyentes mensuales activos en Spotify',sp_oyentes_perfil:'Oyentes mensuales en Spotify (perfil)',sp_streams:'Streams',
     sp_followers:'Seguidores en Spotify',sp_playlists:'Playlists',yt_views:'Visualizaciones en YouTube',
     yt_subs:'Suscriptores en YouTube',msj_mensajes:'Consultas por período',msj_conversiones:'Ventas por período',
     msj_ingreso:'Ingreso por período',msj_roas:'ROAS',vta_ventas:'Ventas por período',
