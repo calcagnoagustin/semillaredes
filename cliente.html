@@ -624,6 +624,19 @@ function pintarVentas(d){
     ${card('Ventas', fmt(m.vta_ventas), [m.vta_ventas, ma.vta_ventas],0,true)}
     ${hay('vta_ingreso')?card('Facturación', mon(m.vta_ingreso,0), [m.vta_ingreso, ma.vta_ingreso],0):''}
     ${hay('vta_ganancia')?card('Ganancia neta', mon(m.vta_ganancia,0), [m.vta_ganancia, ma.vta_ganancia],0):''}
+    ${(()=>{ if(!u||!hay('vta_ganancia')) return '';
+      // ganancia del mes del reporte, prorrateando por dias los periodos que cruzan meses
+      const D=x=>new Date(x+'T00:00:00Z'), dia=86400000;
+      const fin=D(u.hasta), ini=new Date(Date.UTC(fin.getUTCFullYear(),fin.getUTCMonth(),1));
+      let g=0, alguno=false;
+      R.forEach(r=>{ const v=Number(r.metricas.vta_ganancia); if(r.metricas.vta_ganancia==null||isNaN(v)) return;
+        const d0=D(r.desde), d1=D(r.hasta), tot=Math.max(1,(d1-d0)/dia);
+        const dentro=Math.max(0,(Math.min(d1,fin)-Math.max(d0,ini))/dia);
+        if(dentro>0){ g+=v*dentro/tot; alguno=true; } });
+      if(!alguno) return '';
+      const mes=ini.toLocaleDateString('es-AR',{month:'long',timeZone:'UTC'});
+      return card('Ganancia de '+mes+' al '+fecha(u.hasta), mon(Math.round(g),0), null,0,true);
+    })()}
     ${hay('vta_costo_venta')?card('Costo por venta', mon(m.vta_costo_venta,2), [m.vta_costo_venta, ma.vta_costo_venta],2,false,true):''}
     ${hay('vta_roas')?card('ROAS', fmt(m.vta_roas,2), [m.vta_roas, ma.vta_roas],2):''}
     ${hay('vta_roi')?card('ROI', fmt(m.vta_roi)+'%', [m.vta_roi, ma.vta_roi]):''}
