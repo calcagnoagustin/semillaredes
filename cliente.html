@@ -326,15 +326,15 @@ const convIG=(R)=>{ const L=(R||[]).filter(r=>Number(r.metricas.ig_visitas)>0&&r
   const c=f(L[L.length-1]), p=L.length>1?f(L[L.length-2]):null;
   return card('Conversión de visitas', fmt(c,1)+'%', [c,p],1); };
 // conjuntos de la campaña de seguidores (igc1..igc4) del ultimo reporte
-const conjIG=(u)=>{ if(!u) return ''; const x=u.metricas, L=[];
+const conjIG=(u)=>{ if(!u) return ''; const x=u.metricas, L=[]; // igcN_visitas = visitas al perfil (resultado de la campaña)
   for(let i=1;i<=6;i++){ const n=x['igc'+i+'_nombre']; if(!n) continue;
-    const inv=Number(x['igc'+i+'_inversion']), s=Number(x['igc'+i+'_seguidores']);
+    const inv=Number(x['igc'+i+'_inversion']), s=Number(x['igc'+i+'_visitas']);
     L.push({n, s:isNaN(s)?null:s, c:(!isNaN(inv)&&s>0)?inv/s:null}); }
   if(!L.length) return '';
   const es=t=>String(t).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
   return `<div class="desglose"><h3>Conjuntos de anuncios de seguidores</h3>
-    <p class="leyenda">Cómo rindió cada conjunto en este período. Son los seguidores que atribuye la campaña: sirven para comparar los conjuntos entre sí.</p>
-    <div class="fila2 cab2"><span>Conjunto</span><span style="text-align:right">Seguidores</span><span style="text-align:right">Costo c/u</span></div>
+    <p class="leyenda">Cuántas visitas al perfil trajo cada conjunto en este período y cuánto costó cada una. Es el resultado que busca la campaña.</p>
+    <div class="fila2 cab2"><span>Conjunto</span><span style="text-align:right">Visitas al perfil</span><span style="text-align:right">Costo c/u</span></div>
     ${L.map(z=>`<div class="fila2"><span class="nom">${es(z.n)}</span><span class="v">${z.s!=null?fmt(z.s):''}</span><span class="c">${z.c!=null?mon(z.c,2):''}</span></div>`).join('')}
   </div>`; };
 const card=(lab,val,ant,dec,dest,inv)=>`<div class="t ${dest?'destacada':''}"><div class="lab">${lab}</div><div class="val">${val}</div>${delta(ant?.[0],ant?.[1],inv)}</div>`;
