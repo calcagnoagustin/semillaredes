@@ -181,6 +181,9 @@ details.hist table{border:0;border-radius:0}
 .desglose .nom{color:var(--navy);font-weight:600}
 .desglose .v{text-align:right;font-family:'Playfair Display',serif;font-size:19px;color:var(--navy)}
 .desglose .c{text-align:right;font-size:14px;color:#6E6A78}
+.desglose .fila2.conj{grid-template-columns:1fr 150px 96px;column-gap:16px}
+@media(max-width:520px){.desglose .fila2.conj{grid-template-columns:1fr 92px 80px;column-gap:10px}.desglose .fila2.conj.cab2 span{white-space:normal}}
+.desglose .cab2 span{white-space:nowrap}
 .desglose .cab2{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--oliva);font-weight:700;border:0}
 .desglose .sin{color:var(--mute);font-style:italic;font-size:13.5px}
 .nuevoHito button{border:0;background:var(--oliva);color:#fff;font:inherit;font-weight:600;border-radius:9px;padding:10px 18px;cursor:pointer}
@@ -333,9 +336,9 @@ const conjIG=(u)=>{ if(!u) return ''; const x=u.metricas, L=[]; // igcN_visitas 
   if(!L.length) return '';
   const es=t=>String(t).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
   return `<div class="desglose"><h3>Conjuntos de anuncios de seguidores</h3>
-    <p class="leyenda">Cuántas visitas al perfil trajo cada conjunto en este período y cuánto costó cada una. Es el resultado que busca la campaña.</p>
-    <div class="fila2 cab2"><span>Conjunto</span><span style="text-align:right">Visitas al perfil</span><span style="text-align:right">Costo c/u</span></div>
-    ${L.map(z=>`<div class="fila2"><span class="nom">${es(z.n)}</span><span class="v">${z.s!=null?fmt(z.s):''}</span><span class="c">${z.c!=null?mon(z.c,2):''}</span></div>`).join('')}
+    <p class="leyenda">Del ${fecha(u.desde)} al ${fecha(u.hasta)}: cuántas visitas al perfil trajo cada conjunto y cuánto costó cada una. Es el resultado que busca la campaña.</p>
+    <div class="fila2 cab2 conj"><span>Conjunto</span><span style="text-align:right">Visitas al perfil</span><span style="text-align:right">Costo c/u</span></div>
+    ${L.map(z=>`<div class="fila2 conj"><span class="nom">${es(z.n)}</span><span class="v">${z.s!=null?fmt(z.s):''}</span><span class="c">${z.c!=null?mon(z.c,2):''}</span></div>`).join('')}
   </div>`; };
 const card=(lab,val,ant,dec,dest,inv)=>`<div class="t ${dest?'destacada':''}"><div class="lab">${lab}</div><div class="val">${val}</div>${delta(ant?.[0],ant?.[1],inv)}</div>`;
 
