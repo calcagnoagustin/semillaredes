@@ -190,6 +190,7 @@ details.hist table{border:0;border-radius:0}
 .it .x:hover,.nota .x:hover{color:var(--vino)}
 .nota{position:relative}
 .nota .x{position:absolute;top:10px;right:12px}
+.nota .quien,.nota .txt{padding-right:22px}
 .agregarT{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}
 .agregarT input{border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:11px 13px;font:inherit;font-size:15px}
 .it.vl{align-items:center}
@@ -1199,7 +1200,7 @@ function pintarResto(d,h){
   const N=d.notas||[];
   h+=`<h2>Tus notas</h2><p class="sub">Dejanos cualquier cosa que quieras que tengamos en cuenta: una idea, una duda, algo que haya pasado en estos días.</p>
     <div class="notas"><textarea id="nota_txt" placeholder="Escribí acá…"></textarea><br><button id="nota_btn">Guardar nota</button><div id="nota_out"></div>
-    ${N.map(n=>`<div class="nota"><div class="quien ${n.autor==='semilla'?'semilla':''}">${n.autor==='semilla'?'Semilla Redes':'Vos'}</div><div class="txt">${n.texto}</div><div class="cuando">${new Date(n.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</div>${n.autor!=='semilla'?`<button class="x" data-deln="${n.id}" title="Borrar nota">×</button>`:''}</div>`).join('')}
+    ${N.map(n=>`<div class="nota"><div class="quien ${n.autor==='semilla'?'semilla':''}">${n.autor==='semilla'?'Semilla Redes':'Vos'}</div><div class="txt">${n.texto}</div><div class="cuando">${new Date(n.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</div><button class="x" data-deln="${n.id}" title="Borrar nota">×</button></div>`).join('')}
     </div>`;
 
   const RC=d.recomendaciones&&d.recomendaciones.recomendaciones;
