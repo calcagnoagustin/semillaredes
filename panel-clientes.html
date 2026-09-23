@@ -87,7 +87,8 @@ const CAMPOS_MUSICA={
  'Instagram':[['ig_followers_total','Seguidores'],['ig_followers_nuevos','Nuevos'],['ig_visitas','Visitas'],['ig_inversion','Inversión USD'],['ig_inversion_diaria','Inv. diaria'],['ig_costo_follower','Costo x seguidor']],
  'Spotify':[['sp_monthly','Oyentes mensuales'],['sp_listeners','Listeners'],['sp_streams','Streams'],['sp_stream_listener','Streams x listener'],['sp_guardados','Guardados'],['sp_playlists','Playlists'],['sp_followers','Seguidores'],['sp_meta_visitas','Visitas desde Meta'],['sp_inversion','Inversión USD'],['sp_costo_stream','Costo x stream']],
  'YouTube (canal)':[['yt_subs','Suscriptores'],['yt_subs_nuevos','Nuevos'],['yt_views','Views del canal'],['yt_horas','Horas vistas']],
- 'YouTube (pauta)':[['yt_views_ads','Views del anuncio'],['yt_inversion','Inversión'],['yt_costo_view','Costo x view']],
+ 'YouTube (pauta)':[['yt_views_ads','Views del anuncio'],['yt_inversion','Inversión'],['yt_costo_view','Costo x view'],['yt_ads_alcance','Alcance'],['yt_ads_subs','Suscriptores que trajo']],
+ 'YouTube · principales videos':[['yt_v1_nombre','Video 1'],['yt_v1_views','Views 1'],['yt_v2_nombre','Video 2'],['yt_v2_views','Views 2'],['yt_v3_nombre','Video 3'],['yt_v3_views','Views 3'],['yt_v4_nombre','Video 4'],['yt_v4_views','Views 4'],['yt_v5_nombre','Video 5'],['yt_v5_views','Views 5']],
  'Lanzamiento':[['lan_visitas','Visitas a la página'],['lan_inversion','Inversión'],['lan_costo_visita','Costo x visita'],['lan_hypeddit','Visitas Hypeddit'],['lan_hypeddit_clics','Clics Hypeddit'],['lan_hypeddit_eng','Interacción Hypeddit %'],['lan_clics','Clics al link']]
 };
 const CAMPOS_MENSAJES={
@@ -242,7 +243,7 @@ function pintar(){
     <div class="grid"><div><label>Desde</label><input type="date" id="f_desde"></div><div><label>Hasta</label><input type="date" id="f_hasta"></div></div>`;
   Object.entries(CAMPOS).forEach(([plat,cs])=>{
     h+=`<div class="plat">${plat}</div><div class="grid">`;
-    cs.forEach(([k,l])=>{ h+=`<div><label>${l}</label><input type="text" inputmode="decimal" id="m_${k}" value="${ult&&ult.metricas[k]!=null?'':''}"></div>`; });
+    cs.forEach(([k,l])=>{ h+=`<div><label>${l}</label><input type="text" inputmode="${k.endsWith('_nombre')?'text':'decimal'}" id="m_${k}" value="${ult&&ult.metricas[k]!=null?'':''}"></div>`; });
     h+=`</div>`;
   });
   h+=`<div class="acc"><button onclick="guardarReporte()">Guardar semana</button></div><div id="g_out"></div></div>`;
@@ -380,6 +381,7 @@ async function guardarReporte(){
   if(!desde||!hasta){ alert('Faltan las fechas'); return; }
   const m={};
   Object.values(CAMPOS).flat().forEach(([k])=>{ let v=$('m_'+k).value.trim(); if(v==='') return;
+    if(k.endsWith('_nombre')){ m[k]=v; return; }
     v=v.replace(/\s/g,'').replace(/[^\d.,-]/g,'');
     const hayC=v.includes(','), hayP=v.includes('.');
     if(hayC&&hayP) v = v.lastIndexOf(',')>v.lastIndexOf('.') ? v.replace(/\./g,'').replace(',','.') : v.replace(/,/g,'');
