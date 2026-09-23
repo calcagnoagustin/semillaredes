@@ -265,6 +265,14 @@ function pintar(){
     <h3>Agregar</h3><div class="agregar"><input id="t_tit" placeholder="Título de la tarea"><button class="sec" onclick="nuevaTarea()">Agregar</button></div>
     ${notasHTML(c,'tareas')}</div>`;
 
+  h+=`<div class="card"><h2>Campaña terminada</h2>
+    <p class="meta">Cuando una campaña termina, cargá los totales. El status la muestra cerrada, con estos números, y deja de mostrarla por período.</p>
+    <div class="agregar" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">
+      <div><label>Nombre (igual que en el reporte)</label><input id="cf_nombre" placeholder="Formación 2026"></div>
+      ${[['mensajes','Mensajes'],['inversion','Inversión'],['costo_mensaje','Costo por mensaje'],['ventas','Ventas'],['costo_conversion','Costo por venta'],['ingreso','Ingreso'],['diaria','Inversión diaria'],['roas','ROAS'],['roi','ROI']].map(([k,l])=>`<div><label>${l}</label><input id="cf_${k}" inputmode="decimal"></div>`).join('')}
+    </div>
+    <button class="sec" style="margin-top:10px" onclick="cerrarCampana()">Guardar como terminada</button></div>`;
+
   h+=`<div class="card"><h2>Ventas</h2>
     <label style="display:flex;gap:8px;align-items:center;margin-bottom:12px"><input type="checkbox" id="vl_on" style="width:auto" ${c.ventas_log_on?'checked':''}> Mostrar la sección Ventas en el status</label>
     ${(c.ventas_log||[]).map(v=>`<div class="fila" style="grid-template-columns:60px 1fr 120px 30px"><span>${String(v.fecha).slice(8,10)}/${String(v.fecha).slice(5,7)}</span><span class="t">${v.detalle||''}${v.creada_por==='cliente'?' <span style="color:var(--rosa);font-size:11px">· la cargó el cliente</span>':''}</span><span style="text-align:right">${v.monto!=null?Number(v.monto).toLocaleString('es-AR'):''}</span><button class="x" data-del-vl="${v.id}" title="Borrar venta">×</button></div>`).join('')||'<p class="meta">Sin ventas anotadas.</p>'}
@@ -402,6 +410,14 @@ async function guardarReporte(){
   const r=await rpc('sub_reporte_alta',{p_admin:admin,p_slug:sel,p_desde:desde,p_hasta:hasta,p_metricas:m});
   if(r.ok){ $('g_out').innerHTML='<div class="ok-msg">Guardado ✓</div>'; entrar(); }
   else alert('No se pudo guardar');
+}
+async function cerrarCampana(){
+  const nombre=$('cf_nombre').value.trim(); if(!nombre){ alert('Poné el nombre de la campaña, igual que en el reporte.'); return; }
+  const datos={};
+  ['mensajes','inversion','costo_mensaje','ventas','costo_conversion','ingreso','diaria','roas','roi'].forEach(k=>{ let v=$('cf_'+k).value.trim(); if(!v) return;
+    v=v.includes(',')?v.replace(/\./g,'').replace(',','.'):(/^\d{1,3}(\.\d{3})+$/.test(v)?v.replace(/\./g,''):v); const n=parseFloat(v); if(!isNaN(n)) datos[k]=n; });
+  const r=await rpc('sub_campana_fin',{p_admin:admin,p_slug:sel,p_nombre:nombre,p_datos:datos});
+  if(r.ok){ alert('Guardada como terminada.'); entrar(); } else alert('No se pudo guardar.');
 }
 async function nuevaVenta(){ const d=$('vl_d').value.trim(), m=$('vl_m').value.trim().replace(/\./g,'').replace(',','.'); if(!d&&!m)return; await rpc('sub_vlog_admin_alta',{p_admin:admin,p_slug:sel,p_fecha:$('vl_f').value||null,p_detalle:d,p_monto:m===''?null:Number(m)}); entrar(); }
 async function nuevaTarea(){ const t=$('t_tit').value.trim(); if(!t)return; await rpc('sub_tarea_alta',{p_admin:admin,p_slug:sel,p_titulo:t}); entrar(); }
