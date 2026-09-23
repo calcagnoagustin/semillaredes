@@ -750,7 +750,7 @@ function pintarMixto(d){
     h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
   if(R.filter(r=>r.metricas.ig_costo_follower!=null).length>1)
     h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
-  else if(R.filter(r=>r.metricas.ig_inversion!=null).length>1)
+  else if(R.filter(r=>r.metricas.ig_inversion!=null).length>1 && R.filter(r=>r.metricas.ig_followers_total!=null).length<2)
     h+=grafico('Inversión en seguidores','Lo que se puso en la campaña de seguidores cada período.',R.map(r=>r.metricas.ig_inversion??null),et,'#87863A');
 
   // campaña de Meta hacia YouTube
