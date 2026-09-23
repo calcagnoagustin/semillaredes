@@ -1038,10 +1038,10 @@ function pintar(d){
   if(R.length>1){
     h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
       <details class="hist"><summary><span class="flecha">▶</span> Ver los ${R.length} reportes</summary><table>
-      <tr><th>Período</th><th>Seguidores IG</th><th>Nuevos</th><th>Costo x seg.</th>${hay('sp_streams')?'<th>Streams</th><th>Costo x stream</th>':''}<th>Inversión</th></tr>
+      <tr><th>Período</th><th>Seguidores IG</th><th>Nuevos</th><th>Costo x seg.</th>${hay('sp_streams')?'<th>Streams</th>':''}${hay('sp_costo_stream')?'<th>Costo x stream</th>':''}<th>Inversión</th></tr>
       ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
         <td>${fmt(x.ig_followers_total)}</td><td>${fmt(x.ig_followers_nuevos)}</td><td>${fmt(x.ig_costo_follower,2)}</td>
-        ${hay('sp_streams')?`<td>${fmt(x.sp_streams)}</td><td>${fmt(x.sp_costo_stream,3)}</td>`:''}<td>${fmt((x.ig_inversion||0)+(x.sp_inversion||0)+(x.yt_inversion||0),2)}</td></tr>`}).join('')}
+        ${hay('sp_streams')?`<td>${fmt(x.sp_streams)}</td>`:''}${hay('sp_costo_stream')?`<td>${fmt(x.sp_costo_stream,3)}</td>`:''}<td>${fmt((x.ig_inversion||0)+(x.sp_inversion||0)+(x.yt_inversion||0),2)}</td></tr>`}).join('')}
     </table></details>`;
   }
 
