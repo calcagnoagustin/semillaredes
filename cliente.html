@@ -964,22 +964,39 @@ function pintar(d){
     </div>`;
   }
 
-  if(hay('yt_views')||hay('yt_subs')||hay('yt_views_ads')){
-    h+=`<h2>YouTube</h2><p class="sub">Tu canal: gente que llegó y se quedó.</p><div class="tarj">
-    ${card('Suscriptores', fmt(m.yt_subs), [m.yt_subs, ma.yt_subs])}
-    ${card('Nuevos en el período', fmt(m.yt_subs_nuevos), [m.yt_subs_nuevos, ma.yt_subs_nuevos])}
-    ${card('Visualizaciones del canal', fmt(m.yt_views), [m.yt_views, ma.yt_views])}
-    ${card('Horas vistas', fmt(m.yt_horas), [m.yt_horas, ma.yt_horas])}
-  </div>`;
-  if(m.yt_views_ads!=null || ma.yt_views_ads!=null){
-    h+=`<p class="sub" style="margin-top:18px">Aparte, lo que trajo la pauta en YouTube. Son visualizaciones del anuncio, no del canal.</p><div class="tarj">
-      ${card('Views del anuncio', fmt(m.yt_views_ads), [m.yt_views_ads, ma.yt_views_ads])}
-      ${card('Invertido', mon(m.yt_inversion,2), [m.yt_inversion, ma.yt_inversion],2)}
-      ${card('Costo por view', mon(m.yt_costo_view,3), [m.yt_costo_view, ma.yt_costo_view],3,true,true)}
-    </div>`;
+  const escY=s=>String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+  const uvY=[...R].reverse().find(r=>r.metricas.yt_v1_nombre);
+  const vidsY=uvY?[1,2,3,4,5].map(i=>({n:uvY.metricas['yt_v'+i+'_nombre'],v:uvY.metricas['yt_v'+i+'_views']})).filter(x=>x.n):[];
+  if(hay('yt_views')||hay('yt_subs')||hay('yt_horas')||vidsY.length){
+    h+=`<h2>YouTube</h2><p class="sub">Tu canal: gente que llegó y se quedó.</p>`;
+    const tY=[
+      hay('yt_subs')?card('Suscriptores', fmt(m.yt_subs), [m.yt_subs, ma.yt_subs]):'',
+      hay('yt_subs_nuevos')?card('Nuevos en el período', fmt(m.yt_subs_nuevos), [m.yt_subs_nuevos, ma.yt_subs_nuevos]):'',
+      hay('yt_views')?card('Visualizaciones del canal', fmt(m.yt_views), [m.yt_views, ma.yt_views],0,true):'',
+      hay('yt_horas')?card('Horas vistas', fmt(m.yt_horas), [m.yt_horas, ma.yt_horas]):''
+    ].join('');
+    if(tY) h+=`<div class="tarj">${tY}</div>`;
+    if(vidsY.length){
+      h+=`<div class="desglose"><h3>Principales videos</h3>
+        <p class="leyenda">Los videos más vistos del canal en el período ${fecha(uvY.desde)} al ${fecha(uvY.hasta)}.</p>
+        <div class="fila2 cab2"><span>Video</span><span></span><span style="text-align:right">Views</span></div>
+        ${vidsY.map(x=>`<div class="fila2"><span class="nom">${escY(x.n)}</span><span></span><span class="v">${x.v!=null?fmt(x.v):''}</span></div>`).join('')}
+      </div>`;
+    }
+    if(R.filter(r=>r.metricas.yt_views!=null).length>1)
+      h+=grafico('Visualizaciones','Cuántas veces se vieron tus videos.',R.map(r=>r.metricas.yt_views),et,'#E2767C');
   }
-
-  h+=grafico('Visualizaciones','Cuántas veces se vieron tus videos.',R.map(r=>r.metricas.yt_views),et,'#E2767C');
+  if(hay('yt_views_ads')||hay('yt_inversion')){
+    h+=`<h2>Campaña en YouTube Ads</h2><p class="sub">Anuncios dentro de YouTube. Son visualizaciones del anuncio, no del canal.</p><div class="tarj">
+      ${hay('yt_views_ads')?card('Views del anuncio', fmt(m.yt_views_ads), [m.yt_views_ads, ma.yt_views_ads],0,true):''}
+      ${hay('yt_costo_view')?card('Costo por view', mon(m.yt_costo_view,3), [m.yt_costo_view, ma.yt_costo_view],3,false,true):''}
+      ${hay('yt_inversion')?card('Invertido', mon(m.yt_inversion,2), [m.yt_inversion, ma.yt_inversion],2):''}
+      ${hay('yt_ads_alcance')?card('Personas alcanzadas', fmt(m.yt_ads_alcance), [m.yt_ads_alcance, ma.yt_ads_alcance]):''}
+      ${hay('yt_ads_subs')?card('Suscriptores que trajo', fmt(m.yt_ads_subs), [m.yt_ads_subs, ma.yt_ads_subs]):''}
+    </div>`;
+    if(R.filter(r=>r.metricas.yt_views_ads!=null).length>1)
+      h+=grafico('Views del anuncio','Cuánta gente vio el anuncio en cada período.',R.map(r=>r.metricas.yt_views_ads),et,'#7A1F3A');
+  }
 
   const hayLan = R.some(r=>r.metricas.lan_visitas!=null);
   if(hayLan){
@@ -993,7 +1010,6 @@ function pintar(d){
       ${m.lan_clics!=null?card('Clics al link', fmt(m.lan_clics), [m.lan_clics, ma.lan_clics]):''}
     </div>`;
     h+=grafico('Visitas a la página del lanzamiento','Cuánta gente llegó a escuchar.',R.map(r=>r.metricas.lan_visitas),et,'#E2767C');
-  }
   }
 
   const plataformas=[hay('ig_followers_total'),hay('sp_monthly'),hay('yt_views')].filter(Boolean).length;
