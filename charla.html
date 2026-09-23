@@ -217,6 +217,12 @@ footer a{color:var(--rose);text-decoration:none}
   .btn,button.send{display:block;width:100%;text-align:center}
 }
 </style>
+
+  <script>
+  /* Semilla: precio destacado según país. Argentina => ARS grande; resto => USD grande. ?moneda=usd|ars fuerza. */
+  (function(){try{var q=new URLSearchParams(location.search).get('moneda');var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone||'');var ar=/Argentina|Buenos_Aires/i.test(tz);if(q==='usd')ar=false;if(q==='ars')ar=true;if(!ar)document.documentElement.classList.add('intl');}catch(e){}})();
+  </script>
+  <style>.p-intl{display:none}html.intl .p-ar{display:none}html.intl .p-intl{display:inline}html.intl div.p-intl{display:block}</style>
 </head>
 <body>
 
@@ -380,7 +386,7 @@ footer a{color:var(--rose);text-decoration:none}
     <div class="rule"></div>
     <div class="cohorte-box">
       <div class="cohorte-fecha">Mi&eacute;rcoles 7 de octubre de 2026</div>
-      <p class="cohorte-det">12 clases en vivo repartidas en 3 m&oacute;dulos, dos horas semanales de Grupo Semilla para consultas sobre tu proyecto, el curso de Anuncios Avanzados en Meta y todas las plantillas. Tres meses de cursada. <strong style="color:var(--cream)">$90.000 ARS por mes &middot; USD 65.</strong></p>
+      <p class="cohorte-det">12 clases en vivo repartidas en 3 m&oacute;dulos, una hora semanal de Grupo Semilla para consultas sobre tu proyecto, el curso de Anuncios Avanzados en Meta y todas las plantillas. Tres meses de cursada. <strong style="color:var(--cream)"><span class="p-ar">$90.000 ARS por mes &middot; USD 65.</span><span class="p-intl">USD 65 por mes &middot; $90.000 ARS.</span></strong></p>
       <p class="cohorte-det">Cupos limitados: se trabaja en dos Grupos Semilla de seguimiento para que el acompa&ntilde;amiento no se diluya.</p>
       <a class="btn" href="https://semillaredes.com/formacion.html">Ver el programa completo</a>
     </div>

@@ -1156,6 +1156,12 @@
       footer { padding: 32px 24px; }
     }
   </style>
+
+  <script>
+  /* Semilla: precio destacado según país. Argentina => ARS grande; resto => USD grande. ?moneda=usd|ars fuerza. */
+  (function(){try{var q=new URLSearchParams(location.search).get('moneda');var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone||'');var ar=/Argentina|Buenos_Aires/i.test(tz);if(q==='usd')ar=false;if(q==='ars')ar=true;if(!ar)document.documentElement.classList.add('intl');}catch(e){}})();
+  </script>
+  <style>.p-intl{display:none}html.intl .p-ar{display:none}html.intl .p-intl{display:inline}html.intl div.p-intl{display:block}</style>
 </head>
 <body>
 
@@ -1546,8 +1552,10 @@
           <div class="precio-plan-nombre">Plan 01</div>
           <h3>Estratégico</h3>
           <p class="precio-tagline">Para artistas con identidad visual ya definida.</p>
-          <div class="precio-monto"><span>ARS</span> 250.000<span class="precio-mes"> / mes</span></div>
-          <div class="precio-periodo"><span style="color:var(--wine);font-weight:600">USD 180 por mes</span> · durante 6 meses de proceso</div>
+          <div class="precio-monto p-ar"><span>ARS</span> 250.000<span class="precio-mes"> / mes</span></div>
+          <div class="precio-monto p-intl"><span>USD</span> 180<span class="precio-mes"> / mes</span></div>
+          <div class="precio-periodo p-ar"><span style="color:var(--wine);font-weight:600">USD 180 por mes</span> · durante 6 meses de proceso</div>
+          <div class="precio-periodo p-intl"><span style="color:var(--wine);font-weight:600">ARS 250.000 por mes</span> · durante 6 meses de proceso</div>
           <ul class="precio-lista">
             <li>Apertura y configuración de cuentas</li>
             <li>Modelo de negocio definido</li>
@@ -1567,8 +1575,10 @@
           <div class="precio-plan-nombre">Plan 02</div>
           <h3>Estratégico + Diseño</h3>
           <p class="precio-tagline">Para proyectos que arrancan de cero o necesitan identidad.</p>
-          <div class="precio-monto"><span>ARS</span> 350.000<span class="precio-mes"> / mes</span></div>
-          <div class="precio-periodo"><span style="color:var(--wine);font-weight:600">USD 230 por mes</span> · durante 6 meses de proceso</div>
+          <div class="precio-monto p-ar"><span>ARS</span> 350.000<span class="precio-mes"> / mes</span></div>
+          <div class="precio-monto p-intl"><span>USD</span> 230<span class="precio-mes"> / mes</span></div>
+          <div class="precio-periodo p-ar"><span style="color:var(--wine);font-weight:600">USD 230 por mes</span> · durante 6 meses de proceso</div>
+          <div class="precio-periodo p-intl"><span style="color:var(--wine);font-weight:600">ARS 350.000 por mes</span> · durante 6 meses de proceso</div>
           <ul class="precio-lista">
             <li>Todo lo del plan Estratégico</li>
             <li>Identidad visual completa</li>

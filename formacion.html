@@ -950,6 +950,12 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
+
+  <script>
+  /* Semilla: precio destacado según país. Argentina => ARS grande; resto => USD grande. ?moneda=usd|ars fuerza. */
+  (function(){try{var q=new URLSearchParams(location.search).get('moneda');var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone||'');var ar=/Argentina|Buenos_Aires/i.test(tz);if(q==='usd')ar=false;if(q==='ars')ar=true;if(!ar)document.documentElement.classList.add('intl');}catch(e){}})();
+  </script>
+  <style>.p-intl{display:none}html.intl .p-ar{display:none}html.intl .p-intl{display:inline}html.intl div.p-intl{display:block}</style>
 </head>
 <body>
 
@@ -1331,8 +1337,10 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
         <p>Es una suscripción mensual. Te sumás cuando quieras y hacés el ciclo completo de 90 días.</p>
       </div>
       <div class="precio-card">
-        <div class="precio-amount">$90.000</div>
-        <div class="precio-period">ARS por mes · <span style="color:var(--olive);font-weight:600;">USD 65/mes</span></div>
+        <div class="precio-amount p-ar">$90.000</div>
+        <div class="precio-amount p-intl">USD 65</div>
+        <div class="precio-period p-ar">ARS por mes · <span style="color:var(--olive);font-weight:600;">USD 65/mes</span></div>
+        <div class="precio-period p-intl">por mes · <span style="color:var(--olive);font-weight:600;">$90.000 ARS/mes</span></div>
         <div class="precio-period" style="margin-top:8px;font-weight:600;">Suscripción mensual · el ciclo formativo completo dura 90 días</div>
         <ul class="precio-includes">
           <li>Clase teórica semanal con tema concreto</li>

@@ -819,6 +819,12 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
+
+  <script>
+  /* Semilla: precio destacado según país. Argentina => ARS grande; resto => USD grande. ?moneda=usd|ars fuerza. */
+  (function(){try{var q=new URLSearchParams(location.search).get('moneda');var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone||'');var ar=/Argentina|Buenos_Aires/i.test(tz);if(q==='usd')ar=false;if(q==='ars')ar=true;if(!ar)document.documentElement.classList.add('intl');}catch(e){}})();
+  </script>
+  <style>.p-intl{display:none}html.intl .p-ar{display:none}html.intl .p-intl{display:inline}html.intl div.p-intl{display:block}</style>
 </head>
 <body>
 
@@ -949,7 +955,7 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
             </div>
           </div>
         </div>
-        <div class="formacion-price">$90.000 <span>ARS / mes</span> <span style="font-size:0.65em;color:var(--olive);font-weight:600;">· USD 65</span></div>
+        <div class="formacion-price"><span class="p-ar">$90.000 <span>ARS / mes</span> <span style="font-size:0.65em;color:var(--olive);font-weight:600;">· USD 65</span></span><span class="p-intl">USD 65 <span>/ mes</span> <span style="font-size:0.65em;color:var(--olive);font-weight:600;">· $90.000 ARS</span></span></div>
         <a href="/formacion" class="btn-card">
           Ver programa completo →
         </a>
@@ -968,7 +974,7 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
           </div>
           <div class="ind-detail">
             <p>Encuentros online 1:1 con Agus para evaluar y gestionar temas puntuales de tu proyecto: estrategia, contenidos, campañas publicitarias.</p>
-            <strong>$180.000 ARS <em>/ mes (4 encuentros)</em> · <span style="color:var(--rose)">USD 130</span></strong>
+            <strong><span class="p-ar">$180.000 ARS <em>/ mes (4 encuentros)</em> · <span style="color:var(--rose)">USD 130</span></span><span class="p-intl">USD 130 <em>/ mes (4 encuentros)</em> · <span style="color:var(--rose)">$180.000 ARS</span></span></strong>
           </div>
 
           <div class="ind-item" onclick="toggleAcordeon(this)">
@@ -978,7 +984,7 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
           </div>
           <div class="ind-detail">
             <p>Proceso integral de 6 meses para llevar tu proyecto de 0 a 100. Incluye identidad visual, web, contenidos de redes, pauta publicitaria y planificación estratégica.</p>
-            <strong>$250.000 ARS / mes <em>(proceso de 6 meses)</em> · <span style="color:var(--wine)">USD 180</span> — <a href="/setup.html">Ver más →</a></strong>
+            <strong><span class="p-ar">$250.000 ARS / mes <em>(proceso de 6 meses)</em> · <span style="color:var(--wine)">USD 180</span></span><span class="p-intl">USD 180 / mes <em>(proceso de 6 meses)</em> · <span style="color:var(--wine)">$250.000 ARS</span></span> — <a href="/setup.html">Ver más →</a></strong>
           </div>
 
           <div class="ind-item" onclick="toggleAcordeon(this)">
