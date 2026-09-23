@@ -766,7 +766,22 @@ function pintarMixto(d){
       h+=grafico('Visitas al canal','Gente que llegó a YouTube desde los anuncios.',R.map(r=>r.metricas.ytad_visitas??null),et,'#7A1F3A');
   }
 
-  const hayConsultas = R.some(r=>r.metricas.msj_mensajes!=null);
+  const campFin = m.msj_nombre ? ((d.cliente.ventas||{})[m.msj_nombre]||null) : null;
+  if(campFin && campFin.terminada){
+    const F=campFin;
+    h+=`<h2>${m.msj_nombre}</h2><p class="sub">Campaña terminada. Estos son los números totales.</p><div class="tarj">
+      ${F.mensajes!=null?card('Mensajes', fmt(F.mensajes), null,0,true):''}
+      ${F.costo_mensaje!=null?card('Costo por mensaje', mon(F.costo_mensaje,0), null,0):''}
+      ${F.inversion!=null?card('Invertido', mon(F.inversion,0), null,0):''}
+      ${F.diaria!=null?card('Inversión diaria', mon(F.diaria,0), null,0):''}
+      ${F.ventas!=null?card('Ventas', fmt(F.ventas), null,0,true):''}
+      ${F.costo_conversion!=null?card('Costo por venta', mon(F.costo_conversion,0), null,0):''}
+      ${F.ingreso!=null?card('Ingreso', mon(F.ingreso,0), null,0,true):''}
+      ${F.roas!=null?card('ROAS', fmt(F.roas,2), null,2):''}
+      ${F.roi!=null?card('ROI', fmt(F.roi,2), null,2):''}
+    </div>`;
+  }
+  const hayConsultas = !(campFin && campFin.terminada) && R.some(r=>r.metricas.msj_mensajes!=null);
   if(hayConsultas){
     h+=`<h2>${m.msj_nombre||'Consultas'}</h2><p class="sub">${m.msj_nombre?'Todo lo que trajo esta campaña.':'Gente que escribió preguntando por lo que ofrecés.'}</p><div class="tarj">
       ${card('Mensajes', fmt(m.msj_mensajes), [m.msj_mensajes, ma.msj_mensajes],0,true)}
@@ -817,13 +832,17 @@ function pintarMixto(d){
     <div class="graf"><h3>Qué es el ROAS</h3><p class="leyenda">Por cada dólar puesto en publicidad, cuántos volvieron en ventas. Un ROAS de 5 significa que cada dólar trajo cinco.</p></div>`;
   }
 
-  h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
-    ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
-    ${card('En '+(m.msj_nombre||'consultas'),mon(m.msj_inversion,2),[m.msj_inversion,ma.msj_inversion],2)}
-    ${m.int_inversion!=null?card('En interacción',mon(m.int_inversion,2),[m.int_inversion,ma.int_inversion],2):''}
-    ${m.tk_inversion!=null?card('En '+(m.tk_nombre||'la obra'),mon(m.tk_inversion,2),[m.tk_inversion,ma.tk_inversion],2):''}
-    ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.msj_inversion||0)+Number(m.int_inversion||0)+Number(m.tk_inversion||0),2),null,2,true)}
-  </div>`;
+  {
+    const cu=u?u.metricas:{}, ca=a?a.metricas:{};
+    const tot=Number(cu.ig_inversion||0)+Number(cu.msj_inversion||0)+Number(cu.int_inversion||0)+Number(cu.tk_inversion||0);
+    if(tot>0) h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
+      ${cu.ig_inversion!=null?card('En seguidores',mon(cu.ig_inversion,2),[cu.ig_inversion,ca.ig_inversion],2):''}
+      ${cu.msj_inversion!=null?card('En '+(cu.msj_nombre||m.msj_nombre||'consultas'),mon(cu.msj_inversion,2),[cu.msj_inversion,ca.msj_inversion],2):''}
+      ${cu.int_inversion!=null?card('En interacción',mon(cu.int_inversion,2),[cu.int_inversion,ca.int_inversion],2):''}
+      ${cu.tk_inversion!=null?card('En '+(cu.tk_nombre||m.tk_nombre||'la obra'),mon(cu.tk_inversion,2),[cu.tk_inversion,ca.tk_inversion],2):''}
+      ${card('Total',mon(tot,2),null,2,true)}
+    </div>`;
+  }
 
   if(R.length>1){
     h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
