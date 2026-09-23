@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1A2456">
+<title>Instalar · Semilla IA</title>
+<link rel="manifest" href="/emmaavila/manifest.json">
+<link rel="apple-touch-icon" href="/icono-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--crema:#F2EDE4;--navy:#1A2456;--vino:#7A1F3A;--rosa:#E2767C;--oliva:#87863A;--tinta:#24242C}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--crema);color:var(--tinta);font-family:Inter,system-ui,sans-serif}
+main{max-width:440px;margin:0 auto;padding:calc(48px + env(safe-area-inset-top)) 24px calc(40px + env(safe-area-inset-bottom));text-align:center}
+.ico{width:88px;height:88px;border-radius:22px;display:block;margin:0 auto 22px;box-shadow:0 2px 10px rgba(26,36,86,.12)}
+.kick{font-weight:700;font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--oliva);margin:0 0 10px}
+h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;color:var(--navy);font-size:32px;line-height:1.15;margin:0 0 12px}
+p.sub{font-size:17px;line-height:1.5;margin:0 0 30px;color:#55525E}
+.btn{display:block;width:100%;background:var(--navy);color:var(--crema);border:0;border-radius:14px;padding:18px;font:700 18px Inter,system-ui,sans-serif;text-decoration:none;cursor:pointer}
+.btn:active{opacity:.85}
+.paso{display:none;text-align:left;background:#fff;border-radius:14px;padding:18px 20px;margin-top:18px;font-size:16px;line-height:1.55}
+.paso b{color:var(--navy)}
+.paso ol{margin:6px 0 0;padding-left:20px}
+.nota{font-size:14px;color:#8A8577;margin-top:22px}
+.nota a{color:var(--vino)}
+</style>
+</head>
+<body>
+<main>
+  <img class="ico" src="/icono-192.png" alt="">
+  <p class="kick">Semilla IA</p>
+  <h1>Tu panel, en el celular</h1>
+  <p class="sub" id="sub">El panel de Emma Avila, a un toque desde la pantalla de inicio.</p>
+  <a class="btn" id="btn" href="#">Instalar</a>
+  <div class="paso" id="pasoIOS"><b>Último paso:</b><ol><li>Abrí <b>Ajustes</b>.</li><li>Tocá <b>Perfil descargado</b>, arriba de todo.</li><li>Tocá <b>Instalar</b>.</li></ol></div>
+  <div class="paso" id="pasoAndroid"><b>Si no apareció el aviso:</b> tocá los tres puntitos de arriba a la derecha y elegí <b>Instalar app</b>.</div>
+  <p class="nota" id="nota">¿Preferís no instalar? <a href="/emmaavila/">Abrí el panel acá</a>.</p>
+</main>
+<script>
+const ua=navigator.userAgent, CORTO='emmaavila';
+const ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const android=/android/i.test(ua);
+const inApp=/Instagram|FBAN|FBAV|FB_IAB|WhatsApp|Line\/|Twitter|TikTok|; wv\)/i.test(ua);
+const instalada=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+const btn=document.getElementById('btn'), sub=document.getElementById('sub');
+if(instalada){ location.replace('/'+CORTO+'/'); }
+else if(android && inApp){
+  // desde Instagram/WhatsApp: abrir directo en Chrome
+  location.href='intent://semillaredes.com/'+CORTO+'/instalar/#Intent;scheme=https;package=com.android.chrome;end';
+}
+else if(ios && inApp){
+  location.href='x-safari-https://semillaredes.com/'+CORTO+'/instalar/';
+}
+if(ios){
+  btn.href='https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/perfil-ios?c='+CORTO;
+  btn.textContent='Instalar en el iPhone';
+  btn.addEventListener('click',()=>{ setTimeout(()=>{ document.getElementById('pasoIOS').style.display='block'; sub.textContent='Si te pregunta, tocá Permitir.'; },600); });
+}else if(android){
+  let ev=null;
+  btn.textContent='Instalar en el celular';
+  window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); ev=e; });
+  window.addEventListener('appinstalled',()=>{ location.replace('/'+CORTO+'/'); });
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  btn.addEventListener('click',async e=>{ e.preventDefault();
+    if(ev){ ev.prompt(); const r=await ev.userChoice; if(r.outcome==='accepted'){ sub.textContent='Listo. Ya lo tenés en la pantalla de inicio.'; btn.style.display='none'; } }
+    else document.getElementById('pasoAndroid').style.display='block';
+  });
+}else{
+  sub.textContent='Abrí este link desde tu celular para instalar el panel.';
+  btn.href='/'+CORTO+'/'; btn.textContent='Ver el panel acá';
+}
+</script>
+</body>
+</html>
