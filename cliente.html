@@ -624,19 +624,6 @@ function pintarVentas(d){
     ${card('Ventas', fmt(m.vta_ventas), [m.vta_ventas, ma.vta_ventas],0,true)}
     ${hay('vta_ingreso')?card('Facturación', mon(m.vta_ingreso,0), [m.vta_ingreso, ma.vta_ingreso],0):''}
     ${hay('vta_ganancia')?card('Ganancia neta', mon(m.vta_ganancia,0), [m.vta_ganancia, ma.vta_ganancia],0):''}
-    ${(()=>{ if(!u||!hay('vta_ganancia')) return '';
-      // ganancia del mes del reporte, prorrateando por dias los periodos que cruzan meses
-      const D=x=>new Date(x+'T00:00:00Z'), dia=86400000;
-      const fin=D(u.hasta), ini=new Date(Date.UTC(fin.getUTCFullYear(),fin.getUTCMonth(),1));
-      let g=0, alguno=false;
-      R.forEach(r=>{ const v=Number(r.metricas.vta_ganancia); if(r.metricas.vta_ganancia==null||isNaN(v)) return;
-        const d0=D(r.desde), d1=D(r.hasta), tot=Math.max(1,(d1-d0)/dia);
-        const dentro=Math.max(0,(Math.min(d1,fin)-Math.max(d0,ini))/dia);
-        if(dentro>0){ g+=v*dentro/tot; alguno=true; } });
-      if(!alguno) return '';
-      const mes=ini.toLocaleDateString('es-AR',{month:'long',timeZone:'UTC'});
-      return card('Ganancia de '+mes+' al '+fecha(u.hasta), mon(Math.round(g),0), null,0,true);
-    })()}
     ${hay('vta_costo_venta')?card('Costo por venta', mon(m.vta_costo_venta,2), [m.vta_costo_venta, ma.vta_costo_venta],2,false,true):''}
     ${hay('vta_roas')?card('ROAS', fmt(m.vta_roas,2), [m.vta_roas, ma.vta_roas],2):''}
     ${hay('vta_roi')?card('ROI', fmt(m.vta_roi)+'%', [m.vta_roi, ma.vta_roi]):''}
@@ -645,6 +632,26 @@ function pintarVentas(d){
   </div>`;
   if(m.vta_atribuidas!=null)
     h+=`<p class="sub" style="margin-top:9px">De las ${fmt(m.vta_ventas)} ventas, ${fmt(m.vta_atribuidas)} se atribuyen al pixel.</p>`;
+  // --- el mes del reporte, aparte (prorratea por dias los periodos que cruzan meses) ---
+  if(u){
+    const D=x=>new Date(x+'T00:00:00Z'), dia=86400000;
+    const fin=D(u.hasta), ini=new Date(Date.UTC(fin.getUTCFullYear(),fin.getUTCMonth(),1));
+    const sumaMes=k=>{ let t=0, hay1=false; R.forEach(r=>{ const x=r.metricas[k]; if(x==null||isNaN(Number(x))) return;
+      const d0=D(r.desde), d1=D(r.hasta), tot=Math.max(1,(d1-d0)/dia);
+      const dentro=Math.max(0,(Math.min(d1,fin)-Math.max(d0,ini))/dia);
+      if(dentro>0){ t+=Number(x)*dentro/tot; hay1=true; } }); return hay1?t:null; };
+    const vM=sumaMes('vta_ventas'), fM=sumaMes('vta_ingreso'), gM=sumaMes('vta_ganancia'), iM=sumaMes('vta_inversion');
+    if(vM!=null||fM!=null||gM!=null){
+      const mes=ini.toLocaleDateString('es-AR',{month:'long',timeZone:'UTC'});
+      h+=`<h2>${mes.charAt(0).toUpperCase()+mes.slice(1)}, hasta el ${fecha(u.hasta)}</h2>
+      <p class="sub">La suma de todos los reportes del mes. Si un período cruza de un mes a otro, se reparte por días.</p><div class="tarj">
+        ${vM!=null?card('Ventas del mes', fmt(Math.round(vM)), null,0,true):''}
+        ${fM!=null?card('Facturación del mes', mon(Math.round(fM),0), null,0):''}
+        ${gM!=null?card('Ganancia neta del mes', mon(Math.round(gM),0), null,0):''}
+        ${iM!=null?card('Invertido en el mes', mon(iM,2), null,2):''}
+      </div>`;
+    }
+  }
   if(hay('vta_roas'))
     h+=`<div class="graf"><h3>Qué es el ROAS</h3><p class="leyenda">Por cada dólar puesto en publicidad, cuántos volvieron en ventas. Un ROAS de 5 significa que cada dólar trajo cinco.</p></div>`;
 
