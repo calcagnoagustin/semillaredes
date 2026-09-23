@@ -325,6 +325,18 @@ const convIG=(R)=>{ const L=(R||[]).filter(r=>Number(r.metricas.ig_visitas)>0&&r
   const f=r=>Number(r.metricas.ig_followers_nuevos)/Number(r.metricas.ig_visitas)*100;
   const c=f(L[L.length-1]), p=L.length>1?f(L[L.length-2]):null;
   return card('Conversión de visitas', fmt(c,1)+'%', [c,p],1); };
+// conjuntos de la campaña de seguidores (igc1..igc4) del ultimo reporte
+const conjIG=(u)=>{ if(!u) return ''; const x=u.metricas, L=[];
+  for(let i=1;i<=6;i++){ const n=x['igc'+i+'_nombre']; if(!n) continue;
+    const inv=Number(x['igc'+i+'_inversion']), s=Number(x['igc'+i+'_seguidores']);
+    L.push({n, s:isNaN(s)?null:s, c:(!isNaN(inv)&&s>0)?inv/s:null}); }
+  if(!L.length) return '';
+  const es=t=>String(t).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+  return `<div class="desglose"><h3>Conjuntos de anuncios de seguidores</h3>
+    <p class="leyenda">Cómo rindió cada conjunto en este período. Son los seguidores que atribuye la campaña: sirven para comparar los conjuntos entre sí.</p>
+    <div class="fila2 cab2"><span>Conjunto</span><span style="text-align:right">Seguidores</span><span style="text-align:right">Costo c/u</span></div>
+    ${L.map(z=>`<div class="fila2"><span class="nom">${es(z.n)}</span><span class="v">${z.s!=null?fmt(z.s):''}</span><span class="c">${z.c!=null?mon(z.c,2):''}</span></div>`).join('')}
+  </div>`; };
 const card=(lab,val,ant,dec,dest,inv)=>`<div class="t ${dest?'destacada':''}"><div class="lab">${lab}</div><div class="val">${val}</div>${delta(ant?.[0],ant?.[1],inv)}</div>`;
 
 const CAMPS=[
@@ -453,6 +465,7 @@ function pintarTrafico(d){
       ${hay('ig_inversion')?card('Invertido', mon(m.ig_inversion,2), [m.ig_inversion, ma.ig_inversion],2):''}
     </div>`;
     if(R.filter(r=>r.metricas.ig_followers_total!=null).length>1){
+      h+=conjIG(u);
       h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#518BAF');
       if(hay('ig_costo_follower'))
         h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#F15C32',true);
@@ -616,6 +629,7 @@ function pintarVentas(d){
       ${convIG(R)}
       ${card('Costo por seguidor', mon(m.ig_costo_follower,3), [m.ig_costo_follower, ma.ig_costo_follower],3,true,true)}
     </div>`;
+    h+=conjIG(u);
     h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
     h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
   }
@@ -747,6 +761,7 @@ function pintarMixto(d){
     </div></div>`;
   });
 
+  h+=conjIG(u);
   if(R.filter(r=>r.metricas.ig_followers_total!=null).length>1)
     h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
   if(R.filter(r=>r.metricas.ig_costo_follower!=null).length>1)
@@ -932,6 +947,7 @@ function pintarSteam(d){
     ${card('Invertido', mon(m.ig_inversion,2), [m.ig_inversion, ma.ig_inversion],2)}
     ${card('Inversi&oacute;n diaria', mon(m.ig_inversion_diaria,2), [m.ig_inversion_diaria, ma.ig_inversion_diaria],2)}
   </div>`;
+  h+=conjIG(u);
   h+=grafico('Seguidores','C&oacute;mo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
   h+=grafico('Costo por seguidor','Cu&aacute;nto cuesta cada seguidor nuevo. Mientras m&aacute;s baja la l&iacute;nea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
 
@@ -998,6 +1014,7 @@ function pintar(d){
     ${convIG(R)}
     ${card('Costo por seguidor', mon(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,true,true)}
   </div>`;
+  h+=conjIG(u);
   h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
   h+=grafico('Costo por seguidor','Mientras más baja la línea, mejor: cada seguidor nuevo te sale menos.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
 
