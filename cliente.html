@@ -411,20 +411,22 @@ function pintarTrafico(d){
 
   // ===== 1. TRAFICO =====
   if(hay('tr_visitas')||hay('a1_visitas')||hay('a2_visitas')||hay('a3_visitas')){
-  // --- waitlist: el cliente o Agus cargan el total; los jueves el cron calcula nuevos y costo por registro ---
+  // --- waitlist POR PERIODO: se carga una vez antes de cada jueves; las tarjetas muestran el cierre del periodo ---
   if(d.cliente.waitlist_on){
     const WL=d.waitlist||[]; const ult=WL[0]||null;
     const fW=f=>{ const x=new Date(f); return String(x.getDate()).padStart(2,'0')+'/'+String(x.getMonth()+1).padStart(2,'0'); };
     const uw=u?u.metricas:{}, aw=a?a.metricas:{};
-    h+=`<h2>Waitlist</h2><p class="sub">Cuánta gente se anotó. Actualizá el número cuando quieras: los jueves calculamos cuántos llegaron en el período y cuánto costó cada uno.</p><div class="tarj">
-      ${ult?card('Anotados al '+fW(ult.fecha), fmt(ult.total), null,0,true):''}
+    const hayPer=uw.wl_total!=null;
+    h+=`<h2>Waitlist</h2><p class="sub">Cuánta gente se anotó en cada período. Cargá el total de anotados una vez, antes de cada jueves: ese día calculamos cuántos se sumaron y cuánto costó cada uno.</p>`;
+    if(hayPer) h+=`<div class="tarj">
+      ${card('Anotados al cierre', fmt(uw.wl_total), [uw.wl_total, aw.wl_total],0,true)}
       ${uw.wl_nuevos!=null?card('Nuevos en el período', fmt(uw.wl_nuevos), [uw.wl_nuevos, aw.wl_nuevos]):''}
       ${uw.wl_costo!=null?card('Costo por registro', mon(uw.wl_costo,2), [uw.wl_costo, aw.wl_costo],2,false,true):''}
-    </div>
-    ${ult?'':'<p class="pista">Todavía no hay un número cargado. Poné cuántos anotados hay hoy.</p>'}
-    <div class="agregarW"><input id="wl_total" type="number" min="0" inputmode="numeric" placeholder="Anotados hoy"><button id="wl_add">Actualizar</button></div>`;
+    </div>`;
+    h+=`<p class="pista">${ult?`Último número cargado: <b>${fmt(ult.total)}</b>, el ${fW(ult.fecha)}.`:'Todavía no hay un número cargado. Poné cuántos anotados hay hoy.'}</p>
+    <div class="agregarW"><input id="wl_total" type="number" min="0" inputmode="numeric" placeholder="Total de anotados"><button id="wl_add">Guardar</button></div>`;
     if(R.filter(r=>r.metricas.wl_total!=null).length>1)
-      h+=grafico('Anotados en la waitlist','Cómo viene creciendo la lista.',R.map(r=>r.metricas.wl_total??null),et,'#1A2456');
+      h+=grafico('Anotados en la waitlist','Total de anotados al cierre de cada período.',R.map(r=>r.metricas.wl_total??null),et,'#1A2456');
   }
     h+=`<h2>Tráfico a la página</h2><p class="sub">Gente que llegó al sitio desde la campaña.</p><div class="tarj">
       ${card('Visitas totales', fmt(m.tr_visitas), [m.tr_visitas, ma.tr_visitas],0,true)}
@@ -1329,7 +1331,7 @@ function pintarResto(d,h){
     const v=parseInt(($('wl_total').value||'').replace(/\D/g,''),10); if(isNaN(v)) return;
     wa.disabled=true; wa.textContent='…';
     const r=await rpc('sub_waitlist_cargar',{p_slug:slug,p_k:tok,p_total:v});
-    if(r.ok) recargar(); else { wa.disabled=false; wa.textContent='Actualizar'; }
+    if(r.ok) recargar(); else { wa.disabled=false; wa.textContent='Guardar'; }
   };
   const va=$('v_add');
   if(va) va.onclick=async()=>{
@@ -1498,7 +1500,8 @@ const DICT={
 '@A qué número querés llegar':'What number do you want to reach','@Cómo querés llamarlo (opcional)':'What do you want to call it (optional)',
 '@Agregar algo que quieras hacer o pedirnos':'Add something you want to do or ask us for','@Nombre del activo. Por ejemplo: Mi carpeta de fotos':'Asset name. For example: My photo folder',
 '@Pegá el link (opcional)':'Paste the link (optional)','Waitlist':'Waitlist',
-'Cuánta gente se anotó. Actualizá el número cuando quieras: los jueves calculamos cuántos llegaron en el período y cuánto costó cada uno.':'How many people signed up. Update the number whenever you want: every Thursday we calculate how many joined in the period and what each one cost.',
+'Cuánta gente se anotó en cada período. Cargá el total de anotados una vez, antes de cada jueves: ese día calculamos cuántos se sumaron y cuánto costó cada uno.':'How many people signed up in each period. Enter the total number of sign-ups once, before each Thursday: that day we calculate how many joined and what each one cost.',
+'Anotados al cierre':'Sign-ups at close','Total de anotados al cierre de cada período.':'Total sign-ups at the close of each period.','@Total de anotados':'Total sign-ups','Guardar':'Save',
 'Nuevos en el período':'New this period','Costo por registro':'Cost per sign-up','Actualizar':'Update',
 'Todavía no hay un número cargado. Poné cuántos anotados hay hoy.':'No number entered yet. Enter how many sign-ups there are today.',
 'Anotados en la waitlist':'Waitlist sign-ups','Cómo viene creciendo la lista.':'How the list is growing.','@Anotados hoy':'Sign-ups today','@Escribí acá…':'Write here…','@Borrar':'Delete','@Borrar nota':'Delete note','@Secciones':'Sections'
@@ -1520,6 +1523,7 @@ const REGLAS=[
  [/^Del (.+) al (.+?)(:.*)?$/, (m,a,b,c)=>`From ${a} to ${b}${c||''}`],
  [/^(\d\d\/\d\d) al (\d\d\/\d\d)$/, (m,a,b)=>`${a} to ${b}`],
  [/^Anotados al (.+)$/, (m,a)=>`Sign-ups as of ${a}`],
+ [/^Último número cargado: (.+), el (.+)\.$/, (m,a,b)=>`Last number entered: ${a}, on ${b}.`],
  [/^([\d.,]+) de ([\d.,]+)$/, (m,a,b)=>`${a} of ${b}`],
 ];
 const norm=t=>t.replace(/\s+/g,' ').trim();
