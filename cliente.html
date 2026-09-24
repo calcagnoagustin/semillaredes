@@ -202,10 +202,12 @@ details.hist table{border:0;border-radius:0}
 .vm{flex:none;font-weight:600;color:var(--navy);font-variant-numeric:tabular-nums;white-space:nowrap}
 .vtot{margin:0 0 10px;font-size:15px;color:var(--tinta)}
 .vtot b{color:var(--navy)}
+.agregarW{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px;max-width:420px}
+.agregarW input{border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:11px 13px;font:inherit;font-size:15px;min-width:0}
 .agregarV{display:grid;grid-template-columns:150px 1fr 130px auto;gap:8px;margin-top:10px}
 .agregarV input{border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:11px 13px;font:inherit;font-size:15px;min-width:0}
 @media(max-width:640px){.agregarV{grid-template-columns:1fr 1fr}.agregarV #v_det{grid-column:1/-1;order:-1}}
-.agregarV button,.agregarT button{border:0;background:var(--oliva);color:#fff;font:inherit;font-weight:600;border-radius:10px;padding:11px 18px;cursor:pointer}
+.agregarW button,.agregarV button,.agregarT button{border:0;background:var(--oliva);color:#fff;font:inherit;font-weight:600;border-radius:10px;padding:11px 18px;cursor:pointer}
 .tar .it{cursor:pointer;transition:background .15s}
 .tar .it:hover{background:#FBF8F2}
 .mark{transition:all .15s}
@@ -409,6 +411,21 @@ function pintarTrafico(d){
 
   // ===== 1. TRAFICO =====
   if(hay('tr_visitas')||hay('a1_visitas')||hay('a2_visitas')||hay('a3_visitas')){
+  // --- waitlist: el cliente o Agus cargan el total; los jueves el cron calcula nuevos y costo por registro ---
+  if(d.cliente.waitlist_on){
+    const WL=d.waitlist||[]; const ult=WL[0]||null;
+    const fW=f=>{ const x=new Date(f); return String(x.getDate()).padStart(2,'0')+'/'+String(x.getMonth()+1).padStart(2,'0'); };
+    const uw=u?u.metricas:{}, aw=a?a.metricas:{};
+    h+=`<h2>Waitlist</h2><p class="sub">Cuánta gente se anotó. Actualizá el número cuando quieras: los jueves calculamos cuántos llegaron en el período y cuánto costó cada uno.</p><div class="tarj">
+      ${ult?card('Anotados al '+fW(ult.fecha), fmt(ult.total), null,0,true):''}
+      ${uw.wl_nuevos!=null?card('Nuevos en el período', fmt(uw.wl_nuevos), [uw.wl_nuevos, aw.wl_nuevos]):''}
+      ${uw.wl_costo!=null?card('Costo por registro', mon(uw.wl_costo,2), [uw.wl_costo, aw.wl_costo],2,false,true):''}
+    </div>
+    ${ult?'':'<p class="pista">Todavía no hay un número cargado. Poné cuántos anotados hay hoy.</p>'}
+    <div class="agregarW"><input id="wl_total" type="number" min="0" inputmode="numeric" placeholder="Anotados hoy"><button id="wl_add">Actualizar</button></div>`;
+    if(R.filter(r=>r.metricas.wl_total!=null).length>1)
+      h+=grafico('Anotados en la waitlist','Cómo viene creciendo la lista.',R.map(r=>r.metricas.wl_total??null),et,'#1A2456');
+  }
     h+=`<h2>Tráfico a la página</h2><p class="sub">Gente que llegó al sitio desde la campaña.</p><div class="tarj">
       ${card('Visitas totales', fmt(m.tr_visitas), [m.tr_visitas, ma.tr_visitas],0,true)}
       ${hay('tr_costo_visita')?card('Costo por visita', mon(m.tr_costo_visita,2), [m.tr_costo_visita, ma.tr_costo_visita],2,false,true):''}
@@ -1307,6 +1324,13 @@ function pintarResto(d,h){
     const r=await rpc('sub_activo_cliente_alta',{p_slug:slug,p_k:tok,p_titulo:t,p_url:$('a_url').value.trim()||null});
     if(r.ok) recargar(); else { aa.disabled=false; aa.textContent='Agregar activo'; }
   };
+  const wa=$('wl_add');
+  if(wa) wa.onclick=async()=>{
+    const v=parseInt(($('wl_total').value||'').replace(/\D/g,''),10); if(isNaN(v)) return;
+    wa.disabled=true; wa.textContent='…';
+    const r=await rpc('sub_waitlist_cargar',{p_slug:slug,p_k:tok,p_total:v});
+    if(r.ok) recargar(); else { wa.disabled=false; wa.textContent='Actualizar'; }
+  };
   const va=$('v_add');
   if(va) va.onclick=async()=>{
     const det=$('v_det').value.trim(), mt=$('v_monto').value.trim().replace(/\./g,'').replace(',','.');
@@ -1473,7 +1497,11 @@ const DICT={
 'Instagram':'Instagram','Tus números':'Your numbers','Recomendaciones':'Recommendations','Alertas':'Alerts',
 '@A qué número querés llegar':'What number do you want to reach','@Cómo querés llamarlo (opcional)':'What do you want to call it (optional)',
 '@Agregar algo que quieras hacer o pedirnos':'Add something you want to do or ask us for','@Nombre del activo. Por ejemplo: Mi carpeta de fotos':'Asset name. For example: My photo folder',
-'@Pegá el link (opcional)':'Paste the link (optional)','@Escribí acá…':'Write here…','@Borrar':'Delete','@Borrar nota':'Delete note','@Secciones':'Sections'
+'@Pegá el link (opcional)':'Paste the link (optional)','Waitlist':'Waitlist',
+'Cuánta gente se anotó. Actualizá el número cuando quieras: los jueves calculamos cuántos llegaron en el período y cuánto costó cada uno.':'How many people signed up. Update the number whenever you want: every Thursday we calculate how many joined in the period and what each one cost.',
+'Nuevos en el período':'New this period','Costo por registro':'Cost per sign-up','Actualizar':'Update',
+'Todavía no hay un número cargado. Poné cuántos anotados hay hoy.':'No number entered yet. Enter how many sign-ups there are today.',
+'Anotados en la waitlist':'Waitlist sign-ups','Cómo viene creciendo la lista.':'How the list is growing.','@Anotados hoy':'Sign-ups today','@Escribí acá…':'Write here…','@Borrar':'Delete','@Borrar nota':'Delete note','@Secciones':'Sections'
 };
 const MES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -1491,6 +1519,7 @@ const REGLAS=[
  [/^(\d{1,2}) de (enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)( de (\d{4}))?$/, (m,d,me,x,y)=>`${MONL[MES.indexOf(me)]} ${d}${y?', '+y:''}`],
  [/^Del (.+) al (.+?)(:.*)?$/, (m,a,b,c)=>`From ${a} to ${b}${c||''}`],
  [/^(\d\d\/\d\d) al (\d\d\/\d\d)$/, (m,a,b)=>`${a} to ${b}`],
+ [/^Anotados al (.+)$/, (m,a)=>`Sign-ups as of ${a}`],
  [/^([\d.,]+) de ([\d.,]+)$/, (m,a,b)=>`${a} of ${b}`],
 ];
 const norm=t=>t.replace(/\s+/g,' ').trim();
@@ -1537,10 +1566,11 @@ function decidir(){
   const eeuu=/^America\/(New_York|Chicago|Denver|Los_Angeles|Phoenix|Anchorage|Detroit|Boise|Indiana|Kentucky|North_Dakota|Juneau|Sitka|Nome|Yakutat|Metlakatla|Adak|Menominee)|^Pacific\/Honolulu/.test(tz);
   LANG = q==='en'||q==='es' ? q : (guardado || (modo==='en'||eeuu||/^en/i.test(navigator.language||'') ? 'en' : 'es'));
   document.documentElement.lang = LANG==='en'?'en':'es-AR';
-  boton(); aplicar();
+  try{ boton(); }catch(e){}
+  aplicar();
 }
 let t=null;
-new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTimeout(()=>{ if(LANG!==null) boton(); aplicar(); },30); }).observe(document.documentElement,{childList:true,subtree:true,characterData:true});
+new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTimeout(()=>{ if(LANG!==null){ try{ boton(); }catch(e){} } aplicar(); },30); }).observe(document.documentElement,{childList:true,subtree:true,characterData:true});
 })();
 </script>
 </body>
