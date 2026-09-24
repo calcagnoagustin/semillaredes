@@ -1005,7 +1005,7 @@ function pintarSteam(d){
   return h;
 }
 
-function pintar(d){
+function pintar(d){ window.__D=d;
   const R=d.reportes||[];
   const u=R[R.length-1]||null, a=R.length>1?R[R.length-2]:null;
   const ultimo=(k)=>{ for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null) return x; } return null; };
@@ -1434,6 +1434,114 @@ function graficoDia(dias, campo, titulo, leyenda, color, esPlata){
       <path d="${d}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>
       ${pts}${et}${dias_et}</svg></div>`;
 }
+</script>
+<script>
+/* ===== Idioma: status en ingles para clientes con idioma 'auto' (se abre desde EE.UU.) o 'en' ===== */
+(function(){
+const DICT={
+'Cargando…':'Loading…','Este informe se actualiza todos los jueves.':'This report is updated every Thursday.',
+'Este informe se actualiza todos los lunes.':'This report is updated every Monday.','Este informe se actualiza todos los martes.':'This report is updated every Tuesday.',
+'Este informe se actualiza todos los miércoles.':'This report is updated every Wednesday.','Este informe se actualiza todos los viernes.':'This report is updated every Friday.',
+'Los números que ves no son en vivo: corresponden al último período cerrado.':'These numbers are not live: they cover the last closed period.',
+'Tráfico a la página':'Website traffic','Los tres públicos':'The three audiences','Seguidores':'Followers','Inversión':'Investment',
+'Historial':'History','Hitos':'Milestones','Tareas':'Tasks','Activos':'Assets','Notas':'Notes','Consejos':'Tips','↑ Arriba':'↑ Top',
+'Gente que llegó al sitio desde la campaña.':'People who reached the site from the campaign.','Visitas totales':'Total visits',
+'Costo por visita':'Cost per visit','Invertido':'Spent','Personas alcanzadas':'People reached','Visitas':'Visits',
+'Cuánta gente llegó al sitio en cada período.':'How many people reached the site in each period.',
+'Cuánto cuesta cada visita. Mientras más baja la línea, mejor.':'What each visit costs. The lower the line, the better.',
+'Cómo rindió cada uno en este período.':'How each one performed in this period.',
+'1. Decisores institucionales':'1. Institutional decision-makers','Estados Unidos':'United States',
+'2. Profesionales MD/DO, PA, NP':'2. Professionals MD/DO, PA, NP','3. Estudiantes y trainees de salud':'3. Health students and trainees',
+'Alcance':'Reach','personas':'people','Visitas por público':'Visits by audience','Los tres públicos comparados.':'The three audiences compared.',
+'Público 1':'Audience 1','Público 2':'Audience 2','Público 3':'Audience 3','Crecimiento de la cuenta.':'Account growth.',
+'Nuevos en el período':'New this period','Visitas al perfil':'Profile visits','Conversión de visitas':'Visit conversion',
+'Costo por seguidor':'Cost per follower','Lo que se puso en pauta en este período.':'What went into ads this period.',
+'En tráfico':'On traffic','En seguidores':'On followers','Total':'Total','Inversión diaria':'Daily budget',
+'Todos los reportes.':'All reports.','Período':'Period','Costo x visita':'Cost per visit','Nuevos':'New','Seguidores en Instagram':'Instagram followers',
+'Seguidores nuevos por período':'New followers per period','Cómo viene creciendo la cuenta.':'How the account is growing.',
+'Las metas que nos pusimos para este proyecto. Podés sumar las tuyas.':'The goals we set for this project. You can add your own.',
+'Agregar hito':'Add milestone','¡Logrado!':'Achieved!','Tarea para el hogar':'Homework','Lo que ya está hecho y lo que sigue.':'What is done and what comes next.',
+'Agregar':'Add','Tocá una tarea para cambiarle el estado: pendiente, en curso o hecha. La × la borra.':'Tap a task to change its status: pending, in progress or done. The × deletes it.',
+'Pendiente':'Pending','En curso':'In progress','Hecha':'Done','Tus activos':'Your assets',
+'Tus enlaces a mano: carpetas, materiales, links importantes. Podés sumar los tuyos.':'Your links at hand: folders, materials, important links. You can add your own.',
+'Todavía no hay enlaces. Pegá el primero acá abajo.':'No links yet. Paste the first one below.','Agregar activo':'Add asset','Tus notas':'Your notes',
+'Dejanos cualquier cosa que quieras que tengamos en cuenta: una idea, una duda, algo que haya pasado en estos días.':'Leave us anything you want us to keep in mind: an idea, a question, something that happened these days.',
+'Guardar nota':'Save note','Consejos de la Inteligencia colectiva':'Tips from the collective intelligence',
+'Surgen de la experiencia de otros artistas de la comunidad y los procesa una inteligencia artificial entrenada en el Método Semilla. Todos los domingos el bot te manda nuevas recomendaciones.':'They come from the experience of others in the community, processed by an AI trained on the Semilla Method. Every Sunday you get new recommendations.',
+'Tres cosas para arrancar':'Three things to start with','Se actualiza todos los domingos. Cualquier duda, hablamos en la reunión.':'Updated every Sunday. Any questions, we can talk at the meeting.',
+'Cualquier duda sobre estos números, escribile a Agus.':'Any questions about these numbers, write to Agus.','Este link no es válido. Pedile uno nuevo a Agus.':'This link is not valid. Ask Agus for a new one.',
+'Instagram':'Instagram','Tus números':'Your numbers','Recomendaciones':'Recommendations','Alertas':'Alerts',
+'@A qué número querés llegar':'What number do you want to reach','@Cómo querés llamarlo (opcional)':'What do you want to call it (optional)',
+'@Agregar algo que quieras hacer o pedirnos':'Add something you want to do or ask us for','@Nombre del activo. Por ejemplo: Mi carpeta de fotos':'Asset name. For example: My photo folder',
+'@Pegá el link (opcional)':'Paste the link (optional)','@Escribí acá…':'Write here…','@Borrar':'Delete','@Borrar nota':'Delete note','@Secciones':'Sections'
+};
+const MES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONL=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const REGLAS=[
+ [/^(▲|▼)\s*([\d.,]+)% vs período anterior$/, (m,a,b)=>`${a} ${b}% vs previous period`],
+ [/^igual que el período anterior$/, ()=>'same as previous period'],
+ [/^Ver los (\d+) reportes$/, (m,a)=>`See all ${a} reports`],
+ [/^Ver el reporte$/, ()=>'See the report'],
+ [/^(.+?) · faltan (.+)$/, (m,a,b)=>`${a} · ${b} to go`],
+ [/^Hoy estás en (.+) · la meta es (.+) o menos$/, (m,a,b)=>`You're at ${a} · the goal is ${b} or less`],
+ [/^Hoy estás en (.+) · la meta es (.+)$/, (m,a,b)=>`You're at ${a} · the goal is ${b}`],
+ [/^Te falta bajar (.+)$/, (m,a)=>`${a} left to go down`],
+ [/^Te faltan (.+)$/, (m,a)=>`${a} to go`],
+ [/^(\d{1,2}) de (enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)( de (\d{4}))?$/, (m,d,me,x,y)=>`${MONL[MES.indexOf(me)]} ${d}${y?', '+y:''}`],
+ [/^Del (.+) al (.+?)(:.*)?$/, (m,a,b,c)=>`From ${a} to ${b}${c||''}`],
+ [/^(\d\d\/\d\d) al (\d\d\/\d\d)$/, (m,a,b)=>`${a} to ${b}`],
+ [/^([\d.,]+) de ([\d.,]+)$/, (m,a,b)=>`${a} of ${b}`],
+];
+const norm=t=>t.replace(/\s+/g,' ').trim();
+const fechas=t=>t.replace(/\b([0-3]\d)\/([01]\d)\b/g,(m,d,mo)=>{const i=+mo-1; return i>=0&&i<12?`${MON[i]} ${+d}`:m;});
+const numeros=t=>t.replace(/[1-9]\d{0,2}(?:\.\d{3})+(?:,\d+)?|\d+,\d+/g,x=>x.replace(/[.,]/g,c=>c==='.'?',':'.'));
+function tr(t,extra){
+  const k=norm(t); if(!k) return null;
+  let v=(extra&&extra[k])||DICT[k];
+  if(!v){ for(const [re,fn] of REGLAS){ const m=k.match(re); if(m){ v=fn(...m); break; } } }
+  v=numeros(fechas(v||k));
+  return v===k?null:v;
+}
+let LANG=null;
+function aplicar(raiz){
+  if(LANG!=='en') return;
+  const extra=(window.__D&&window.__D.cliente&&window.__D.cliente.traducciones)||{};
+  const w=document.createTreeWalker(raiz||document.body, NodeFilter.SHOW_TEXT|NodeFilter.SHOW_ELEMENT);
+  let n; while((n=w.nextNode())){
+    if(n.nodeType===1){
+      if(n.tagName==='SCRIPT'||n.tagName==='STYLE') continue;
+      for(const a of ['placeholder','title','aria-label']){ const v=n.getAttribute&&n.getAttribute(a); if(v&&!n['__tr_'+a]){ const x=DICT['@'+v]||tr(v,extra); if(x){ n.setAttribute(a,x); } n['__tr_'+a]=1; } }
+      continue;
+    }
+    if(n.__tr) continue;
+    const x=tr(n.textContent,extra); if(x) n.textContent=n.textContent.replace(n.textContent.trim(),x);
+    n.__tr=1;
+  }
+}
+function boton(){
+  if(!document.body){ setTimeout(boton,60); return; }
+  if(document.getElementById('idiomaBtn')) return;
+  const b=document.createElement('button'); b.id='idiomaBtn'; b.type='button';
+  b.textContent = LANG==='en' ? 'ES' : 'EN'; b.title = LANG==='en' ? 'Ver en español' : 'View in English';
+  b.setAttribute('style','position:fixed;z-index:50;top:calc(env(safe-area-inset-top,0px) + 12px);right:14px;border:1px solid rgba(26,36,86,.18);background:rgba(255,255,255,.92);color:#1A2456;border-radius:999px;padding:7px 13px;font:700 12px/1 Inter,system-ui,sans-serif;letter-spacing:1.5px;cursor:pointer');
+  b.onclick=()=>{ try{ localStorage.setItem('sr_idioma', LANG==='en'?'es':'en'); }catch(e){} location.reload(); };
+  document.body.appendChild(b);
+}
+function decidir(){
+  const c=window.__D&&window.__D.cliente; if(!c) return;
+  const modo=c.idioma||'es'; if(modo==='es') return;
+  let guardado=null; try{ guardado=localStorage.getItem('sr_idioma'); }catch(e){}
+  const q=new URLSearchParams(location.search).get('lang');
+  const tz=(Intl.DateTimeFormat().resolvedOptions().timeZone||'');
+  const eeuu=/^America\/(New_York|Chicago|Denver|Los_Angeles|Phoenix|Anchorage|Detroit|Boise|Indiana|Kentucky|North_Dakota|Juneau|Sitka|Nome|Yakutat|Metlakatla|Adak|Menominee)|^Pacific\/Honolulu/.test(tz);
+  LANG = q==='en'||q==='es' ? q : (guardado || (modo==='en'||eeuu||/^en/i.test(navigator.language||'') ? 'en' : 'es'));
+  document.documentElement.lang = LANG==='en'?'en':'es-AR';
+  boton(); aplicar();
+}
+let t=null;
+new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTimeout(()=>{ if(LANG!==null) boton(); aplicar(); },30); }).observe(document.documentElement,{childList:true,subtree:true,characterData:true});
+})();
 </script>
 </body>
 </html>
