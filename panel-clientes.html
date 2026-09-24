@@ -104,6 +104,7 @@ const CAMPOS_MIXTO={
  'Conjunto Seguidores Interior':[['si_inversion','Invertido'],['si_alcance','Alcance'],['si_clics','Clics'],['si_costo_clic','Costo x clic']],
  'Campaña a YouTube':[['ytad_visitas','Visitas al canal'],['ytad_costo_visita','Costo x visita'],['ytad_inversion','Invertido'],['ytad_alcance','Alcance'],['ytad_reproducciones','Reproducciones']],
  'Instagram':[['ig_followers_total','Seguidores'],['ig_followers_nuevos','Nuevos'],['ig_visitas','Visitas'],['ig_inversion','Inversión USD'],['ig_inversion_diaria','Inv. diaria'],['ig_costo_follower','Costo x seguidor']],
+ 'Segunda cuenta de Instagram':[['ed_nombre','Nombre (ej. Espacio Disparos)'],['ed_usuario','Usuario de Instagram'],['ed_followers_total','Seguidores'],['ed_followers_nuevos','Nuevos'],['ed_visitas','Visitas al perfil'],['ed_inversion','Inversión'],['ed_costo_follower','Costo por seguidor']],
  'Conjuntos de seguidores':[['igc1_nombre','Conjunto 1'],['igc1_inversion','Inversión 1'],['igc1_visitas','Visitas al perfil 1'],['igc2_nombre','Conjunto 2'],['igc2_inversion','Inversión 2'],['igc2_visitas','Visitas al perfil 2'],['igc3_nombre','Conjunto 3'],['igc3_inversion','Inversión 3'],['igc3_visitas','Visitas al perfil 3'],['igc4_nombre','Conjunto 4'],['igc4_inversion','Inversión 4'],['igc4_visitas','Visitas al perfil 4']],
  'Campaña de mensajes':[['msj_nombre','Nombre de la campaña'],['msj_mensajes','Mensajes'],['msj_inversion','Inversión'],['msj_costo_mensaje','Costo x mensaje'],['msj_potenciales','Potenciales'],['msj_seguidores','Seguidores que trajo']],
  'Ventas':[['msj_conversiones','Ventas'],['msj_costo_conversion','Costo x venta'],['msj_ingreso','Ingreso'],['msj_roas','ROAS']],
@@ -249,7 +250,7 @@ function pintar(){
     <div class="grid"><div><label>Desde</label><input type="date" id="f_desde"></div><div><label>Hasta</label><input type="date" id="f_hasta"></div></div>`;
   Object.entries(CAMPOS).forEach(([plat,cs])=>{
     h+=`<div class="plat">${plat}</div><div class="grid">`;
-    cs.forEach(([k,l])=>{ h+=`<div><label>${l}</label><input type="text" inputmode="${/_(nombre|texto)$/.test(k)?'text':'decimal'}" id="m_${k}" value="${ult&&ult.metricas[k]!=null?'':''}"></div>`; });
+    cs.forEach(([k,l])=>{ h+=`<div><label>${l}</label><input type="text" inputmode="${/_(nombre|texto|usuario)$/.test(k)?'text':'decimal'}" id="m_${k}" value="${ult&&ult.metricas[k]!=null?'':''}"></div>`; });
     h+=`</div>`;
   });
   h+=`<div class="acc"><button onclick="guardarReporte()">Guardar semana</button></div><div id="g_out"></div></div>`;
@@ -404,7 +405,7 @@ async function guardarReporte(){
   if(!desde||!hasta){ alert('Faltan las fechas'); return; }
   const m={};
   Object.values(CAMPOS).flat().forEach(([k])=>{ let v=$('m_'+k).value.trim(); if(v==='') return;
-    if(/_(nombre|texto)$/.test(k)){ m[k]=v; return; }
+    if(/_(nombre|texto|usuario)$/.test(k)){ m[k]=v; return; }
     v=v.replace(/\s/g,'').replace(/[^\d.,-]/g,'');
     const hayC=v.includes(','), hayP=v.includes('.');
     if(hayC&&hayP) v = v.lastIndexOf(',')>v.lastIndexOf('.') ? v.replace(/\./g,'').replace(',','.') : v.replace(/,/g,'');
