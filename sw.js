@@ -1,4 +1,4 @@
-// Service worker de Semilla — v3
+// Service worker de Semilla — v4 (con avisos push)
 // Regla: el HTML y los datos SIEMPRE se piden a la red.
 // El cache solo sirve de respaldo cuando no hay internet.
 const CACHE = 'semilla-v4';
@@ -36,4 +36,27 @@ self.addEventListener('fetch', e => {
     fetch(req).then(res => { const c = res.clone(); caches.open(CACHE).then(k => k.put(req, c)).catch(()=>{}); return res; })
       .catch(() => caches.match(req))
   );
+});
+
+// --- avisos push: cada aviso le llega solo al cliente que los activo ---
+self.addEventListener('push', e => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (_) { d = { cuerpo: e.data ? e.data.text() : '' }; }
+  e.waitUntil(self.registration.showNotification(d.titulo || 'Semilla Redes', {
+    body: d.cuerpo || '',
+    icon: '/icono-192.png',
+    badge: '/icono-192.png',
+    tag: d.tag || 'semilla',
+    renotify: true,
+    data: { url: d.url || '/' }
+  }));
+});
+
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const url = (e.notification.data && e.notification.data.url) || '/';
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => {
+    for (const c of cs) { if (c.url.startsWith(url) && 'focus' in c) { c.postMessage('recargar'); return c.focus(); } }
+    return self.clients.openWindow(url);
+  }));
 });
