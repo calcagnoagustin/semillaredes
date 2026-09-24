@@ -269,6 +269,14 @@ function pintar(){
     <h3>Agregar</h3><div class="agregar"><input id="t_tit" placeholder="Título de la tarea"><button class="sec" onclick="nuevaTarea()">Agregar</button></div>
     ${notasHTML(c,'tareas')}</div>`;
 
+  if(c.waitlist_on){
+    const WL=c.waitlist||[];
+    h+=`<div class="card"><h2>Waitlist</h2>
+      <p class="meta">Cargá cuántos anotados hay ahora. Los jueves el cron calcula los nuevos del período y el costo por registro.</p>
+      ${WL.length?WL.slice(0,6).map(w=>`<div class="fila" style="grid-template-columns:110px 1fr"><span>${new Date(w.fecha).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'})} ${new Date(w.fecha).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</span><span class="t"><b>${w.total}</b> anotados${w.creada_por==='cliente'?' <span style="color:var(--rosa);font-size:11px">· lo cargó el cliente</span>':''}</span></div>`).join(''):'<p class="meta">Todavía no hay números cargados.</p>'}
+      <div class="agregar" style="grid-template-columns:1fr auto;max-width:360px;margin-top:10px"><input id="wl_n" type="number" min="0" placeholder="Anotados hoy"><button class="sec" onclick="cargarWaitlist()">Guardar</button></div></div>`;
+  }
+
   h+=`<div class="card"><h2>Campaña terminada</h2>
     <p class="meta">Cuando una campaña termina, cargá los totales. El status la muestra cerrada, con estos números, y deja de mostrarla por período.</p>
     <div class="agregar" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">
@@ -423,6 +431,7 @@ async function cerrarCampana(){
   const r=await rpc('sub_campana_fin',{p_admin:admin,p_slug:sel,p_nombre:nombre,p_datos:datos});
   if(r.ok){ alert('Guardada como terminada.'); entrar(); } else alert('No se pudo guardar.');
 }
+async function cargarWaitlist(){ const v=parseInt(($('wl_n').value||'').replace(/\D/g,''),10); if(isNaN(v)) return; const r=await rpc('sub_waitlist_admin',{p_admin:admin,p_slug:sel,p_total:v}); if(r.ok) entrar(); else alert('No se pudo guardar'); }
 async function nuevaVenta(){ const d=$('vl_d').value.trim(), m=$('vl_m').value.trim().replace(/\./g,'').replace(',','.'); if(!d&&!m)return; await rpc('sub_vlog_admin_alta',{p_admin:admin,p_slug:sel,p_fecha:$('vl_f').value||null,p_detalle:d,p_monto:m===''?null:Number(m)}); entrar(); }
 async function nuevaTarea(){ const t=$('t_tit').value.trim(); if(!t)return; await rpc('sub_tarea_alta',{p_admin:admin,p_slug:sel,p_titulo:t}); entrar(); }
 async function nuevoActivo(){ const t=$('a_tit').value.trim(); if(!t)return; await rpc('sub_activo_alta',{p_admin:admin,p_slug:sel,p_titulo:t,p_url:$('a_url').value.trim()}); entrar(); }
