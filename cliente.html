@@ -481,6 +481,7 @@ function pintarTrafico(d){
       ${card('En tráfico',mon(m.tr_inversion,2),[m.tr_inversion,ma.tr_inversion],2)}
       ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
       ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.tr_inversion||0),2),null,2,true)}
+      ${(hay('tr_inversion_diaria')||hay('ig_inversion_diaria'))?card('Inversión diaria',mon(Number(m.tr_inversion_diaria||0)+Number(m.ig_inversion_diaria||0),2),null,2):''}
     </div>`;
   }
 
