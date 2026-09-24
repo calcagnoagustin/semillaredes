@@ -16,12 +16,12 @@
 <style>
 html,body{margin:0;height:100%;background:#F2EDE4;overflow:hidden}
 iframe{border:0;width:100%;height:100%;display:block}
-#instalar{position:fixed;left:14px;right:14px;bottom:14px;background:#1A2456;color:#F2EDE4;border-radius:14px;padding:15px 18px;display:none;align-items:center;gap:12px;font-family:system-ui,sans-serif;box-shadow:0 8px 28px rgba(0,0,0,.25);z-index:99}
-#instalar img{width:42px;height:42px;border-radius:10px;flex:none}
-#instalar .tx{flex:1;font-size:14px;line-height:1.4}
-#instalar .tx b{display:block;font-size:15px;margin-bottom:2px}
-#instalar button{border:0;background:#7A1F3A;color:#fff;font:inherit;font-weight:600;font-size:14px;border-radius:9px;padding:10px 15px;cursor:pointer}
-#instalar .x{background:transparent;color:#8A8697;padding:6px 4px;font-size:19px}
+#instalar,#avisos{position:fixed;left:14px;right:14px;bottom:14px;background:#1A2456;color:#F2EDE4;border-radius:14px;padding:15px 18px;display:none;align-items:center;gap:12px;font-family:system-ui,sans-serif;box-shadow:0 8px 28px rgba(0,0,0,.25);z-index:99}
+#instalar img,#avisos img{width:42px;height:42px;border-radius:10px;flex:none}
+#instalar .tx,#avisos .tx{flex:1;font-size:14px;line-height:1.4}
+#instalar .tx b,#avisos .tx b{display:block;font-size:15px;margin-bottom:2px}
+#instalar button,#avisos button{border:0;background:#7A1F3A;color:#fff;font:inherit;font-weight:600;font-size:14px;border-radius:9px;padding:10px 15px;cursor:pointer}
+#instalar .x,#avisos .x{background:transparent;color:#8A8697;padding:6px 4px;font-size:19px}
 </style>
 </head>
 <body>
@@ -32,6 +32,13 @@ iframe{border:0;width:100%;height:100%;display:block}
   <span class="tx"><b>Tenelo a mano</b><span id="msj">Agregalo a tu pantalla de inicio y entrá con un toque.</span></span>
   <button id="btn">Agregar</button>
   <button class="x" id="cerrar">×</button>
+</div>
+
+<div id="avisos">
+  <img src="/icono-192.png" alt="">
+  <span class="tx"><b>Enterate cuando esté tu reporte</b><span id="msjAv">Te avisamos acá mismo cada vez que actualizamos tu status.</span></span>
+  <button id="btnAv">Activar</button>
+  <button class="x" id="cerrarAv">×</button>
 </div>
 
 <script>
@@ -83,6 +90,34 @@ document.getElementById('cerrar').onclick=()=>{
   caja.style.display='none';
   localStorage.setItem('sr_install_off','1');
 };
+
+// --- avisos push: se guardan por cliente, asi cada aviso le llega solo a el ---
+const VAPID='BMEkI5u9yPV48NpVPbC2svp3QnMUCcmUALIQceMBf7LnHZqHguiYU8hUzL6VgfZ2KhtymINg2reReO3kgPO1ynU';
+const cajaAv=document.getElementById('avisos');
+function b64u(t){ const p='='.repeat((4-t.length%4)%4); const r=atob((t+p).replace(/-/g,'+').replace(/_/g,'/')); return Uint8Array.from([...r].map(ch=>ch.charCodeAt(0))); }
+async function suscribir(){
+  const reg=await navigator.serviceWorker.ready;
+  let sub=await reg.pushManager.getSubscription();
+  if(!sub) sub=await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:b64u(VAPID)});
+  await fetch('https://fdrxsjphlvvwwknnrjtx.supabase.co/rest/v1/rpc/sub_push_alta',{method:'POST',
+    headers:{'apikey':'sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17','Content-Type':'application/json'},
+    body:JSON.stringify({p_slug:'mynk',p_k:'8c39a233f58f',p_sub:sub.toJSON(),p_ua:navigator.userAgent})});
+}
+const pushOK=('serviceWorker' in navigator)&&('PushManager' in window)&&('Notification' in window);
+if(pushOK){
+  if(Notification.permission==='granted') suscribir().catch(()=>{});   // vuelve a registrar el celular por si cambio
+  else if(Notification.permission==='default' && !localStorage.getItem('sr_push_off') && (yaInstalada || !esIOS)){
+    setTimeout(()=>{ if(caja.style.display!=='flex') cajaAv.style.display='flex'; }, 3000);
+  }
+}
+document.getElementById('btnAv').onclick=async()=>{
+  try{
+    const p=await Notification.requestPermission();
+    if(p==='granted'){ await suscribir(); document.getElementById('msjAv').textContent='Listo. Te vamos a avisar cuando esté tu reporte.'; document.getElementById('btnAv').style.display='none'; setTimeout(()=>cajaAv.style.display='none',2500); }
+    else cajaAv.style.display='none';
+  }catch(e){ cajaAv.style.display='none'; }
+};
+document.getElementById('cerrarAv').onclick=()=>{ cajaAv.style.display='none'; localStorage.setItem('sr_push_off','1'); };
 </script>
 </body>
 </html>
