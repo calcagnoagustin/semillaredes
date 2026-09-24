@@ -744,7 +744,7 @@ function pintarMixto(d){
 
   // cada tarjeta aparece solo si hay dato: nada de cajas vacias
   if(hay('ig_followers_total')||hay('ig_inversion')){
-  h+=`<h2>Instagram</h2><p class="sub">Crecimiento de la cuenta.</p><div class="tarj">
+  h+=`<h2>${m.ig_nombre||'Instagram'}</h2><p class="sub">${m.ig_usuario?'@'+m.ig_usuario+' · ':''}Crecimiento de la cuenta.</p><div class="tarj">
     ${hay('ig_followers_total')?card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total]):''}
     ${hay('ig_followers_nuevos')?card('Nuevos en el período', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos]):''}
     ${hay('ig_visitas')?card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas]):''}
@@ -785,6 +785,21 @@ function pintarMixto(d){
       h+=grafico('Visitas al canal','Gente que llegó a YouTube desde los anuncios.',R.map(r=>r.metricas.ytad_visitas??null),et,'#7A1F3A');
   }
 
+  // --- segunda cuenta de Instagram del mismo cliente (prefijo ed_), agrupada con su campaña de mensajes ---
+  if(hay('ed_followers_total')||hay('ed_inversion')||hay('ed_followers_nuevos')){
+    const ue=[...R].reverse().find(r=>r.metricas.ed_followers_nuevos!=null&&Number(r.metricas.ed_visitas)>0);
+    const convE=ue?Number(ue.metricas.ed_followers_nuevos)/Number(ue.metricas.ed_visitas)*100:null;
+    h+=`<h2>${m.ed_nombre||'Segunda cuenta'}</h2><p class="sub">${m.ed_usuario?'@'+m.ed_usuario+' · ':''}Crecimiento de la cuenta y lo que trajo su campaña de seguidores.</p><div class="tarj">
+      ${hay('ed_followers_total')?card('Seguidores', fmt(m.ed_followers_total), [m.ed_followers_total, ma.ed_followers_total]):''}
+      ${hay('ed_followers_nuevos')?card('Nuevos en el período', fmt(m.ed_followers_nuevos), [m.ed_followers_nuevos, ma.ed_followers_nuevos]):''}
+      ${hay('ed_visitas')?card('Visitas al perfil', fmt(m.ed_visitas), [m.ed_visitas, ma.ed_visitas]):''}
+      ${convE!=null?card('Conversión de visitas', fmt(convE,1)+'%', null,1):''}
+      ${hay('ed_costo_follower')?card('Costo por seguidor', mon(m.ed_costo_follower,2), [m.ed_costo_follower, ma.ed_costo_follower],2,true,true):''}
+      ${hay('ed_inversion')&&!hay('ed_costo_follower')?card('Invertido en seguidores', mon(m.ed_inversion,0), [m.ed_inversion, ma.ed_inversion],0):''}
+    </div>`;
+    if(R.filter(r=>r.metricas.ed_followers_total!=null).length>1)
+      h+=grafico('Seguidores de '+(m.ed_nombre||'la cuenta'),'Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ed_followers_total??null),et,'#87863A');
+  }
   const campFin = m.msj_nombre ? ((d.cliente.ventas||{})[m.msj_nombre]||null) : null;
   if(campFin && campFin.terminada){
     const F=campFin;
@@ -806,7 +821,7 @@ function pintarMixto(d){
       ${card('Mensajes', fmt(m.msj_mensajes), [m.msj_mensajes, ma.msj_mensajes],0,true)}
       ${card('Costo por mensaje', mon(m.msj_costo_mensaje,2), [m.msj_costo_mensaje, ma.msj_costo_mensaje],2,false,true)}
       ${card('Invertido', mon(m.msj_inversion,2), [m.msj_inversion, ma.msj_inversion],2)}
-      ${hay('msj_seguidores')?card('Seguidores que trajo', fmt(m.msj_seguidores), [m.msj_seguidores, ma.msj_seguidores]):''}
+      ${u&&u.metricas.msj_seguidores!=null?card('Seguidores que trajo', fmt(u.metricas.msj_seguidores), [u.metricas.msj_seguidores, ma.msj_seguidores]):''}
     </div>`;
     h+=bloqueVentas(d, m.msj_nombre||'Campaña de mensajes', R.filter(r=>(r.metricas.msj_nombre||'Campaña de mensajes')===(m.msj_nombre||'Campaña de mensajes')).reduce((t,r)=>t+Number(r.metricas.msj_inversion||0),0));
     h+=grafico('Mensajes','Cuánta gente escribió en cada período.',R.map(r=>r.metricas.msj_mensajes),et,'#87863A');
@@ -840,7 +855,7 @@ function pintarMixto(d){
     h+=grafico('Costo por interacción','Cuánto cuesta cada reacción. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.int_costo),et,'#E2767C',true);
   }
 
-  const hayVentas = R.some(r=>r.metricas.msj_conversiones!=null || r.metricas.msj_ingreso!=null);
+  const hayVentas = !!u && (u.metricas.msj_conversiones!=null || u.metricas.msj_ingreso!=null);
   if(hayVentas){
     h+=`<h2>Ventas</h2><p class="sub">Lo que las consultas terminaron generando.</p><div class="tarj">
       ${card('Ventas', fmt(m.msj_conversiones), [m.msj_conversiones, ma.msj_conversiones])}
@@ -853,9 +868,10 @@ function pintarMixto(d){
 
   {
     const cu=u?u.metricas:{}, ca=a?a.metricas:{};
-    const tot=Number(cu.ig_inversion||0)+Number(cu.msj_inversion||0)+Number(cu.int_inversion||0)+Number(cu.tk_inversion||0);
+    const tot=Number(cu.ig_inversion||0)+Number(cu.ed_inversion||0)+Number(cu.msj_inversion||0)+Number(cu.int_inversion||0)+Number(cu.tk_inversion||0);
     if(tot>0) h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
-      ${cu.ig_inversion!=null?card('En seguidores',mon(cu.ig_inversion,2),[cu.ig_inversion,ca.ig_inversion],2):''}
+      ${cu.ig_inversion!=null?card('En seguidores'+(m.ig_nombre?' de '+m.ig_nombre:''),mon(cu.ig_inversion,2),[cu.ig_inversion,ca.ig_inversion],2):''}
+      ${cu.ed_inversion!=null?card('En seguidores de '+(m.ed_nombre||'la segunda cuenta'),mon(cu.ed_inversion,2),[cu.ed_inversion,ca.ed_inversion],2):''}
       ${cu.msj_inversion!=null?card('En '+(cu.msj_nombre||m.msj_nombre||'consultas'),mon(cu.msj_inversion,2),[cu.msj_inversion,ca.msj_inversion],2):''}
       ${cu.int_inversion!=null?card('En interacción',mon(cu.int_inversion,2),[cu.int_inversion,ca.int_inversion],2):''}
       ${cu.tk_inversion!=null?card('En '+(cu.tk_nombre||m.tk_nombre||'la obra'),mon(cu.tk_inversion,2),[cu.tk_inversion,ca.tk_inversion],2):''}
