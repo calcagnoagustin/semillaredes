@@ -431,6 +431,8 @@
     }
 
     @media (max-width: 768px) {
+      .testimonios { padding: 60px 24px; }
+      .testimonios-grid { grid-template-columns: 1fr; }
       .mini-bio { padding: 60px 24px; }
       .mini-bio-inner { flex-direction: column; gap: 24px; }
       .mini-bio-avatar { width: 120px; height: 120px; }
@@ -752,6 +754,62 @@
       .que-es { padding: 60px 24px; }
       footer { padding: 32px 24px; flex-direction: column; text-align: center; }
     }
+    .testimonios {
+      padding: 80px 48px;
+      background: var(--cream-dark);
+    }
+
+    .testimonios-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .testimonios h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 48px;
+    }
+
+    .testimonios-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .testi-card {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 32px 28px;
+    }
+
+    .testi-quote {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #444;
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+
+    .testi-stars { color: #E2A93B; font-size: 15px; letter-spacing: 2px; display:block; margin-bottom: 12px; }
+    .testi-sub { font-size: 15px; color: #555; margin: -32px 0 40px; }
+    .testi-sub a { color: var(--navy); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--navy); }
+    .testimonios h2 { margin-bottom: 44px; }
+    .testi-author {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: 0.05em;
+    }
+
+    .testi-role {
+      font-size: 12px;
+      color: var(--rose);
+      margin-top: 2px;
+    }
+
+
   </style>
 <!-- Meta Pixel Code -->
 <script>
@@ -1157,6 +1215,52 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
   </section>
 
   <!-- CTA FINAL -->
+  <section class="testimonios">
+    <div class="testimonios-inner">
+      <p class="section-label" style="color:var(--olive);letter-spacing:0.15em;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:12px;">Opiniones</p>
+      <h2>Lo que dicen en Google: 5,0 de 5</h2>
+      <p class="testi-sub">13 reseñas de artistas y proyectos que trabajaron con Semilla. <a href="https://www.google.com/maps/search/semillaredes+agencia+de+marketing" target="_blank" rel="noopener">Ver todas en Google →</a></p>
+      <div class="testimonios-grid">
+        <div class="testi-card">
+          <span class="testi-stars" aria-label="5 estrellas">★★★★★</span>
+          <p class="testi-quote">"La formación ofrecida en Semilla Redes es una gran herramienta, una bajada a tierra para desarrollarnos como artistas en este nuevo mundo virtual en el que todos vivimos."</p>
+          <div class="testi-author">Joaquin Bosisio</div>
+          <div class="testi-role">Reseña en Google</div>
+        </div>
+        <div class="testi-card">
+          <span class="testi-stars" aria-label="5 estrellas">★★★★★</span>
+          <p class="testi-quote">"Muy bueno lo que da Agus para artistas, me hizo ver mi proyecto desde otro lugar y al cambiar las perspectivas el proyecto artístico evoluciona y empecé a tener más claridad y obtener mejores resultados."</p>
+          <div class="testi-author">Mayra Dómine</div>
+          <div class="testi-role">Reseña en Google</div>
+        </div>
+        <div class="testi-card">
+          <span class="testi-stars" aria-label="5 estrellas">★★★★★</span>
+          <p class="testi-quote">"Si sos artista, Semillaredes es el mejor lugar, te soluciona las redes y sus cursos son amenos y divertidos."</p>
+          <div class="testi-author">Maria Laura Delgue</div>
+          <div class="testi-role">Reseña en Google</div>
+        </div>
+        <div class="testi-card">
+          <span class="testi-stars" aria-label="5 estrellas">★★★★★</span>
+          <p class="testi-quote">"Excelente! Mucha información específica para artistas y conocimiento del medio. Muy recomendable!!"</p>
+          <div class="testi-author">Soledad Lazcano</div>
+          <div class="testi-role">Reseña en Google</div>
+        </div>
+        <div class="testi-card">
+          <span class="testi-stars" aria-label="5 estrellas">★★★★★</span>
+          <p class="testi-quote">"Muy recomendable esta propuesta!! Excelente la didáctica y generosidad de Agustín."</p>
+          <div class="testi-author">Carolina di Paola</div>
+          <div class="testi-role">Reseña en Google</div>
+        </div>
+        <div class="testi-card">
+          <span class="testi-stars" aria-label="5 estrellas">★★★★★</span>
+          <p class="testi-quote">"Hace bastante que trabajo mi proyecto con Semillaredes, y realmente es excelente. Lo recomiendo al 100%."</p>
+          <div class="testi-author">A N G E</div>
+          <div class="testi-role">Reseña en Google</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="cta-final">
     <h2>El nicho ya existe.<br><em>Ocupalo vos.</em></h2>
     <p>El sector cultural necesita CMs que lo entiendan de verdad. Con Semilla aprendés a ser uno de ellos.</p>
