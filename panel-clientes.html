@@ -272,7 +272,7 @@ function pintar(){
   if(c.waitlist_on){
     const WL=c.waitlist||[];
     h+=`<div class="card"><h2>Waitlist</h2>
-      <p class="meta">Cargá cuántos anotados hay ahora. Los jueves el cron calcula los nuevos del período y el costo por registro.</p>
+      <p class="meta">Cargá el total de anotados una vez, antes de cada jueves (vale la última carga). El jueves el cron cierra el período: total, nuevos y costo por registro.</p>
       ${WL.length?WL.slice(0,6).map(w=>`<div class="fila" style="grid-template-columns:110px 1fr"><span>${new Date(w.fecha).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'})} ${new Date(w.fecha).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</span><span class="t"><b>${w.total}</b> anotados${w.creada_por==='cliente'?' <span style="color:var(--rosa);font-size:11px">· lo cargó el cliente</span>':''}</span></div>`).join(''):'<p class="meta">Todavía no hay números cargados.</p>'}
       <div class="agregar" style="grid-template-columns:1fr auto;max-width:360px;margin-top:10px"><input id="wl_n" type="number" min="0" placeholder="Anotados hoy"><button class="sec" onclick="cargarWaitlist()">Guardar</button></div></div>`;
   }
