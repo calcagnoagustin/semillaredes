@@ -135,7 +135,7 @@ function pintarMenu(){
     <button class="mb" data-s="reportes">Cargar semana</button>
     <button class="mb" data-s="patrones">Patrones</button>
     <button class="mb" data-s="playbook">Playbook <span class="n" id="pbNuevos"></span></button>
-    <button class="mb" data-s="playbook">Playbook <span class="n" id="pbNuevos"></span></button>`;
+    <button class="mb" data-s="ranking">Ranking <span class="n">costo por seguidor ↗</span></button>`;
   document.querySelectorAll('.mb').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('.mb').forEach(x=>x.classList.remove('on')); b.classList.add('on');
     const s=b.dataset.s;
@@ -143,6 +143,7 @@ function pintarMenu(){
     if(s==='setup') abrirPanel('https://semillaredes.com/panel-setup.html');
     if(s==='reportes') abrirPanel('https://semillaredes.com/panel-clientes.html');
     if(s==='playbook') abrirPanel('https://semillaredes.com/playbook.html');
+    if(s==='ranking'){ window.open('https://claude.ai/artifact/E35vcHbP5getYetxWxhzGd','_blank'); b.classList.remove('on'); document.querySelector('.mb[data-s="clientes"]').classList.add('on'); }
     if(s==='patrones') abrirPanel('https://semillaredes.com/panel-setup.html#patrones');
   });
 }
