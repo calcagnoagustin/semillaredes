@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1A2456">
+<title>Campaña · Semilla Redes</title>
+<link rel="icon" href="/icono-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--crema:#F2EDE4;--navy:#1A2456;--vino:#7A1F3A;--rosa:#E2767C;--oliva:#87863A;--tinta:#24242C;--mute:#6B6878}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--crema);color:var(--tinta);font-family:Inter,system-ui,sans-serif}
+main{max-width:760px;margin:0 auto;padding:calc(40px + env(safe-area-inset-top)) 20px calc(48px + env(safe-area-inset-bottom))}
+.kick{display:flex;align-items:center;gap:8px;font-weight:700;font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--oliva);margin:0 0 10px}
+.kick img{width:16px;height:16px;border-radius:4px}
+h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;color:var(--navy);font-size:34px;line-height:1.15;margin:0 0 8px}
+.meta{color:var(--mute);font-size:15px;margin:0 0 28px}
+h2{font-family:'Playfair Display',Georgia,serif;font-weight:600;color:var(--navy);font-size:24px;margin:36px 0 6px}
+p.sub{color:var(--mute);font-size:15px;margin:0 0 16px;line-height:1.5}
+.tarj{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:640px){.tarj.cuatro{grid-template-columns:repeat(4,1fr)}}
+.card{background:#fff;border-radius:14px;padding:18px 18px 16px}
+.card .lab{font-size:13px;color:var(--mute);margin:0 0 8px}
+.card .val{font-family:'Playfair Display',Georgia,serif;font-size:28px;color:var(--navy);line-height:1.1}
+.card.dest{background:var(--navy)}
+.card.dest .lab{color:#B9B4C4}.card.dest .val{color:var(--crema)}
+.pista{background:#fff;border-radius:14px;padding:16px 18px;color:var(--mute);font-size:15px;line-height:1.5}
+.fila{display:grid;grid-template-columns:1fr auto;gap:8px;max-width:440px;margin-top:6px}
+.fila input{border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:12px 14px;font:inherit;font-size:16px;min-width:0}
+.fila button{background:var(--navy);color:var(--crema);border:0;border-radius:10px;padding:12px 18px;font:700 15px Inter,system-ui,sans-serif;cursor:pointer}
+.roas{margin-top:14px}
+.roas .explica{font-size:15px;color:var(--tinta);margin:10px 2px 0;line-height:1.5}
+footer{margin-top:44px;text-align:center;font-size:11px;font-weight:700;letter-spacing:3px;color:var(--navy)}
+.err{padding:60px 0;text-align:center;color:var(--mute)}
+</style>
+</head>
+<body>
+<main id="app"><p class="err">Cargando…</p></main>
+<script>
+const SB='https://fdrxsjphlvvwwknnrjtx.supabase.co', KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
+const q=new URLSearchParams(location.search), COD=q.get('c'), TOK=q.get('k');
+const rpc=(fn,a)=>fetch(`${SB}/rest/v1/rpc/${fn}`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(a)}).then(r=>r.json());
+const nf=(v,d=0)=>Number(v).toLocaleString('es-AR',{minimumFractionDigits:d,maximumFractionDigits:d});
+let MON='ARS'; const mon=(v,d=0)=>(MON==='ARS'?'$ ':'USD ')+nf(v,d);
+const fecha=s=>{ if(!s) return ''; const x=new Date(s.length===10?s+'T12:00':s); return String(x.getDate()).padStart(2,'0')+'/'+String(x.getMonth()+1).padStart(2,'0'); };
+const hora=s=>{ const x=new Date(s); return x.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}); };
+const card=(lab,val,dest)=>`<div class="card${dest?' dest':''}"><p class="lab">${lab}</p><div class="val">${val}</div></div>`;
+async function cargar(){
+  const d=await rpc('camp_get',{p_codigo:COD,p_k:TOK});
+  const app=document.getElementById('app');
+  if(!d||d.error){ app.innerHTML='<p class="err">Este link no es válido. Pedile uno nuevo a Agus.</p>'; return; }
+  MON=d.moneda||'ARS'; document.title=d.nombre+' · Semilla Redes';
+  const m=d.metricas||{}, inv=Number(m.inversion||0), v=d.vendido!=null?Number(d.vendido):null;
+  const hay=m.alcance!=null||m.inversion!=null;
+  let h=`<p class="kick"><img src="/icono-192.png" alt="">Campaña · ${d.cliente}</p>
+    <h1>${d.nombre}</h1>
+    <p class="meta">${m.desde?'Desde el '+fecha(m.desde):''}${m.inversion_diaria?' · '+mon(m.inversion_diaria)+' por día':''}${d.actualizado?' · Actualizado el '+fecha(d.actualizado)+' a las '+hora(d.actualizado):''}</p>
+    <h2>Cómo viene</h2><p class="sub">Todo lo acumulado desde que arrancó la campaña.</p>`;
+  h+= hay ? `<div class="tarj cuatro">
+      ${card('Alcance', nf(m.alcance||0))}
+      ${card('Comentarios', nf(m.comentarios||0), true)}
+      ${card('Inversión', mon(inv))}
+      ${card('Costo por comentario', m.costo_comentario!=null?mon(m.costo_comentario,2):'—')}
+    </div>` : `<div class="pista">La campaña recién arrancó. Los números aparecen en la próxima actualización.</div>`;
+  h+=`<h2>Lo que se vendió</h2><p class="sub">Cargá el monto total vendido gracias a esta campaña. El ROAS se calcula solo.</p>
+    <div class="fila"><input id="monto" inputmode="decimal" placeholder="Monto total vendido" value="${v!=null?nf(v):''}"><button id="guardar">Guardar</button></div>`;
+  if(v!=null && inv>0){
+    const r=v/inv;
+    h+=`<div class="roas"><div class="tarj">${card('Total vendido', mon(v))}${card('ROAS', nf(r,2), true)}</div>
+      <p class="explica">Por cada ${MON==='ARS'?'$1':'USD 1'} invertido volvieron <b>${MON==='ARS'?'$':'USD '}${nf(r,2)}</b>.${d.vendido_en?' Última carga: '+fecha(d.vendido_en)+'.':''}</p></div>`;
+  } else if(v!=null){
+    h+=`<div class="roas"><div class="tarj">${card('Total vendido', mon(v))}</div><p class="explica">El ROAS aparece cuando la campaña tenga inversión registrada.</p></div>`;
+  }
+  h+=`<footer>SEMILLA REDES</footer>`;
+  app.innerHTML=h;
+  document.getElementById('guardar').onclick=async()=>{
+    const raw=document.getElementById('monto').value.trim(); if(!raw) return;
+    const n=parseFloat(raw.includes(',')?raw.replace(/\./g,'').replace(',','.'):(/^\d{1,3}(\.\d{3})+$/.test(raw)?raw.replace(/\./g,''):raw));
+    if(isNaN(n)) return;
+    const b=document.getElementById('guardar'); b.disabled=true; b.textContent='…';
+    const r=await rpc('camp_vendido',{p_codigo:COD,p_k:TOK,p_monto:n});
+    if(r&&r.ok) cargar(); else { b.disabled=false; b.textContent='Guardar'; }
+  };
+}
+cargar();
+</script>
+</body>
+</html>
