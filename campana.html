@@ -34,6 +34,8 @@ p.sub{color:var(--mute);font-size:15px;margin:0 0 16px;line-height:1.5}
 .roas{margin-top:14px}
 .roas .explica{font-size:15px;color:var(--tinta);margin:10px 2px 0;line-height:1.5}
 footer{margin-top:44px;text-align:center;font-size:11px;font-weight:700;letter-spacing:3px;color:var(--navy)}
+.aviso{display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:12px 16px;margin:0 0 26px;font-size:14px;color:var(--tinta)}
+.aviso i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--oliva)}
 .err{padding:60px 0;text-align:center;color:var(--mute)}
 </style>
 </head>
@@ -55,7 +57,8 @@ async function cargar(){
   MON=d.moneda||'ARS'; document.title=d.nombre+' · Semilla Redes';
   const m=d.metricas||{}, inv=Number(m.inversion||0), v=d.vendido!=null?Number(d.vendido):null;
   const hay=m.alcance!=null||m.inversion!=null;
-  let h=`<p class="kick"><img src="/icono-192.png" alt="">Campaña · ${d.cliente}</p>
+  let h=`<div class="aviso"><i></i>Este panel se actualiza todos los días a las 7:00.</div>
+    <p class="kick"><img src="/icono-192.png" alt="">Campaña · ${d.cliente}</p>
     <h1>${d.nombre}</h1>
     <p class="meta">${m.desde?'Desde el '+fecha(m.desde):''}${m.inversion_diaria?' · '+mon(m.inversion_diaria)+' por día':''}${d.actualizado?' · Actualizado el '+fecha(d.actualizado)+' a las '+hora(d.actualizado):''}</p>
     <h2>Cómo viene</h2><p class="sub">Todo lo acumulado desde que arrancó la campaña.</p>`;
