@@ -1217,6 +1217,24 @@ function pintarResto(d,h){
     }
   }
 
+  // --- campañas con panel propio (p. ej. Festival de la Rosa): mismo dato que su URL aparte ---
+  for(const K of (d.campanas||[])){
+    const M=K.metricas||{}, inv=Number(M.inversion||0), vv=K.vendido!=null?Number(K.vendido):null;
+    const nfK=(v,dd=0)=>Number(v).toLocaleString('es-AR',{minimumFractionDigits:dd,maximumFractionDigits:dd});
+    const monK=(v,dd=0)=>((d.cliente.moneda||'USD')==='ARS'?'$ ':'USD ')+nfK(v,dd);
+    const hayK=M.alcance!=null||M.inversion!=null;
+    h+=`<h2>${K.nombre}</h2><p class="sub">Acumulado desde que arrancó la campaña${M.desde?' ('+fecha(M.desde)+')':''}. <a href="/campana.html?c=${K.codigo}&k=${tok}" style="color:var(--vino)">Ver su panel aparte</a></p>`;
+    h+= hayK ? `<div class="tarj">
+        ${card('Alcance', nfK(M.alcance||0), null,0)}
+        ${card('Comentarios', nfK(M.comentarios||0), null,0,true)}
+        ${card('Inversión', monK(inv), null,0)}
+        ${M.costo_comentario!=null?card('Costo por comentario', monK(M.costo_comentario,2), null,2):''}
+      </div>` : `<p class="pista">La campaña recién arrancó. Los números aparecen en la próxima actualización.</p>`;
+    h+=`<p class="sub" style="margin-top:14px">Cargá el monto total vendido gracias a esta campaña. El ROAS se calcula solo.</p>
+      <div class="agregarW"><input id="kv_${K.codigo}" inputmode="decimal" placeholder="Monto total vendido" value="${vv!=null?nfK(vv):''}"><button data-camp="${K.codigo}">Guardar</button></div>`;
+    if(vv!=null && inv>0) h+=`<div class="tarj" style="margin-top:12px">${card('Total vendido', monK(vv), null,0)}${card('ROAS', nfK(vv/inv,2), null,2,true)}</div>`;
+  }
+
   const VL=d.ventas_log||[];
   if(d.cliente.ventas_log_on||VL.length){
     const escV=s=>String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
@@ -1326,6 +1344,12 @@ function pintarResto(d,h){
     const r=await rpc('sub_activo_cliente_alta',{p_slug:slug,p_k:tok,p_titulo:t,p_url:$('a_url').value.trim()||null});
     if(r.ok) recargar(); else { aa.disabled=false; aa.textContent='Agregar activo'; }
   };
+  document.querySelectorAll('[data-camp]').forEach(b=>b.onclick=async()=>{
+    const cod=b.dataset.camp, raw=($('kv_'+cod).value||'').trim(); if(!raw) return;
+    const n=parseFloat(raw.includes(',')?raw.replace(/\./g,'').replace(',','.'):(/^\d{1,3}(\.\d{3})+$/.test(raw)?raw.replace(/\./g,''):raw));
+    if(isNaN(n)) return; b.disabled=true; b.textContent='…';
+    const r=await rpc('camp_vendido',{p_codigo:cod,p_k:tok,p_monto:n}); if(r.ok) recargar(); else { b.disabled=false; b.textContent='Guardar'; }
+  });
   const wa=$('wl_add');
   if(wa) wa.onclick=async()=>{
     const v=parseInt(($('wl_total').value||'').replace(/\D/g,''),10); if(isNaN(v)) return;
