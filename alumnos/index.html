@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1A2456">
+<title>Tu panel · Método Semilla</title>
+<link rel="manifest" href="/alumno-manifest.json">
+<link rel="icon" href="/icono-192.png">
+<link rel="apple-touch-icon" href="/icono-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--crema:#F2EDE4;--navy:#1A2456;--vino:#7A1F3A;--oliva:#87863A;--tinta:#24242C;--mute:#6B6878;--linea:#DDD6C7}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--crema);color:var(--tinta);font-family:Inter,system-ui,sans-serif;line-height:1.5}
+main{max-width:520px;margin:0 auto;padding:calc(48px + env(safe-area-inset-top,0px)) 22px calc(48px + env(safe-area-inset-bottom,0px))}
+.kick{display:flex;align-items:center;gap:8px;font-weight:700;font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--oliva);margin:0 0 12px}
+h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;color:var(--navy);font-size:38px;line-height:1.1;margin:0 0 12px}
+.intro{color:var(--mute);font-size:17px;margin:0 0 28px}
+.hoja{background:#fff;border-radius:16px;padding:22px}
+label{display:block;font-size:14px;color:var(--mute);margin:14px 0 6px}
+label:first-child{margin-top:0}
+input{width:100%;border:1px solid var(--linea);border-radius:10px;padding:12px 13px;font:inherit;font-size:16px;color:var(--tinta);background:#fff}
+input:focus,button:focus-visible{outline:2px solid var(--navy);outline-offset:1px}
+.ayuda{font-size:13px;color:var(--mute);margin:6px 0 0}
+.url{font-weight:600;color:var(--navy)}
+.pin{letter-spacing:12px;font-size:22px;max-width:170px}
+.btn{width:100%;margin-top:22px;background:var(--navy);color:var(--crema);border:0;border-radius:12px;padding:15px;font:700 16px Inter,system-ui,sans-serif;cursor:pointer}
+.error{color:var(--vino);font-size:14px;min-height:20px;margin:10px 0 0}
+.otro{margin-top:30px;color:var(--mute);font-size:15px}
+.otro summary{cursor:pointer;color:var(--navy);font-weight:600}
+.otro .fila{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}
+.otro button{background:transparent;border:1px solid var(--navy);color:var(--navy);border-radius:10px;padding:0 16px;font:600 15px Inter,system-ui,sans-serif;cursor:pointer}
+</style>
+</head>
+<body>
+<main>
+  <p class="kick"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 C18 7 18 17 12 21 C6 17 6 7 12 3 Z" fill="#87863A"/></svg>Método Semilla</p>
+  <h1>Armá tu panel</h1>
+  <p class="intro">Un lugar para cargar tus números cada 7 días y ver cómo crece tu proyecto: seguidores, mensajes y ventas, tus metas, tareas y notas para la clase.</p>
+  <div class="hoja">
+    <label for="nombre">Tu nombre</label><input id="nombre" autocomplete="name">
+    <label for="proyecto">Nombre de tu proyecto</label><input id="proyecto" placeholder="Por ejemplo: Luna Cerámica">
+    <p class="ayuda">Tu panel va a quedar en <span class="url" id="prev">semillaredes.com/…</span></p>
+    <label for="pin">Elegí un PIN de 4 números</label><input id="pin" class="pin" inputmode="numeric" maxlength="4">
+    <p class="ayuda">Te lo pide una sola vez por celular. Anotalo en algún lado.</p>
+    <p class="error" id="err" role="alert"></p>
+    <button class="btn" id="crear">Crear mi panel</button>
+  </div>
+  <details class="otro"><summary>Ya tengo mi panel</summary>
+    <p style="margin:10px 0 0">Escribí el nombre de tu proyecto, como aparece en tu link.</p>
+    <div class="fila"><input id="ir_slug" placeholder="lunaceramica" aria-label="Nombre del proyecto"><button id="ir">Entrar</button></div>
+  </details>
+</main>
+<script>
+const SB='https://fdrxsjphlvvwwknnrjtx.supabase.co', KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
+const rpc=(fn,a)=>fetch(`${SB}/rest/v1/rpc/${fn}`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(a)}).then(r=>r.json());
+const $=id=>document.getElementById(id);
+const slugificar=t=>t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+$('proyecto').oninput=()=>{ const s=slugificar($('proyecto').value); $('prev').textContent='semillaredes.com/'+(s||'…'); };
+try{ const u=localStorage.getItem('al_ultimo'); if(u&&localStorage.getItem('al_'+u)) location.replace('/alumno.html?p='+u); }catch(e){}
+$('crear').onclick=async()=>{
+  const n=$('nombre').value.trim(), p=$('proyecto').value.trim(), pin=$('pin').value.trim();
+  if(!n||!p){ $('err').textContent='Completá tu nombre y el de tu proyecto.'; return; }
+  if(!/^\d{4}$/.test(pin)){ $('err').textContent='El PIN tiene que ser de 4 números.'; return; }
+  const b=$('crear'); b.disabled=true; b.textContent='Creando…';
+  const r=await rpc('al_alta',{p_nombre:n,p_proyecto:p,p_pin:pin});
+  if(r&&r.ok){ try{ localStorage.setItem('al_'+r.slug,r.token); localStorage.setItem('al_ultimo',r.slug); }catch(e){} location.href='/alumno.html?p='+r.slug+'&nuevo=1'; }
+  else { b.disabled=false; b.textContent='Crear mi panel'; $('err').textContent= r&&r.error==='nombre_corto'?'Usá un nombre de proyecto un poco más largo.':'No se pudo crear. Probá de nuevo en un momento.'; }
+};
+$('ir').onclick=()=>{ const s=slugificar($('ir_slug').value.replace(/^.*semillaredes\.com\//i,'')); if(s) location.href='/alumno.html?p='+s; };
+</script>
+</body>
+</html>
