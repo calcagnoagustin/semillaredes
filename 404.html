@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Semilla Redes</title>
+<style>
+html,body{margin:0;background:#F2EDE4;color:#6B6878;font-family:Inter,system-ui,sans-serif}
+main{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
+h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;color:#1A2456;font-size:30px;margin:0 0 10px}
+a{color:#7A1F3A}
+#msg{display:none}
+</style>
+</head>
+<body>
+<main>
+  <div id="msg">
+    <h1>Esta página no existe</h1>
+    <p>Revisá la dirección o volvé a <a href="/">semillaredes.com</a>.</p>
+  </div>
+</main>
+<script>
+// Si la direccion es el panel de un alumno (semillaredes.com/nombredelproyecto), lo lleva a su panel.
+(async()=>{
+  const seg=decodeURIComponent(location.pathname.split('/').filter(Boolean)[0]||'').toLowerCase();
+  const slug=seg.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+  if(slug && location.pathname.split('/').filter(Boolean).length===1){
+    try{
+      const r=await fetch('https://fdrxsjphlvvwwknnrjtx.supabase.co/rest/v1/rpc/al_existe',{method:'POST',
+        headers:{apikey:'sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17','Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(x=>x.json());
+      if(r&&r.existe){ location.replace('/alumno.html?p='+slug); return; }
+    }catch(e){}
+  }
+  document.getElementById('msg').style.display='block';
+})();
+</script>
+</body>
+</html>
