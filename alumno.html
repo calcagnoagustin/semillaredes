@@ -109,6 +109,8 @@ footer{margin-top:52px;display:flex;justify-content:center;align-items:center;ga
 .pop li{margin:8px 0}
 .pop .fila{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .ico-comp{display:inline-block;vertical-align:-4px}
+.btn-inst{display:none;align-items:center;gap:8px;background:var(--navy);color:var(--crema);border:0;border-radius:999px;padding:9px 16px;font:700 14px Inter,system-ui,sans-serif;cursor:pointer;margin:0 0 20px}
+.btn-inst.on{display:inline-flex}
 @media(prefers-reduced-motion:no-preference){.pop{animation:sube .35s ease-out}@keyframes sube{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}}
 </style>
 </head>
@@ -203,7 +205,7 @@ function pintar(){
   document.title=A.proyecto+' · Método Semilla';
   const desde=u?u.hasta:sumar(hoyISO(),-7), hasta=hoyISO();
   const yaCargado=u&&u.hasta>=hoyISO();
-  let h=`<p class="kick">${ico}Método Semilla</p><div id="cab"><h1>${esc(A.proyecto)}${lapiz('id="edPerfil"','Editar nombre del proyecto')}</h1>
+  let h=`<p class="kick">${ico}Método Semilla</p><button class="btn-inst" id="btnInst" type="button"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Instalar la app en tu celular</button><div id="cab"><h1>${esc(A.proyecto)}${lapiz('id="edPerfil"','Editar nombre del proyecto')}</h1>
     <p class="quien">${esc(A.nombre)}${u?` · Último período cargado: del ${ddmm(u.desde)} al ${ddmm(u.hasta)}`:''}</p></div>`;
 
   // --- cargar numeros ---
@@ -358,7 +360,8 @@ function editores(){
     $('form').classList.add('editando'); $('form').scrollIntoView({behavior:'smooth',block:'start'});
   });
 }
-async function recargar(){ const y=scrollY; const d=await rpc('al_get',{p_slug:SLUG,p_k:TOK}); if(d&&!d.error){ D=d; pintar(); scrollTo(0,y); } }
+async function recargar(){ const y=scrollY; const d=await rpc('al_get',{p_slug:SLUG,p_k:TOK}); if(d&&!d.error){ D=d; pintar(); reenganchar(); scrollTo(0,y); } }
+function reenganchar(){ const ua=navigator.userAgent; const movil=/iphone|ipad|ipod|android/i.test(ua); const inst=matchMedia('(display-mode: standalone)').matches||navigator.standalone; const b=$('btnInst'); if(b&&movil&&!inst){ b.classList.add('on'); b.onclick=()=>{ try{sessionStorage.removeItem('al_pop_no')}catch(e){} instalar(); }; } }
 
 // ---------- popup para instalar la app ----------
 let evInst=null;
@@ -367,25 +370,40 @@ if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catc
 function instalar(){
   const ua=navigator.userAgent, ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1), android=/android/i.test(ua);
   const inst=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
-  const ult=Number(ls.get('al_pop')||0);
-  if(inst||(!ios&&!android)||Date.now()-ult<3*864e5) return;
-  const inApp=/Instagram|FBAN|FBAV|WhatsApp|Line\//i.test(ua);
-  if(ios){
-    $('popPasos').innerHTML= inApp
-      ? `<ol><li>Tocá los tres puntitos y elegí <b>Abrir en Safari</b>.</li><li>Seguí los pasos para agregarla a tu inicio.</li></ol>`
-      : `<ol><li>Tocá <b>Compartir</b> <svg class="ico-comp" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 12v8h14v-8" fill="none" stroke="#1A2456" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> abajo en Safari.</li><li>Bajá y elegí <b>Agregar a inicio</b>.</li><li>Tocá <b>Agregar</b>. Listo: queda con el ícono de Semilla.</li></ol>`;
-    $('popSi').textContent='Entendido';
-  } else {
-    $('popPasos').innerHTML=''; $('popSi').textContent='Instalar';
+  if(inst||(!ios&&!android)) return;                       // ya instalada o en computadora: nada
+  const inAppAndroid=android&&/Instagram|FBAN|FBAV|FB_IAB|Line\/|; wv\)/i.test(ua);
+  const inAppIOS=ios&&/Instagram|FBAN|FBAV|FB_IAB|Line\//i.test(ua);
+  const cerrar=()=>{ try{sessionStorage.setItem('al_pop_no','1')}catch(e){} $('velo').classList.remove('on'); };
+  function abrir(){
+    const pasos=$('popPasos'), si=$('popSi');
+    if(inAppAndroid){
+      $('popTxt').textContent='Para instalarla, primero abrí tu panel en Chrome.';
+      pasos.innerHTML=''; si.textContent='Abrir en Chrome';
+      si.onclick=()=>{ location.href='intent://'+location.host+'/alumno.html?p='+SLUG+'#Intent;scheme=https;package=com.android.chrome;end'; };
+    } else if(ios){
+      $('popTxt').textContent='Con la app instalada cargás tus números en un toque, sin buscar el link.';
+      pasos.innerHTML=(inAppIOS?`<ol><li>Tocá los tres puntitos o el ícono de la brújula y elegí <b>Abrir en Safari</b>.</li><li>Seguí estos mismos pasos desde Safari.</li></ol>`:'')+
+        `<ol${inAppIOS?' style="display:none"':''}><li>Tocá <b>Compartir</b> <svg class="ico-comp" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 12v8h14v-8" fill="none" stroke="#1A2456" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> en la barra de Safari.</li><li>Bajá y tocá <b>Agregar a inicio</b>.</li><li>Tocá <b>Agregar</b>. Queda el ícono de Semilla en tu pantalla.</li></ol>
+        <p style="font-size:13px;color:#6B6878;margin:-6px 0 16px">¿No ves "Agregar a inicio"? Lo abriste desde WhatsApp: tocá el ícono de Safari abajo a la derecha y repetí los pasos.</p>`;
+      si.textContent='Listo, entendido'; si.onclick=cerrar;
+    } else {
+      $('popTxt').textContent='Con la app instalada cargás tus números en un toque, sin buscar el link.';
+      pasos.innerHTML=''; si.textContent='Instalar';
+      si.onclick=async()=>{
+        if(evInst){ evInst.prompt(); const r=await evInst.userChoice; if(r.outcome==='accepted'){ $('velo').classList.remove('on'); $('btnInst')&&$('btnInst').classList.remove('on'); } return; }
+        pasos.innerHTML='<ol><li>Tocá los tres puntitos de arriba a la derecha.</li><li>Elegí <b>Instalar app</b> o <b>Agregar a la pantalla principal</b>.</li></ol>';
+        si.textContent='Listo, entendido'; si.onclick=cerrar;
+      };
+    }
+    $('velo').classList.add('on');
   }
-  setTimeout(()=>$('velo').classList.add('on'),2200);
-  $('popNo').onclick=()=>{ ls.set('al_pop',Date.now()); $('velo').classList.remove('on'); };
-  $('popSi').onclick=async()=>{
-    if(!ios&&evInst){ evInst.prompt(); await evInst.userChoice; }
-    else if(!ios&&!evInst){ $('popPasos').innerHTML='<ol><li>Tocá los tres puntitos de arriba a la derecha.</li><li>Elegí <b>Instalar app</b> o <b>Agregar a la pantalla principal</b>.</li></ol>'; $('popSi').textContent='Entendido'; $('popSi').onclick=()=>{ ls.set('al_pop',Date.now()); $('velo').classList.remove('on'); }; return; }
-    ls.set('al_pop',Date.now()); $('velo').classList.remove('on');
-  };
+  const b=$('btnInst'); if(b){ b.classList.add('on'); b.onclick=abrir; }
+  $('popNo').onclick=cerrar;
+  addEventListener('appinstalled',()=>{ $('velo').classList.remove('on'); b&&b.classList.remove('on'); });
+  let visto=false; try{ visto=sessionStorage.getItem('al_pop_no')==='1'; }catch(e){}
+  if(!visto) setTimeout(abrir,1500);                        // sale en cada visita hasta que la instalen
 }
+
 cargar();
 </script>
 </body>
