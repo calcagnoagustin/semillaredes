@@ -60,6 +60,13 @@ input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid v
 .item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-top:1px solid #F0EBE1}
 .item:first-child{border-top:0}
 .item .tx{flex:1;min-width:0}
+.lapiz{flex:none;border:0;background:transparent;color:#8C8699;cursor:pointer;padding:4px;line-height:0;border-radius:6px}
+.lapiz:hover{color:var(--navy);background:#F0EBE1}
+h1 .lapiz{vertical-align:middle;margin-left:6px}
+.editor{display:grid;gap:8px;margin:6px 0 14px}
+.editor .fila{display:flex;gap:8px;flex-wrap:wrap}
+.ia{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--linea);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600;color:var(--navy);margin:0 0 12px}
+.editando{outline:2px solid var(--rosa);outline-offset:2px}
 .x{flex:none;border:0;background:transparent;color:#A9A2B3;font-size:20px;line-height:1;cursor:pointer;padding:4px}
 .chk{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--navy);background:transparent;cursor:pointer;padding:0}
 .chk.curso{background:linear-gradient(90deg,var(--navy) 50%,transparent 50%)}
@@ -73,7 +80,7 @@ input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid v
 @media(max-width:560px){.hitoform{grid-template-columns:1fr 1fr}.hitoform button{grid-column:1/-1}}
 .nota{background:#fff;border-radius:14px;padding:14px 16px;margin-top:10px;position:relative}
 .nota .f{font-size:12px;color:var(--mute);margin-bottom:4px}
-.nota .x{position:absolute;top:8px;right:8px}
+.nota .t{padding-right:56px}
 .nota .t{padding-right:24px;white-space:pre-wrap}
 .consejo{background:#fff;border-radius:14px;padding:16px;margin-top:10px;border-left:4px solid var(--rosa)}
 .consejo b{display:block;color:var(--navy);margin-bottom:4px}
@@ -134,6 +141,9 @@ const sumar=(iso,n)=>{const d=new Date(iso+'T12:00');d.setDate(d.getDate()+n);re
 const ddmm=iso=>{const p=String(iso).slice(0,10).split('-');return p[2]+'/'+p[1]};
 const num=v=>{v=String(v??'').trim();if(!v)return null;v=v.includes(',')?v.replace(/\./g,'').replace(',','.'):(/^\d{1,3}(\.\d{3})+$/.test(v)?v.replace(/\./g,''):v);const n=parseFloat(v);return isNaN(n)?null:n};
 const div=(a,b)=>a!=null&&b?a/b:null;
+const LAPIZ=`<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
+const lapiz=(attrs,lab)=>`<button class="lapiz" ${attrs} aria-label="${lab}">${LAPIZ}</button>`;
+let EDIT_ID=null, EDIT_DESDE=null;
 const ico=`<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 C18 7 18 17 12 21 C6 17 6 7 12 3 Z" fill="#87863A"/></svg>`;
 
 // ---------- calculos por periodo ----------
@@ -193,8 +203,8 @@ function pintar(){
   document.title=A.proyecto+' · Método Semilla';
   const desde=u?u.hasta:sumar(hoyISO(),-7), hasta=hoyISO();
   const yaCargado=u&&u.hasta>=hoyISO();
-  let h=`<p class="kick">${ico}Método Semilla</p><h1>${esc(A.proyecto)}</h1>
-    <p class="quien">${esc(A.nombre)}${u?` · Último período cargado: del ${ddmm(u.desde)} al ${ddmm(u.hasta)}`:''}</p>`;
+  let h=`<p class="kick">${ico}Método Semilla</p><div id="cab"><h1>${esc(A.proyecto)}${lapiz('id="edPerfil"','Editar nombre del proyecto')}</h1>
+    <p class="quien">${esc(A.nombre)}${u?` · Último período cargado: del ${ddmm(u.desde)} al ${ddmm(u.hasta)}`:''}</p></div>`;
 
   // --- cargar numeros ---
   h+=`<h2>Cargá tus números</h2><p class="sub">Una vez cada 7 días, con lo que ves en Instagram y en tus campañas. Lo que no tengas, dejalo vacío.</p>
@@ -222,7 +232,7 @@ function pintar(){
   else{
     const c=u.c, p=a?a.c:{};
     h+=`<p class="sub">Del ${ddmm(u.desde)} al ${ddmm(u.hasta)}${a?', comparado con el período anterior':''}.</p>`;
-    h+=`<div class="tarj">${card('Seguidores',nf(c.ig_total),c.ig_total,p.ig_total,{dest:true})}${card('Nuevos',nf(c.ig_nuevos),c.ig_nuevos,p.ig_nuevos)}${card('Costo por seguidor',din(c.ig_costo,2),c.ig_costo,p.ig_costo,{menosEsMejor:true})}${c.ig_visitas!=null?card('Visitas al perfil',nf(c.ig_visitas),c.ig_visitas,p.ig_visitas):''}${c.ig_conv!=null?card('Visitas que te siguen',nf(c.ig_conv,1)+'%',c.ig_conv,p.ig_conv):''}${c.ig_inversion!=null?card('Invertido',din(c.ig_inversion),c.ig_inversion,p.ig_inversion):''}</div>`;
+    h+=`<div class="tarj">${card('Seguidores',nf(c.ig_total),c.ig_total,p.ig_total,{dest:true})}${card('Nuevos',nf(c.ig_nuevos),c.ig_nuevos,p.ig_nuevos)}${card('Costo por seguidor',din(c.ig_costo,2),c.ig_costo,p.ig_costo,{menosEsMejor:true})}${c.ig_visitas!=null?card('Visitas al perfil',nf(c.ig_visitas),c.ig_visitas,p.ig_visitas):''}${c.ig_conv!=null?card('Conversión de visitas a seguidores',nf(c.ig_conv,1)+'%',c.ig_conv,p.ig_conv):''}${c.ig_inversion!=null?card('Invertido',din(c.ig_inversion),c.ig_inversion,p.ig_inversion):''}</div>`;
     if(M.mensajes||c.msj_mensajes!=null) h+=`<div class="modulo"><h3>Campaña de mensajes</h3><div class="tarj">${card('Mensajes',nf(c.msj_mensajes),c.msj_mensajes,p.msj_mensajes)}${card('Costo por mensaje',din(c.msj_costo,2),c.msj_costo,p.msj_costo,{menosEsMejor:true})}${card('Ventas',nf(c.msj_ventas),c.msj_ventas,p.msj_ventas)}${card('Costo por venta',din(c.msj_costo_venta),c.msj_costo_venta,p.msj_costo_venta,{menosEsMejor:true})}${card('Facturación',din(c.msj_facturacion),c.msj_facturacion,p.msj_facturacion)}${card('ROAS',nf(c.msj_roas,2),c.msj_roas,p.msj_roas,{dest:true})}</div></div>`;
     if(M.ventas||c.vta_ventas!=null) h+=`<div class="modulo"><h3>Ventas online</h3><div class="tarj">${card('Ventas',nf(c.vta_ventas),c.vta_ventas,p.vta_ventas)}${card('Facturación',din(c.vta_facturacion),c.vta_facturacion,p.vta_facturacion)}${card('Costo por venta',din(c.vta_costo),c.vta_costo,p.vta_costo,{menosEsMejor:true})}${card('ROAS',nf(c.vta_roas,2),c.vta_roas,p.vta_roas,{dest:true})}</div></div>`;
     const S=k=>R.map(r=>({f:r.hasta,v:r.c[k]??null}));
@@ -236,7 +246,7 @@ function pintar(){
   h+=`<h2>Tus metas</h2><p class="sub">Ponete un número a alcanzar y seguilo acá.</p>`;
   const HI=D.hitos||[];
   h+= HI.length?HI.map(x=>{ const act=u?u.c[x.metrica]:null; const pct=act!=null?Math.min(100,act/x.objetivo*100):0;
-      return `<div class="hoja hito" style="margin-top:10px"><div style="display:flex;justify-content:space-between;gap:10px"><b style="color:var(--navy)">${esc(x.titulo||METRICAS[x.metrica]+': '+nf(x.objetivo))}</b><button class="x" data-delhito="${x.id}" aria-label="Borrar meta">×</button></div>
+      return `<div class="hoja hito" style="margin-top:10px"><div style="display:flex;justify-content:space-between;gap:10px"><b style="color:var(--navy)">${esc(x.titulo||METRICAS[x.metrica]+': '+nf(x.objetivo))}</b><span>${lapiz(`data-edhito="${x.id}"`,'Editar meta')}<button class="x" data-delhito="${x.id}" aria-label="Borrar meta">×</button></span></div>
         <div class="barra"><i style="width:${pct.toFixed(1)}%"></i></div><div class="det">${act!=null?`${nf(act)} de ${nf(x.objetivo)} · ${pct>=100?'¡Lograda!':nf(pct)+'%'}`:'Todavía sin datos para esta meta'}</div></div>`; }).join('')
     : `<div class="vacio">Sin metas todavía. Por ejemplo: llegar a 2.000 seguidores.</div>`;
   h+=`<div class="hitoform"><select id="h_met" aria-label="Qué querés medir">${Object.entries(METRICAS).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select><input id="h_obj" inputmode="numeric" placeholder="Número a alcanzar" aria-label="Número a alcanzar"><button class="btn sec" id="h_add">Agregar meta</button></div>`;
@@ -244,25 +254,25 @@ function pintar(){
   // --- tareas ---
   h+=`<h2>Tareas</h2><p class="sub">Lo que te propusiste hacer. Tocá el círculo para marcarla en curso o hecha.</p>`;
   const TA=D.tareas||[];
-  h+= TA.length?`<div class="lista">${TA.map(t=>`<div class="item ${t.estado==='hecha'?'hecha':''}"><button class="chk ${t.estado==='hecha'?'hecha':t.estado==='en_curso'?'curso':''}" data-tarea="${t.id}" data-est="${t.estado}" aria-label="Cambiar estado"></button><span class="tx">${esc(t.titulo)}</span><button class="x" data-deltarea="${t.id}" aria-label="Borrar tarea">×</button></div>`).join('')}</div>`:'';
+  h+= TA.length?`<div class="lista">${TA.map(t=>`<div class="item ${t.estado==='hecha'?'hecha':''}"><button class="chk ${t.estado==='hecha'?'hecha':t.estado==='en_curso'?'curso':''}" data-tarea="${t.id}" data-est="${t.estado}" aria-label="Cambiar estado"></button><span class="tx">${esc(t.titulo)}</span>${lapiz(`data-edtarea="${t.id}"`,'Editar tarea')}<button class="x" data-deltarea="${t.id}" aria-label="Borrar tarea">×</button></div>`).join('')}</div>`:'';
   h+=`<div class="agregar"><input id="t_txt" placeholder="Agregar una tarea"><button class="btn sec" id="t_add">Agregar</button></div>`;
 
   // --- notas ---
   h+=`<h2>Notas</h2><p class="sub">Lo que observás para llevar a la próxima clase.</p>
     <div class="agregar"><textarea id="n_txt" rows="2" placeholder="Escribí acá…"></textarea><button class="btn sec" id="n_add">Guardar nota</button></div>`;
-  h+=(D.notas||[]).map(n=>`<div class="nota"><div class="f">${new Date(n.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</div><div class="t">${esc(n.texto)}</div><button class="x" data-delnota="${n.id}" aria-label="Borrar nota">×</button></div>`).join('');
+  h+=(D.notas||[]).map(n=>`<div class="nota"><div class="f">${new Date(n.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</div><div class="t">${esc(n.texto)}</div><div style="position:absolute;top:6px;right:6px;display:flex">${lapiz(`data-ednota="${n.id}"`,'Editar nota')}<button class="x" data-delnota="${n.id}" aria-label="Borrar nota">×</button></div></div>`).join('');
 
   // --- consejos de la comunidad ---
   if((D.consejos||[]).length){
-    h+=`<h2>Consejos de la comunidad</h2><p class="sub">Salen de lo que aprendimos con los proyectos que acompañamos en Semilla Redes.</p>`;
+    h+=`<h2>Consejos de la comunidad</h2><p class="sub">Salen de lo que aprendimos con los proyectos que acompañamos en Semilla Redes.</p><p class="ia">${ico}Procesado con IA, entrenada en el Método Semilla</p>`;
     h+=D.consejos.map(c=>`<div class="consejo"><b>${esc(c.titulo)}</b><span>${esc(c.texto)}</span></div>`).join('');
   }
 
   // --- historial ---
   if(R.length){
-    h+=`<h2>Historial</h2><p class="sub">Todos tus períodos. La × borra uno si lo cargaste mal.</p><div class="tabla"><table>
+    h+=`<h2>Historial</h2><p class="sub">Todos tus períodos. Con el lápiz lo corregís; la × lo borra.</p><div class="tabla"><table>
       <tr><th>Período</th><th>Seguidores</th><th>Nuevos</th><th>Costo x seg.</th>${M.mensajes?'<th>Mensajes</th>':''}${M.mensajes||M.ventas?'<th>Facturación</th>':''}<th></th></tr>
-      ${[...R].reverse().map(r=>`<tr><td>${ddmm(r.desde)} al ${ddmm(r.hasta)}</td><td>${nf(r.c.ig_total)}</td><td>${nf(r.c.ig_nuevos)}</td><td>${din(r.c.ig_costo,2)}</td>${M.mensajes?`<td>${nf(r.c.msj_mensajes)}</td>`:''}${M.mensajes||M.ventas?`<td>${din(r.c.facturacion)}</td>`:''}<td><button class="x" data-delrep="${r.id}" aria-label="Borrar período">×</button></td></tr>`).join('')}
+      ${[...R].reverse().map(r=>`<tr><td>${ddmm(r.desde)} al ${ddmm(r.hasta)}</td><td>${nf(r.c.ig_total)}</td><td>${nf(r.c.ig_nuevos)}</td><td>${din(r.c.ig_costo,2)}</td>${M.mensajes?`<td>${nf(r.c.msj_mensajes)}</td>`:''}${M.mensajes||M.ventas?`<td>${din(r.c.facturacion)}</td>`:''}<td>${lapiz(`data-edrep="${r.id}"`,'Editar período')}<button class="x" data-delrep="${r.id}" aria-label="Borrar período">×</button></td></tr>`).join('')}
     </table></div>`;
   }
   h+=`<footer>${ico}SEMILLA REDES</footer>`;
@@ -271,6 +281,7 @@ function pintar(){
   // precargar el formulario si el periodo ya existe
   if(yaCargado) for(const [k,v] of Object.entries(u.metricas||{})){ const el=$('m_'+k); if(el&&v!=null) el.value=String(v).replace('.',','); }
   eventos(M);
+  editores();
 }
 function campo(k,l){ return `<div><label for="m_${k}">${l}</label><input id="m_${k}" inputmode="decimal"></div>`; }
 
@@ -285,7 +296,7 @@ function eventos(M){
     if(!Object.keys(m).length){ $('msgOk').textContent='Cargá al menos un número.'; return; }
     const b=$('guardar'); b.disabled=true; b.textContent='Guardando…';
     const r=await rpc('al_reporte_guardar',{p_slug:SLUG,p_k:TOK,p_desde:$('f_desde').value,p_hasta:$('f_hasta').value,p_m:m});
-    if(r&&r.ok){ await recargar(); $('msgOk')&&($('msgOk').textContent='Guardado.'); } else { b.disabled=false; b.textContent='Guardar mis números'; $('msgOk').textContent=r&&r.error==='fechas'?'Revisá las fechas.':'No se pudo guardar. Probá de nuevo.'; }
+    if(r&&r.ok){ if(EDIT_ID&&EDIT_DESDE&&EDIT_DESDE!==$('f_desde').value) await rpc('al_reporte_borrar',{p_slug:SLUG,p_k:TOK,p_id:EDIT_ID}); EDIT_ID=null; EDIT_DESDE=null; await recargar(); $('msgOk')&&($('msgOk').textContent='Guardado.'); } else { b.disabled=false; b.textContent='Guardar mis números'; $('msgOk').textContent=r&&r.error==='fechas'?'Revisá las fechas.':'No se pudo guardar. Probá de nuevo.'; }
   };
   $('h_add').onclick=async()=>{ const o=num($('h_obj').value); if(o==null) return; await rpc('al_hito',{p_slug:SLUG,p_k:TOK,p_metrica:$('h_met').value,p_objetivo:o}); recargar(); };
   document.querySelectorAll('[data-delhito]').forEach(b=>b.onclick=async()=>{ if(!confirm('¿Borrar esta meta?'))return; await rpc('al_hito',{p_slug:SLUG,p_k:TOK,p_borrar:b.dataset.delhito}); recargar(); });
@@ -296,6 +307,49 @@ function eventos(M){
   $('n_add').onclick=async()=>{ const t=$('n_txt').value.trim(); if(!t) return; await rpc('al_nota',{p_slug:SLUG,p_k:TOK,p_texto:t}); recargar(); };
   document.querySelectorAll('[data-delnota]').forEach(b=>b.onclick=async()=>{ if(!confirm('¿Borrar esta nota?'))return; await rpc('al_nota',{p_slug:SLUG,p_k:TOK,p_texto:null,p_borrar:b.dataset.delnota}); recargar(); });
   document.querySelectorAll('[data-delrep]').forEach(b=>b.onclick=async()=>{ if(!confirm('¿Borrar este período?'))return; await rpc('al_reporte_borrar',{p_slug:SLUG,p_k:TOK,p_id:b.dataset.delrep}); recargar(); });
+}
+function editores(){
+  const A=D.alumno;
+  const ep=$('edPerfil'); if(ep) ep.onclick=()=>{
+    $('cab').innerHTML=`<div class="editor"><div><label for="e_proy">Nombre del proyecto</label><input id="e_proy" value="${esc(A.proyecto)}"></div>
+      <div><label for="e_nom">Tu nombre</label><input id="e_nom" value="${esc(A.nombre)}"></div>
+      <p class="sub" style="margin:0">Tu link sigue siendo semillaredes.com/${esc(A.slug)}</p>
+      <div class="fila"><button class="btn" id="e_ok">Guardar</button><button class="btn sec" id="e_no">Cancelar</button></div></div>`;
+    $('e_proy').focus(); $('e_no').onclick=pintar;
+    $('e_ok').onclick=async()=>{ const r=await rpc('al_perfil',{p_slug:SLUG,p_k:TOK,p_nombre:$('e_nom').value,p_proyecto:$('e_proy').value}); if(r&&r.ok) recargar(); };
+  };
+  document.querySelectorAll('[data-edtarea]').forEach(b=>b.onclick=()=>{
+    const it=b.closest('.item'), tx=it.querySelector('.tx'), id=b.dataset.edtarea, val=tx.textContent;
+    tx.innerHTML=`<input value="${esc(val)}" aria-label="Tarea">`; const inp=tx.querySelector('input'); inp.focus(); inp.select();
+    const ok=async()=>{ const v=inp.value.trim(); if(v&&v!==val) await rpc('al_tarea',{p_slug:SLUG,p_k:TOK,p_titulo:v,p_id:id}); recargar(); };
+    inp.onkeydown=e=>{ if(e.key==='Enter') ok(); if(e.key==='Escape') pintar(); }; inp.onblur=ok;
+  });
+  document.querySelectorAll('[data-ednota]').forEach(b=>b.onclick=()=>{
+    const n=b.closest('.nota'), t=n.querySelector('.t'), id=b.dataset.ednota, val=t.textContent;
+    t.innerHTML=`<textarea rows="3" aria-label="Nota">${esc(val)}</textarea><div class="fila" style="display:flex;gap:8px;margin-top:8px"><button class="btn sec">Guardar</button></div>`;
+    const ta=t.querySelector('textarea'); ta.focus();
+    t.querySelector('button').onclick=async()=>{ const v=ta.value.trim(); if(v) await rpc('al_nota_editar',{p_slug:SLUG,p_k:TOK,p_id:id,p_texto:v}); recargar(); };
+  });
+  document.querySelectorAll('[data-edhito]').forEach(b=>b.onclick=()=>{
+    const x=(D.hitos||[]).find(h=>h.id===b.dataset.edhito); const box=b.closest('.hito');
+    box.innerHTML=`<div class="editor"><div><label>Nombre de la meta (opcional)</label><input id="eh_t" value="${esc(x.titulo||'')}" placeholder="${esc(METRICAS[x.metrica])}"></div>
+      <div><label>Número a alcanzar</label><input id="eh_o" inputmode="numeric" value="${x.objetivo}"></div>
+      <div class="fila"><button class="btn sec" id="eh_ok">Guardar</button><button class="btn sec" id="eh_no" style="border-color:transparent">Cancelar</button></div></div>`;
+    $('eh_no').onclick=pintar;
+    $('eh_ok').onclick=async()=>{ const o=num($('eh_o').value); await rpc('al_hito_editar',{p_slug:SLUG,p_k:TOK,p_id:x.id,p_objetivo:o,p_titulo:$('eh_t').value}); recargar(); };
+  });
+  document.querySelectorAll('[data-edrep]').forEach(b=>b.onclick=()=>{
+    const r=(D.reportes||[]).find(z=>z.id===b.dataset.edrep); if(!r) return;
+    EDIT_ID=r.id; EDIT_DESDE=r.desde;
+    document.querySelectorAll('#form input[id^="m_"]').forEach(i=>i.value='');
+    $('f_desde').value=r.desde; $('f_hasta').value=r.hasta;
+    const M=D.alumno.modulos||{}; const m=r.metricas||{};
+    if((m.msj_mensajes!=null||m.msj_facturacion!=null)&&!M.mensajes) $('b_msj').hidden=false;
+    if((m.vta_ventas!=null||m.vta_facturacion!=null)&&!M.ventas) $('b_vta').hidden=false;
+    for(const [k,v] of Object.entries(m)){ const el=$('m_'+k); if(el&&v!=null) el.value=String(v).replace('.',','); }
+    $('guardar').textContent='Guardar cambios'; $('msgOk').textContent=`Editando el período del ${ddmm(r.desde)} al ${ddmm(r.hasta)}.`;
+    $('form').classList.add('editando'); $('form').scrollIntoView({behavior:'smooth',block:'start'});
+  });
 }
 async function recargar(){ const y=scrollY; const d=await rpc('al_get',{p_slug:SLUG,p_k:TOK}); if(d&&!d.error){ D=d; pintar(); scrollTo(0,y); } }
 
