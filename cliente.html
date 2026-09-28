@@ -428,7 +428,23 @@ function pintarTrafico(d){
     if(R.filter(r=>r.metricas.wl_total!=null).length>1)
       h+=grafico('Anotados en la waitlist','Total de anotados al cierre de cada período.',R.map(r=>r.metricas.wl_total??null),et,'#1A2456');
   }
-    h+=`<h2>Tráfico a la página</h2><p class="sub">Gente que llegó al sitio desde la campaña.</p><div class="tarj">
+  // --- campaña de registros (leads): va arriba de trafico; datos del periodo actual ---
+  if(u && u.metricas.ld_inversion!=null){
+    const L=u.metricas, LA=a?a.metricas:{};
+    h+=`<h2>Campaña de registros</h2><p class="sub">Gente que se anotó en la waitlist desde los anuncios. Lo cuenta el píxel de la página.</p><div class="tarj">
+      ${card('Registros', fmt(L.ld_leads||0), [L.ld_leads, LA.ld_leads],0,true)}
+      ${L.ld_costo!=null?card('Costo por registro', mon(L.ld_costo,2), [L.ld_costo, LA.ld_costo],2,false,true):''}
+      ${card('Invertido', mon(L.ld_inversion,2), [L.ld_inversion, LA.ld_inversion],2)}
+      ${L.ld_alcance!=null?card('Personas alcanzadas', fmt(L.ld_alcance), [L.ld_alcance, LA.ld_alcance]):''}
+    </div>`;
+    const LP=AUD.map((x,i)=>({t:x.tit, r:L['lp'+(i+1)+'_leads'], v:L['lp'+(i+1)+'_inversion'], c:L['lp'+(i+1)+'_costo']})).filter(x=>x.v!=null);
+    if(LP.length) h+=`<div class="desglose"><h3>Registros por público</h3><p class="leyenda">Cuántos se anotaron desde cada público y cuánto costó cada uno.</p>
+      <div class="fila2 cab2 conj"><span>Público</span><span style="text-align:right">Registros</span><span style="text-align:right">Costo c/u</span></div>
+      ${LP.map(x=>`<div class="fila2 conj"><span class="nom">${x.t}</span><span class="v">${fmt(x.r||0)}</span><span class="c">${x.c!=null?mon(x.c,2):'—'}</span></div>`).join('')}</div>`;
+  }
+    const trPaus = u && u.metricas.tr_visitas==null;
+    const trUlt = [...R].reverse().find(r=>r.metricas.tr_visitas!=null);
+    h+=`<h2>Tráfico a la página</h2><p class="sub">${trPaus&&trUlt?`Campaña pausada. Estos son sus últimos datos, del ${fecha(trUlt.desde)} al ${fecha(trUlt.hasta)}.`:'Gente que llegó al sitio desde la campaña.'}</p><div class="tarj">
       ${card('Visitas totales', fmt(m.tr_visitas), [m.tr_visitas, ma.tr_visitas],0,true)}
       ${hay('tr_costo_visita')?card('Costo por visita', mon(m.tr_costo_visita,2), [m.tr_costo_visita, ma.tr_costo_visita],2,false,true):''}
       ${hay('tr_inversion')?card('Invertido', mon(m.tr_inversion,2), [m.tr_inversion, ma.tr_inversion],2):''}
@@ -441,7 +457,7 @@ function pintarTrafico(d){
 
     const conDatos=AUD.filter(x=>hay(x.p+'_visitas'));
     if(conDatos.length){
-      h+=`<h2>Los tres públicos</h2><p class="sub">Cómo rindió cada uno en este período.</p>`;
+      h+=`<h2>Los tres públicos</h2><p class="sub">${trPaus?'Cómo rindió cada uno en la campaña de tráfico, antes de pausarla.':'Cómo rindió cada uno en este período.'}</p>`;
       conDatos.forEach(x=>{
         const vis=m[x.p+'_visitas'], cos=m[x.p+'_costo'], inv=m[x.p+'_inversion'], alc=m[x.p+'_alcance'];
         h+=`<div class="camp"><h3>${x.tit}</h3><p class="que">${x.sub}</p>
@@ -495,12 +511,16 @@ function pintarTrafico(d){
   }
 
   // ===== inversion =====
-  if(hay('ig_inversion')&&hay('tr_inversion')){
-    h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
-      ${card('En tráfico',mon(m.tr_inversion,2),[m.tr_inversion,ma.tr_inversion],2)}
-      ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
-      ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.tr_inversion||0),2),null,2,true)}
-      ${(hay('tr_inversion_diaria')||hay('ig_inversion_diaria'))?card('Inversión diaria',mon(Number(m.tr_inversion_diaria||0)+Number(m.ig_inversion_diaria||0),2),null,2):''}
+  {
+    const cu=u?u.metricas:{}, ca=a?a.metricas:{};
+    const tot=Number(cu.ld_inversion||0)+Number(cu.tr_inversion||0)+Number(cu.ig_inversion||0);
+    const dia=Number(cu.ld_inversion_diaria||0)+Number(cu.tr_inversion_diaria||0)+Number(cu.ig_inversion_diaria||0);
+    if(tot>0) h+=`<h2>Inversión</h2><p class="sub">Todo lo que se puso en pauta en este período, sumando las campañas.</p><div class="tarj">
+      ${cu.ld_inversion!=null?card('En registros',mon(cu.ld_inversion,2),[cu.ld_inversion,ca.ld_inversion],2):''}
+      ${cu.tr_inversion!=null?card('En tráfico',mon(cu.tr_inversion,2),[cu.tr_inversion,ca.tr_inversion],2):''}
+      ${cu.ig_inversion!=null?card('En seguidores',mon(cu.ig_inversion,2),[cu.ig_inversion,ca.ig_inversion],2):''}
+      ${card('Total',mon(tot,2),null,2,true)}
+      ${dia?card('Inversión diaria',mon(dia,2),null,2):''}
     </div>`;
   }
 
@@ -1525,7 +1545,10 @@ const DICT={
 '@Agregar algo que quieras hacer o pedirnos':'Add something you want to do or ask us for','@Nombre del activo. Por ejemplo: Mi carpeta de fotos':'Asset name. For example: My photo folder',
 '@Pegá el link (opcional)':'Paste the link (optional)','Waitlist':'Waitlist',
 'Cuánta gente se anotó en cada período. Cargá el total de anotados una vez, antes de cada jueves: ese día calculamos cuántos se sumaron y cuánto costó cada uno.':'How many people signed up in each period. Enter the total number of sign-ups once, before each Thursday: that day we calculate how many joined and what each one cost.',
-'Anotados al cierre':'Sign-ups at close','Total de anotados al cierre de cada período.':'Total sign-ups at the close of each period.','@Total de anotados':'Total sign-ups','Guardar':'Save',
+'Anotados al cierre':'Sign-ups at close','Campaña de registros':'Sign-up campaign',
+'Gente que se anotó en la waitlist desde los anuncios. Lo cuenta el píxel de la página.':'People who joined the waitlist from the ads, tracked by the site pixel.',
+'Registros':'Sign-ups','Registros por público':'Sign-ups by audience','Cuántos se anotaron desde cada público y cuánto costó cada uno.':'How many signed up from each audience and what each one cost.',
+'Público':'Audience','Cómo rindió cada uno en la campaña de tráfico, antes de pausarla.':'How each one performed in the traffic campaign, before it was paused.','En registros':'On sign-ups','Todo lo que se puso en pauta en este período, sumando las campañas.':'Everything invested in ads this period, all campaigns combined.','Total de anotados al cierre de cada período.':'Total sign-ups at the close of each period.','@Total de anotados':'Total sign-ups','Guardar':'Save',
 'Nuevos en el período':'New this period','Costo por registro':'Cost per sign-up','Actualizar':'Update',
 'Todavía no hay un número cargado. Poné cuántos anotados hay hoy.':'No number entered yet. Enter how many sign-ups there are today.',
 'Anotados en la waitlist':'Waitlist sign-ups','Cómo viene creciendo la lista.':'How the list is growing.','@Anotados hoy':'Sign-ups today','@Escribí acá…':'Write here…','@Borrar':'Delete','@Borrar nota':'Delete note','@Secciones':'Sections'
@@ -1547,6 +1570,7 @@ const REGLAS=[
  [/^Del (.+) al (.+?)(:.*)?$/, (m,a,b,c)=>`From ${a} to ${b}${c||''}`],
  [/^(\d\d\/\d\d) al (\d\d\/\d\d)$/, (m,a,b)=>`${a} to ${b}`],
  [/^Anotados al (.+)$/, (m,a)=>`Sign-ups as of ${a}`],
+ [/^Campaña pausada\. Estos son sus últimos datos, del (.+) al (.+)\.$/, (m,a,b)=>`Campaign paused. These are its latest numbers, from ${a} to ${b}.`],
  [/^Último número cargado: (.+), el (.+)\.$/, (m,a,b)=>`Last number entered: ${a}, on ${b}.`],
  [/^([\d.,]+) de ([\d.,]+)$/, (m,a,b)=>`${a} of ${b}`],
 ];
