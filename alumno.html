@@ -137,7 +137,8 @@ let TOK=SLUG?ls.get('al_'+SLUG):null;
 let D=null;
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const nf=(v,d=0)=>v==null||isNaN(v)?'—':Number(v).toLocaleString('es-AR',{minimumFractionDigits:d,maximumFractionDigits:d});
-const din=(v,d=0)=>v==null||isNaN(v)?'—':'$ '+nf(v,d);
+let MONEDA='ARS';
+const din=(v,d=0)=>v==null||isNaN(v)?'—':(MONEDA==='USD'?'USD ':'$ ')+nf(v,d);
 const hoyISO=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
 const sumar=(iso,n)=>{const d=new Date(iso+'T12:00');d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)};
 const ddmm=iso=>{const p=String(iso).slice(0,10).split('-');return p[2]+'/'+p[1]};
@@ -201,11 +202,12 @@ async function cargar(){
 
 function pintar(){
   const A=D.alumno, R=(D.reportes||[]).map(r=>({...r,c:calc(r.metricas)})), u=R[R.length-1]||null, a=R.length>1?R[R.length-2]:null;
-  const M=A.modulos||{};
+  const M=A.modulos||{}; MONEDA=A.moneda||'ARS';
   document.title=A.proyecto+' · Método Semilla';
   const desde=u?u.hasta:sumar(hoyISO(),-7), hasta=hoyISO();
   const yaCargado=u&&u.hasta>=hoyISO();
   let h=`<p class="kick">${ico}Método Semilla</p><button class="btn-inst" id="btnInst" type="button"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Instalar la app en tu celular</button><div id="cab"><h1>${esc(A.proyecto)}${lapiz('id="edPerfil"','Editar nombre del proyecto')}</h1>
+    ${A.email?'':`<div class="hoja" style="margin:0 0 18px;border-left:4px solid var(--rosa)"><b style="color:var(--navy)">Sumá tu correo</b><p class="sub" style="margin:4px 0 10px">Lo usamos para mandarte novedades del programa.</p><div class="agregar"><input id="av_mail" type="email" inputmode="email" placeholder="nombre@correo.com"><button class="btn sec" id="av_ok">Guardar</button></div></div>`}
     <p class="quien">${esc(A.nombre)}${u?` · Último período cargado: del ${ddmm(u.desde)} al ${ddmm(u.hasta)}`:''}</p></div>`;
 
   // --- cargar numeros ---
@@ -284,7 +286,7 @@ function pintar(){
       ${[...R].reverse().map(r=>`<tr><td>${ddmm(r.desde)} al ${ddmm(r.hasta)}</td><td>${nf(r.c.ig_total)}</td><td>${nf(r.c.ig_nuevos)}</td><td>${din(r.c.ig_costo,2)}</td>${M.mensajes?`<td>${nf(r.c.msj_mensajes)}</td>`:''}${M.mensajes||M.ventas?`<td>${din(r.c.facturacion)}</td>`:''}<td>${lapiz(`data-edrep="${r.id}"`,'Editar período')}<button class="x" data-delrep="${r.id}" aria-label="Borrar período">×</button></td></tr>`).join('')}
     </table></div>`;
   }
-  h+=`<footer>${ico}SEMILLA REDES</footer>`;
+  h+=`<p style="text-align:center;margin-top:40px"><button class="btn sec" id="salir">Salir de este panel</button></p><footer>${ico}SEMILLA REDES</footer>`;
   $('app').innerHTML=h;
 
   // precargar el formulario si el periodo ya existe
@@ -319,13 +321,17 @@ function eventos(M){
 }
 function editores(){
   const A=D.alumno;
+  const sal=$('salir'); if(sal) sal.onclick=()=>{ if(!confirm('¿Salir de este panel en este dispositivo? Para volver a entrar vas a necesitar tu PIN.')) return; ls.del('al_'+SLUG); ls.del('al_ultimo'); location.href='/alumnos/'; };
+  const av=$('av_ok'); if(av) av.onclick=async()=>{ const m=$('av_mail').value.trim(); if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(m)){ $('av_mail').focus(); return; } const r=await rpc('al_perfil',{p_slug:SLUG,p_k:TOK,p_nombre:A.nombre,p_proyecto:A.proyecto,p_email:m}); if(r&&r.ok) recargar(); };
   const ep=$('edPerfil'); if(ep) ep.onclick=()=>{
     $('cab').innerHTML=`<div class="editor"><div><label for="e_proy">Nombre del proyecto</label><input id="e_proy" value="${esc(A.proyecto)}"></div>
       <div><label for="e_nom">Tu nombre</label><input id="e_nom" value="${esc(A.nombre)}"></div>
+      <div><label for="e_mail">Tu correo</label><input id="e_mail" type="email" value="${esc(A.email||'')}"></div>
+      <div><label for="e_mon">Moneda de tu inversión</label><select id="e_mon"><option value="ARS" ${A.moneda!=='USD'?'selected':''}>Pesos argentinos</option><option value="USD" ${A.moneda==='USD'?'selected':''}>Dólares</option></select></div>
       <p class="sub" style="margin:0">Tu link sigue siendo semillaredes.com/${esc(A.slug)}</p>
       <div class="fila"><button class="btn" id="e_ok">Guardar</button><button class="btn sec" id="e_no">Cancelar</button></div></div>`;
     $('e_proy').focus(); $('e_no').onclick=pintar;
-    $('e_ok').onclick=async()=>{ const r=await rpc('al_perfil',{p_slug:SLUG,p_k:TOK,p_nombre:$('e_nom').value,p_proyecto:$('e_proy').value}); if(r&&r.ok) recargar(); };
+    $('e_ok').onclick=async()=>{ const r=await rpc('al_perfil',{p_slug:SLUG,p_k:TOK,p_nombre:$('e_nom').value,p_proyecto:$('e_proy').value,p_email:$('e_mail').value,p_moneda:$('e_mon').value}); if(r&&r.ok) recargar(); else if(r&&r.error==='email') alert('Revisá el correo.'); };
   };
   document.querySelectorAll('[data-edtarea]').forEach(b=>b.onclick=()=>{
     const it=b.closest('.item'), tx=it.querySelector('.tx'), id=b.dataset.edtarea, val=tx.textContent;
