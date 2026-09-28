@@ -43,6 +43,9 @@ input:focus,button:focus-visible{outline:2px solid var(--navy);outline-offset:1p
     <label for="nombre">Tu nombre</label><input id="nombre" autocomplete="name">
     <label for="proyecto">Nombre de tu proyecto</label><input id="proyecto" placeholder="Por ejemplo: Luna Cerámica">
     <p class="ayuda">Tu panel va a quedar en <span class="url" id="prev">semillaredes.com/…</span></p>
+    <label for="email">Tu correo</label><input id="email" type="email" autocomplete="email" inputmode="email" placeholder="nombre@correo.com">
+    <label for="moneda">¿En qué moneda invertís en publicidad?</label>
+    <select id="moneda" style="width:100%;border:1px solid var(--linea);border-radius:10px;padding:12px 13px;font:inherit;font-size:16px;background:#fff"><option value="ARS">Pesos argentinos</option><option value="USD">Dólares</option></select>
     <label for="pin">Elegí un PIN de 4 números</label><input id="pin" class="pin" inputmode="numeric" maxlength="4">
     <p class="ayuda">Te lo pide una sola vez por celular. Anotalo en algún lado.</p>
     <p class="error" id="err" role="alert"></p>
@@ -59,15 +62,25 @@ const rpc=(fn,a)=>fetch(`${SB}/rest/v1/rpc/${fn}`,{method:'POST',headers:{apikey
 const $=id=>document.getElementById(id);
 const slugificar=t=>t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'');
 $('proyecto').oninput=()=>{ const s=slugificar($('proyecto').value); $('prev').textContent='semillaredes.com/'+(s||'…'); };
-try{ const u=localStorage.getItem('al_ultimo'); if(u&&localStorage.getItem('al_'+u)) location.replace('/alumno.html?p='+u); }catch(e){}
+(async()=>{ let u=null; try{ u=localStorage.getItem('al_ultimo'); if(!(u&&localStorage.getItem('al_'+u))) u=null; }catch(e){}
+  if(!u) return;
+  const e=await rpc('al_existe',{p_slug:u}); const nom=e&&e.existe?e.proyecto:u;
+  const box=document.createElement('div'); box.className='hoja'; box.style.cssText='margin:0 0 22px;border-left:4px solid var(--oliva)';
+  box.innerHTML=`<b style="color:var(--navy)">Ya tenés un panel abierto en este dispositivo: ${nom.replace(/[<>&]/g,'')}</b>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px"><a href="/alumno.html?p=${u}" style="background:var(--navy);color:var(--crema);border-radius:10px;padding:11px 16px;text-decoration:none;font-weight:700">Ir a mi panel</a>
+    <button id="salirAlta" style="background:transparent;border:1px solid var(--navy);color:var(--navy);border-radius:10px;padding:10px 16px;font:600 15px Inter,system-ui,sans-serif;cursor:pointer">Salir</button></div>`;
+  document.querySelector('.hoja').before(box);
+  document.getElementById('salirAlta').onclick=()=>{ try{ localStorage.removeItem('al_'+u); localStorage.removeItem('al_ultimo'); }catch(e){} box.remove(); };
+})();
 $('crear').onclick=async()=>{
-  const n=$('nombre').value.trim(), p=$('proyecto').value.trim(), pin=$('pin').value.trim();
+  const n=$('nombre').value.trim(), p=$('proyecto').value.trim(), pin=$('pin').value.trim(), em=$('email').value.trim();
   if(!n||!p){ $('err').textContent='Completá tu nombre y el de tu proyecto.'; return; }
+  if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(em)){ $('err').textContent='Poné un correo válido.'; return; }
   if(!/^\d{4}$/.test(pin)){ $('err').textContent='El PIN tiene que ser de 4 números.'; return; }
   const b=$('crear'); b.disabled=true; b.textContent='Creando…';
-  const r=await rpc('al_alta',{p_nombre:n,p_proyecto:p,p_pin:pin});
+  const r=await rpc('al_alta',{p_nombre:n,p_proyecto:p,p_pin:pin,p_email:em,p_moneda:$('moneda').value});
   if(r&&r.ok){ try{ localStorage.setItem('al_'+r.slug,r.token); localStorage.setItem('al_ultimo',r.slug); }catch(e){} location.href='/alumno.html?p='+r.slug+'&nuevo=1'; }
-  else { b.disabled=false; b.textContent='Crear mi panel'; $('err').textContent= r&&r.error==='nombre_corto'?'Usá un nombre de proyecto un poco más largo.':'No se pudo crear. Probá de nuevo en un momento.'; }
+  else { b.disabled=false; b.textContent='Crear mi panel'; $('err').textContent= r&&r.error==='email'?'Poné un correo válido.':r&&r.error==='nombre_corto'?'Usá un nombre de proyecto un poco más largo.':'No se pudo crear. Probá de nuevo en un momento.'; }
 };
 $('ir').onclick=()=>{ const s=slugificar($('ir_slug').value.replace(/^.*semillaredes\.com\//i,'')); if(s) location.href='/alumno.html?p='+s; };
 </script>
