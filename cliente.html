@@ -202,6 +202,7 @@ details.hist table{border:0;border-radius:0}
 .vm{flex:none;font-weight:600;color:var(--navy);font-variant-numeric:tabular-nums;white-space:nowrap}
 .vtot{margin:0 0 10px;font-size:15px;color:var(--tinta)}
 .vtot b{color:var(--navy)}
+.iasello{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #DDD6C7;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600;color:#1A2456;margin:0 0 14px}
 .agregarW{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px;max-width:420px}
 .agregarW input{border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:11px 13px;font:inherit;font-size:15px;min-width:0}
 .agregarV{display:grid;grid-template-columns:150px 1fr 130px auto;gap:8px;margin-top:10px}
@@ -329,7 +330,7 @@ const convIG=(R)=>{ const L=(R||[]).filter(r=>Number(r.metricas.ig_visitas)>0&&r
   if(!L.length) return '';
   const f=r=>Number(r.metricas.ig_followers_nuevos)/Number(r.metricas.ig_visitas)*100;
   const c=f(L[L.length-1]), p=L.length>1?f(L[L.length-2]):null;
-  return card('Conversión de visitas', fmt(c,1)+'%', [c,p],1); };
+  return card('Conversión de visitas a seguidores', fmt(c,1)+'%', [c,p],1); };
 // conjuntos de la campaña de seguidores (igc1..igc4) del ultimo reporte
 const conjIG=(u)=>{ if(!u) return ''; const x=u.metricas, L=[]; // igcN_visitas = visitas al perfil (resultado de la campaña)
   for(let i=1;i<=6;i++){ const n=x['igc'+i+'_nombre']; if(!n) continue;
@@ -555,6 +556,7 @@ function pintarSemilla(d){
     h+=`<h2>Seguidores</h2><p class="sub">La campaña de crecimiento de la cuenta, desde el 1 del mes.</p><div class="tarj">
       ${hay('ig_followers_total')?card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total],0,true):''}
       ${hay('ig_followers_nuevos')?card('Nuevos en el mes', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos]):''}
+      ${convIG(R)}
       ${hay('ig_costo_follower')?card('Costo por seguidor', mon(m.ig_costo_follower,3), [m.ig_costo_follower, ma.ig_costo_follower],3,false,true):''}
       ${card('Invertido', mon(m.ig_inversion,2), [m.ig_inversion, ma.ig_inversion],2)}
       ${hay('ig_alcance')?card('Personas alcanzadas', fmt(m.ig_alcance), [m.ig_alcance, ma.ig_alcance]):''}
@@ -833,7 +835,7 @@ function pintarMixto(d){
       ${hay('ed_followers_total')?card('Seguidores', fmt(m.ed_followers_total), [m.ed_followers_total, ma.ed_followers_total]):''}
       ${hay('ed_followers_nuevos')?card('Nuevos en el período', fmt(m.ed_followers_nuevos), [m.ed_followers_nuevos, ma.ed_followers_nuevos]):''}
       ${hay('ed_visitas')?card('Visitas al perfil', fmt(m.ed_visitas), [m.ed_visitas, ma.ed_visitas]):''}
-      ${convE!=null?card('Conversión de visitas', fmt(convE,1)+'%', null,1):''}
+      ${convE!=null?card('Conversión de visitas a seguidores', fmt(convE,1)+'%', null,1):''}
       ${hay('ed_costo_follower')?card('Costo por seguidor', mon(m.ed_costo_follower,2), [m.ed_costo_follower, ma.ed_costo_follower],2,true,true):''}
       ${hay('ed_inversion')&&!hay('ed_costo_follower')?card('Invertido en seguidores', mon(m.ed_inversion,0), [m.ed_inversion, ma.ed_inversion],0):''}
     </div>`;
@@ -1301,7 +1303,7 @@ function pintarResto(d,h){
 
   const RC=d.recomendaciones&&d.recomendaciones.recomendaciones;
   if(RC&&RC.length){
-    h+=`<h2>Consejos de la Inteligencia colectiva</h2><p class="sub">Surgen de la experiencia de otros artistas de la comunidad y los procesa una inteligencia artificial entrenada en el Método Semilla. Todos los domingos el bot te manda nuevas recomendaciones.</p>
+    h+=`<h2>Consejos de la Inteligencia colectiva</h2><p class="sub">Surgen de la experiencia de otros artistas de la comunidad y los procesa una inteligencia artificial entrenada en el Método Semilla. Todos los domingos el bot te manda nuevas recomendaciones.</p><p class="iasello"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 C18 7 18 17 12 21 C6 17 6 7 12 3 Z" fill="#87863A"/></svg>Procesado con IA, entrenada en el Método Semilla</p>
       <div class="reco">
         <div class="cab"><h3>Tres cosas para arrancar</h3>
         ${d.recomendaciones_fecha?`<span class="cuando">${new Date(d.recomendaciones_fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</span>`:''}</div>
@@ -1524,7 +1526,7 @@ const DICT={
 '2. Profesionales MD/DO, PA, NP':'2. Professionals MD/DO, PA, NP','3. Estudiantes y trainees de salud':'3. Health students and trainees',
 'Alcance':'Reach','personas':'people','Visitas por público':'Visits by audience','Los tres públicos comparados.':'The three audiences compared.',
 'Público 1':'Audience 1','Público 2':'Audience 2','Público 3':'Audience 3','Crecimiento de la cuenta.':'Account growth.',
-'Nuevos en el período':'New this period','Visitas al perfil':'Profile visits','Conversión de visitas':'Visit conversion',
+'Nuevos en el período':'New this period','Visitas al perfil':'Profile visits','Conversión de visitas':'Visit conversion','Conversión de visitas a seguidores':'Visit-to-follower conversion','Procesado con IA, entrenada en el Método Semilla':'AI-processed, trained on the Semilla Method',
 'Costo por seguidor':'Cost per follower','Lo que se puso en pauta en este período.':'What went into ads this period.',
 'En tráfico':'On traffic','En seguidores':'On followers','Total':'Total','Inversión diaria':'Daily budget',
 'Todos los reportes.':'All reports.','Período':'Period','Costo x visita':'Cost per visit','Nuevos':'New','Seguidores en Instagram':'Instagram followers',
