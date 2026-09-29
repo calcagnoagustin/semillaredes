@@ -829,6 +829,18 @@ function pintarMixto(d){
   else if(R.filter(r=>r.metricas.ig_inversion!=null).length>1 && R.filter(r=>r.metricas.ig_followers_total!=null).length<2)
     h+=grafico('Inversión en seguidores','Lo que se puso en la campaña de seguidores cada período.',R.map(r=>r.metricas.ig_inversion??null),et,'#87863A');
 
+  // interaccion: es Instagram, va pegada a seguidores
+  const hayInter = R.some(r=>r.metricas.int_interacciones!=null);
+  if(hayInter){
+    h+=`<h2>Interacción</h2><p class="sub">Campaña para que la gente reaccione con tus publicaciones: likes, comentarios y guardados.</p><div class="tarj">
+      ${card('Interacciones', fmt(m.int_interacciones), [m.int_interacciones, ma.int_interacciones],0,true)}
+      ${card('Costo por interacción', mon(m.int_costo,2), [m.int_costo, ma.int_costo],2,false,true)}
+      ${card('Invertido', mon(m.int_inversion,2), [m.int_inversion, ma.int_inversion],2)}
+    </div>`;
+    h+=grafico('Interacciones','Cuánta gente reaccionó con tus publicaciones.',R.map(r=>r.metricas.int_interacciones),et,'#87863A');
+    h+=grafico('Costo por interacción','Cuánto cuesta cada reacción. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.int_costo),et,'#E2767C',true);
+  }
+
   // campaña de Meta hacia YouTube
   if(hay('ytad_inversion')){
     h+=`<h2>Campaña a YouTube</h2><p class="sub">Anuncios en Meta que llevan gente a tu canal.</p><div class="tarj">
@@ -899,17 +911,6 @@ function pintarMixto(d){
     </div>`;
     if(R.filter(r=>r.metricas.tk_tickets!=null).length>1)
       h+=grafico('Ventas','Cuántas entradas se vendieron en cada período.',R.map(r=>r.metricas.tk_tickets),et,'#7A1F3A');
-  }
-
-  const hayInter = R.some(r=>r.metricas.int_interacciones!=null);
-  if(hayInter){
-    h+=`<h2>Interacción</h2><p class="sub">Campaña para que la gente reaccione con tus publicaciones: likes, comentarios y guardados.</p><div class="tarj">
-      ${card('Interacciones', fmt(m.int_interacciones), [m.int_interacciones, ma.int_interacciones],0,true)}
-      ${card('Costo por interacción', mon(m.int_costo,2), [m.int_costo, ma.int_costo],2,false,true)}
-      ${card('Invertido', mon(m.int_inversion,2), [m.int_inversion, ma.int_inversion],2)}
-    </div>`;
-    h+=grafico('Interacciones','Cuánta gente reaccionó con tus publicaciones.',R.map(r=>r.metricas.int_interacciones),et,'#87863A');
-    h+=grafico('Costo por interacción','Cuánto cuesta cada reacción. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.int_costo),et,'#E2767C',true);
   }
 
   const hayVentas = !!u && (u.metricas.msj_conversiones!=null || u.metricas.msj_ingreso!=null);
