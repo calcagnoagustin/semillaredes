@@ -319,19 +319,27 @@ function eventos(M){
   document.querySelectorAll('[data-delnota]').forEach(b=>b.onclick=async()=>{ if(!confirm('¿Borrar esta nota?'))return; await rpc('al_nota',{p_slug:SLUG,p_k:TOK,p_texto:null,p_borrar:b.dataset.delnota}); recargar(); });
   document.querySelectorAll('[data-delrep]').forEach(b=>b.onclick=async()=>{ if(!confirm('¿Borrar este período?'))return; await rpc('al_reporte_borrar',{p_slug:SLUG,p_k:TOK,p_id:b.dataset.delrep}); recargar(); });
 }
+function cambiarSlug(nuevo){
+  if(!nuevo||nuevo===SLUG) return;
+  ls.set('al_'+nuevo,TOK); ls.del('al_'+SLUG); ls.set('al_ultimo',nuevo); SLUG=nuevo;
+  try{ history.replaceState(null,'','/alumno.html?p='+nuevo); }catch(e){}
+}
 function editores(){
   const A=D.alumno;
   const sal=$('salir'); if(sal) sal.onclick=()=>{ if(!confirm('¿Salir de este panel en este dispositivo? Para volver a entrar vas a necesitar tu PIN.')) return; ls.del('al_'+SLUG); ls.del('al_ultimo'); location.href='/alumnos/'; };
-  const av=$('av_ok'); if(av) av.onclick=async()=>{ const m=$('av_mail').value.trim(); if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(m)){ $('av_mail').focus(); return; } const r=await rpc('al_perfil',{p_slug:SLUG,p_k:TOK,p_nombre:A.nombre,p_proyecto:A.proyecto,p_email:m}); if(r&&r.ok) recargar(); };
+  const av=$('av_ok'); if(av) av.onclick=async()=>{ const m=$('av_mail').value.trim(); if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(m)){ $('av_mail').focus(); return; } const r=await rpc('al_perfil',{p_slug:SLUG,p_k:TOK,p_nombre:A.nombre,p_proyecto:A.proyecto,p_email:m}); if(r&&r.ok){ cambiarSlug(r.slug); recargar(); } };
   const ep=$('edPerfil'); if(ep) ep.onclick=()=>{
     $('cab').innerHTML=`<div class="editor"><div><label for="e_proy">Nombre del proyecto</label><input id="e_proy" value="${esc(A.proyecto)}"></div>
       <div><label for="e_nom">Tu nombre</label><input id="e_nom" value="${esc(A.nombre)}"></div>
       <div><label for="e_mail">Tu correo</label><input id="e_mail" type="email" value="${esc(A.email||'')}"></div>
       <div><label for="e_mon">Moneda de tu inversión</label><select id="e_mon"><option value="ARS" ${A.moneda!=='USD'?'selected':''}>Pesos argentinos</option><option value="USD" ${A.moneda==='USD'?'selected':''}>Dólares</option></select></div>
-      <p class="sub" style="margin:0">Tu link sigue siendo semillaredes.com/${esc(A.slug)}</p>
+      <p class="sub" style="margin:0">Tu link: <b id="e_link">semillaredes.com/${esc(A.slug)}</b></p>
       <div class="fila"><button class="btn" id="e_ok">Guardar</button><button class="btn sec" id="e_no">Cancelar</button></div></div>`;
     $('e_proy').focus(); $('e_no').onclick=pintar;
-    $('e_ok').onclick=async()=>{ const r=await rpc('al_perfil',{p_slug:SLUG,p_k:TOK,p_nombre:$('e_nom').value,p_proyecto:$('e_proy').value,p_email:$('e_mail').value,p_moneda:$('e_mon').value}); if(r&&r.ok) recargar(); else if(r&&r.error==='email') alert('Revisá el correo.'); };
+    const slugif=t=>t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+    $('e_proy').oninput=()=>{ $('e_link').textContent='semillaredes.com/'+(slugif($('e_proy').value)||'…'); };
+    $('e_ok').onclick=async()=>{ const r=await rpc('al_perfil',{p_slug:SLUG,p_k:TOK,p_nombre:$('e_nom').value,p_proyecto:$('e_proy').value,p_email:$('e_mail').value,p_moneda:$('e_mon').value});
+      if(r&&r.ok){ cambiarSlug(r.slug); recargar(); } else if(r&&r.error==='email') alert('Revisá el correo.'); else if(r&&r.error==='nombre_corto') alert('Usá un nombre de proyecto un poco más largo.'); };
   };
   document.querySelectorAll('[data-edtarea]').forEach(b=>b.onclick=()=>{
     const it=b.closest('.item'), tx=it.querySelector('.tx'), id=b.dataset.edtarea, val=tx.textContent;
