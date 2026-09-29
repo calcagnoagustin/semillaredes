@@ -49,8 +49,9 @@ function cargar(){ marco.src = BASE + '&v=' + Date.now(); }
 cargar();
 
 // al volver a la app, traer lo último
-document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) cargar(); });
-window.addEventListener('focus', cargar);
+// al volver a la app despues de un rato (5 min o mas en segundo plano), traer lo ultimo; nunca por simple foco
+let oculta=0;
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden) oculta=Date.now(); else if(oculta && Date.now()-oculta>5*60*1000) cargar(); });
 
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/sw.js').then(reg=>{
