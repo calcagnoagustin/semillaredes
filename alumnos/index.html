@@ -54,6 +54,7 @@ input:focus,button:focus-visible{outline:2px solid var(--navy);outline-offset:1p
   <details class="otro"><summary>Ya tengo mi panel</summary>
     <p style="margin:10px 0 0">Escribí el nombre de tu proyecto, como aparece en tu link.</p>
     <div class="fila"><input id="ir_slug" placeholder="lunaceramica" aria-label="Nombre del proyecto"><button id="ir">Entrar</button></div>
+    <p class="error" id="err2" role="alert"></p>
   </details>
 </main>
 <script>
@@ -82,7 +83,11 @@ $('crear').onclick=async()=>{
   if(r&&r.ok){ try{ localStorage.setItem('al_'+r.slug,r.token); localStorage.setItem('al_ultimo',r.slug); }catch(e){} location.href='/alumno.html?p='+r.slug+'&nuevo=1'; }
   else { b.disabled=false; b.textContent='Crear mi panel'; $('err').textContent= r&&r.error==='email'?'Poné un correo válido.':r&&r.error==='nombre_corto'?'Usá un nombre de proyecto un poco más largo.':'No se pudo crear. Probá de nuevo en un momento.'; }
 };
-$('ir').onclick=()=>{ const s=slugificar($('ir_slug').value.replace(/^.*semillaredes\.com\//i,'')); if(s) location.href='/alumno.html?p='+s; };
+$('ir').onclick=async()=>{ const s=slugificar($('ir_slug').value.replace(/^.*semillaredes\.com\//i,'')); if(!s) return;
+  const r=await rpc('al_existe',{p_slug:s});
+  if(r&&r.existe) location.href='/alumno.html?p='+r.slug; else $('err2').textContent='No encontramos un panel con ese nombre. Revisá cómo lo escribiste o creá uno nuevo arriba.'; };
+$('ir_slug').onkeydown=e=>{ if(e.key==='Enter') $('ir').click(); };
+if(new URLSearchParams(location.search).get('no')){ document.querySelector('.otro').open=true; $('err2').textContent='No encontramos ese panel. Escribí el nombre de tu proyecto.'; }
 </script>
 </body>
 </html>
