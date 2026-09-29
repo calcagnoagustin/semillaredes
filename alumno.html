@@ -194,7 +194,7 @@ function puerta(nombre){
 
 async function cargar(){
   if(!SLUG){ location.replace('/alumnos/'); return; }
-  if(!TOK){ const e=await rpc('al_existe',{p_slug:SLUG}); if(!e||!e.existe){ location.replace('/alumnos/'); return; } puerta(e.proyecto); return; }
+  if(!TOK){ const e=await rpc('al_existe',{p_slug:SLUG}); if(!e||!e.existe){ location.replace('/alumnos/?no='+encodeURIComponent(SLUG)); return; } if(e.slug&&e.slug!==SLUG){ SLUG=e.slug; TOK=ls.get('al_'+SLUG); if(TOK) return cargar(); } puerta(e.proyecto); return; }
   const d=await rpc('al_get',{p_slug:SLUG,p_k:TOK});
   if(!d||d.error){ ls.del('al_'+SLUG); TOK=null; return cargar(); }
   D=d; ls.set('al_ultimo',SLUG); pintar(); instalar();
