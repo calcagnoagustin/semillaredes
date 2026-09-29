@@ -695,18 +695,23 @@ function pintarVentas(d){
   }
 
   // --- despues, las ventas ---
-  h+=`<h2>Ventas</h2><p class="sub">Lo que generó la campaña en este período.</p><div class="tarj">
-    ${card('Ventas', fmt(m.vta_ventas), [m.vta_ventas, ma.vta_ventas],0,true)}
-    ${hay('vta_ingreso')?card('Facturación', mon(m.vta_ingreso,0), [m.vta_ingreso, ma.vta_ingreso],0):''}
-    ${hay('vta_ganancia')?card('Ganancia neta', mon(m.vta_ganancia,0), [m.vta_ganancia, ma.vta_ganancia],0):''}
-    ${hay('vta_costo_venta')?card('Costo por venta', mon(m.vta_costo_venta,2), [m.vta_costo_venta, ma.vta_costo_venta],2,false,true):''}
-    ${hay('vta_roas')?card('ROAS', fmt(m.vta_roas,2), [m.vta_roas, ma.vta_roas],2):''}
-    ${hay('vta_roi')?card('ROI', fmt(m.vta_roi)+'%', [m.vta_roi, ma.vta_roi]):''}
-    ${hay('vta_inversion')?card('Invertido', mon(m.vta_inversion,2), [m.vta_inversion, ma.vta_inversion],2):''}
-    ${hay('vta_inversion_diaria')?card('Por día', mon(m.vta_inversion_diaria,0), [m.vta_inversion_diaria, ma.vta_inversion_diaria],0):''}
+  // ventas: SOLO lo cargado en el periodo actual (no arrastrar el ultimo valor de otro periodo)
+  { const V=u?u.metricas:{}, has=k=>V[k]!=null;
+    h+=`<h2>Ventas</h2><p class="sub">Lo que generó la campaña en este período.</p>`;
+    if(!has('vta_ventas')&&!has('vta_ingreso')) h+=`<p class="pista">Las ventas de este período todavía no se cargaron.</p>`;
+    h+=`<div class="tarj">
+    ${has('vta_ventas')?card('Ventas', fmt(V.vta_ventas), [V.vta_ventas, ma.vta_ventas],0,true):''}
+    ${has('vta_ingreso')?card('Facturación', mon(V.vta_ingreso,0), [V.vta_ingreso, ma.vta_ingreso],0):''}
+    ${has('vta_ganancia')?card('Ganancia neta', mon(V.vta_ganancia,0), [V.vta_ganancia, ma.vta_ganancia],0):''}
+    ${has('vta_costo_venta')?card('Costo por venta', mon(V.vta_costo_venta,2), [V.vta_costo_venta, ma.vta_costo_venta],2,false,true):''}
+    ${has('vta_roas')?card('ROAS', fmt(V.vta_roas,2), [V.vta_roas, ma.vta_roas],2):''}
+    ${has('vta_roi')?card('ROI', fmt(V.vta_roi)+'%', [V.vta_roi, ma.vta_roi]):''}
+    ${has('vta_inversion')?card('Invertido', mon(V.vta_inversion,2), [V.vta_inversion, ma.vta_inversion],2):''}
+    ${has('vta_inversion_diaria')?card('Por día', mon(V.vta_inversion_diaria,0), [V.vta_inversion_diaria, ma.vta_inversion_diaria],0):''}
   </div>`;
-  if(m.vta_atribuidas!=null)
-    h+=`<p class="sub" style="margin-top:9px">De las ${fmt(m.vta_ventas)} ventas, ${fmt(m.vta_atribuidas)} se atribuyen al pixel.</p>`;
+    if(V.vta_atribuidas!=null)
+      h+=`<p class="sub" style="margin-top:9px">De las ${fmt(V.vta_ventas)} ventas, ${fmt(V.vta_atribuidas)} se atribuyen al pixel.</p>`;
+  }
   // --- el mes del reporte, aparte (prorratea por dias los periodos que cruzan meses) ---
   if(u){
     const D=x=>new Date(x+'T00:00:00Z'), dia=86400000;
@@ -1563,7 +1568,7 @@ const DICT={
 '@Agregar algo que quieras hacer o pedirnos':'Add something you want to do or ask us for','@Nombre del activo. Por ejemplo: Mi carpeta de fotos':'Asset name. For example: My photo folder',
 '@Pegá el link (opcional)':'Paste the link (optional)','Waitlist':'Waitlist',
 'Cuánta gente se anotó en cada período. Cargá el total de anotados una vez, antes de cada jueves: ese día calculamos cuántos se sumaron y cuánto costó cada uno.':'How many people signed up in each period. Enter the total number of sign-ups once, before each Thursday: that day we calculate how many joined and what each one cost.',
-'Anotados al cierre':'Sign-ups at close','Campaña de registros':'Sign-up campaign',
+'Anotados al cierre':'Sign-ups at close','Las ventas de este período todavía no se cargaron.':'Sales for this period have not been entered yet.','Campaña de registros':'Sign-up campaign',
 'Gente que se anotó en la waitlist desde los anuncios. Lo cuenta el píxel de la página.':'People who joined the waitlist from the ads, tracked by the site pixel.',
 'Registros':'Sign-ups','Registros por público':'Sign-ups by audience','Cuántos se anotaron desde cada público y cuánto costó cada uno.':'How many signed up from each audience and what each one cost.',
 'Público':'Audience','Cómo rindió cada uno en la campaña de tráfico, antes de pausarla.':'How each one performed in the traffic campaign, before it was paused.','En registros':'On sign-ups','Todo lo que se puso en pauta en este período, sumando las campañas.':'Everything invested in ads this period, all campaigns combined.','Total de anotados al cierre de cada período.':'Total sign-ups at the close of each period.','@Total de anotados':'Total sign-ups','Guardar':'Save',
