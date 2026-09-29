@@ -29,7 +29,7 @@ a{color:#7A1F3A}
     try{
       const r=await fetch('https://fdrxsjphlvvwwknnrjtx.supabase.co/rest/v1/rpc/al_existe',{method:'POST',
         headers:{apikey:'sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17','Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(x=>x.json());
-      if(r&&r.existe){ location.replace('/alumno.html?p='+slug); return; }
+      if(r&&r.existe){ location.replace('/alumno.html?p='+(r.slug||slug)); return; }
     }catch(e){}
   }
   document.getElementById('msg').style.display='block';
