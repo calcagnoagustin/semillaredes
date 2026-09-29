@@ -694,6 +694,22 @@ function pintarVentas(d){
     h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
   }
 
+  // --- Ferias del Libro: acumulado de cada feria (el cron los trae de Meta) ---
+  { const FR=[...R].reverse().find(r=>Array.isArray(r.metricas.ferias));
+    if(FR){
+      const F=[...FR.metricas.ferias].sort((a,b)=>String(b.desde||'').localeCompare(String(a.desde||'')));
+      h+=`<h2>Ferias del Libro</h2><p class="sub">Lo que movió la pauta de cada feria, sumando todos sus días.</p>`;
+      h+=F.map(f=>`<div class="desglose" style="margin-top:14px"><h3>${f.nombre}</h3>
+        <p class="leyenda">${f.desde?`Del ${fecha(f.desde)} al ${fecha(f.hasta)}`:''}</p>
+        <div class="tarj">
+          ${card('Visitas al perfil', fmt(f.visitas), null,0,true)}
+          ${f.costo_visita!=null?card('Costo por visita', mon(f.costo_visita,2), null,2):''}
+          ${card('Invertido', mon(f.inversion,2), null,2)}
+          ${card('Alcance', fmt(f.alcance), null,0)}
+        </div></div>`).join('');
+    }
+  }
+
   // --- despues, las ventas ---
   // ventas: SOLO lo cargado en el periodo actual (no arrastrar el ultimo valor de otro periodo)
   { const V=u?u.metricas:{}, has=k=>V[k]!=null;
