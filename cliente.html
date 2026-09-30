@@ -726,7 +726,7 @@ function pintarVentas(d){
     ${has('vta_inversion_diaria')?card('Por día', mon(V.vta_inversion_diaria,0), [V.vta_inversion_diaria, ma.vta_inversion_diaria],0):''}
   </div>`;
     if(V.vta_atribuidas!=null)
-      h+=`<p class="sub" style="margin-top:9px">De las ${fmt(V.vta_ventas)} ventas, ${fmt(V.vta_atribuidas)} se atribuyen al pixel.</p>`;
+      h+=`<p class="sub" style="margin-top:9px">${V.vta_ventas!=null?`De las ${fmt(V.vta_ventas)} ventas, ${fmt(V.vta_atribuidas)} se atribuyen al pixel.`:`El pixel atribuye ${fmt(V.vta_atribuidas)} ventas a los anuncios.`}${V.vta_roas_pixel!=null?` Según Meta, esas ventas facturaron ${mon(V.vta_ingreso_pixel,0)}: un ROAS de ${fmt(V.vta_roas_pixel,2)} solo con lo atribuido.`:''}</p>`;
   }
   // --- el mes del reporte, aparte (prorratea por dias los periodos que cruzan meses) ---
   if(u){
