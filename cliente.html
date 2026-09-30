@@ -1211,6 +1211,16 @@ function pintar(d){ window.__D=d;
         ${card('Total del período',mon(tot,2),null,2,true)}
       </div>`;
     }
+    // historia de la pauta (sirve cuando hay periodos viejos sin datos de Instagram, p. ej. meses reconstruidos)
+    const etI=R.map(r=>fecha(r.desde));
+    const visA=r=>{ let t=0,hay=false; for(let i=1;i<=4;i++){ const v=r.metricas['igc'+i+'_visitas']; if(v!=null){ t+=Number(v); hay=true; } } return hay?t:null; };
+    if(R.filter(r=>r.metricas.ig_inversion!=null).length>2){
+      h+=grafico('Inversión por período','Cuánto se puso en pauta de Instagram en cada período.',R.map(r=>r.metricas.ig_inversion!=null?Math.round(r.metricas.ig_inversion):null),etI,'#7A1F3A');
+      if(R.filter(r=>visA(r)!=null).length>2){
+        h+=grafico('Visitas desde los anuncios','Visitas al perfil que trajo la pauta en cada período.',R.map(visA),etI,'#1A2456');
+        h+=grafico('Costo por visita','Cuánto costó cada visita. Mientras más baja la línea, mejor.',R.map(r=>{ const v=visA(r); return v&&r.metricas.ig_inversion?Math.round(r.metricas.ig_inversion/v):null; }),etI,'#87863A');
+      }
+    }
   }
 
   if(R.length>1){
@@ -1584,7 +1594,7 @@ const DICT={
 '@Agregar algo que quieras hacer o pedirnos':'Add something you want to do or ask us for','@Nombre del activo. Por ejemplo: Mi carpeta de fotos':'Asset name. For example: My photo folder',
 '@Pegá el link (opcional)':'Paste the link (optional)','Waitlist':'Waitlist',
 'Cuánta gente se anotó en cada período. Cargá el total de anotados una vez, antes de cada jueves: ese día calculamos cuántos se sumaron y cuánto costó cada uno.':'How many people signed up in each period. Enter the total number of sign-ups once, before each Thursday: that day we calculate how many joined and what each one cost.',
-'Anotados al cierre':'Sign-ups at close','Las ventas de este período todavía no se cargaron.':'Sales for this period have not been entered yet.','Campaña de registros':'Sign-up campaign',
+'Anotados al cierre':'Sign-ups at close','Inversión por período':'Investment per period','Cuánto se puso en pauta de Instagram en cada período.':'How much went into Instagram ads each period.','Visitas desde los anuncios':'Visits from ads','Visitas al perfil que trajo la pauta en cada período.':'Profile visits brought by ads each period.','Cuánto costó cada visita. Mientras más baja la línea, mejor.':'What each visit cost. The lower the line, the better.','Las ventas de este período todavía no se cargaron.':'Sales for this period have not been entered yet.','Campaña de registros':'Sign-up campaign',
 'Gente que se anotó en la waitlist desde los anuncios. Lo cuenta el píxel de la página.':'People who joined the waitlist from the ads, tracked by the site pixel.',
 'Registros':'Sign-ups','Registros por público':'Sign-ups by audience','Cuántos se anotaron desde cada público y cuánto costó cada uno.':'How many signed up from each audience and what each one cost.',
 'Público':'Audience','Cómo rindió cada uno en la campaña de tráfico, antes de pausarla.':'How each one performed in the traffic campaign, before it was paused.','En registros':'On sign-ups','Todo lo que se puso en pauta en este período, sumando las campañas.':'Everything invested in ads this period, all campaigns combined.','Total de anotados al cierre de cada período.':'Total sign-ups at the close of each period.','@Total de anotados':'Total sign-ups','Guardar':'Save',
