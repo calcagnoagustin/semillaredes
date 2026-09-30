@@ -1211,16 +1211,6 @@ function pintar(d){ window.__D=d;
         ${card('Total del período',mon(tot,2),null,2,true)}
       </div>`;
     }
-    // historia de la pauta (sirve cuando hay periodos viejos sin datos de Instagram, p. ej. meses reconstruidos)
-    const etI=R.map(r=>fecha(r.desde));
-    const visA=r=>{ let t=0,hay=false; for(let i=1;i<=4;i++){ const v=r.metricas['igc'+i+'_visitas']; if(v!=null){ t+=Number(v); hay=true; } } return hay?t:null; };
-    if(R.filter(r=>r.metricas.ig_inversion!=null).length>2){
-      h+=grafico('Inversión por período','Cuánto se puso en pauta de Instagram en cada período.',R.map(r=>r.metricas.ig_inversion!=null?Math.round(r.metricas.ig_inversion):null),etI,'#7A1F3A');
-      if(R.filter(r=>visA(r)!=null).length>2){
-        h+=grafico('Visitas desde los anuncios','Visitas al perfil que trajo la pauta en cada período.',R.map(visA),etI,'#1A2456');
-        h+=grafico('Costo por visita','Cuánto costó cada visita. Mientras más baja la línea, mejor.',R.map(r=>{ const v=visA(r); return v&&r.metricas.ig_inversion?Math.round(r.metricas.ig_inversion/v):null; }),etI,'#87863A');
-      }
-    }
   }
 
   if(R.length>1){
