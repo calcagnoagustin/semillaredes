@@ -904,17 +904,27 @@ function pintarMixto(d){
   const campFin = m.msj_nombre ? ((d.cliente.ventas||{})[m.msj_nombre]||null) : null;
   if(campFin && campFin.terminada){
     const F=campFin;
-    h+=`<h2>${m.msj_nombre}</h2><p class="sub">Campaña terminada. Estos son los números totales.</p><div class="tarj">
+    const rf=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
+    h+=`<h2>${m.msj_nombre}</h2><p class="sub">Campaña terminada${F.desde?` (del ${rf(F.desde)} al ${rf(F.hasta)})`:''}. Estos son los números totales.</p><div class="tarj">
       ${F.mensajes!=null?card('Mensajes', fmt(F.mensajes), null,0,true):''}
       ${F.costo_mensaje!=null?card('Costo por mensaje', mon(F.costo_mensaje,0), null,0):''}
       ${F.inversion!=null?card('Invertido', mon(F.inversion,0), null,0):''}
       ${F.diaria!=null?card('Inversión diaria', mon(F.diaria,0), null,0):''}
       ${F.ventas!=null?card('Ventas', fmt(F.ventas), null,0,true):''}
       ${F.costo_conversion!=null?card('Costo por venta', mon(F.costo_conversion,0), null,0):''}
-      ${F.ingreso!=null?card('Ingreso', mon(F.ingreso,0), null,0,true):''}
+      ${F.ingreso_usd!=null?card('Ingreso', 'USD '+fmt(F.ingreso_usd,0), null,0,true):(F.ingreso!=null?card('Ingreso', mon(F.ingreso,0), null,0,true):'')}
+      ${F.ingreso_usd!=null&&F.ingreso!=null?card('Ingreso en pesos', mon(F.ingreso,0), null,0):''}
       ${F.roas!=null?card('ROAS', fmt(F.roas,2), null,2):''}
       ${F.roi!=null?card('ROI', fmt(F.roi,2), null,2):''}
     </div>`;
+    if(F.ingreso_usd!=null&&F.tc) h+=`<p class="sub" style="margin-top:9px">El ingreso se pasó a pesos al dólar oficial (${mon(F.tc,0)}) para calcular el ROAS y compararlo con lo invertido.</p>`;
+    const S=F.semanas||[];
+    if(S.length>1){
+      const eS=S.map(x=>x.e);
+      h+=grafico('Mensajes por semana','Cuánta gente escribió en cada semana de la campaña.',S.map(x=>x.mensajes),eS,'#87863A');
+      h+=grafico('Inversión por semana','Cuánto se invirtió en cada semana de la campaña.',S.map(x=>x.inversion),eS,'#1A2456');
+      h+=grafico('Costo por mensaje','Cuánto costó cada persona que escribió, semana a semana. Mientras más baja la línea, mejor.',S.map(x=>x.mensajes?Math.round(x.inversion/x.mensajes):null),eS,'#E2767C',true);
+    }
   }
   const hayConsultas = !(campFin && campFin.terminada) && R.some(r=>r.metricas.msj_mensajes!=null);
   if(hayConsultas){
