@@ -364,11 +364,12 @@ const CAMPS=[
   {p:'ej', tit:'Reservas Ejecutivo', que:'Campaña para el público ejecutivo.'},
   {p:'cal', tit:'Reservas Calificadas', que:'La campaña principal: incluye famosos y general.', dest:true},
   {p:'fam', tit:'Famosos', que:'Va adentro de Calificadas. Se muestra aparte para verlo solo.', dentro:true},
+  {p:'cata', tit:'Cata', que:'Degustación. Va adentro de Calificadas. Se muestra aparte para verlo solo.', dentro:true},
   {p:'esp', tit:'Campaña especial', que:'Acción puntual por fecha.'}
 ];
 
 function multiCamp(R,et){
-  const series=[{k:'ej_mensajes',lab:'Ejecutivo',color:'#7A1F3A'},{k:'cal_mensajes',lab:'Calificadas',color:'#87863A'},{k:'fam_mensajes',lab:'Famosos (dentro de Calificadas)',color:'#E2767C'}]
+  const series=[{k:'ej_mensajes',lab:'Ejecutivo',color:'#7A1F3A'},{k:'cal_mensajes',lab:'Calificadas',color:'#87863A'},{k:'fam_mensajes',lab:'Famosos (dentro de Calificadas)',color:'#E2767C'},{k:'cata_mensajes',lab:'Cata (dentro de Calificadas)',color:'#1A2456'}]
     .map(x=>({...x, vals:R.map(r=>r.metricas[x.k]??null)}))
     .filter(x=>x.vals.filter(v=>v!=null).length>1);
   if(!series.length) return '';
@@ -979,7 +980,7 @@ function pintarMensajes(d){
   const previo=(k)=>{ let visto=false; for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null){ if(visto) return x; visto=true; } } return null; };
   const m=new Proxy({},{get:(_,k)=>ultimo(k)}), ma=new Proxy({},{get:(_,k)=>previo(k)});
   const et=R.map(r=>fecha(r.hasta));
-  // Famosos esta dentro de Calificadas: no se suma para no contarlo dos veces
+  // Famosos y Cata estan dentro de Calificadas: no se suman para no contarlos dos veces
   const tot=x=>(Number(x.ej_mensajes||0)+Number(x.cal_mensajes||0)+Number(x.esp_mensajes||0));
   const inv=x=>(Number(x.ej_inversion||0)+Number(x.cal_inversion||0)+Number(x.esp_inversion||0));
 
@@ -1015,9 +1016,9 @@ function pintarMensajes(d){
   if(R.length>1){
     h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
       <details class="hist"><summary><span class="flecha">▶</span> Ver los ${R.length} reportes</summary><table>
-      <tr><th>Período</th><th>Ejecutivo</th><th>Calificadas</th><th>de esas, Famosos</th><th>Total</th><th>Costo x mje.</th><th>Inversión</th></tr>
+      <tr><th>Período</th><th>Ejecutivo</th><th>Calificadas</th><th>de esas, Famosos</th><th>de esas, Cata</th><th>Total</th><th>Costo x mje.</th><th>Inversión</th></tr>
       ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
-        <td>${fmt(x.ej_mensajes)}</td><td>${fmt(x.cal_mensajes)}</td><td>${fmt(x.fam_mensajes)}</td>
+        <td>${fmt(x.ej_mensajes)}</td><td>${fmt(x.cal_mensajes)}</td><td>${fmt(x.fam_mensajes)}</td><td>${fmt(x.cata_mensajes)}</td>
         <td><b>${fmt(tot(x))}</b></td><td>${fmt(inv(x)/(tot(x)||1),2)}</td><td>${fmt(inv(x),2)}</td></tr>`}).join('')}
       </table></details>`;
   }
