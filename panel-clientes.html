@@ -281,8 +281,10 @@ function pintar(){
     <p class="meta">Cuando una campaña termina, cargá los totales. El status la muestra cerrada, con estos números, y deja de mostrarla por período.</p>
     <div class="agregar" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">
       <div><label>Nombre (igual que en el reporte)</label><input id="cf_nombre" placeholder="Formación 2026"></div>
-      ${[['mensajes','Mensajes'],['inversion','Inversión'],['costo_mensaje','Costo por mensaje'],['ventas','Ventas'],['costo_conversion','Costo por venta'],['ingreso','Ingreso'],['diaria','Inversión diaria'],['roas','ROAS'],['roi','ROI']].map(([k,l])=>`<div><label>${l}</label><input id="cf_${k}" inputmode="decimal"></div>`).join('')}
+      ${[['mensajes','Mensajes'],['inversion','Inversión'],['costo_mensaje','Costo por mensaje'],['ventas','Ventas'],['costo_conversion','Costo por venta'],['ingreso','Ingreso'],['diaria','Inversión diaria'],['roas','ROAS'],['roi','ROI'],['ingreso_usd','Ingreso en USD'],['tc','Dólar usado (ARS)']].map(([k,l])=>`<div><label>${l}</label><input id="cf_${k}" inputmode="decimal"></div>`).join('')}
+      <div><label>Desde</label><input id="cf_desde" type="date"></div><div><label>Hasta</label><input id="cf_hasta" type="date"></div>
     </div>
+    <div style="margin-top:8px"><label>Semanas para la gráfica (una por línea: etiqueta mensajes inversión)</label><textarea id="cf_semanas" rows="3" placeholder="03–09/09 50 80703&#10;10–16/09 68 70651"></textarea></div>
     <button class="sec" style="margin-top:10px" onclick="cerrarCampana()">Guardar como terminada</button></div>`;
 
   h+=`<div class="card"><h2>Ventas</h2>
@@ -426,8 +428,11 @@ async function guardarReporte(){
 async function cerrarCampana(){
   const nombre=$('cf_nombre').value.trim(); if(!nombre){ alert('Poné el nombre de la campaña, igual que en el reporte.'); return; }
   const datos={};
-  ['mensajes','inversion','costo_mensaje','ventas','costo_conversion','ingreso','diaria','roas','roi'].forEach(k=>{ let v=$('cf_'+k).value.trim(); if(!v) return;
+  ['mensajes','inversion','costo_mensaje','ventas','costo_conversion','ingreso','diaria','roas','roi','ingreso_usd','tc'].forEach(k=>{ let v=$('cf_'+k).value.trim(); if(!v) return;
     v=v.includes(',')?v.replace(/\./g,'').replace(',','.'):(/^\d{1,3}(\.\d{3})+$/.test(v)?v.replace(/\./g,''):v); const n=parseFloat(v); if(!isNaN(n)) datos[k]=n; });
+  if($('cf_desde').value) datos.desde=$('cf_desde').value; if($('cf_hasta').value) datos.hasta=$('cf_hasta').value;
+  const sem=($('cf_semanas').value||'').split('\n').map(l=>l.trim().split(/\s+/)).filter(p=>p.length>=3).map(p=>({e:p[0],mensajes:parseFloat(p[1].replace(/\./g,'').replace(',','.')),inversion:parseFloat(p[2].replace(/\./g,'').replace(',','.'))}));
+  if(sem.length) datos.semanas=sem;
   const r=await rpc('sub_campana_fin',{p_admin:admin,p_slug:sel,p_nombre:nombre,p_datos:datos});
   if(r.ok){ alert('Guardada como terminada.'); entrar(); } else alert('No se pudo guardar.');
 }
