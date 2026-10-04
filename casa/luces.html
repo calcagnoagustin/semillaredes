@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#141311">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<title>Luces de Casa</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f3f1ec; --panel:#ffffff; --fg:#1d1b17; --muted:#6d685d; --line:#dcd7cc;
+  --accent:#e6a21a; --accent-fg:#1d1b17; --ok:#2f9e5b; --warn:#c7532b; --mono-bg:#f7f5f0;
+  --display:'Sora',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#141311; --panel:#1e1c19; --fg:#f1ede4; --muted:#a39d90; --line:#33302a;
+  --accent:#f2b533; --accent-fg:#141311; --ok:#4fc27a; --warn:#ef7a52; --mono-bg:#17160f; color-scheme:dark}}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--display);margin:0;padding-block:0 32px;padding-inline:16px;font-size:15px;line-height:1.45}
+header{position:sticky;top:0;background:var(--bg);display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px;padding-top:calc(14px + env(safe-area-inset-top,0px));border-bottom:1px solid var(--line);z-index:2}
+h1{font-size:20px;margin:0;font-weight:700;letter-spacing:-.01em}
+.status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--warn)}
+.dot.on{background:var(--ok)}
+main{max-width:640px;margin:0 auto;display:grid;gap:18px;padding-top:18px}
+section{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:12px}
+h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0;font-weight:600}
+button{font-family:inherit;font-size:15px;font-weight:600;border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:10px;padding:12px 14px;cursor:pointer;min-height:46px}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+button.big{font-size:17px;padding:16px}
+button:disabled{opacity:.45;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.row>*{flex:1 1 120px;min-width:0}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.swatches{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.sw{aspect-ratio:1;max-width:100%;border-radius:10px;border:1px solid var(--line);cursor:pointer;padding:0;min-height:0}
+label{font-size:13px;color:var(--muted);display:flex;justify-content:space-between}
+input[type=range]{width:100%;accent-color:var(--accent)}
+input[type=color]{width:100%;height:54px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:4px}
+select,input[type=text]{font-family:var(--mono);font-size:14px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);width:100%}
+.hint{font-size:13px;color:var(--muted);margin:0}
+pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px solid var(--line);border-radius:10px;padding:10px;margin:0;max-height:180px;overflow:auto;white-space:pre-wrap;word-break:break-all}
+.pill{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px solid var(--line);border-radius:999px;padding:3px 9px}
+.power{display:grid;gap:8px;padding:14px;border-radius:12px;border:1px dashed var(--accent)}
+.power p{margin:0;font-size:13px;color:var(--muted)}
+</style>
+</head><body>
+
+<header>
+  <h1><a href="./" style="color:inherit;text-decoration:none">‹</a> Luces de Casa</h1>
+  <div class="status"><span class="dot" id="dot"></span><span id="statusText">Sin conectar</span></div>
+</header>
+
+<main>
+  <section>
+    <h2>Conexión</h2>
+    <div class="row">
+      <button class="primary big" id="btnConnect">Buscar y conectar tira LED</button>
+      <button id="btnDisconnect" disabled>Desconectar</button>
+    </div>
+    <div class="row" style="align-items:center">
+      <div style="flex:2 1 200px">
+        <label for="proto">Protocolo del controlador</label>
+        <select id="proto">
+          <option value="lenze">Miracles.Star / Lenze (GATT--DEMO, FFF3)</option>
+          <option value="miracles">Miracles Star Android (FFE1)</option>
+          <option value="todos">Todos a la vez</option>
+          <option value="auto">Auto (según el servicio que anuncie)</option>
+          <option value="bledom">ELK-BLEDOM (7E … EF)</option>
+          <option value="bledom2">ELK-BLEDOM variante 2</option>
+          <option value="triones">Triones / MagicLight (56 … AA)</option>
+          <option value="lednet">LEDnetWF / Zengge (31 … checksum)</option>
+          <option value="raw">Solo hex manual</option>
+        </select>
+      </div>
+      <div style="flex:1 1 140px;display:flex;flex-direction:column;gap:6px">
+        <span class="hint">Característica de escritura</span>
+        <span class="pill" id="charPill">—</span>
+      </div>
+    </div>
+    <p class="hint">Funciona en Chrome o Edge (Android, Windows, Mac, Linux). En iPhone usá el navegador Bluefy. Antes de conectar, cerrá la app Miracles Star: el controlador acepta un solo celular a la vez.</p>
+  </section>
+
+  <section>
+    <h2>Encendido</h2>
+    <div class="row">
+      <button class="big" id="btnOn" disabled>Prender</button>
+      <button class="big" id="btnOff" disabled>Apagar</button>
+    </div>
+    <div class="power">
+      <button class="primary big" id="btnMax" disabled>Máxima potencia</button>
+      <p>Blanco puro con brillo 1000. Es el tope del firmware: valores más altos lo apagan.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Brillo</h2>
+    <label for="bright"><span>Intensidad</span><span id="brightVal">100 %</span></label>
+    <input type="range" id="bright" min="1" max="100" value="100" disabled>
+  </section>
+
+  <section>
+    <h2>Color</h2>
+    <input type="color" id="color" value="#ffffff" disabled>
+    <div class="swatches" id="swatches"></div>
+  </section>
+
+  <section>
+    <h2>Escenas</h2>
+    <div class="grid3">
+      <button data-scene="noche" disabled>Noche cálida</button>
+      <button data-scene="lectura" disabled>Lectura</button>
+      <button data-scene="fiesta" disabled>Fiesta</button>
+      <button data-scene="calma" disabled>Calma</button>
+      <button data-scene="cine" disabled>Cine</button>
+      <button data-scene="trabajo" disabled>Trabajo</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Efectos (modos del controlador)</h2>
+    <div class="grid3" id="modos"></div>
+  </section>
+
+  <section>
+    <h2>Comando manual (hex)</h2>
+    <div class="row">
+      <input type="text" id="rawHex" placeholder="7E 00 04 F0 00 01 FF 00 EF" style="flex:3 1 200px">
+      <button id="btnRaw" disabled style="flex:1 1 100px">Enviar</button>
+    </div>
+    <p class="hint">Si ninguna función responde, probá acá los comandos de los otros protocolos y mirá el registro.</p>
+  </section>
+
+  <section>
+    <h2>Registro</h2>
+    <pre id="log">Esperando conexión…</pre>
+    <div class="row"><button id="btnClear">Limpiar registro</button></div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const log = m => { const p=$('log'); p.textContent += '\n' + new Date().toLocaleTimeString() + '  ' + m; p.scrollTop = p.scrollHeight; try{ fetch('https://vm.semillaredes.com/casa/log',{method:'POST',body:m,keepalive:true}).catch(()=>{}); }catch(e){} };
+  const hex = a => Array.from(a, b => b.toString(16).padStart(2,'0').toUpperCase()).join(' ');
+
+  const SERVICES = ['0000e0ff-3c17-d293-8e48-14fe2e4da212','0000fff0-0000-1000-8000-00805f9b34fb','0000ffe5-0000-1000-8000-00805f9b34fb','0000ffd5-0000-1000-8000-00805f9b34fb','0000ffe0-0000-1000-8000-00805f9b34fb','0000ff00-0000-1000-8000-00805f9b34fb','0000ae00-0000-1000-8000-00805f9b34fb','0000fee9-0000-1000-8000-00805f9b34fb'];
+  const guessProto = uuid => uuid.startsWith('0000fff0') ? 'bledom' : (uuid.startsWith('0000ffe5')||uuid.startsWith('0000ffd5')) ? 'triones' : uuid.startsWith('0000ffe0') ? 'lednet' : 'bledom';
+
+  // Protocolo Lenze (app Miracles.Star de iOS/Android, com.lenzetech.jyx): servicio FFF0, escribe en FFF3. Trama BC cmd len payload 55
+  const hsv = (r,g,b) => { r/=255;g/=255;b/=255; const M=Math.max(r,g,b),m=Math.min(r,g,b),d=M-m; let h=0; if(d){ if(M===r) h=((g-b)/d)%6; else if(M===g) h=(b-r)/d+2; else h=(r-g)/d+4; h=Math.round(h*60); if(h<0) h+=360; } const sat=M?Math.round(d/M*1000):0; return [h,sat]; };
+  const PROTO = {
+    lenze: {
+      on:  () => [0xBC,1,1,1,0x55],
+      off: () => [0xBC,1,1,0,0x55],
+      bright: l => { const v=Math.max(3,Math.round(l*10)); return [0xBC,5,6,v>>8,v&255,0,0,0,0,0x55]; },
+      color: (r,g,b) => { const [h,sat]=hsv(r,g,b); return [0xBC,4,6,h>>8,h&255,sat>>8,sat&255,0,0,0x55]; },
+      mode: m => [0xBC,6,2,Math.floor(m/255),m%255,0x55],
+      speed: v => [0xBC,8,1,v,0x55],
+      keepalive: () => [0xFF,1,2,3,4,5,6,7,0xEF],
+    },
+    miracles: {  // sacado del APK de Miracles Star (com.weifeng.lightbar): char FFE1, paquete 01 RR GG BB brillo modo velocidad; 00 = apagar
+      on:  () => [1,state.r,state.g,state.b,Math.round(state.bright*2.55),0,0],
+      off: () => [0],
+      bright: l => [1,state.r,state.g,state.b,Math.round(l*2.55),0,0],
+      color: (r,g,b) => [1,r,g,b,Math.round(state.bright*2.55),0,0],
+      mode: m => [1,0,0,0,Math.round(state.bright*2.55),m,50],
+    },
+    bledom: {
+      on:  () => [0x7E,0,4,0xF0,0,1,0xFF,0,0xEF],
+      off: () => [0x7E,0,4,0,0,0,0xFF,0,0xEF],
+      bright: l => [0x7E,0,1,l,0,0,0,0,0xEF],
+      color: (r,g,b) => [0x7E,0,5,3,r,g,b,0,0xEF],
+      mode: m => [0x7E,0,3,m,3,0,0,0,0xEF],
+    },
+    triones: {
+      on:  () => [0xCC,0x23,0x33],
+      off: () => [0xCC,0x24,0x33],
+      bright: l => [0x56,0,0,0,Math.round(l*2.55),0x0F,0xAA],
+      color: (r,g,b) => [0x56,r,g,b,0,0xF0,0xAA],
+      mode: m => [0xBB,m,0x10,0x44],
+    },
+    bledom2: {
+      on:  () => [0x7E,4,4,1,0,1,0xFF,0,0xEF],
+      off: () => [0x7E,4,4,0,0,0,0xFF,0,0xEF],
+      bright: l => [0x7E,4,1,l,0xFF,0,0,0,0xEF],
+      color: (r,g,b) => [0x7E,7,5,3,r,g,b,0x10,0xEF],
+      mode: m => [0x7E,5,3,m,3,0xFF,0,0,0xEF],
+    },
+    lednet: {
+      on:  () => [0x71,0x23,0x0F,0xA3],
+      off: () => [0x71,0x24,0x0F,0xA4],
+      bright: null,
+      color: (r,g,b) => { const a=[0x31,r,g,b,0,0,0x0F]; a.push(a.reduce((s,x)=>s+x,0)&0xFF); return a; },
+      mode: m => { const a=[0x61,m,0x10,0x0F]; a.push(a.reduce((s,x)=>s+x,0)&0xFF); return a; },
+    }
+  };
+
+  let state = { r:255,g:255,b:255, bright:100 };
+  let device=null, ch=null, proto='lenze', busy=false, queue=[], ka=null;
+
+  function setConnected(on){
+    $('dot').classList.toggle('on',on);
+    $('statusText').textContent = on ? ('Conectado · '+(device.name||'sin nombre')) : 'Sin conectar';
+    document.querySelectorAll('main button, main input[type=range], main input[type=color]').forEach(el=>{
+      if(['btnConnect','btnClear'].includes(el.id)) return;
+      if(el.id==='btnDisconnect'){ el.disabled=!on; return; }
+      el.disabled=!on;
+    });
+    $('btnConnect').disabled=on;
+  }
+
+  async function connect(){
+    if(!navigator.bluetooth){ log('Este navegador no tiene Web Bluetooth. Usá Chrome/Edge o Bluefy en iPhone.'); return; }
+    try{
+      log('Buscando dispositivos BLE…');
+      device = await navigator.bluetooth.requestDevice({ filters:[{services:['0000e0ff-3c17-d293-8e48-14fe2e4da212']},{namePrefix:'GATT'},{namePrefix:'ELK'},{namePrefix:'LED'},{namePrefix:'ST-'},{namePrefix:'Triones'},{namePrefix:'QHM'},{namePrefix:'MELK'}], optionalServices:SERVICES }).catch(()=>navigator.bluetooth.requestDevice({ acceptAllDevices:true, optionalServices:SERVICES }));
+      device.addEventListener('gattserverdisconnected', () => { log('Se desconectó.'); ch=null; clearInterval(ka); setConnected(false); });
+      const server = await device.gatt.connect();
+      log('Conectado a '+(device.name||device.id)+'. Buscando característica de escritura…');
+      const services = await server.getPrimaryServices();
+      ch=null;
+      for(const s of services){
+        const chars = await s.getCharacteristics();
+        for(const c of chars){
+          log('  svc '+s.uuid.slice(4,8)+' / chr '+c.uuid.slice(4,8)+' ['+Object.keys(c.properties).filter(k=>c.properties[k]).join(',')+']');
+          if(!ch && (c.properties.writeWithoutResponse || c.properties.write)){ ch=c; if($('proto').value==='auto') proto=guessProto(s.uuid); }
+          if(c.uuid.startsWith('0000fff3') && !(ch&&ch.uuid.startsWith('0000ffe1'))) ch=c;
+          if(c.uuid.startsWith('0000ffe1')) ch=c;
+        }
+      }
+      if(!ch){ log('No encontré ninguna característica de escritura.'); return; }
+      proto = $('proto').value==='auto' ? (ch.uuid.startsWith('0000ffe1') ? 'miracles' : ch.uuid.startsWith('0000fff3') ? 'lenze' : proto) : $('proto').value;
+      clearInterval(ka); ka=setInterval(()=>{ if(ch && (proto==='lenze'||proto==='todos')) send([[PROTO.lenze.keepalive(),'lenze']],'keepalive'); },4900);
+      if(ch.properties.writeWithoutResponse===false && ch.properties.write===false) log('Ojo: la característica no es de escritura.');
+      $('charPill').textContent = ch.uuid.slice(4,8).toUpperCase()+' · '+proto;
+      log('Listo. Protocolo: '+proto+'.');
+      setConnected(true);
+      setTimeout(()=>{ send(ALL('on'),'prender'); send(ALL('bright',100),'brillo'); send(ALL('color',255,255,255),'blanco'); },300);
+    }catch(e){ log('Error: '+e.message); }
+  }
+
+  async function send(bytes, label){
+    if(!ch) return;
+    if(Array.isArray(bytes[0])) { for(const [b,k] of bytes) queue.push([new Uint8Array(b), (label||'')+'·'+k]); }
+    else queue.push([new Uint8Array(bytes), label]);
+    if(busy) return;
+    busy=true;
+    while(queue.length){
+      const [data,lab]=queue.shift();
+      try{
+        try{ if(ch.properties.writeWithoutResponse) await ch.writeValueWithoutResponse(data); else await ch.writeValueWithResponse(data); }catch(e1){ await ch.writeValueWithResponse(data); }
+        log((lab?lab+'  ':'')+hex(data));
+      }catch(e){ log('Fallo al enviar: '+e.message); }
+      await new Promise(r=>setTimeout(r,220));
+    }
+    busy=false;
+  }
+
+  const ORDER=['lenze','bledom','bledom2','triones','lednet','miracles'];
+  const ALL = (fn,...a) => { const list = proto==='todos' ? ORDER : [proto]; return list.filter(k=>PROTO[k]&&PROTO[k][fn]).map(k=>[PROTO[k][fn](...a),k]); };
+  const P = () => PROTO[proto] || PROTO.bledom;
+  function applyColor(r,g,b){
+    state.r=r; state.g=g; state.b=b;
+    const k=state.bright/100;
+    send(ALL('color',r,g,b),'color');
+    if(proto==='todos'||proto==='lednet') send([[PROTO.lednet.color(Math.round(r*k),Math.round(g*k),Math.round(b*k)),'lednet']],'color');
+    $('color').value='#'+hex([r,g,b]).replaceAll(' ','').toLowerCase();
+  }
+  function applyBright(l){
+    state.bright=l; $('brightVal').textContent=l+' %';
+    send(ALL('bright',l),'brillo'); if(proto==='lednet') applyColor(state.r,state.g,state.b);
+  }
+
+  $('btnConnect').onclick=connect;
+  $('btnDisconnect').onclick=()=>{ device&&device.gatt.connected&&device.gatt.disconnect(); };
+  $('proto').onchange=e=>{ if(e.target.value!=='auto'){ proto=e.target.value; if(ch) $('charPill').textContent=ch.uuid.slice(4,8).toUpperCase()+' · '+proto; log('Protocolo cambiado a '+proto); } };
+  $('btnOn').onclick=()=>send(ALL('on'),'prender');
+  $('btnOff').onclick=()=>send(ALL('off'),'apagar');
+  $('btnMax').onclick=()=>{ send(ALL('on'),'prender'); $('bright').value=100; applyBright(100); applyColor(255,255,255); };
+  $('bright').oninput=e=>applyBright(+e.target.value);
+  $('color').oninput=e=>{ const v=e.target.value; applyColor(parseInt(v.slice(1,3),16),parseInt(v.slice(3,5),16),parseInt(v.slice(5,7),16)); };
+  $('btnRaw').onclick=()=>{ const s=$('rawHex').value.replace(/[^0-9a-fA-F]/g,''); if(s.length%2){ log('Hex impar, revisá el comando.'); return; } send(s.match(/../g).map(h=>parseInt(h,16)),'manual'); };
+  $('btnClear').onclick=()=>{ $('log').textContent='Registro limpio.'; };
+
+  const SW=[[255,255,255],[255,180,90],[255,120,30],[255,0,0],[255,0,160],[150,0,255],[0,90,255],[0,200,255],[0,255,120],[120,255,0],[255,240,0],[255,60,60]];
+  SW.forEach(c=>{ const b=document.createElement('button'); b.className='sw'; b.style.background=`rgb(${c})`; b.title=hex(c); b.disabled=true; b.onclick=()=>applyColor(...c); $('swatches').appendChild(b); });
+
+  const SCENES={ noche:[[255,140,40],25], lectura:[[255,225,180],85], fiesta:[[255,0,160],100], calma:[[40,120,255],40], cine:[[120,40,200],15], trabajo:[[255,255,255],100] };
+  document.querySelectorAll('[data-scene]').forEach(b=>b.onclick=()=>{ const [c,l]=SCENES[b.dataset.scene]; send(ALL('on'),'prender'); applyColor(...c); $('bright').value=l; applyBright(l); });
+
+  for(let m=1;m<=12;m++){ const b=document.createElement('button'); b.textContent='Modo '+m; b.disabled=true; b.onclick=()=>{ const k = proto==='miracles'?'miracles':'lenze'; send([[PROTO[k].mode(m),k]],'modo '+m); }; $('modos').appendChild(b); }
+  log('página cargada · '+navigator.userAgent.slice(0,80)+' · bluetooth='+(!!navigator.bluetooth));
+  window.addEventListener('error',e=>log('JS error: '+e.message));
+  setConnected(false);
+})();
+</script>
+</body></html>
