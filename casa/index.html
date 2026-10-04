@@ -61,7 +61,8 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
       <div style="flex:2 1 200px">
         <label for="proto">Protocolo del controlador</label>
         <select id="proto">
-          <option value="todos">Todos a la vez (recomendado)</option>
+          <option value="miracles">Miracles Star (GATT--DEMO)</option>
+          <option value="todos">Todos a la vez</option>
           <option value="auto">Auto (según el servicio que anuncie)</option>
           <option value="bledom">ELK-BLEDOM (7E … EF)</option>
           <option value="bledom2">ELK-BLEDOM variante 2</option>
@@ -115,6 +116,11 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
   </section>
 
   <section>
+    <h2>Efectos (modos del controlador)</h2>
+    <div class="grid3" id="modos"></div>
+  </section>
+
+  <section>
     <h2>Comando manual (hex)</h2>
     <div class="row">
       <input type="text" id="rawHex" placeholder="7E 00 04 F0 00 01 FF 00 EF" style="flex:3 1 200px">
@@ -140,6 +146,13 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
   const guessProto = uuid => uuid.startsWith('0000fff0') ? 'bledom' : (uuid.startsWith('0000ffe5')||uuid.startsWith('0000ffd5')) ? 'triones' : uuid.startsWith('0000ffe0') ? 'lednet' : 'bledom';
 
   const PROTO = {
+    miracles: {  // sacado del APK de Miracles Star (com.weifeng.lightbar): char FFE1, paquete 01 RR GG BB brillo modo velocidad; 00 = apagar
+      on:  () => [1,state.r,state.g,state.b,Math.round(state.bright*2.55),0,0],
+      off: () => [0],
+      bright: l => [1,state.r,state.g,state.b,Math.round(l*2.55),0,0],
+      color: (r,g,b) => [1,r,g,b,Math.round(state.bright*2.55),0,0],
+      mode: m => [1,0,0,0,Math.round(state.bright*2.55),m,50],
+    },
     bledom: {
       on:  () => [0x7E,0,4,0xF0,0,1,0xFF,0,0xEF],
       off: () => [0x7E,0,4,0,0,0,0xFF,0,0xEF],
@@ -170,8 +183,8 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
     }
   };
 
-  let device=null, ch=null, proto='todos', busy=false, queue=[];
   let state = { r:255,g:255,b:255, bright:100 };
+  let device=null, ch=null, proto='miracles', busy=false, queue=[];
 
   function setConnected(on){
     $('dot').classList.toggle('on',on);
@@ -199,11 +212,12 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
         for(const c of chars){
           log('  svc '+s.uuid.slice(4,8)+' / chr '+c.uuid.slice(4,8)+' ['+Object.keys(c.properties).filter(k=>c.properties[k]).join(',')+']');
           if(!ch && (c.properties.writeWithoutResponse || c.properties.write)){ ch=c; if($('proto').value==='auto') proto=guessProto(s.uuid); }
-          if(c.uuid.startsWith('0000fff3')) ch=c;
+          if(c.uuid.startsWith('0000fff3') && !(ch&&ch.uuid.startsWith('0000ffe1'))) ch=c;
+          if(c.uuid.startsWith('0000ffe1')) ch=c;
         }
       }
       if(!ch){ log('No encontré ninguna característica de escritura.'); return; }
-      if($('proto').value!=='auto') proto=$('proto').value;
+      proto = $('proto').value==='auto' ? (ch.uuid.startsWith('0000ffe1') ? 'miracles' : proto) : $('proto').value;
       if(ch.properties.writeWithoutResponse===false && ch.properties.write===false) log('Ojo: la característica no es de escritura.');
       $('charPill').textContent = ch.uuid.slice(4,8).toUpperCase()+' · '+proto;
       log('Listo. Protocolo: '+proto+'.');
@@ -229,7 +243,7 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
     busy=false;
   }
 
-  const ORDER=['bledom','bledom2','triones','lednet'];
+  const ORDER=['miracles','bledom','bledom2','triones','lednet'];
   const ALL = (fn,...a) => { const list = proto==='todos' ? ORDER : [proto]; return list.filter(k=>PROTO[k]&&PROTO[k][fn]).map(k=>[PROTO[k][fn](...a),k]); };
   const P = () => PROTO[proto] || PROTO.bledom;
   function applyColor(r,g,b){
@@ -261,6 +275,7 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
   const SCENES={ noche:[[255,140,40],25], lectura:[[255,225,180],85], fiesta:[[255,0,160],100], calma:[[40,120,255],40], cine:[[120,40,200],15], trabajo:[[255,255,255],100] };
   document.querySelectorAll('[data-scene]').forEach(b=>b.onclick=()=>{ const [c,l]=SCENES[b.dataset.scene]; send(ALL('on'),'prender'); $('bright').value=l; applyBright(l); applyColor(...c); });
 
+  for(let m=1;m<=12;m++){ const b=document.createElement('button'); b.textContent='Modo '+m; b.disabled=true; b.onclick=()=>send([[PROTO.miracles.mode(m),'miracles']],'modo '+m); $('modos').appendChild(b); }
   setConnected(false);
 })();
 </script>
