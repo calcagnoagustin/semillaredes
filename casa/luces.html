@@ -209,11 +209,14 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
     $('btnConnect').disabled=on;
   }
 
-  async function connect(){
+  async function connect(known){
     if(!navigator.bluetooth){ log('Este navegador no tiene Web Bluetooth. Usá Chrome/Edge o Bluefy en iPhone.'); return; }
     try{
+      if(known){ device = known; log('Reconectando a '+(device.name||'la tira')+'…'); }
+      else {
       log('Buscando dispositivos BLE…');
       device = await navigator.bluetooth.requestDevice({ filters:[{services:['0000e0ff-3c17-d293-8e48-14fe2e4da212']},{namePrefix:'GATT'},{namePrefix:'ELK'},{namePrefix:'LED'},{namePrefix:'ST-'},{namePrefix:'Triones'},{namePrefix:'QHM'},{namePrefix:'MELK'}], optionalServices:SERVICES }).catch(()=>navigator.bluetooth.requestDevice({ acceptAllDevices:true, optionalServices:SERVICES }));
+      }
       device.addEventListener('gattserverdisconnected', () => { log('Se desconectó.'); ch=null; clearInterval(ka); setConnected(false); });
       const server = await device.gatt.connect();
       log('Conectado a '+(device.name||device.id)+'. Buscando característica de escritura…');
@@ -235,8 +238,9 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
       $('charPill').textContent = ch.uuid.slice(4,8).toUpperCase()+' · '+proto;
       log('Listo. Protocolo: '+proto+'.');
       setConnected(true);
-      setTimeout(()=>{ send(ALL('on'),'prender'); send(ALL('bright',100),'brillo'); send(ALL('color',255,255,255),'blanco'); },300);
-    }catch(e){ log('Error: '+e.message); }
+      if(!ACTION) setTimeout(()=>{ send(ALL('on'),'prender'); send(ALL('bright',100),'brillo'); send(ALL('color',255,255,255),'blanco'); },300);
+      return true;
+    }catch(e){ log('Error: '+e.message); return false; }
   }
 
   async function send(bytes, label){
@@ -292,6 +296,53 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
   log('página cargada · '+navigator.userAgent.slice(0,80)+' · bluetooth='+(!!navigator.bluetooth));
   window.addEventListener('error',e=>log('JS error: '+e.message));
   setConnected(false);
+
+  /* ---- Modo Siri: semillaredes.com/casa/luces.html#on  (o #off #max #noche …) ----
+     Un atajo de iOS abre esta dirección en Bluefy; la página reconoce la tira que ya
+     autorizaste, se reconecta sola y manda el comando. No hace falta la Mac. */
+  const ACTION = (location.hash || '').replace('#','').toLowerCase();
+  const SIRI = {
+    on:      () => { send(ALL('on'),'prender'); },
+    off:     () => { send(ALL('off'),'apagar'); },
+    max:     () => { send(ALL('on'),'prender'); applyColor(255,255,255); $('bright').value=100; applyBright(100); },
+    noche:   () => { send(ALL('on'),'prender'); applyColor(255,140,40); $('bright').value=25; applyBright(25); },
+    lectura: () => { send(ALL('on'),'prender'); applyColor(255,225,180); $('bright').value=85; applyBright(85); },
+    fiesta:  () => { send(ALL('on'),'prender'); applyColor(255,0,160); $('bright').value=100; applyBright(100); },
+    calma:   () => { send(ALL('on'),'prender'); applyColor(40,120,255); $('bright').value=40; applyBright(40); },
+    cine:    () => { send(ALL('on'),'prender'); applyColor(120,40,200); $('bright').value=15; applyBright(15); },
+    trabajo: () => { send(ALL('on'),'prender'); applyColor(255,255,255); $('bright').value=100; applyBright(100); }
+  };
+
+  function siriCard(txt, sub){
+    let d = $('siri');
+    if(!d){
+      d = document.createElement('div'); d.id='siri';
+      d.style.cssText='position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:24px;z-index:99;font-family:var(--display)';
+      d.innerHTML='<div id="siriT" style="font-size:30px;font-weight:700"></div><div id="siriS" style="font-size:15px;color:var(--muted);max-width:320px;line-height:1.5"></div>';
+      document.body.appendChild(d);
+    }
+    $('siriT').textContent = txt; $('siriS').textContent = sub || '';
+  }
+
+  async function runSiri(){
+    if(!SIRI[ACTION]) return;
+    siriCard('…', 'Conectando con la tira');
+    if(!navigator.bluetooth){ siriCard('No se puede', 'Abrí esta página con Bluefy, no con Safari.'); return; }
+    let dev = null;
+    try{
+      if(navigator.bluetooth.getDevices){
+        const list = await navigator.bluetooth.getDevices();
+        dev = list.find(d => /GATT|ELK|LED|Triones|MELK|QHM|ST-/i.test(d.name||'')) || list[0];
+      }
+    }catch(e){}
+    if(!dev){ siriCard('Falta autorizar', 'Abrí Luces una vez y tocá Buscar y conectar. Después el atajo funciona solo.'); return; }
+    const okc = await connect(dev);
+    if(!okc){ siriCard('No la encontré', 'Puede estar lejos o apagada. Probá de nuevo.'); return; }
+    SIRI[ACTION]();
+    const nombre = {on:'Prendidas', off:'Apagadas', max:'Máxima potencia', noche:'Noche cálida', lectura:'Lectura', fiesta:'Fiesta', calma:'Calma', cine:'Cine', trabajo:'Trabajo'}[ACTION];
+    setTimeout(()=>siriCard(nombre, 'Listo'), 700);
+  }
+  if(ACTION) runSiri();
 })();
 </script>
 </body></html>
