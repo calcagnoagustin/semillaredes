@@ -195,7 +195,7 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
     }
   };
 
-  let state = { r:255,g:255,b:255, bright:100 };
+  let state = { r:255,g:255,b:255, bright:100 }; let PENDING = null;
   let device=null, ch=null, proto='lenze', busy=false, queue=[], ka=null;
 
   function setConnected(on){
@@ -248,7 +248,8 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
       $('charPill').textContent = ch.uuid.slice(4,8).toUpperCase()+' · '+proto;
       log('Listo. Protocolo: '+proto+'.');
       setConnected(true);
-      if(!ACTION) setTimeout(()=>{ send(ALL('on'),'prender'); send(ALL('bright',100),'brillo'); send(ALL('color',255,255,255),'blanco'); },300);
+      if(PENDING && SIRI[PENDING]){ const p=PENDING; PENDING=null; setTimeout(()=>{ SIRI[p](); $('btnConnect').textContent='Buscar y conectar tira LED'; },400); }
+      else if(!ACTION) setTimeout(()=>{ send(ALL('on'),'prender'); send(ALL('bright',100),'brillo'); send(ALL('color',255,255,255),'blanco'); },300);
       return true;
     }catch(e){ log('Error: '+e.message); return false; }
   }
@@ -345,14 +346,14 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
         dev = list.find(d => /GATT|ELK|LED|Triones|MELK|QHM|ST-/i.test(d.name||'')) || list[0];
       }
     }catch(e){}
-    if(dev){
-      const info = { name: dev.name, id: String(dev.id).slice(0,12), gatt: typeof dev.gatt,
-                     keys: Object.keys(dev).slice(0,8).join(','),
-                     proto: Object.getOwnPropertyNames(Object.getPrototypeOf(dev)||{}).slice(0,12).join(',') };
-      log('DIAG getDevices -> ' + JSON.stringify(info));
-      if(!dev.gatt){ log('DIAG sin gatt: pido selector'); dev = null; }
+    if(dev && !dev.gatt) dev = null;   // Bluefy devuelve el dispositivo sin poder reconectar
+    if(!dev){
+      $('siri') && $('siri').remove();
+      PENDING = ACTION;
+      log('Tocá «Buscar y conectar» y aplico «'+ACTION+'» apenas conecte.');
+      $('btnConnect').textContent = 'Conectar y aplicar: ' + ACTION;
+      return;
     }
-    if(!dev){ siriCard('Falta autorizar', 'Abrí Luces una vez y tocá Buscar y conectar. Después el atajo funciona solo.'); return; }
     const okc = await connect(dev);
     if(!okc){ siriCard('No la encontré', 'Puede estar lejos o apagada. Probá de nuevo.'); return; }
     SIRI[ACTION]();
