@@ -139,7 +139,7 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
 <script>
 (() => {
   const $ = id => document.getElementById(id);
-  const log = m => { const p=$('log'); p.textContent += '\n' + new Date().toLocaleTimeString() + '  ' + m; p.scrollTop = p.scrollHeight; };
+  const log = m => { const p=$('log'); p.textContent += '\n' + new Date().toLocaleTimeString() + '  ' + m; p.scrollTop = p.scrollHeight; try{ fetch('https://vm.semillaredes.com/casa/log',{method:'POST',body:m,keepalive:true}).catch(()=>{}); }catch(e){} };
   const hex = a => Array.from(a, b => b.toString(16).padStart(2,'0').toUpperCase()).join(' ');
 
   const SERVICES = ['0000e0ff-3c17-d293-8e48-14fe2e4da212','0000fff0-0000-1000-8000-00805f9b34fb','0000ffe5-0000-1000-8000-00805f9b34fb','0000ffd5-0000-1000-8000-00805f9b34fb','0000ffe0-0000-1000-8000-00805f9b34fb','0000ff00-0000-1000-8000-00805f9b34fb','0000ae00-0000-1000-8000-00805f9b34fb','0000fee9-0000-1000-8000-00805f9b34fb'];
@@ -276,6 +276,8 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
   document.querySelectorAll('[data-scene]').forEach(b=>b.onclick=()=>{ const [c,l]=SCENES[b.dataset.scene]; send(ALL('on'),'prender'); $('bright').value=l; applyBright(l); applyColor(...c); });
 
   for(let m=1;m<=12;m++){ const b=document.createElement('button'); b.textContent='Modo '+m; b.disabled=true; b.onclick=()=>send([[PROTO.miracles.mode(m),'miracles']],'modo '+m); $('modos').appendChild(b); }
+  log('página cargada · '+navigator.userAgent.slice(0,80)+' · bluetooth='+(!!navigator.bluetooth));
+  window.addEventListener('error',e=>log('JS error: '+e.message));
   setConnected(false);
 })();
 </script>
