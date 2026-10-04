@@ -212,12 +212,22 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
   async function connect(known){
     if(!navigator.bluetooth){ log('Este navegador no tiene Web Bluetooth. Usá Chrome/Edge o Bluefy en iPhone.'); return; }
     try{
-      if(known){ device = known; log('Reconectando a '+(device.name||'la tira')+'…'); }
+      if(known){
+        device = known; log('Reconectando a '+(device.name||'la tira')+'…');
+        if(device.watchAdvertisements && !(device.gatt && device.gatt.connected)){
+          try{
+            const ac = new AbortController();
+            await device.watchAdvertisements({signal: ac.signal});
+            await new Promise(r => { const t=setTimeout(r,2500); device.addEventListener && device.addEventListener('advertisementreceived', ()=>{clearTimeout(t); r();}, {once:true}); });
+            ac.abort();
+          }catch(e){ log('aviso: '+e.message); }
+        }
+      }
       else {
       log('Buscando dispositivos BLE…');
       device = await navigator.bluetooth.requestDevice({ filters:[{services:['0000e0ff-3c17-d293-8e48-14fe2e4da212']},{namePrefix:'GATT'},{namePrefix:'ELK'},{namePrefix:'LED'},{namePrefix:'ST-'},{namePrefix:'Triones'},{namePrefix:'QHM'},{namePrefix:'MELK'}], optionalServices:SERVICES }).catch(()=>navigator.bluetooth.requestDevice({ acceptAllDevices:true, optionalServices:SERVICES }));
       }
-      device.addEventListener('gattserverdisconnected', () => { log('Se desconectó.'); ch=null; clearInterval(ka); setConnected(false); });
+      if (typeof device.addEventListener === 'function') device.addEventListener('gattserverdisconnected', () => { log('Se desconectó.'); ch=null; clearInterval(ka); setConnected(false); });
       const server = await device.gatt.connect();
       log('Conectado a '+(device.name||device.id)+'. Buscando característica de escritura…');
       const services = await server.getPrimaryServices();
