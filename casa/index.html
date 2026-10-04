@@ -147,7 +147,7 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
   const guessProto = uuid => uuid.startsWith('0000fff0') ? 'bledom' : (uuid.startsWith('0000ffe5')||uuid.startsWith('0000ffd5')) ? 'triones' : uuid.startsWith('0000ffe0') ? 'lednet' : 'bledom';
 
   // Protocolo Lenze (app Miracles.Star de iOS/Android, com.lenzetech.jyx): servicio FFF0, escribe en FFF3. Trama BC cmd len payload 55
-  const hsv = (r,g,b) => { r/=255;g/=255;b/=255; const M=Math.max(r,g,b),m=Math.min(r,g,b),d=M-m; let h=0; if(d){ if(M===r) h=((g-b)/d)%6; else if(M===g) h=(b-r)/d+2; else h=(r-g)/d+4; h=Math.round(h*60); if(h<0) h+=360; } const sat=M?Math.round(d/M*1000):0; return [h,sat]; };
+  const hsv = (r,g,b) => { r/=255;g/=255;b/=255; const M=Math.max(r,g,b),m=Math.min(r,g,b),d=M-m; let h=0; if(d){ if(M===r) h=((g-b)/d)%6; else if(M===g) h=(b-r)/d+2; else h=(r-g)/d+4; h=Math.round(h*60); if(h<0) h+=360; } let sat=M?Math.round(d/M*1000):0; if(h===0&&sat===0) sat=1000; /* la app oficial hace esto para el blanco */ return [h,sat]; };
   const PROTO = {
     lenze: {
       on:  () => [0xBC,1,1,0,0x55],
@@ -251,7 +251,7 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
         try{ if(ch.properties.writeWithoutResponse) await ch.writeValueWithoutResponse(data); else await ch.writeValueWithResponse(data); }catch(e1){ await ch.writeValueWithResponse(data); }
         log((lab?lab+'  ':'')+hex(data));
       }catch(e){ log('Fallo al enviar: '+e.message); }
-      await new Promise(r=>setTimeout(r,60));
+      await new Promise(r=>setTimeout(r,220));
     }
     busy=false;
   }
@@ -286,7 +286,7 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
   SW.forEach(c=>{ const b=document.createElement('button'); b.className='sw'; b.style.background=`rgb(${c})`; b.title=hex(c); b.disabled=true; b.onclick=()=>applyColor(...c); $('swatches').appendChild(b); });
 
   const SCENES={ noche:[[255,140,40],25], lectura:[[255,225,180],85], fiesta:[[255,0,160],100], calma:[[40,120,255],40], cine:[[120,40,200],15], trabajo:[[255,255,255],100] };
-  document.querySelectorAll('[data-scene]').forEach(b=>b.onclick=()=>{ const [c,l]=SCENES[b.dataset.scene]; send(ALL('on'),'prender'); $('bright').value=l; applyBright(l); applyColor(...c); });
+  document.querySelectorAll('[data-scene]').forEach(b=>b.onclick=()=>{ const [c,l]=SCENES[b.dataset.scene]; send(ALL('on'),'prender'); applyColor(...c); $('bright').value=l; applyBright(l); });
 
   for(let m=1;m<=12;m++){ const b=document.createElement('button'); b.textContent='Modo '+m; b.disabled=true; b.onclick=()=>{ const k = proto==='miracles'?'miracles':'lenze'; send([[PROTO[k].mode(m),k]],'modo '+m); }; $('modos').appendChild(b); }
   log('página cargada · '+navigator.userAgent.slice(0,80)+' · bluetooth='+(!!navigator.bluetooth));
