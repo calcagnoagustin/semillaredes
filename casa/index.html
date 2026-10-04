@@ -142,7 +142,7 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
   const log = m => { const p=$('log'); p.textContent += '\n' + new Date().toLocaleTimeString() + '  ' + m; p.scrollTop = p.scrollHeight; };
   const hex = a => Array.from(a, b => b.toString(16).padStart(2,'0').toUpperCase()).join(' ');
 
-  const SERVICES = ['0000fff0-0000-1000-8000-00805f9b34fb','0000ffe5-0000-1000-8000-00805f9b34fb','0000ffd5-0000-1000-8000-00805f9b34fb','0000ffe0-0000-1000-8000-00805f9b34fb','0000ff00-0000-1000-8000-00805f9b34fb','0000ae00-0000-1000-8000-00805f9b34fb','0000fee9-0000-1000-8000-00805f9b34fb'];
+  const SERVICES = ['0000e0ff-3c17-d293-8e48-14fe2e4da212','0000fff0-0000-1000-8000-00805f9b34fb','0000ffe5-0000-1000-8000-00805f9b34fb','0000ffd5-0000-1000-8000-00805f9b34fb','0000ffe0-0000-1000-8000-00805f9b34fb','0000ff00-0000-1000-8000-00805f9b34fb','0000ae00-0000-1000-8000-00805f9b34fb','0000fee9-0000-1000-8000-00805f9b34fb'];
   const guessProto = uuid => uuid.startsWith('0000fff0') ? 'bledom' : (uuid.startsWith('0000ffe5')||uuid.startsWith('0000ffd5')) ? 'triones' : uuid.startsWith('0000ffe0') ? 'lednet' : 'bledom';
 
   const PROTO = {
@@ -201,7 +201,7 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
     if(!navigator.bluetooth){ log('Este navegador no tiene Web Bluetooth. Usá Chrome/Edge o Bluefy en iPhone.'); return; }
     try{
       log('Buscando dispositivos BLE…');
-      device = await navigator.bluetooth.requestDevice({ filters:[{namePrefix:'GATT'},{namePrefix:'ELK'},{namePrefix:'LED'},{namePrefix:'ST-'},{namePrefix:'Triones'},{namePrefix:'QHM'},{namePrefix:'MELK'}], optionalServices:SERVICES }).catch(()=>navigator.bluetooth.requestDevice({ acceptAllDevices:true, optionalServices:SERVICES }));
+      device = await navigator.bluetooth.requestDevice({ filters:[{services:['0000e0ff-3c17-d293-8e48-14fe2e4da212']},{namePrefix:'GATT'},{namePrefix:'ELK'},{namePrefix:'LED'},{namePrefix:'ST-'},{namePrefix:'Triones'},{namePrefix:'QHM'},{namePrefix:'MELK'}], optionalServices:SERVICES }).catch(()=>navigator.bluetooth.requestDevice({ acceptAllDevices:true, optionalServices:SERVICES }));
       device.addEventListener('gattserverdisconnected', () => { log('Se desconectó.'); ch=null; setConnected(false); });
       const server = await device.gatt.connect();
       log('Conectado a '+(device.name||device.id)+'. Buscando característica de escritura…');
