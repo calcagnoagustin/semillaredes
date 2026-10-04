@@ -345,6 +345,13 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
         dev = list.find(d => /GATT|ELK|LED|Triones|MELK|QHM|ST-/i.test(d.name||'')) || list[0];
       }
     }catch(e){}
+    if(dev){
+      const info = { name: dev.name, id: String(dev.id).slice(0,12), gatt: typeof dev.gatt,
+                     keys: Object.keys(dev).slice(0,8).join(','),
+                     proto: Object.getOwnPropertyNames(Object.getPrototypeOf(dev)||{}).slice(0,12).join(',') };
+      log('DIAG getDevices -> ' + JSON.stringify(info));
+      if(!dev.gatt){ log('DIAG sin gatt: pido selector'); dev = null; }
+    }
     if(!dev){ siriCard('Falta autorizar', 'Abrí Luces una vez y tocá Buscar y conectar. Después el atajo funciona solo.'); return; }
     const okc = await connect(dev);
     if(!okc){ siriCard('No la encontré', 'Puede estar lejos o apagada. Probá de nuevo.'); return; }
