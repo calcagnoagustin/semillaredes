@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#e6187a">
+<title>Cámaras</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700&display=swap">
+<style>
+:root{--bg:#fff6fa;--fg:#2a1020;--muted:#8a5e74;--rosa:#e6187a;--panel:#fff;--line:#f1cfe0}
+@media (prefers-color-scheme:dark){:root{--bg:#1a0a12;--fg:#fde9f2;--muted:#c48aa6;--panel:#2a1220;--line:#4a2238;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:'Sora',system-ui,sans-serif;padding-inline:20px;padding-block:calc(16px + env(safe-area-inset-top,0px)) calc(28px + env(safe-area-inset-bottom,0px));max-width:460px;margin-inline:auto}
+header{display:flex;align-items:center;gap:12px;padding-block:10px}
+a.back{color:var(--rosa);text-decoration:none;font-weight:700;font-size:17px}
+h1{font-size:22px;margin:0}
+p{color:var(--muted);font-size:14px;line-height:1.5}
+.list{display:grid;gap:12px;margin-top:8px}
+a.try{display:block;background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:16px 18px;text-decoration:none;color:var(--fg);font-size:17px;font-weight:700;min-height:64px}
+a.try:first-child{background:var(--rosa);border-color:var(--rosa);color:#fff}
+a.try small{display:block;font-size:13px;font-weight:500;opacity:.85;margin-top:3px}
+</style></head><body>
+<header><a class="back" href="./">‹ Casa</a><h1>Cámaras</h1></header>
+<p>Tocá de arriba hacia abajo hasta que se abra iCSee. La que funcione, avisame y la dejo como botón único.</p>
+<div class="list">
+  <a class="try" href="shortcuts://run-shortcut?name=Camaras">1 · Atajo «Camaras»<small>shortcuts://run-shortcut</small></a>
+  <a class="try" href="icsee://">2 · iCSee directo<small>icsee://</small></a>
+  <a class="try" href="xmeye://">3 · XMEye<small>xmeye://</small></a>
+  <a class="try" href="com.xm.icsee://">4 · iCSee alterno<small>com.xm.icsee://</small></a>
+  <a class="try" href="https://apps.apple.com/ar/app/icsee/id1130153523">5 · App Store<small>Último recurso</small></a>
+</div>
+</body></html>
