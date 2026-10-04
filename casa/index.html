@@ -61,7 +61,8 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
       <div style="flex:2 1 200px">
         <label for="proto">Protocolo del controlador</label>
         <select id="proto">
-          <option value="miracles">Miracles Star (GATT--DEMO)</option>
+          <option value="lenze">Miracles.Star / Lenze (GATT--DEMO, FFF3)</option>
+          <option value="miracles">Miracles Star Android (FFE1)</option>
           <option value="todos">Todos a la vez</option>
           <option value="auto">Auto (según el servicio que anuncie)</option>
           <option value="bledom">ELK-BLEDOM (7E … EF)</option>
@@ -145,7 +146,18 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
   const SERVICES = ['0000e0ff-3c17-d293-8e48-14fe2e4da212','0000fff0-0000-1000-8000-00805f9b34fb','0000ffe5-0000-1000-8000-00805f9b34fb','0000ffd5-0000-1000-8000-00805f9b34fb','0000ffe0-0000-1000-8000-00805f9b34fb','0000ff00-0000-1000-8000-00805f9b34fb','0000ae00-0000-1000-8000-00805f9b34fb','0000fee9-0000-1000-8000-00805f9b34fb'];
   const guessProto = uuid => uuid.startsWith('0000fff0') ? 'bledom' : (uuid.startsWith('0000ffe5')||uuid.startsWith('0000ffd5')) ? 'triones' : uuid.startsWith('0000ffe0') ? 'lednet' : 'bledom';
 
+  // Protocolo Lenze (app Miracles.Star de iOS/Android, com.lenzetech.jyx): servicio FFF0, escribe en FFF3. Trama BC cmd len payload 55
+  const hsv = (r,g,b) => { r/=255;g/=255;b/=255; const M=Math.max(r,g,b),m=Math.min(r,g,b),d=M-m; let h=0; if(d){ if(M===r) h=((g-b)/d)%6; else if(M===g) h=(b-r)/d+2; else h=(r-g)/d+4; h=Math.round(h*60); if(h<0) h+=360; } const sat=M?Math.round(d/M*1000):0; return [h,sat]; };
   const PROTO = {
+    lenze: {
+      on:  () => [0xBC,1,1,0,0x55],
+      off: () => [0xBC,1,1,1,0x55],
+      bright: l => { const v=Math.max(3,Math.round(l*10)); return [0xBC,5,6,v>>8,v&255,0,0,0,0,0x55]; },
+      color: (r,g,b) => { const [h,sat]=hsv(r,g,b); return [0xBC,4,6,h>>8,h&255,sat>>8,sat&255,0,0,0x55]; },
+      mode: m => [0xBC,6,2,Math.floor(m/255),m%255,0x55],
+      speed: v => [0xBC,8,1,v,0x55],
+      keepalive: () => [0xFF,1,2,3,4,5,6,7,0xEF],
+    },
     miracles: {  // sacado del APK de Miracles Star (com.weifeng.lightbar): char FFE1, paquete 01 RR GG BB brillo modo velocidad; 00 = apagar
       on:  () => [1,state.r,state.g,state.b,Math.round(state.bright*2.55),0,0],
       off: () => [0],
@@ -184,7 +196,7 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
   };
 
   let state = { r:255,g:255,b:255, bright:100 };
-  let device=null, ch=null, proto='todos', busy=false, queue=[];
+  let device=null, ch=null, proto='lenze', busy=false, queue=[], ka=null;
 
   function setConnected(on){
     $('dot').classList.toggle('on',on);
@@ -202,7 +214,7 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
     try{
       log('Buscando dispositivos BLE…');
       device = await navigator.bluetooth.requestDevice({ filters:[{services:['0000e0ff-3c17-d293-8e48-14fe2e4da212']},{namePrefix:'GATT'},{namePrefix:'ELK'},{namePrefix:'LED'},{namePrefix:'ST-'},{namePrefix:'Triones'},{namePrefix:'QHM'},{namePrefix:'MELK'}], optionalServices:SERVICES }).catch(()=>navigator.bluetooth.requestDevice({ acceptAllDevices:true, optionalServices:SERVICES }));
-      device.addEventListener('gattserverdisconnected', () => { log('Se desconectó.'); ch=null; setConnected(false); });
+      device.addEventListener('gattserverdisconnected', () => { log('Se desconectó.'); ch=null; clearInterval(ka); setConnected(false); });
       const server = await device.gatt.connect();
       log('Conectado a '+(device.name||device.id)+'. Buscando característica de escritura…');
       const services = await server.getPrimaryServices();
@@ -217,7 +229,8 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
         }
       }
       if(!ch){ log('No encontré ninguna característica de escritura.'); return; }
-      proto = $('proto').value==='auto' ? (ch.uuid.startsWith('0000ffe1') ? 'miracles' : proto) : $('proto').value;
+      proto = $('proto').value==='auto' ? (ch.uuid.startsWith('0000ffe1') ? 'miracles' : ch.uuid.startsWith('0000fff3') ? 'lenze' : proto) : $('proto').value;
+      clearInterval(ka); ka=setInterval(()=>{ if(ch && (proto==='lenze'||proto==='todos')) send([[PROTO.lenze.keepalive(),'lenze']],'keepalive'); },4900);
       if(ch.properties.writeWithoutResponse===false && ch.properties.write===false) log('Ojo: la característica no es de escritura.');
       $('charPill').textContent = ch.uuid.slice(4,8).toUpperCase()+' · '+proto;
       log('Listo. Protocolo: '+proto+'.');
@@ -243,7 +256,7 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
     busy=false;
   }
 
-  const ORDER=['miracles','bledom','bledom2','triones','lednet'];
+  const ORDER=['lenze','bledom','bledom2','triones','lednet','miracles'];
   const ALL = (fn,...a) => { const list = proto==='todos' ? ORDER : [proto]; return list.filter(k=>PROTO[k]&&PROTO[k][fn]).map(k=>[PROTO[k][fn](...a),k]); };
   const P = () => PROTO[proto] || PROTO.bledom;
   function applyColor(r,g,b){
@@ -275,7 +288,7 @@ pre{font-family:var(--mono);font-size:12px;background:var(--mono-bg);border:1px 
   const SCENES={ noche:[[255,140,40],25], lectura:[[255,225,180],85], fiesta:[[255,0,160],100], calma:[[40,120,255],40], cine:[[120,40,200],15], trabajo:[[255,255,255],100] };
   document.querySelectorAll('[data-scene]').forEach(b=>b.onclick=()=>{ const [c,l]=SCENES[b.dataset.scene]; send(ALL('on'),'prender'); $('bright').value=l; applyBright(l); applyColor(...c); });
 
-  for(let m=1;m<=12;m++){ const b=document.createElement('button'); b.textContent='Modo '+m; b.disabled=true; b.onclick=()=>send([[PROTO.miracles.mode(m),'miracles']],'modo '+m); $('modos').appendChild(b); }
+  for(let m=1;m<=12;m++){ const b=document.createElement('button'); b.textContent='Modo '+m; b.disabled=true; b.onclick=()=>{ const k = proto==='miracles'?'miracles':'lenze'; send([[PROTO[k].mode(m),k]],'modo '+m); }; $('modos').appendChild(b); }
   log('página cargada · '+navigator.userAgent.slice(0,80)+' · bluetooth='+(!!navigator.bluetooth));
   window.addEventListener('error',e=>log('JS error: '+e.message));
   setConnected(false);
