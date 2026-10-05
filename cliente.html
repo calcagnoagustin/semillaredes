@@ -1165,6 +1165,8 @@ function pintarSteam(d){
   return h;
 }
 
+// cuando se actualiza cada status (va arriba de todo, en el aviso)
+const ACTUALIZA={'alan-sutton':'todos los lunes a las 7 de la mañana'};
 function pintar(d){ window.__D=d;
   const R=d.reportes||[];
   const u=R[R.length-1]||null, a=R.length>1?R[R.length-2]:null;
@@ -1184,7 +1186,11 @@ function pintar(d){ window.__D=d;
         : (d.cliente.tipo==='mixto') ? pintarMixto(d)
         : (d.cliente.tipo==='steam') ? pintarSteam(d)
         : `<h1>${d.cliente.nombre}</h1>
-  <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
+  <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>${ACTUALIZA[slug]?`
+  <div class="avisoActualiza">
+    <div class="tit">Este informe se actualiza ${ACTUALIZA[slug]}.</div>
+    <p class="sub">Cada reporte es una semana, de lunes a lunes. Los números no son en vivo: corresponden a la última semana cerrada.</p>
+  </div>`:''}`;
   if(['mensajes','mixto','ventas','steam','trafico','semilla'].includes(d.cliente.tipo)){ return pintarResto(d,h); }
 
   const hayCF=hay('ig_costo_follower');
