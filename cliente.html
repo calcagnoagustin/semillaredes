@@ -285,6 +285,18 @@ details.hist table{border:0;border-radius:0}
 .despl .fl{color:var(--mute);font-size:13px;transition:transform .2s}
 .despl[open] .fl{transform:rotate(90deg)}
 .despl .cuerpo{padding:0 20px 20px;border-top:1px solid var(--linea)}
+.despl>summary.multi{display:block}
+.despl>summary.multi .fila1{display:flex;align-items:center;gap:10px}
+.despl .stats{display:grid;gap:10px;margin-top:12px}
+.despl .st .lbl{font-size:10px}
+.despl .st .vv{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin-top:3px}
+.despl .st b{font-family:'Playfair Display',Georgia,serif;font-size:22px;color:var(--navy);white-space:nowrap}
+.despl .st .pill{font-size:11.5px;padding:3px 7px}
+@media(max-width:560px){ .despl .st b{font-size:18px} .despl .stats{gap:8px} }
+.ventasF .agregarV{margin-top:12px}
+.ventasF .lista{margin-top:10px}
+.ventasF .lista .it{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid var(--linea);font-size:14.5px}
+.ventasF .lista .it .vf{color:var(--mute);font-size:13px;min-width:42px}.ventasF .lista .it .tx{flex:1}.ventasF .lista .it .vm{font-weight:700;color:var(--navy)}
 .despl .cuerpo .tarj{margin-top:16px}
 @media(max-width:560px){ .despl>summary{padding:16px 14px 16px 16px;gap:8px} .despl>summary h2{font-size:19px} .despl .big b{font-size:21px} .despl .lbl{font-size:9.5px;letter-spacing:1.2px} }
 @media(max-width:560px){ .barras{gap:4px} .barras .val{font-size:12.5px} .barras .fec{font-size:11px} }
@@ -692,12 +704,34 @@ function pintarSemilla(d){
     c+=graficoLinea('Seguidores nuevos por semana','Cuántos seguidores nuevos entraron cada semana.',serie('ig_followers_nuevos'),et,'#7A1F3A',0);
     c+=graficoLinea('Costo por seguidor','Cuánto costó cada seguidor nuevo, en dólares. Mientras más baja la línea, mejor.',serie('ig_costo_follower'),et,'#1A2456',2);
     c+=graficoLinea('Inversión en seguidores','Lo que se puso en la campaña de seguidores cada semana, en dólares.',serie('ig_inversion'),et,'#87863A',0);
-    h+=despl('Seguidores','Nuevos en la semana', m.ig_followers_nuevos, ma.ig_followers_nuevos, 1, c);
+    h+=desplMulti('Seguidores',[
+      hay('ig_followers_total')?{lbl:'Totales', txt:fmt(m.ig_followers_total)}:null,
+      hay('ig_followers_nuevos')?{lbl:'Esta semana', txt:'+'+fmt(m.ig_followers_nuevos), v:m.ig_followers_nuevos, ant:ma.ig_followers_nuevos, sentido:1}:null,
+      hay('ig_costo_follower')?{lbl:'Costo x seg.', txt:mon(m.ig_costo_follower,2), v:m.ig_costo_follower, ant:ma.ig_costo_follower, sentido:-1}:null], c);
   }
 
   // ===== FORMACION =====
   if(hay('frm_inversion')||hay('frm_mensajes')||hay('frm_visitas')){
-    let c=`<p class="sub" style="margin-top:14px">Todo lo que empuja la Formación Semilla, sumando sus campañas.</p><div class="tarj">
+    // ventas: las anota Agus a mano (una por venta); se cuentan las de la semana del reporte
+    const VL=d.ventas_log||[];
+    const enSem=(x,r)=>r&&String(x.fecha)>=r.desde&&String(x.fecha)<r.hasta;
+    const VS=VL.filter(x=>enSem(x,u)), VA=VL.filter(x=>enSem(x,ant));
+    const nv=VS.length, nvA=ant?VA.length:null;
+    const cpv=nv&&m.frm_inversion?Number(m.frm_inversion)/nv:null, cpvA=(nvA&&ma.frm_inversion)?Number(ma.frm_inversion)/nvA:null;
+    const ingV=VS.reduce((t,x)=>t+Number(x.monto||0),0);
+    const escV=t=>String(t).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+    const hoyV=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+    let c=`<div class="tarj">
+      ${card('Ventas de la semana', fmt(nv), nvA!=null?[nv,nvA]:null,0,true)}
+      ${cpv!=null?card('Costo por venta', mon(cpv,2), cpvA!=null?[cpv,cpvA]:null,2,false,true):''}
+      ${ingV?card('Facturado en la semana', mon(ingV,0), null,0):''}
+    </div>
+    <div class="ventasF"><p class="sub" style="margin-top:12px">Anotá cada venta de la Formación con su fecha: el panel cuenta las de cada semana y calcula el costo por venta con lo invertido en la Formación.</p>
+      ${VS.length?`<div class="lista">${VS.map(x=>`<div class="it"><span class="vf">${fecha(String(x.fecha))}</span><span class="tx">${escV(x.detalle||'Venta')}</span><span class="vm">${x.monto!=null?mon(x.monto,0):''}</span><button class="x" data-delv="${x.id}" title="Borrar">×</button></div>`).join('')}</div>`:''}
+      <div class="agregarV"><input id="v_fecha" type="date" value="${hoyV}"><input id="v_det" placeholder="Qué se vendió (y a quién)"><input id="v_monto" inputmode="decimal" placeholder="Monto"><button id="v_add">Agregar venta</button></div>
+      ${VL.length>VS.length?`<p class="sub" style="margin-top:8px">En total hay ${fmt(VL.length)} ventas anotadas.</p>`:''}
+    </div>
+    <p class="sub" style="margin-top:18px">Todo lo que empuja la Formación Semilla, sumando sus campañas.</p><div class="tarj">
       ${hay('frm_inversion')?card('Invertido en Formación', mon(m.frm_inversion,2), [m.frm_inversion, ma.frm_inversion],2,true):''}
       ${hay('frm_mensajes')?card('Mensajes', fmt(m.frm_mensajes), [m.frm_mensajes, ma.frm_mensajes]):''}
       ${hay('frm_mensajes_inversion')?card('Invertido en mensajes', mon(m.frm_mensajes_inversion,2), [m.frm_mensajes_inversion, ma.frm_mensajes_inversion],2):''}
@@ -709,7 +743,9 @@ function pintarSemilla(d){
     c+=graficoLinea('Visitas a la página por semana','Gente que llegó a la página de la Formación cada semana.',serie('frm_visitas'),et,'#1A2456',0);
     c+=graficoLinea('Mensajes por semana','Consultas que llegaron por la Formación cada semana.',serie('frm_mensajes'),et,'#E2767C',0);
     c+=graficoLinea('Inversión en Formación','Lo que se puso en la pauta de la Formación cada semana, en dólares.',serie('frm_inversion'),et,'#7A1F3A',0);
-    h+=despl('Formación','Visitas a la página', m.frm_visitas, ma.frm_visitas, 1, c);
+    h+=desplMulti('Formación',[
+      {lbl:'Ventas', txt:fmt(nv), v:nv, ant:nvA, sentido:1},
+      {lbl:'Costo por venta', txt:cpv!=null?mon(cpv,2):'—', v:cpv, ant:cpvA, sentido:-1}], c);
   }
 
   // ===== INVERSION: lo que se invirtio la semana que paso y lo que se va a invertir la proxima =====
@@ -722,7 +758,9 @@ function pintarSemilla(d){
     </div>
     <p class="sub" style="margin-top:10px">De lo invertido: ${mon(m.ig_inversion||0,2)} en seguidores y ${mon(m.frm_inversion||0,2)} en la Formación.${prox!=null?` El estimado es el presupuesto que está corriendo hoy (${mon(m.pres_diario,2)} por día) durante 7 días.`:''}</p>`;
     c+=graficoLinea('Invertido por semana','Todo lo que se puso en pauta cada semana, en dólares.',serie('pres_gastado'),et,'#87863A',0);
-    h+=despl('Inversión','Semana pasada', tot, totA, 0, c, mon(tot,2));
+    h+=desplMulti('Inversión',[
+      {lbl:'Semana pasada', txt:mon(tot,2), v:tot, ant:totA, sentido:0},
+      prox!=null?{lbl:'Próxima semana', txt:mon(prox,0)}:null], c);
   }
 
   if(R.length>1){
@@ -1397,7 +1435,7 @@ function pintarResto(d,h){
   }
 
   const VL=d.ventas_log||[];
-  if(d.cliente.ventas_log_on||VL.length){
+  if((d.cliente.ventas_log_on||VL.length) && d.cliente.tipo!=='semilla'){
     const escV=s=>String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
     const monV=v=>v==null?'':((d.cliente.moneda||'USD')==='ARS'?'$ ':'USD ')+Number(v).toLocaleString('es-AR',{maximumFractionDigits:2});
     const fV=f=>{const p=String(f).split('-');return p[2]+'/'+p[1];};
@@ -1642,6 +1680,19 @@ function graficoLinea(titulo, leyenda, vals, etiquetas, color, dec){
     </div>
     <div class="fe" style="${g}">${V.map(x=>`<span>${x.e}</span>`).join('')}</div>
   </div></div>`;
+}
+function pillDe(valor, ant, sentido){
+  if(ant==null||ant===0||valor==null) return '';
+  const p=Math.round((valor-ant)/Math.abs(ant)*100);
+  const cls= sentido===0||p===0 ? 'neu' : ((p>0)===(sentido>0) ? 'bien' : 'mal');
+  return `<span class="pill ${cls}">${p>0?'+':''}${p}%</span>`;
+}
+// panel desplegable con varias cifras en el resumen: stats=[{lbl, txt, v, ant, sentido}]
+function desplMulti(titulo, stats, cuerpo){
+  stats=stats.filter(x=>x&&x.txt!=null);
+  return `<details class="despl"><summary class="multi"><div class="fila1"><h2>${titulo}</h2><span class="fl">▸</span></div>
+    <div class="stats" style="grid-template-columns:repeat(${Math.max(1,stats.length)},1fr)">${stats.map(x=>`<div class="st"><div class="lbl">${x.lbl}</div><div class="vv"><b>${x.txt}</b>${pillDe(x.v,x.ant,x.sentido||0)}</div></div>`).join('')}</div>
+    </summary><div class="cuerpo">${cuerpo}</div></details>`;
 }
 function despl(titulo, etiqueta, valor, ant, sentido, cuerpo, txt){
   // sentido: 1 = subir es bueno, -1 = bajar es bueno, 0 = neutro
