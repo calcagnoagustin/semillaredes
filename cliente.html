@@ -1238,7 +1238,7 @@ function pintar(d){ window.__D=d; if(MONEDA[slug]) d.cliente.moneda=MONEDA[slug]
   </div>`:''}`;
   if(['mensajes','mixto','ventas','steam','trafico','semilla'].includes(d.cliente.tipo)){ return pintarResto(d,h); }
 
-  const hayCF=hay('ig_costo_follower');
+  const hayCF=!!u&&u.metricas.ig_costo_follower!=null;   // solo si hubo pauta en ESTE periodo (no arrastrar un costo viejo)
   h+=`<h2>Instagram</h2><p class="sub">${hayCF?'Crecimiento y costo de la pauta.':'Crecimiento de la cuenta.'}</p><div class="tarj">
     ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
     ${card('Nuevos en el período', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos])}
@@ -1248,7 +1248,7 @@ function pintar(d){ window.__D=d; if(MONEDA[slug]) d.cliente.moneda=MONEDA[slug]
   </div>`;
   h+=conjIG(u);
   h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
-  if(hayCF) h+=grafico('Costo por seguidor','Mientras más baja la línea, mejor: cada seguidor nuevo te sale menos.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
+  if(hay('ig_costo_follower')) h+=grafico('Costo por seguidor','Mientras más baja la línea, mejor: cada seguidor nuevo te sale menos.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
 
   if(hay('sp_oyentes_perfil')||hay('sp_listeners')||hay('sp_monthly')||hay('sp_streams')||hay('sp_followers')){
     h+=`<h2>Spotify</h2><p class="sub">Los mismos números que ves en Spotify for Artists, últimos 7 días.</p>`;
