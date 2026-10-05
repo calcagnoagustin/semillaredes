@@ -18,6 +18,15 @@ html,body{margin:0;height:100%;background:#F2EDE4;overflow:hidden}
 iframe{border:0;width:100%;height:100%;display:block}
 #instalar,#avisos{position:fixed;left:14px;right:14px;bottom:14px;background:#1A2456;color:#F2EDE4;border-radius:14px;padding:15px 18px;display:none;align-items:center;gap:12px;font-family:system-ui,sans-serif;box-shadow:0 8px 28px rgba(0,0,0,.25);z-index:99}
 #instalar img,#avisos img{width:42px;height:42px;border-radius:10px;flex:none}
+#popInst{position:fixed;inset:0;background:rgba(20,22,40,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:120;font-family:system-ui,-apple-system,sans-serif}
+#popInst .caja{background:#fff;border-radius:22px;max-width:380px;width:100%;padding:28px 24px 22px;text-align:center;position:relative;box-shadow:0 18px 50px rgba(0,0,0,.3)}
+#popInst .caja img{width:64px;height:64px;border-radius:16px}
+#popInst h2{font-family:Georgia,serif;color:#1A2456;font-size:23px;margin:14px 0 8px}
+#popInst p{color:#55525F;font-size:15px;line-height:1.5;margin:0 0 14px}
+#popInst ol{text-align:left;margin:0 0 18px;padding-left:22px;color:#24242C;font-size:15px;line-height:1.55}
+#popInst ol li{margin-bottom:6px}
+#popInst .si{display:block;width:100%;border:0;background:#1A2456;color:#F2EDE4;font:inherit;font-weight:700;font-size:16px;border-radius:12px;padding:14px;cursor:pointer}
+#popInst .no{display:block;width:100%;border:0;background:transparent;color:#8A8697;font:inherit;font-size:14px;padding:12px 0 0;cursor:pointer}
 #instalar .tx,#avisos .tx{flex:1;font-size:14px;line-height:1.4}
 #instalar .tx b,#avisos .tx b{display:block;font-size:15px;margin-bottom:2px}
 #instalar button,#avisos button{border:0;background:#7A1F3A;color:#fff;font:inherit;font-weight:600;font-size:14px;border-radius:9px;padding:10px 15px;cursor:pointer}
@@ -34,6 +43,17 @@ iframe{border:0;width:100%;height:100%;display:block}
   <button class="x" id="cerrar">×</button>
 </div>
 
+<div id="popInst" role="dialog" aria-label="Instalá tu panel">
+  <div class="caja">
+    <img src="/icono-192.png" alt="">
+    <h2>Instalá tu panel en el celular</h2>
+    <p id="piTxt">Así lo tenés como una app, con tu reporte siempre a mano y los avisos cuando se actualiza.</p>
+    <ol id="piPasos"></ol>
+    <button class="si" id="piSi">Instalar</button>
+    <button class="no" id="piNo">Ahora no</button>
+  </div>
+</div>
+
 <div id="avisos">
   <img src="/icono-192.png" alt="">
   <span class="tx"><b>Enterate cuando esté tu reporte</b><span id="msjAv">Te avisamos acá mismo cada vez que actualizamos tu status.</span></span>
@@ -45,7 +65,8 @@ iframe{border:0;width:100%;height:100%;display:block}
 const BASE='https://semillaredes.com/cliente.html?c=alan-sutton&k=be089d362468';
 const marco=document.getElementById('marco');
 try{ localStorage.setItem('sr_cliente_slug','alansutton'); }catch(e){}
-function cargar(){ marco.src = BASE + '&v=' + Date.now(); }
+function cargar(){ marco.src = BASE + '&v=' + Date.now() + (location.hash||''); }
+window.addEventListener('hashchange', cargar);
 cargar();
 
 // al volver a la app, traer lo último
@@ -67,19 +88,43 @@ if('serviceWorker' in navigator){
 
 const caja=document.getElementById('instalar');
 const yaInstalada = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-const oculto = localStorage.getItem('sr_install_off');
+const CLAVE_INST='sr_install_off_alansutton';
+let oculto=null; try{ oculto = localStorage.getItem(CLAVE_INST); }catch(e){}
 const esIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 let evento=null;
 
 function mostrar(){ if(!yaInstalada && !oculto) caja.style.display='flex'; }
 
-window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); evento=e; mostrar(); });
+window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); evento=e; if(pop.style.display==='flex') abrirPop(); });
 
-if(esIOS && !yaInstalada && !oculto){
-  document.getElementById('msj').textContent='Tocá el botón Compartir de Safari y elegí "Agregar a pantalla de inicio".';
-  document.getElementById('btn').style.display='none';
-  setTimeout(mostrar, 2500);
+// popup de la primera vez: en cualquier celular, si todavia no la instalo
+const esMovil=/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
+const enApp=/instagram|fban|fbav|whatsapp|line\/|tiktok/i.test(navigator.userAgent);
+const pop=document.getElementById('popInst'), pasos=document.getElementById('piPasos'), piSi=document.getElementById('piSi');
+function abrirPop(){
+  if(yaInstalada || oculto || !esMovil) return;
+  if(enApp){
+    document.getElementById('piTxt').textContent='Para instalarlo, primero abrí este link en el navegador del celular.';
+    pasos.innerHTML='<li>Tocá los tres puntitos (o el ícono de compartir) arriba a la derecha.</li><li>Elegí <b>Abrir en el navegador</b> (Safari o Chrome).</li><li>Ahí te va a aparecer este mismo cartel para instalarlo.</li>';
+    piSi.textContent='Entendido';
+  } else if(esIOS){
+    pasos.innerHTML='<li>Tocá el botón <b>Compartir</b> de Safari (el cuadrado con la flecha hacia arriba).</li><li>Elegí <b>Agregar a pantalla de inicio</b>.</li><li>Tocá <b>Agregar</b>. Listo: queda el ícono de Semilla IA.</li>';
+    piSi.textContent='Entendido';
+  } else if(evento){
+    pasos.innerHTML='';
+    piSi.textContent='Instalar';
+  } else {
+    pasos.innerHTML='<li>Tocá los <b>tres puntitos</b> de Chrome, arriba a la derecha.</li><li>Elegí <b>Agregar a la pantalla principal</b> (o <b>Instalar app</b>).</li><li>Confirmá. Listo: queda el ícono de Semilla IA.</li>';
+    piSi.textContent='Entendido';
+  }
+  pop.style.display='flex';
 }
+piSi.onclick=async()=>{
+  if(evento && !esIOS && !enApp){ evento.prompt(); await evento.userChoice; evento=null; }
+  pop.style.display='none';
+};
+document.getElementById('piNo').onclick=()=>{ pop.style.display='none'; try{ localStorage.setItem(CLAVE_INST,'1'); }catch(e){} };
+setTimeout(abrirPop, 2000);
 
 document.getElementById('btn').onclick=async()=>{
   if(!evento) return;
@@ -89,7 +134,7 @@ document.getElementById('btn').onclick=async()=>{
 };
 document.getElementById('cerrar').onclick=()=>{
   caja.style.display='none';
-  localStorage.setItem('sr_install_off','1');
+  try{ localStorage.setItem(CLAVE_INST,'1'); }catch(e){}
 };
 
 // --- avisos push: se guardan por cliente, asi cada aviso le llega solo a el ---
@@ -108,7 +153,7 @@ const pushOK=('serviceWorker' in navigator)&&('PushManager' in window)&&('Notifi
 if(pushOK){
   if(Notification.permission==='granted') suscribir().catch(()=>{});   // vuelve a registrar el celular por si cambio
   else if(Notification.permission==='default' && !localStorage.getItem('sr_push_off') && (yaInstalada || !esIOS)){
-    setTimeout(()=>{ if(caja.style.display!=='flex') cajaAv.style.display='flex'; }, 3000);
+    setTimeout(()=>{ if(caja.style.display!=='flex' && pop.style.display!=='flex') cajaAv.style.display='flex'; }, 3000);
   }
 }
 document.getElementById('btnAv').onclick=async()=>{
