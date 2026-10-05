@@ -651,7 +651,7 @@ function pintarSemilla(d){
       ${hay('ig_followers_total')?card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total],0,true):''}
       ${hay('ig_followers_nuevos')?card('Nuevos en la semana', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos]):''}
       ${convIG(R)}
-      ${hay('ig_costo_follower')?card('Costo por seguidor', mon(m.ig_costo_follower,3), [m.ig_costo_follower, ma.ig_costo_follower],3,false,true):''}
+      ${hay('ig_costo_follower')?card('Costo por seguidor', mon(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,false,true):''}
       ${card('Invertido', mon(m.ig_inversion,2), [m.ig_inversion, ma.ig_inversion],2)}
       ${hay('ig_alcance')?card('Personas alcanzadas', fmt(m.ig_alcance), [m.ig_alcance, ma.ig_alcance]):''}
     </div>`;
