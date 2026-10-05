@@ -1209,8 +1209,10 @@ function pintarSteam(d){
 }
 
 // cuando se actualiza cada status (va arriba de todo, en el aviso)
-const ACTUALIZA={'alan-sutton':'todos los lunes a las 7 de la mañana'};
-function pintar(d){ window.__D=d;
+const ACTUALIZA={'alan-sutton':'todos los lunes a las 7 de la mañana','los-soplafortune':'todos los lunes a las 7 de la mañana'};
+// moneda de la cuenta publicitaria cuando la base todavia dice otra
+const MONEDA={'los-soplafortune':'ARS'};
+function pintar(d){ window.__D=d; if(MONEDA[slug]) d.cliente.moneda=MONEDA[slug];
   const R=d.reportes||[];
   const u=R[R.length-1]||null, a=R.length>1?R[R.length-2]:null;
   const ultimo=(k)=>{ for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null) return x; } return null; };
