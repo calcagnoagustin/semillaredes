@@ -408,16 +408,23 @@ const convIG=(R)=>{ const L=(R||[]).filter(r=>Number(r.metricas.ig_visitas)>0&&r
   const c=f(L[L.length-1]), p=L.length>1?f(L[L.length-2]):null;
   return card('Conversión de visitas a seguidores', fmt(c,1)+'%', [c,p],1); };
 // conjuntos de la campaña de seguidores (igc1..igc4) del ultimo reporte
-const conjIG=(u)=>{ if(!u) return ''; const x=u.metricas, L=[]; // igcN_visitas = visitas al perfil (resultado de la campaña)
+const conjIG=(u)=>{ if(!u) return ''; const x=u.metricas, L=[]; // igcN_visitas = visitas al perfil; si la campaña es de reproducciones o interacción, igcN_res
   for(let i=1;i<=6;i++){ const n=x['igc'+i+'_nombre']; if(!n) continue;
-    const inv=Number(x['igc'+i+'_inversion']), s=Number(x['igc'+i+'_visitas']);
-    L.push({n, s:isNaN(s)?null:s, c:(!isNaN(inv)&&s>0)?inv/s:null}); }
+    const inv=Number(x['igc'+i+'_inversion']), s=Number(x['igc'+i+'_visitas']), r=x['igc'+i+'_res']!=null?Number(x['igc'+i+'_res']):null;
+    L.push({n, inv, s:isNaN(s)?null:s, r, rl:x['igc'+i+'_res_lab']||''}); }
   if(!L.length) return '';
   const es=t=>String(t).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
-  return `<div class="desglose"><h3>Conjuntos de anuncios de seguidores</h3>
+  const porVis=L.some(z=>z.s>0);
+  if(porVis) return `<div class="desglose"><h3>Conjuntos de anuncios de seguidores</h3>
     <p class="leyenda">Del ${fecha(u.desde)} al ${fecha(u.hasta)}: cuántas visitas al perfil trajo cada conjunto y cuánto costó cada una. Es el resultado que busca la campaña.</p>
     <div class="fila2 cab2 conj"><span>Conjunto</span><span style="text-align:right">Visitas al perfil</span><span style="text-align:right">Costo c/u</span></div>
-    ${L.map(z=>`<div class="fila2 conj"><span class="nom">${es(z.n)}</span><span class="v">${z.s!=null?fmt(z.s):''}</span><span class="c">${z.c!=null?mon(z.c,2):''}</span></div>`).join('')}
+    ${L.map(z=>`<div class="fila2 conj"><span class="nom">${es(z.n)}</span><span class="v">${z.s!=null?fmt(z.s):''}</span><span class="c">${z.s>0?mon(z.inv/z.s,2):''}</span></div>`).join('')}
+  </div>`;
+  if(!L.some(z=>z.r)) return '';
+  return `<div class="desglose"><h3>Conjuntos de anuncios de seguidores</h3>
+    <p class="leyenda">Del ${fecha(u.desde)} al ${fecha(u.hasta)}: lo que trajo cada conjunto (reproducciones completas del video o interacciones, según la campaña) y cuánto costó cada 1.000.</p>
+    <div class="fila2 cab2 conj" style="grid-template-columns:1fr 128px 84px"><span>Conjunto</span><span style="text-align:right">Resultado</span><span style="text-align:right">Costo c/1.000</span></div>
+    ${L.map(z=>`<div class="fila2 conj" style="grid-template-columns:1fr 128px 84px"><span class="nom">${es(z.n)}</span><span class="v">${z.r!=null?fmt(z.r)+' <small style="font-weight:400;color:var(--mute)">'+z.rl+'</small>':''}</span><span class="c">${z.r?mon(z.inv/z.r*1000,2):''}</span></div>`).join('')}
   </div>`; };
 const card=(lab,val,ant,dec,dest,inv)=>`<div class="t ${dest?'destacada':''}"><div class="lab">${lab}</div><div class="val">${val}</div>${delta(ant?.[0],ant?.[1],inv)}</div>`;
 
