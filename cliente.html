@@ -260,6 +260,33 @@ details.hist table{border:0;border-radius:0}
 .barras .val{font-size:14px;font-weight:700;margin-bottom:5px;white-space:nowrap}
 .barras .bar{width:100%;max-width:56px;border-radius:7px 7px 3px 3px;min-height:3px}
 .barras .fec{font-size:12px;color:var(--mute);margin-top:6px;white-space:nowrap}
+/* linea semanal con barras suaves de fondo: los valores son texto real, siempre legibles */
+.lsem{position:relative;margin-top:14px}
+.lsem .area{position:relative;height:150px;margin-top:26px}
+.lsem .cols{position:absolute;inset:0;display:grid;align-items:end}
+.lsem .cols i{display:block;margin:0 auto;width:62%;max-width:46px;border-radius:6px 6px 2px 2px;opacity:.13}
+.lsem svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.lsem .pt{position:absolute;width:10px;height:10px;border-radius:50%;transform:translate(-50%,50%);border:2px solid #fff}
+.lsem .vl{position:absolute;transform:translate(-50%,-9px);font-size:13.5px;font-weight:700;white-space:nowrap;padding:0 2px;background:rgba(255,255,255,.85);border-radius:4px}
+.lsem .fe{display:grid;margin-top:8px}
+.lsem .fe span{text-align:center;font-size:12px;color:var(--mute);white-space:nowrap}
+@media(max-width:560px){ .lsem .vl{font-size:12px} .lsem .fe span{font-size:10.5px} }
+/* paneles desplegables */
+.despl{background:#fff;border:1px solid var(--linea);border-radius:18px;margin:14px 0}
+.despl>summary{list-style:none;display:flex;align-items:center;gap:12px;padding:18px 18px 18px 20px;cursor:pointer}
+.despl>summary::-webkit-details-marker{display:none}
+.despl>summary h2{flex:1;margin:0;font-size:22px;line-height:1.15}
+.despl .der{text-align:right}
+.despl .lbl{font-size:10.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--mute)}
+.despl .big{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:4px}
+.despl .big b{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:700;color:var(--navy);white-space:nowrap}
+.despl .pill{font-size:12.5px;font-weight:700;padding:4px 9px;border-radius:999px;white-space:nowrap}
+.despl .pill.bien{background:#E7F0DC;color:#4E6B24}.despl .pill.mal{background:#F8E1E2;color:#9B2C36}.despl .pill.neu{background:#EEEBF2;color:#55525F}
+.despl .fl{color:var(--mute);font-size:13px;transition:transform .2s}
+.despl[open] .fl{transform:rotate(90deg)}
+.despl .cuerpo{padding:0 20px 20px;border-top:1px solid var(--linea)}
+.despl .cuerpo .tarj{margin-top:16px}
+@media(max-width:560px){ .despl>summary{padding:16px 14px 16px 16px;gap:8px} .despl>summary h2{font-size:19px} .despl .big b{font-size:21px} .despl .lbl{font-size:9.5px;letter-spacing:1.2px} }
 @media(max-width:560px){ .barras{gap:4px} .barras .val{font-size:12.5px} .barras .fec{font-size:11px} }
 </style>
 </head>
@@ -630,92 +657,65 @@ function pintarSemilla(d){
   MON=(d.cliente.moneda||'USD');
   const R=d.reportes||[];
   const u=R[R.length-1]||null;
-  const ultimo=(k)=>{ for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null) return x; } return null; };
-  const previo=(k)=>{ let v=false; for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null){ if(v) return x; v=true; } } return null; };
   // semanal: cada tarjeta muestra SOLO la semana actual y se compara con la anterior (nunca arrastrar un numero viejo)
   const ant=R.length>1?R[R.length-2]:null;
   const m=new Proxy({},{get:(_,k)=>u?u.metricas[k]:null}), ma=new Proxy({},{get:(_,k)=>ant?ant.metricas[k]:null});
   const et=R.map(r=>fecha(r.desde));
   const hay=(k)=>!!u&&u.metricas[k]!=null;
+  const serie=k=>R.map(r=>r.metricas[k]);
+  const pctDe=(a,b)=>(a!=null&&b)?a:null;
 
   let h=`<h1>${d.cliente.nombre}</h1>
     <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>
     <div class="avisoActualiza">
       <div class="tit">Este informe se actualiza todos los lunes a las 7 de la mañana.</div>
-      <p class="sub">Cada reporte es una semana, de lunes a lunes. Los números no son en vivo: corresponden a la última semana cerrada.</p>
+      <p class="sub">Cada reporte es una semana, de lunes a lunes. Tocá cada panel para ver el detalle.</p>
     </div>`;
 
   // ===== SEGUIDORES =====
-  if(hay('ig_inversion')||hay('ig_followers_total')){
-    h+=`<h2>Seguidores</h2><p class="sub">La campaña de crecimiento de la cuenta, semana a semana.</p><div class="tarj">
+  if(hay('ig_inversion')||hay('ig_followers_total')||hay('ig_followers_nuevos')){
+    let c=`<p class="sub" style="margin-top:14px">La campaña de crecimiento de la cuenta, semana a semana.</p><div class="tarj">
       ${hay('ig_followers_total')?card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total],0,true):''}
       ${hay('ig_followers_nuevos')?card('Nuevos en la semana', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos]):''}
       ${convIG(R)}
       ${hay('ig_costo_follower')?card('Costo por seguidor', mon(m.ig_costo_follower,2), [m.ig_costo_follower, ma.ig_costo_follower],2,false,true):''}
-      ${card('Invertido', mon(m.ig_inversion,2), [m.ig_inversion, ma.ig_inversion],2)}
+      ${hay('ig_inversion')?card('Invertido', mon(m.ig_inversion,2), [m.ig_inversion, ma.ig_inversion],2):''}
       ${hay('ig_alcance')?card('Personas alcanzadas', fmt(m.ig_alcance), [m.ig_alcance, ma.ig_alcance]):''}
     </div>`;
-    h+=graficoBarras('Seguidores nuevos por semana','Cuántos seguidores nuevos entraron cada semana.',R.map(r=>r.metricas.ig_followers_nuevos),et,'#7A1F3A',0);
-    h+=graficoBarras('Costo por seguidor','Cuánto costó cada seguidor nuevo, en dólares. Mientras más baja la barra, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',2);
-    h+=graficoBarras('Inversión en seguidores','Lo que se puso en la campaña de seguidores cada semana, en dólares.',R.map(r=>r.metricas.ig_inversion),et,'#87863A',0);
+    c+=graficoLinea('Seguidores nuevos por semana','Cuántos seguidores nuevos entraron cada semana.',serie('ig_followers_nuevos'),et,'#7A1F3A',0);
+    c+=graficoLinea('Costo por seguidor','Cuánto costó cada seguidor nuevo, en dólares. Mientras más baja la línea, mejor.',serie('ig_costo_follower'),et,'#1A2456',2);
+    c+=graficoLinea('Inversión en seguidores','Lo que se puso en la campaña de seguidores cada semana, en dólares.',serie('ig_inversion'),et,'#87863A',0);
+    h+=despl('Seguidores','Nuevos en la semana', m.ig_followers_nuevos, ma.ig_followers_nuevos, 1, c);
   }
 
   // ===== FORMACION =====
-  if(hay('frm_inversion')){
-    h+=`<h2>Formación</h2><p class="sub">Todo lo que empuja la Formación Semilla, sumando sus campañas.</p><div class="tarj">
-      ${card('Invertido en Formación', mon(m.frm_inversion,2), [m.frm_inversion, ma.frm_inversion],2,true)}
+  if(hay('frm_inversion')||hay('frm_mensajes')||hay('frm_visitas')){
+    let c=`<p class="sub" style="margin-top:14px">Todo lo que empuja la Formación Semilla, sumando sus campañas.</p><div class="tarj">
+      ${hay('frm_inversion')?card('Invertido en Formación', mon(m.frm_inversion,2), [m.frm_inversion, ma.frm_inversion],2,true):''}
       ${hay('frm_mensajes')?card('Mensajes', fmt(m.frm_mensajes), [m.frm_mensajes, ma.frm_mensajes]):''}
       ${hay('frm_mensajes_inversion')?card('Invertido en mensajes', mon(m.frm_mensajes_inversion,2), [m.frm_mensajes_inversion, ma.frm_mensajes_inversion],2):''}
       ${hay('frm_costo_mensaje')?card('Costo por mensaje', mon(m.frm_costo_mensaje,2), [m.frm_costo_mensaje, ma.frm_costo_mensaje],2,false,true):''}
       ${hay('frm_visitas')?card('Visitas a la página', fmt(m.frm_visitas), [m.frm_visitas, ma.frm_visitas]):''}
-      ${hay('frm_costo_visita')?card('Costo por visita', mon(m.frm_costo_visita,3), [m.frm_costo_visita, ma.frm_costo_visita],3,false,true):''}
+      ${hay('frm_costo_visita')?card('Costo por visita', mon(m.frm_costo_visita,2), [m.frm_costo_visita, ma.frm_costo_visita],2,false,true):''}
       ${hay('frm_clics')?card('Clics', fmt(m.frm_clics), [m.frm_clics, ma.frm_clics]):''}
-      ${hay('ftr_visitas')?card('Visitas a la página', fmt(m.ftr_visitas), [m.ftr_visitas, ma.ftr_visitas]):''}
-      ${hay('ftr_costo_visita')?card('Costo por visita', mon(m.ftr_costo_visita,3), [m.ftr_costo_visita, ma.ftr_costo_visita],3,false,true):''}
     </div>`;
-    h+=graficoBarras('Visitas a la página por semana','Gente que llegó a la página de la Formación cada semana.',R.map(r=>r.metricas.frm_visitas),et,'#1A2456',0);
-    h+=graficoBarras('Mensajes por semana','Consultas que llegaron por la Formación cada semana.',R.map(r=>r.metricas.frm_mensajes),et,'#E2767C',0);
-
-    const bloques=[
-      {p:'ftr', t:'Tráfico a la página', q:'Gente que llega a la landing de la Formación.',
-        n:[['ftr_visitas','Visitas',0],['ftr_costo_visita','Costo por visita',3],['ftr_inversion','Invertido',2],['ftr_alcance','Alcance',0]]},
-      {p:'fmsj', t:'Mensajes', q:'Consultas que llegan por mensaje.',
-        n:[['fmsj_mensajes','Mensajes',0],['fmsj_costo_mensaje','Costo por mensaje',2],['fmsj_inversion','Invertido',2],['fmsj_alcance','Alcance',0]]},
-      {p:'fvta', t:'Ventas', q:'La campaña orientada a la inscripción.',
-        n:[['fvta_ventas','Ventas',0],['fvta_costo_venta','Costo por venta',2],['fvta_visitas','Visitas',0],['fvta_inversion','Invertido',2]]},
-      {p:'fpub', t:'Publicaciones promocionadas', q:'Posteos de la Formación con pauta.',
-        n:[['fpub_visitas','Visitas',0],['fpub_inversion','Invertido',2],['fpub_alcance','Alcance',0]]}
-    ];
-    bloques.forEach(b=>{
-      if(!hay(b.p+'_inversion')) return;
-      const nums=b.n.filter(([k])=>m[k]!=null).map(([k,l,dec])=>{
-        const esPlata=k.includes('inversion')||k.includes('costo');
-        return `<div class="n"><div class="l">${l}</div><div class="v">${fmt(m[k],dec)}</div><div class="d">${esPlata?MON:(delta(m[k],ma[k])||'')}</div></div>`;
-      }).join('');
-      h+=`<div class="camp"><h3>${b.t}</h3><p class="que">${b.q}</p><div class="nums">${nums}</div></div>`;
-    });
-
-    h+=graficoBarras('Inversión en Formación','Lo que se puso en la pauta de la Formación cada semana, en dólares.',R.map(r=>r.metricas.frm_inversion),et,'#7A1F3A',0);
+    c+=graficoLinea('Visitas a la página por semana','Gente que llegó a la página de la Formación cada semana.',serie('frm_visitas'),et,'#1A2456',0);
+    c+=graficoLinea('Mensajes por semana','Consultas que llegaron por la Formación cada semana.',serie('frm_mensajes'),et,'#E2767C',0);
+    c+=graficoLinea('Inversión en Formación','Lo que se puso en la pauta de la Formación cada semana, en dólares.',serie('frm_inversion'),et,'#7A1F3A',0);
+    h+=despl('Formación','Visitas a la página', m.frm_visitas, ma.frm_visitas, 1, c);
   }
 
-  // ===== INVERSION TOTAL =====
-  if(hay('ig_inversion')&&hay('frm_inversion')){
-    h+=`<h2>Inversión</h2><p class="sub">El reparto de la pauta en este período.</p><div class="tarj">
-      ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
-      ${card('En Formación',mon(m.frm_inversion,2),[m.frm_inversion,ma.frm_inversion],2)}
-      ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.frm_inversion||0),2),null,2,true)}
-    </div>`;
-  }
-
-  // presupuesto que esta corriendo hoy
-  if(hay('pres_diario')){
-    h+=`<h2>Presupuesto</h2><p class="sub">Lo que hay cargado hoy en las campañas activas.</p><div class="tarj">
-      ${card('Presupuesto diario', mon(m.pres_diario,2), [m.pres_diario, ma.pres_diario],2,true)}
-      ${card('Estimado de la semana', mon(Number(m.pres_diario||0)*7,0), null,0)}
-      ${hay('pres_gastado')?card('Gastado en la semana', mon(m.pres_gastado,2), [m.pres_gastado, ma.pres_gastado],2):''}
+  // ===== INVERSION: lo que se invirtio la semana que paso y lo que se va a invertir la proxima =====
+  if(hay('ig_inversion')||hay('frm_inversion')||hay('pres_diario')){
+    const tot=Number(m.ig_inversion||0)+Number(m.frm_inversion||0), totA=ant?Number(ma.ig_inversion||0)+Number(ma.frm_inversion||0):null;
+    const prox=hay('pres_diario')?Number(m.pres_diario)*7:null;
+    let c=`<div class="tarj">
+      ${card('Invertido la semana pasada',mon(tot,2),[tot,totA],2,true)}
+      ${prox!=null?card('Próxima semana (estimado)',mon(prox,0),null,0):''}
     </div>
-    <p class="sub" style="margin-top:9px">Cuenta solo las campañas que están corriendo de verdad. El estimado supone que ese presupuesto se mantiene los 7 días.</p>`;
-    h+=graficoBarras('Gastado por semana','Todo lo que se invirtió en pauta cada semana, en dólares.',R.map(r=>r.metricas.pres_gastado),et,'#87863A',0);
+    <p class="sub" style="margin-top:10px">De lo invertido: ${mon(m.ig_inversion||0,2)} en seguidores y ${mon(m.frm_inversion||0,2)} en la Formación.${prox!=null?` El estimado es el presupuesto que está corriendo hoy (${mon(m.pres_diario,2)} por día) durante 7 días.`:''}</p>`;
+    c+=graficoLinea('Invertido por semana','Todo lo que se puso en pauta cada semana, en dólares.',serie('pres_gastado'),et,'#87863A',0);
+    h+=despl('Inversión','Semana pasada', tot, totA, 0, c, mon(tot,2));
   }
 
   if(R.length>1){
@@ -723,7 +723,7 @@ function pintarSemilla(d){
       <details class="hist"><summary><span class="flecha">▶</span> Ver los ${R.length} reportes</summary><table>
       <tr><th>Semana</th><th>Seguidores</th><th>Nuevos</th><th>Costo x seg.</th><th>Inv. seguidores</th><th>Mensajes</th><th>Visitas Formación</th><th>Inv. Formación</th></tr>
       ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
-        <td>${fmt(x.ig_followers_total)}</td><td>${fmt(x.ig_followers_nuevos)}</td><td>${fmt(x.ig_costo_follower,3)}</td><td>${fmt(x.ig_inversion,2)}</td>
+        <td>${fmt(x.ig_followers_total)}</td><td>${fmt(x.ig_followers_nuevos)}</td><td>${fmt(x.ig_costo_follower,2)}</td><td>${fmt(x.ig_inversion,2)}</td>
         <td>${fmt(x.frm_mensajes)}</td><td><b>${fmt(x.frm_visitas)}</b></td><td>${fmt(x.frm_inversion,2)}</td></tr>`}).join('')}
       </table></details>`;
   }
@@ -1318,7 +1318,15 @@ function pintarResto(d,h){
     cal_mensajes:'Mensajes Calificadas',ej_mensajes:'Mensajes Ejecutivo',total_mensajes:'Mensajes totales'};
   const disponibles=[...new Set(R.flatMap(r=>Object.keys(r.metricas||{})))].filter(k=>NOMBRES[k]);
 
-  const HI=d.hitos||[];
+  const HI=(d.hitos||[]).slice();
+  {
+    // Hitos siempre completo: si no hay meta de seguidores, mostramos una sugerida
+    const ultTot=[...R].reverse().map(r=>r.metricas.ig_followers_total).find(v=>v!=null);
+    if(ultTot!=null && !HI.some(x=>x.metrica==='ig_followers_total')){
+      const paso= ultTot<1000?100 : ultTot<10000?1000 : 5000;
+      HI.unshift({titulo:'Seguidores en Instagram (meta sugerida)', metrica:'ig_followers_total', objetivo:Math.ceil((ultTot+1)/paso)*paso, virtual:true});
+    }
+  }
   {
     h+=`<h2>Hitos</h2><p class="sub">Las metas que nos pusimos para este proyecto. Podés sumar las tuyas.</p>`;
     HI.forEach(x=>{
@@ -1326,7 +1334,7 @@ function pintarResto(d,h){
       // valor actual: si es un total calculado, lo sumamos
       let act;
       if(x.metrica==='total_mensajes') act=Number(m.ej_mensajes||0)+Number(m.cal_mensajes||0)+Number(m.esp_mensajes||0);
-      else act=Number(m[x.metrica]||0);
+      else act=Number((m[x.metrica]!=null?m[x.metrica]:[...R].reverse().map(r=>r.metricas[x.metrica]).find(v=>v!=null))||0);
       const menosEsMejor=/costo|cac/i.test(x.metrica);
       const dec = /costo/i.test(x.metrica) ? 2 : 0;
       if(menosEsMejor){
@@ -1336,7 +1344,7 @@ function pintarResto(d,h){
           <div class="num">${act>0?`Hoy estás en ${fmt(act,dec)} · la meta es ${fmt(obj,dec)} o menos`:'Todavía sin datos'}</div>
           <div class="barra"><i style="width:${pct}%"></i></div>
           <div class="falta">${listo?'¡Logrado!':(act>0?`Te falta bajar ${fmt(act-obj,dec)}`:'')}</div>
-          <button class="lap" data-ed="hito" data-id="${x.id}" title="Editar" aria-label="Editar"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button class="x" data-delh="${x.id}" title="Borrar">×</button></div>`;
+          ${x.virtual?'':`<button class="lap" data-ed="hito" data-id="${x.id}" title="Editar" aria-label="Editar"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button class="x" data-delh="${x.id}" title="Borrar">×</button>`}</div>`;
       } else {
         const listo=act>=obj;
         const pct=Math.min(100,Math.round(act/obj*100));
@@ -1344,7 +1352,7 @@ function pintarResto(d,h){
           <div class="num">${fmt(act,dec)} de ${fmt(obj,dec)}</div>
           <div class="barra"><i style="width:${pct}%"></i></div>
           <div class="falta">${listo?'¡Logrado!':`${pct}% · faltan ${fmt(obj-act,dec)}`}</div>
-          <button class="lap" data-ed="hito" data-id="${x.id}" title="Editar" aria-label="Editar"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button class="x" data-delh="${x.id}" title="Borrar">×</button></div>`;
+          ${x.virtual?'':`<button class="lap" data-ed="hito" data-id="${x.id}" title="Editar" aria-label="Editar"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button class="x" data-delh="${x.id}" title="Borrar">×</button>`}</div>`;
       }
     });
     if(disponibles.length){
@@ -1553,11 +1561,13 @@ function armarIndice(){
   if(ancla) ancla.after(nav); else app.prepend(nav);
   nav.querySelectorAll('a').forEach(a=>a.onclick=e=>{
     e.preventDefault();
+    const dp=hs[+a.dataset.i].closest('details.despl'); if(dp) dp.open=true;
     const y=hs[+a.dataset.i].getBoundingClientRect().top+window.scrollY-14;
     window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
   });
   // en cada seccion, un volver arriba
   hs.forEach(h=>{
+    if(h.closest('details.despl')) return;
     const v=document.createElement('a'); v.className='volver'; v.href='#indice'; v.textContent='↑ Arriba';
     v.onclick=e=>{ e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'}); };
     h.appendChild(v);
@@ -1602,6 +1612,36 @@ document.addEventListener('click', async e=>{
   else { b.disabled=false; b.textContent='Guardar'; alert('No se pudo guardar'); }
 });
 
+function graficoLinea(titulo, leyenda, vals, etiquetas, color, dec){
+  let V=vals.map((v,i)=>({v:(v==null?null:Number(v)),e:etiquetas[i]})).filter(x=>x.v!=null);
+  if(V.length<2) return '';
+  V=V.slice(-10);
+  const n=V.length, max=Math.max(...V.map(x=>x.v))||1;
+  const X=i=>(i+.5)/n*100, Y=v=>v/max*82;            // % desde abajo
+  const f=v=>Math.abs(v)>=1000?fmt(v,0):fmt(v,dec||0);
+  const pts=V.map((x,i)=>`${X(i)},${100-Y(x.v)}`).join(' ');
+  const g=`grid-template-columns:repeat(${n},1fr)`;
+  return `<div class="graf"><h3>${titulo}</h3><p class="leyenda">${leyenda}</p><div class="lsem">
+    <div class="area">
+      <div class="cols" style="${g}">${V.map(x=>`<i style="height:${Math.max(2,Y(x.v))}%;background:${color}"></i>`).join('')}</div>
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      ${V.map((x,i)=>`<span class="pt" style="left:${X(i)}%;bottom:${Y(x.v)}%;background:${color}"></span><span class="vl" style="left:${X(i)}%;bottom:${Y(x.v)}%;color:${i===n-1?color:'var(--navy)'}">${f(x.v)}</span>`).join('')}
+    </div>
+    <div class="fe" style="${g}">${V.map(x=>`<span>${x.e}</span>`).join('')}</div>
+  </div></div>`;
+}
+function despl(titulo, etiqueta, valor, ant, sentido, cuerpo, txt){
+  // sentido: 1 = subir es bueno, -1 = bajar es bueno, 0 = neutro
+  let pill='';
+  if(ant!=null && ant!==0 && valor!=null){
+    const p=Math.round((valor-ant)/Math.abs(ant)*100);
+    const cls= sentido===0||p===0 ? 'neu' : ((p>0)===(sentido>0) ? 'bien' : 'mal');
+    pill=`<span class="pill ${cls}">${p>0?'+':''}${p}%</span>`;
+  }
+  return `<details class="despl"><summary><h2>${titulo}</h2>
+    <div class="der"><div class="lbl">${etiqueta}</div><div class="big"><b>${txt!=null?txt:(valor==null?'—':fmt(valor))}</b>${pill}</div></div>
+    <span class="fl">▸</span></summary><div class="cuerpo">${cuerpo}</div></details>`;
+}
 function graficoBarras(titulo, leyenda, vals, etiquetas, color, dec){
   let V=vals.map((v,i)=>({v:(v==null?null:Number(v)),e:etiquetas[i]})).filter(x=>x.v!=null);
   if(V.length<2) return '';
@@ -1632,7 +1672,7 @@ function ponerReporte(d){
     <p class="bajada">Reporte y recomendaciones basadas en el Método Semilla y la experiencia de otros usuarios.</p>
     <h3>Lo principal</h3><ol>${(I.hallazgos||[]).map(x=>`<li>${x}</li>`).join('')}</ol>
     <h3>Qué hacer</h3><ol class="qh">${(I.recomendaciones||[]).map(x=>`<li>${x}</li>`).join('')}</ol>
-    <p class="cuando">Siempre lo podés ver arriba de la página, en el botón Reporte. Se actualiza todos los lunes a las 7 de la mañana.</p></div>`;
+    <p class="cuando">Las métricas en detalle están en el panel, más abajo. Siempre podés volver a este reporte arriba de la página, en el botón Reporte. Se actualiza todos los lunes a las 7 de la mañana.</p></div>`;
   document.body.appendChild(b); document.body.appendChild(fondo);
   const abrir=()=>{ fondo.classList.remove('oculto'); try{ localStorage.setItem(clave,I.fecha); }catch(e){} const p=b.querySelector('.punto'); if(p) p.remove(); };
   const cerrar=()=>fondo.classList.add('oculto');
