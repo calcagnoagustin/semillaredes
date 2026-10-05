@@ -237,6 +237,30 @@ details.hist table{border:0;border-radius:0}
 .nota .txt{font-size:14.5px;margin-top:5px;white-space:pre-wrap}
 .nota .cuando{font-size:12px;color:var(--mute);margin-top:6px}
 .pie{font-size:12.5px;color:var(--mute);margin-top:40px}
+/* boton Reporte: siempre arriba, aparte del indice */
+.btnReporte{position:fixed;top:14px;right:14px;z-index:40;background:var(--navy);color:var(--crema);border:0;border-radius:999px;
+  padding:10px 18px;font:700 14px/1 Inter,system-ui,sans-serif;letter-spacing:.3px;cursor:pointer;box-shadow:0 4px 14px rgba(26,36,86,.25);display:flex;align-items:center;gap:8px}
+.btnReporte .punto{width:8px;height:8px;border-radius:50%;background:var(--rosa)}
+.repFondo{position:fixed;inset:0;background:rgba(20,22,40,.45);z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:18px 14px;overflow:auto}
+.repFondo.oculto{display:none}
+.repCaja{background:#fff;border-radius:20px;max-width:620px;width:100%;padding:26px 24px 24px;position:relative;margin:auto 0}
+.repCaja .x{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;border:1px solid var(--linea);background:#fff;font-size:20px;line-height:1;color:var(--navy);cursor:pointer}
+.repCaja .eti{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--oliva)}
+.repCaja h2{margin:8px 0 6px;font-size:26px}
+.repCaja .bajada{font-size:14.5px;color:#55525F;margin:0 0 6px;line-height:1.5}
+.repCaja h3{font-size:12.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--vino);margin:22px 0 10px}
+.repCaja ol{margin:0;padding:0;list-style:none;counter-reset:r}
+.repCaja li{counter-increment:r;position:relative;padding:0 0 12px 34px;font-size:16px;line-height:1.5;color:var(--tinta)}
+.repCaja li::before{content:counter(r);position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;background:var(--crema);color:var(--navy);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.repCaja .reco li::before{background:var(--navy);color:var(--crema)}
+.repCaja .cuando{font-size:13px;color:var(--mute);margin-top:14px;border-top:1px solid var(--linea);padding-top:12px}
+/* graficos semanales en barras: los valores se leen siempre (texto real, no escalado) */
+.barras{display:grid;gap:6px;align-items:end;margin-top:12px}
+.barras .col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:0}
+.barras .val{font-size:14px;font-weight:700;margin-bottom:5px;white-space:nowrap}
+.barras .bar{width:100%;max-width:56px;border-radius:7px 7px 3px 3px;min-height:3px}
+.barras .fec{font-size:12px;color:var(--mute);margin-top:6px;white-space:nowrap}
+@media(max-width:560px){ .barras{gap:4px} .barras .val{font-size:12.5px} .barras .fec{font-size:11px} }
 </style>
 </head>
 <body>
@@ -608,31 +632,32 @@ function pintarSemilla(d){
   const u=R[R.length-1]||null;
   const ultimo=(k)=>{ for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null) return x; } return null; };
   const previo=(k)=>{ let v=false; for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null){ if(v) return x; v=true; } } return null; };
-  const m=new Proxy({},{get:(_,k)=>ultimo(k)}), ma=new Proxy({},{get:(_,k)=>previo(k)});
-  const et=R.map(r=>fecha(r.hasta));
-  const hay=(k)=>R.some(r=>r.metricas[k]!=null);
+  // semanal: cada tarjeta muestra SOLO la semana actual y se compara con la anterior (nunca arrastrar un numero viejo)
+  const ant=R.length>1?R[R.length-2]:null;
+  const m=new Proxy({},{get:(_,k)=>u?u.metricas[k]:null}), ma=new Proxy({},{get:(_,k)=>ant?ant.metricas[k]:null});
+  const et=R.map(r=>fecha(r.desde));
+  const hay=(k)=>!!u&&u.metricas[k]!=null;
 
   let h=`<h1>${d.cliente.nombre}</h1>
-    <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>`;
+    <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>
+    <div class="avisoActualiza">
+      <div class="tit">Este informe se actualiza todos los lunes a las 7 de la mañana.</div>
+      <p class="sub">Cada reporte es una semana, de lunes a lunes. Los números no son en vivo: corresponden a la última semana cerrada.</p>
+    </div>`;
 
   // ===== SEGUIDORES =====
   if(hay('ig_inversion')||hay('ig_followers_total')){
-    h+=`<h2>Seguidores</h2><p class="sub">La campaña de crecimiento de la cuenta, desde el 1 del mes.</p><div class="tarj">
+    h+=`<h2>Seguidores</h2><p class="sub">La campaña de crecimiento de la cuenta, semana a semana.</p><div class="tarj">
       ${hay('ig_followers_total')?card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total],0,true):''}
-      ${hay('ig_followers_nuevos')?card('Nuevos en el mes', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos]):''}
+      ${hay('ig_followers_nuevos')?card('Nuevos en la semana', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos]):''}
       ${convIG(R)}
       ${hay('ig_costo_follower')?card('Costo por seguidor', mon(m.ig_costo_follower,3), [m.ig_costo_follower, ma.ig_costo_follower],3,false,true):''}
       ${card('Invertido', mon(m.ig_inversion,2), [m.ig_inversion, ma.ig_inversion],2)}
       ${hay('ig_alcance')?card('Personas alcanzadas', fmt(m.ig_alcance), [m.ig_alcance, ma.ig_alcance]):''}
     </div>`;
-    {
-      const DI=(u&&u.metricas&&u.metricas.dias)||[];
-      if(DI.length>1) h+=graficoDia(DI,'ig','Inversión día por día','Lo que se gastó cada día en la campaña de seguidores.','#87863A',true);
-    }
-    if(R.filter(r=>r.metricas.ig_costo_follower!=null).length>1)
-      h+=grafico('Costo por seguidor','Cuánto costó cada seguidor nuevo mes a mes. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower??null),et,'#1A2456',true);
-    if(R.filter(r=>r.metricas.ig_inversion!=null).length>1)
-      h+=grafico('Inversión en seguidores','Lo que se puso en la campaña cada mes.',R.map(r=>r.metricas.ig_inversion),et,'#87863A');
+    h+=graficoBarras('Seguidores nuevos por semana','Cuántos seguidores nuevos entraron cada semana.',R.map(r=>r.metricas.ig_followers_nuevos),et,'#7A1F3A',0);
+    h+=graficoBarras('Costo por seguidor','Cuánto costó cada seguidor nuevo, en dólares. Mientras más baja la barra, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',2);
+    h+=graficoBarras('Inversión en seguidores','Lo que se puso en la campaña de seguidores cada semana, en dólares.',R.map(r=>r.metricas.ig_inversion),et,'#87863A',0);
   }
 
   // ===== FORMACION =====
@@ -648,16 +673,8 @@ function pintarSemilla(d){
       ${hay('ftr_visitas')?card('Visitas a la página', fmt(m.ftr_visitas), [m.ftr_visitas, ma.ftr_visitas]):''}
       ${hay('ftr_costo_visita')?card('Costo por visita', mon(m.ftr_costo_visita,3), [m.ftr_costo_visita, ma.ftr_costo_visita],3,false,true):''}
     </div>`;
-    const DIAS=(u&&u.metricas&&u.metricas.dias)||[];
-    if(DIAS.length>1){
-      h+=graficoDia(DIAS,'frm','Inversión día por día','Lo que se gastó cada día en la Formación.','#7A1F3A',true);
-      h+=graficoDia(DIAS,'vis','Visitas día por día','Cuánta gente llegó a la página cada día.','#1A2456');
-      h+=graficoDia(DIAS,'msj','Mensajes día por día','Consultas que entraron cada día.','#E2767C');
-    }
-    if(R.filter(r=>r.metricas.frm_visitas!=null).length>1)
-      h+=grafico('Visitas a la página','Gente que llegó a la página de la Formación mes a mes.',R.map(r=>r.metricas.frm_visitas??null),et,'#1A2456');
-    if(R.filter(r=>r.metricas.frm_mensajes!=null).length>1)
-      h+=grafico('Mensajes','Consultas que llegaron por la Formación.',R.map(r=>r.metricas.frm_mensajes??null),et,'#E2767C');
+    h+=graficoBarras('Visitas a la página por semana','Gente que llegó a la página de la Formación cada semana.',R.map(r=>r.metricas.frm_visitas),et,'#1A2456',0);
+    h+=graficoBarras('Mensajes por semana','Consultas que llegaron por la Formación cada semana.',R.map(r=>r.metricas.frm_mensajes),et,'#E2767C',0);
 
     const bloques=[
       {p:'ftr', t:'Tráfico a la página', q:'Gente que llega a la landing de la Formación.',
@@ -678,10 +695,7 @@ function pintarSemilla(d){
       h+=`<div class="camp"><h3>${b.t}</h3><p class="que">${b.q}</p><div class="nums">${nums}</div></div>`;
     });
 
-    if(R.filter(r=>r.metricas.frm_inversion!=null).length>1)
-      h+=grafico('Inversión en Formación','Cómo creció la pauta de la Formación.',R.map(r=>r.metricas.frm_inversion??null),et,'#7A1F3A');
-    if(R.filter(r=>r.metricas.ftr_visitas!=null).length>1)
-      h+=grafico('Visitas a la página','Gente que llegó a la landing en cada período.',R.map(r=>r.metricas.ftr_visitas??null),et,'#1A2456');
+    h+=graficoBarras('Inversión en Formación','Lo que se puso en la pauta de la Formación cada semana, en dólares.',R.map(r=>r.metricas.frm_inversion),et,'#7A1F3A',0);
   }
 
   // ===== INVERSION TOTAL =====
@@ -695,19 +709,19 @@ function pintarSemilla(d){
 
   // presupuesto que esta corriendo hoy
   if(hay('pres_diario')){
-    const dias=new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate();
     h+=`<h2>Presupuesto</h2><p class="sub">Lo que hay cargado hoy en las campañas activas.</p><div class="tarj">
       ${card('Presupuesto diario', mon(m.pres_diario,2), [m.pres_diario, ma.pres_diario],2,true)}
-      ${card('Estimado del mes', mon(Number(m.pres_diario||0)*dias,0), null,0)}
-      ${hay('pres_gastado')?card('Gastado hasta hoy', mon(m.pres_gastado,2), [m.pres_gastado, ma.pres_gastado],2):''}
+      ${card('Estimado de la semana', mon(Number(m.pres_diario||0)*7,0), null,0)}
+      ${hay('pres_gastado')?card('Gastado en la semana', mon(m.pres_gastado,2), [m.pres_gastado, ma.pres_gastado],2):''}
     </div>
-    <p class="sub" style="margin-top:9px">Cuenta solo las campañas que están corriendo de verdad. El estimado supone que ese presupuesto se mantiene los ${dias} días del mes.</p>`;
+    <p class="sub" style="margin-top:9px">Cuenta solo las campañas que están corriendo de verdad. El estimado supone que ese presupuesto se mantiene los 7 días.</p>`;
+    h+=graficoBarras('Gastado por semana','Todo lo que se invirtió en pauta cada semana, en dólares.',R.map(r=>r.metricas.pres_gastado),et,'#87863A',0);
   }
 
   if(R.length>1){
     h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
       <details class="hist"><summary><span class="flecha">▶</span> Ver los ${R.length} reportes</summary><table>
-      <tr><th>Mes</th><th>Seguidores</th><th>Nuevos</th><th>Costo x seg.</th><th>Inv. seguidores</th><th>Mensajes</th><th>Visitas Formación</th><th>Inv. Formación</th></tr>
+      <tr><th>Semana</th><th>Seguidores</th><th>Nuevos</th><th>Costo x seg.</th><th>Inv. seguidores</th><th>Mensajes</th><th>Visitas Formación</th><th>Inv. Formación</th></tr>
       ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
         <td>${fmt(x.ig_followers_total)}</td><td>${fmt(x.ig_followers_nuevos)}</td><td>${fmt(x.ig_costo_follower,3)}</td><td>${fmt(x.ig_inversion,2)}</td>
         <td>${fmt(x.frm_mensajes)}</td><td><b>${fmt(x.frm_visitas)}</b></td><td>${fmt(x.frm_inversion,2)}</td></tr>`}).join('')}
@@ -1406,7 +1420,8 @@ function pintarResto(d,h){
     </div>`;
 
   const RC=d.recomendaciones&&d.recomendaciones.recomendaciones;
-  if(RC&&RC.length){
+  const hayInforme=(d.reportes||[]).some(r=>r.metricas&&r.metricas.informe);
+  if(RC&&RC.length&&!hayInforme){
     h+=`<h2>Consejos de la Inteligencia colectiva</h2><p class="sub">Surgen de la experiencia de otros artistas de la comunidad y los procesa una inteligencia artificial entrenada en el Método Semilla. Todos los domingos el bot te manda nuevas recomendaciones.</p><p class="iasello"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 C18 7 18 17 12 21 C6 17 6 7 12 3 Z" fill="#87863A"/></svg>Procesado con IA, entrenada en el Método Semilla</p>
       <div class="reco">
         <div class="cab"><h3>Tres cosas para arrancar</h3>
@@ -1424,6 +1439,7 @@ function pintarResto(d,h){
   $('app').innerHTML=h;
   $('cargando').classList.add('oculto'); $('app').classList.remove('oculto');
   armarIndice();   // despues de mostrar la pagina: oculta, todo mide cero
+  ponerReporte(d);
 
   const ciclo={pendiente:'en_curso',en_curso:'hecha',hecha:'pendiente'};
   const cambiar=async(id,est,fila)=>{
@@ -1586,6 +1602,44 @@ document.addEventListener('click', async e=>{
   else { b.disabled=false; b.textContent='Guardar'; alert('No se pudo guardar'); }
 });
 
+function graficoBarras(titulo, leyenda, vals, etiquetas, color, dec){
+  let V=vals.map((v,i)=>({v:(v==null?null:Number(v)),e:etiquetas[i]})).filter(x=>x.v!=null);
+  if(V.length<2) return '';
+  V=V.slice(-10);
+  const max=Math.max(...V.map(x=>x.v))||1, H=130;
+  const f=v=>{ const r=Math.abs(v)>=1000?fmt(v,0):fmt(v,dec||0); return r; };
+  return `<div class="graf"><h3>${titulo}</h3><p class="leyenda">${leyenda}</p>
+    <div class="barras" style="grid-template-columns:repeat(${V.length},1fr)">
+    ${V.map((x,i)=>`<div class="col"><div class="val" style="color:${i===V.length-1?color:'var(--navy)'}">${f(x.v)}</div>
+      <div class="bar" style="height:${Math.max(3,Math.round(x.v/max*H))}px;background:${color};opacity:${i===V.length-1?1:.45}"></div>
+      <div class="fec">${x.e}</div></div>`).join('')}
+    </div></div>`;
+}
+function ponerReporte(d){
+  document.querySelectorAll('.btnReporte,.repFondo').forEach(x=>x.remove());
+  const R=d.reportes||[]; const r=[...R].reverse().find(x=>x.metricas&&x.metricas.informe);
+  if(!r) return;
+  const I=r.metricas.informe; const slugR=(new URLSearchParams(location.search)).get('c')||'';
+  const clave='sr_rep_'+slugR;
+  let visto=''; try{ visto=localStorage.getItem(clave)||''; }catch(e){}
+  const nuevo = visto!==I.fecha;
+  const b=document.createElement('button'); b.className='btnReporte'; b.type='button';
+  b.innerHTML=(nuevo?'<span class="punto"></span>':'')+'Reporte';
+  const fondo=document.createElement('div'); fondo.className='repFondo oculto';
+  fondo.innerHTML=`<div class="repCaja" role="dialog" aria-label="Reporte de la semana"><button class="x" type="button" aria-label="Cerrar">×</button>
+    <div class="eti">Reporte · ${fecha(I.desde)} al ${fecha(I.hasta)}</div>
+    <h2>Reporte de la semana</h2>
+    <p class="bajada">Reporte y recomendaciones basadas en el Método Semilla y la experiencia de otros usuarios.</p>
+    <h3>Lo principal</h3><ol>${(I.hallazgos||[]).map(x=>`<li>${x}</li>`).join('')}</ol>
+    <h3>Qué hacer</h3><ol class="reco">${(I.recomendaciones||[]).map(x=>`<li>${x}</li>`).join('')}</ol>
+    <p class="cuando">Siempre lo podés ver arriba de la página, en el botón Reporte. Se actualiza todos los lunes a las 7 de la mañana.</p></div>`;
+  document.body.appendChild(b); document.body.appendChild(fondo);
+  const abrir=()=>{ fondo.classList.remove('oculto'); try{ localStorage.setItem(clave,I.fecha); }catch(e){} const p=b.querySelector('.punto'); if(p) p.remove(); };
+  const cerrar=()=>fondo.classList.add('oculto');
+  b.onclick=abrir; fondo.querySelector('.x').onclick=cerrar;
+  fondo.onclick=e=>{ if(e.target===fondo) cerrar(); };
+  if(location.hash==='#reporte' || nuevo) abrir();
+}
 function graficoDia(dias, campo, titulo, leyenda, color, esPlata){
   const vals=dias.map(d=>Number(d[campo]||0));
   if(vals.filter(v=>v>0).length<2) return '';
