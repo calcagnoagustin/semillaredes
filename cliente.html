@@ -282,8 +282,13 @@ details.hist table{border:0;border-radius:0}
 .despl .big b{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:700;color:var(--navy);white-space:nowrap}
 .despl .pill{font-size:12.5px;font-weight:700;padding:4px 9px;border-radius:999px;white-space:nowrap}
 .despl .pill.bien{background:#E7F0DC;color:#4E6B24}.despl .pill.mal{background:#F8E1E2;color:#9B2C36}.despl .pill.neu{background:#EEEBF2;color:#55525F}
-.despl .fl{color:var(--mute);font-size:13px;transition:transform .2s}
-.despl[open] .fl{transform:rotate(90deg)}
+.despl .fl{flex:none;width:34px;height:34px;border-radius:50%;border:1.5px solid var(--linea);display:flex;align-items:center;justify-content:center;color:var(--navy);background:var(--crema);transition:transform .2s}
+.despl[open] .fl{transform:rotate(180deg)}
+.despl .abrir{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:14px;padding-top:11px;border-top:1px dashed var(--linea);font-size:13px;font-weight:700;color:var(--navy);letter-spacing:.2px}
+.despl .abrir svg{transition:transform .2s}
+.despl[open] .abrir svg{transform:rotate(180deg)}
+.despl .abrir .t2{display:none}.despl[open] .abrir .t1{display:none}.despl[open] .abrir .t2{display:inline}
+.despl>summary:hover .fl{border-color:var(--oliva)}
 .despl .cuerpo{padding:0 20px 20px;border-top:1px solid var(--linea)}
 .despl>summary.multi{display:block}
 .despl>summary.multi .fila1{display:flex;align-items:center;gap:10px}
@@ -1497,6 +1502,7 @@ function pintarResto(d,h){
   // las alertas se ven solo en el panel de Agus, no en la pagina del cliente
   $('app').innerHTML=h;
   $('cargando').classList.add('oculto'); $('app').classList.remove('oculto');
+  desplegarSecciones(d);
   armarIndice();   // despues de mostrar la pagina: oculta, todo mide cero
   ponerReporte(d);
 
@@ -1594,6 +1600,38 @@ rpc('sub_get',{p_slug:slug,p_k:tok}).then(d=>{
   pintar(d);
 }).catch(()=>{ $('cargando').classList.add('oculto'); $('error').classList.remove('oculto'); });
 
+// paneles desplegables para cualquier status: cada seccion de metricas pasa a ser un panel cerrado con sus 3 numeros principales
+const PANELES_V2=new Set([]);
+function desplegarSecciones(d){
+  if(d.cliente.tipo==='semilla') return;           // Semilla ya se arma con paneles
+  if(!(new URLSearchParams(location.search).get('v2')||PANELES_V2.has(slug))) return;
+  const app=$('app'); if(!app) return;
+  const NO=['Historial','Hitos','Tarea para el hogar','Tus activos','Tus notas','Consejos de la Inteligencia colectiva','Ventas','Waitlist'];
+  const hs=[...app.children].filter(e=>e.tagName==='H2');
+  hs.forEach(h=>{
+    const t=h.textContent.trim();
+    if(NO.includes(t)) return;
+    const nodos=[]; let n=h.nextElementSibling;
+    while(n && n.tagName!=='H2' && !n.classList.contains('pie')){ nodos.push(n); n=n.nextElementSibling; }
+    if(!nodos.length) return;
+    const cards=[]; nodos.forEach(x=>{ if(x.classList&&x.classList.contains('tarj')) cards.push(...x.querySelectorAll(':scope > .t')); });
+    const stats=cards.slice(0,3).map(c=>{
+      const lab=(c.querySelector('.lab')||{}).textContent||'', val=(c.querySelector('.val')||{}).textContent||'';
+      const dl=c.querySelector('.delta'); let pill='';
+      if(dl){ const mm=dl.textContent.match(/([▲▼])\s*(\d+)%/);
+        if(mm && mm[2]!=='0'){ const cls=dl.classList.contains('up')?'bien':(dl.classList.contains('down')?'mal':'neu'); pill=`<span class="pill ${cls}">${mm[1]==='▲'?'+':'-'}${mm[2]}%</span>`; } }
+      return `<div class="st"><div class="lbl">${lab}</div><div class="vv"><b>${val}</b>${pill}</div></div>`;
+    });
+    const det=document.createElement('details'); det.className='despl';
+    const CH='<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    det.innerHTML=`<summary class="multi"><div class="fila1"><h2>${h.innerHTML}</h2><span class="fl">${CH}</span></div>
+      ${stats.length?`<div class="stats" style="grid-template-columns:repeat(${stats.length},1fr)">${stats.join('')}</div>`:''}
+      <div class="abrir"><span class="t1">Ver detalle</span><span class="t2">Ocultar</span>${CH}</div></summary><div class="cuerpo"></div>`;
+    const cu=det.querySelector('.cuerpo');
+    h.replaceWith(det); nodos.forEach(x=>cu.appendChild(x));
+    const pr=cu.firstElementChild; if(pr) pr.style.marginTop='14px';
+  });
+}
 function armarIndice(){
   const app=$('app'); if(!app) return;
   const viejo=app.querySelector('.indice'); if(viejo) viejo.remove();
@@ -1690,9 +1728,9 @@ function pillDe(valor, ant, sentido){
 // panel desplegable con varias cifras en el resumen: stats=[{lbl, txt, v, ant, sentido}]
 function desplMulti(titulo, stats, cuerpo){
   stats=stats.filter(x=>x&&x.txt!=null);
-  return `<details class="despl"><summary class="multi"><div class="fila1"><h2>${titulo}</h2><span class="fl">▸</span></div>
+  return `<details class="despl"><summary class="multi"><div class="fila1"><h2>${titulo}</h2><span class="fl"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
     <div class="stats" style="grid-template-columns:repeat(${Math.max(1,stats.length)},1fr)">${stats.map(x=>`<div class="st"><div class="lbl">${x.lbl}</div><div class="vv"><b>${x.txt}</b>${pillDe(x.v,x.ant,x.sentido||0)}</div></div>`).join('')}</div>
-    </summary><div class="cuerpo">${cuerpo}</div></details>`;
+    <div class="abrir"><span class="t1">Ver detalle</span><span class="t2">Ocultar</span><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="cuerpo">${cuerpo}</div></details>`;
 }
 function despl(titulo, etiqueta, valor, ant, sentido, cuerpo, txt){
   // sentido: 1 = subir es bueno, -1 = bajar es bueno, 0 = neutro
@@ -1704,7 +1742,7 @@ function despl(titulo, etiqueta, valor, ant, sentido, cuerpo, txt){
   }
   return `<details class="despl"><summary><h2>${titulo}</h2>
     <div class="der"><div class="lbl">${etiqueta}</div><div class="big"><b>${txt!=null?txt:(valor==null?'—':fmt(valor))}</b>${pill}</div></div>
-    <span class="fl">▸</span></summary><div class="cuerpo">${cuerpo}</div></details>`;
+    <span class="fl"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary><div class="cuerpo">${cuerpo}</div></details>`;
 }
 function graficoBarras(titulo, leyenda, vals, etiquetas, color, dec){
   let V=vals.map((v,i)=>({v:(v==null?null:Number(v)),e:etiquetas[i]})).filter(x=>x.v!=null);
