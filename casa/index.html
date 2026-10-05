@@ -29,7 +29,7 @@ footer a{color:inherit}
 <nav>
   <a class="btn primary" id="luces" href="http://192.168.1.132:8800/app">
     <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/></svg>
-    <span>Luces<small id="lucesSub">Tira LED · vía la Mac</small></span>
+    <span>Luces<small id="lucesSub">Buscando la Mac…</small></span>
   </a>
   <a class="btn" id="cam" href="shortcuts://run-shortcut?name=Camaras">
     <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
@@ -42,6 +42,41 @@ footer a{color:inherit}
 </nav>
 <footer><a href="luces.html">Control por Bluetooth directo (Chrome)</a></footer>
 <script>
-if (navigator.bluetooth && !/iPhone|iPad|Android/i.test(navigator.userAgent)) { document.getElementById('luces').href='luces.html'; document.getElementById('lucesSub').textContent='Bluetooth directo'; }
+(async () => {
+  const a = document.getElementById('luces'), sub = document.getElementById('lucesSub');
+
+  // En Chrome de escritorio: Bluetooth directo, sin depender de la Mac como servidor.
+  if (navigator.bluetooth && !/iPhone|iPad|Android/i.test(navigator.userAgent)) {
+    a.href = 'luces.html'; sub.textContent = 'Bluetooth directo'; return;
+  }
+
+  // En el celu: ubicar el puente. Primero el nombre de red (sobrevive cambios de IP),
+  // y si no responde, la última dirección que el puente le informó al servidor.
+  const probar = async (base) => {
+    try {
+      const c = new AbortController(); setTimeout(() => c.abort(), 2200);
+      const r = await fetch(base + '/status', {signal: c.signal, cache: 'no-store'});
+      return r.ok ? base : null;
+    } catch (e) { return null; }
+  };
+
+  let donde = null;
+  try {
+    const w = await fetch('https://vm.semillaredes.com/casa/where', {cache:'no-store'}).then(r => r.json());
+    const cand = [];
+    if (w.host) cand.push('http://' + w.host.toLowerCase() + '.local:' + (w.port || 8800));
+    if (w.ip)   cand.push('http://' + w.ip + ':' + (w.port || 8800));
+    for (const c of cand) { donde = await probar(c); if (donde) break; }
+    if (!donde && w.ip) { donde = 'http://' + w.ip + ':' + (w.port || 8800); sub.textContent = 'La Mac no responde'; }
+  } catch (e) {}
+
+  if (donde) {
+    a.href = donde + '/app';
+    if (sub.textContent === 'Buscando la Mac…') sub.textContent = 'Tira LED · lista';
+  } else {
+    a.href = 'luces.html';
+    sub.textContent = 'Prendé la Mac, o abrí con Bluefy';
+  }
+})();
 </script>
 </body></html>
