@@ -252,7 +252,7 @@ details.hist table{border:0;border-radius:0}
 .repCaja ol{margin:0;padding:0;list-style:none;counter-reset:r}
 .repCaja li{counter-increment:r;position:relative;padding:0 0 12px 34px;font-size:16px;line-height:1.5;color:var(--tinta)}
 .repCaja li::before{content:counter(r);position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;background:var(--crema);color:var(--navy);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
-.repCaja .reco li::before{background:var(--navy);color:var(--crema)}
+.repCaja .qh li::before{background:var(--navy);color:var(--crema)}
 .repCaja .cuando{font-size:13px;color:var(--mute);margin-top:14px;border-top:1px solid var(--linea);padding-top:12px}
 /* graficos semanales en barras: los valores se leen siempre (texto real, no escalado) */
 .barras{display:grid;gap:6px;align-items:end;margin-top:12px}
@@ -1631,7 +1631,7 @@ function ponerReporte(d){
     <h2>Reporte de la semana</h2>
     <p class="bajada">Reporte y recomendaciones basadas en el Método Semilla y la experiencia de otros usuarios.</p>
     <h3>Lo principal</h3><ol>${(I.hallazgos||[]).map(x=>`<li>${x}</li>`).join('')}</ol>
-    <h3>Qué hacer</h3><ol class="reco">${(I.recomendaciones||[]).map(x=>`<li>${x}</li>`).join('')}</ol>
+    <h3>Qué hacer</h3><ol class="qh">${(I.recomendaciones||[]).map(x=>`<li>${x}</li>`).join('')}</ol>
     <p class="cuando">Siempre lo podés ver arriba de la página, en el botón Reporte. Se actualiza todos los lunes a las 7 de la mañana.</p></div>`;
   document.body.appendChild(b); document.body.appendChild(fondo);
   const abrir=()=>{ fondo.classList.remove('oculto'); try{ localStorage.setItem(clave,I.fecha); }catch(e){} const p=b.querySelector('.punto'); if(p) p.remove(); };
