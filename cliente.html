@@ -361,23 +361,26 @@ const GW=()=>(window.innerWidth>760?1000:560);
 const fv=v=>{ const a=Math.abs(v); return a>=100?fmt(Math.round(v)):a>=10?fmt(Math.round(v*10)/10,Number.isInteger(Math.round(v*10)/10)?0:1):fmt(v,Math.abs(v-Math.round(v))<0.005?0:2); };
 function linea(datos, etiquetas, color, invertido){
   if(datos.filter(x=>x!=null).length<2) return null;
-  const W=GW(),H=W>560?200:150,P=W>560?40:26;
-  const n=datos.length, vals=datos.filter(x=>x!=null);
+  // TODOS los valores visibles en cada periodo (pedido de Agus 06/10). Si no entran, el grafico se hace mas ancho
+  // y se desliza de costado (arranca mostrando lo mas nuevo), en vez de esconder numeros.
+  const W0=GW(), n=datos.length, fs=W0>560?14:17;
+  const anchoLab=Math.max(...datos.filter(v=>v!=null).map(v=>fv(v).length))*fs*0.62+12;
+  const W=Math.max(W0, Math.ceil(80+(n-1)*anchoLab)), scroll=W>W0;
+  const H=W0>560?220:210, PX=W0>560?40:32, PT=34, PB=36;
+  const vals=datos.filter(x=>x!=null);
   const min=Math.min(...vals), max=Math.max(...vals);
   const rango=(max-min)||1;
-  const x=i=>P+(i*(W-P*2)/Math.max(1,n-1));
-  const y=v=>H-P-((v-min)/rango)*(H-P*2-14);
+  const x=i=>PX+(i*(W-PX*2)/Math.max(1,n-1));
+  const y=v=>PT+(1-(v-min)/rango)*(H-PT-PB-14);
   let d='',pts='';
   datos.forEach((v,i)=>{ if(v==null)return; d+=(d?' L ':'M ')+x(i)+' '+y(v); pts+=`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="${color}"/>`; });
-  // con muchos puntos: valores solo en primero, ultimo, maximo y minimo; fechas salteadas
-  const llenos=datos.map((v,i)=>v==null?null:i).filter(i=>i!=null);
-  const iMax=llenos.reduce((a,i)=>datos[i]>datos[a]?i:a,llenos[0]), iMin=llenos.reduce((a,i)=>datos[i]<datos[a]?i:a,llenos[0]);
-  const maxLab=W>560?12:7;
-  const mostrar=new Set(llenos.length<=maxLab?llenos:[llenos[0],llenos[llenos.length-1],iMax,iMin]);
-  const paso=Math.max(1,Math.ceil(n/(W>560?12:7)));
-  const labs=etiquetas.map((e,i)=>(i%paso===0||i===n-1)&&!(i!==n-1&&n-1-i<paso)?`<text x="${x(i)}" y="${H-8}" font-size="13" fill="#8A8697" text-anchor="middle">${e}</text>`:'').join('');
-  const valsTxt=datos.map((v,i)=>v==null||!mostrar.has(i)?'':`<text x="${x(i)}" y="${y(v)-12}" font-size="14" font-weight="700" fill="${color}" text-anchor="${i===0?'start':i===n-1?'end':'middle'}">${fv(v)}</text>`).join('');
-  return `<svg class="linea" viewBox="0 0 ${W} ${H}"><path d="${d}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>${pts}${valsTxt}${labs}</svg>`;
+  const valsTxt=datos.map((v,i)=>v==null?'':`<text x="${i===0?x(i)-4:i===n-1?x(i)+4:x(i)}" y="${y(v)-11}" font-size="${fs}" font-weight="700" fill="${color}" text-anchor="${i===0?'start':i===n-1?'end':'middle'}" paint-order="stroke" stroke="#fff" stroke-width="3">${fv(v)}</text>`).join('');
+  const paso=scroll?1:Math.max(1,Math.ceil(n/(W0>560?12:7)));
+  const labs=etiquetas.map((e,i)=>(i%paso===0||i===n-1)&&!(i!==n-1&&n-1-i<paso)?`<text x="${x(i)}" y="${H-8}" font-size="${W0>560?13:15}" fill="#8A8697" text-anchor="${i===0?'start':i===n-1?'end':'middle'}">${e}</text>`:'').join('');
+  const svg=`<svg class="linea" viewBox="0 0 ${W} ${H}"${scroll?` style="width:${(W/W0*100).toFixed(1)}%;max-width:none;height:auto"`:''}><path d="${d}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>${pts}${valsTxt}${labs}</svg>`;
+  if(!scroll) return svg;
+  setTimeout(()=>document.querySelectorAll('.scrollx').forEach(e=>{ if(!e.dataset.ok){ e.scrollLeft=e.scrollWidth; e.dataset.ok=1; } }),60);
+  return `<div class="scrollx" style="overflow-x:auto;-webkit-overflow-scrolling:touch">${svg}</div><div style="font-size:11.5px;color:#8A8697;text-align:right;margin-top:2px">← deslizá para ver los períodos anteriores</div>`;
 }
 
 function multi(R){
