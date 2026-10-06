@@ -1039,20 +1039,23 @@ function pintarMixto(d){
     const M=rMT.metricas.mt_meses, x=M[M.length-1], xa=M.length>1?M[M.length-2]:{};
     const NM=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
     const nm=k=>NM[Number(k.slice(5,7))-1], eM=M.map(k=>nm(k.mes).slice(0,3)+' '+k.mes.slice(2,4));
-    const cpv=y=>(y.ventas&&y.inversion)?y.inversion/y.ventas:null, roa=y=>(y.ingreso!=null&&y.inversion)?y.ingreso/y.inversion:null;
-    h+=`<h2>${rMT.metricas.mt_nombre||'Mensajes Talleres'}</h2><p class="sub">Se mide por mes. Estos son los números de ${nm(x.mes)} ${x.mes.slice(0,4)}, comparados con ${xa.mes?nm(xa.mes):'el mes anterior'}.</p><div class="tarj">
+    const nomT=rMT.metricas.mt_nombre||'Mensajes Talleres', claveM=y=>nomT+' · '+y.mes;
+    const VT=d.cliente.ventas||{}, vm=y=>{const v=VT[claveM(y)]; return v?{ing:Number(v.ingreso),n:Number(v.ventas||0)}:(y.ingreso!=null?{ing:y.ingreso,n:y.ventas}:null)};
+    h+=`<h2>${nomT}</h2><p class="sub">Se mide por mes. Comparado con ${xa.mes?nm(xa.mes):'el mes anterior'}.</p>
+      <p style="font-size:22px;font-weight:700;color:var(--navy);margin:2px 0 16px;letter-spacing:.5px">${nm(x.mes).toUpperCase()} ${x.mes.slice(0,4)}</p><div class="tarj">
       ${card('Mensajes', fmt(x.mensajes), [x.mensajes, xa.mensajes],0,true)}
       ${x.costo!=null?card('Costo por mensaje', mon(x.costo,2), [x.costo, xa.costo],2,false,true):''}
       ${card('Invertido', mon(x.inversion,2), [x.inversion, xa.inversion],2)}
-      ${x.ventas!=null?card('Ventas', fmt(x.ventas), [x.ventas, xa.ventas],0,true):''}
-      ${x.ingreso!=null?card('Ingreso', mon(x.ingreso,0), [x.ingreso, xa.ingreso],0,true):''}
-      ${cpv(x)!=null?card('Costo por venta', mon(cpv(x),2), [cpv(x), cpv(xa)],2,false,true):''}
-      ${roa(x)!=null?card('ROAS', fmt(roa(x),2), [roa(x), roa(xa)],2,true):''}
     </div>`;
+    h+=bloqueVentas(d, claveM(x), Number(x.inversion||0), {titulo:'Lo que se vendió en '+nm(x.mes),
+      que:'Cargá el monto y la cantidad de vendidos de '+nm(x.mes)+' y el ROAS se calcula solo.', lm:'Monto', lv:'Vendidos'});
     if(M.length>1){
       h+=grafico('Mensajes por mes','Cuánta gente escribió por los talleres cada mes.',M.map(y=>y.mensajes),eM,'#87863A');
       h+=grafico('Costo por mensaje','Cuánto costó cada persona que escribió, mes a mes. Mientras más baja la línea, mejor.',M.map(y=>y.costo),eM,'#E2767C',true);
-      if(M.filter(y=>y.ventas!=null).length>1) h+=grafico('Ventas por mes','Cuántas inscripciones salieron de los mensajes cada mes.',M.map(y=>y.ventas??null),eM,'#1A2456');
+      const VV=M.map(y=>{const v=vm(y); return v?v.n:null});
+      if(VV.filter(v=>v!=null).length>1) h+=grafico('Vendidos por mes','Cuántos talleres se vendieron cada mes.',VV,eM,'#1A2456');
+      const RR=M.map(y=>{const v=vm(y); return (v&&y.inversion)?Math.round(v.ing/y.inversion*100)/100:null});
+      if(RR.filter(v=>v!=null).length>1) h+=grafico('ROAS por mes','Por cada dólar invertido, cuántos volvieron en ventas.',RR,eM,'#7A1F3A');
     }
   }
   if(hayConsultas){
@@ -1705,8 +1708,8 @@ function bloqueVentas(d, campania, invTotal, o){
   const roas=(ing!=null&&invTotal>0)?ing/invTotal:null;
   const cpv=(nv&&invTotal>0)?invTotal/nv:null;
   const nums = v ? `<div class="nums">
-      <div class="n"><div class="l">Facturado</div><div class="v">${fmt(ing,0)}</div><div class="d">${MON}</div></div>
-      <div class="n"><div class="l">Ventas</div><div class="v">${fmt(nv,0)}</div><div class="d">&nbsp;</div></div>
+      <div class="n"><div class="l">${o.lm||'Facturado'}</div><div class="v">${fmt(ing,0)}</div><div class="d">${MON}</div></div>
+      <div class="n"><div class="l">${o.lv||'Ventas'}</div><div class="v">${fmt(nv,0)}</div><div class="d">&nbsp;</div></div>
       <div class="n"><div class="l">ROAS</div><div class="v roas ${roas>=1?'bien':'mal'}">${roas!=null?fmt(roas,2):'—'}</div><div class="d">${MON==='ARS'?'por cada peso invertido':'por cada dólar invertido'}</div></div>
       ${cpv?`<div class="n"><div class="l">Costo por venta</div><div class="v">${fmt(cpv,0)}</div><div class="d">${MON}</div></div>`:''}
       <div class="n"><div class="l">Invertido en el período</div><div class="v">${fmt(invTotal,0)}</div><div class="d">${MON}</div></div>
@@ -1717,8 +1720,8 @@ function bloqueVentas(d, campania, invTotal, o){
     ${nums}
     ${fecha_act?`<div class="act">Última carga: ${fecha_act}</div>`:''}
     <div class="formv">
-      <div><label>Facturado en ${MON}</label><input type="text" inputmode="decimal" data-vi="${campania}" placeholder="${ing!=null?fmt(ing,0):'Ej: 250.000'}"></div>
-      <div><label>Ventas</label><input type="text" inputmode="numeric" data-vn="${campania}" placeholder="${nv!=null?nv:'Ej: 3'}" style="width:90px"></div>
+      <div><label>${o.lm||'Facturado'} en ${MON}</label><input type="text" inputmode="decimal" data-vi="${campania}" placeholder="${ing!=null?fmt(ing,0):'Ej: 250.000'}"></div>
+      <div><label>${o.lv||'Ventas'}</label><input type="text" inputmode="numeric" data-vn="${campania}" placeholder="${nv!=null?nv:'Ej: 3'}" style="width:90px"></div>
       <button data-vguardar="${campania}">Guardar</button>
     </div>
   </div>`;
