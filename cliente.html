@@ -254,6 +254,10 @@ details.hist table{border:0;border-radius:0}
 .repCaja li{counter-increment:r;position:relative;padding:0 0 12px 34px;font-size:16px;line-height:1.5;color:var(--tinta)}
 .repCaja li::before{content:counter(r);position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;background:var(--crema);color:var(--navy);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
 .repCaja .qh li::before{background:var(--navy);color:var(--crema)}
+.repCaja ol.hz li::before{content:'✓';background:#E7F0DC;color:#4E6B24;font-size:13px}
+.repCaja ol.hz li.mal::before{content:'!';background:#F8E1E2;color:#9B2C36}
+.repCaja .reu{background:var(--crema);border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.5;color:var(--navy);margin-top:4px}
+.repCaja .reu b{font-weight:700}
 .repCaja .cuando{font-size:13px;color:var(--mute);margin-top:14px;border-top:1px solid var(--linea);padding-top:12px}
 /* graficos semanales en barras: los valores se leen siempre (texto real, no escalado) */
 .barras{display:grid;gap:6px;align-items:end;margin-top:12px}
@@ -1775,9 +1779,10 @@ function ponerReporte(d){
     <div class="eti">Reporte · ${fecha(I.desde)} al ${fecha(I.hasta)}</div>
     <h2>Reporte de la semana</h2>
     <p class="bajada">Reporte y recomendaciones basadas en el Método Semilla y la experiencia de otros usuarios.</p>
-    <h3>Lo principal</h3><ol>${(I.hallazgos||[]).map(x=>`<li>${x}</li>`).join('')}</ol>
+    <h3>Lo principal</h3><ol class="${(I.hallazgos||[]).some(x=>typeof x==='object')?'hz':''}">${(I.hallazgos||[]).map(x=>typeof x==='object'?`<li class="${x.tipo==='mal'?'mal':'bien'}">${x.t}</li>`:`<li>${x}</li>`).join('')}</ol>
     <h3>Qué hacer</h3><ol class="qh">${(I.recomendaciones||[]).map(x=>`<li>${x}</li>`).join('')}</ol>
-    <p class="cuando">Las métricas en detalle están en el panel, más abajo. Siempre podés volver a este reporte arriba de la página, en el botón Reporte. Se actualiza todos los lunes a las 7 de la mañana.</p></div>`;
+    ${I.reunion?`<div class="reu"><b>En la próxima reunión con Agus</b> ${I.reunion}</div>`:''}
+    <p class="cuando">Las métricas en detalle están en el panel, más abajo. Siempre podés volver a este reporte arriba de la página, en el botón Reporte. Se actualiza ${I.cuando||'todos los lunes a las 7 de la mañana'}.</p></div>`;
   document.body.appendChild(b); document.body.appendChild(fondo);
   const abrir=()=>{ fondo.classList.remove('oculto'); try{ localStorage.setItem(clave,I.fecha); }catch(e){} const p=b.querySelector('.punto'); if(p) p.remove(); };
   const cerrar=()=>fondo.classList.add('oculto');
