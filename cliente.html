@@ -1033,7 +1033,28 @@ function pintarMixto(d){
       h+=grafico('Costo por mensaje','Cuánto costó cada persona que escribió, semana a semana. Mientras más baja la línea, mejor.',S.map(x=>x.mensajes?Math.round(x.inversion/x.mensajes):null),eS,'#E2767C',true);
     }
   }
-  const hayConsultas = !(campFin && campFin.terminada) && R.some(r=>r.metricas.msj_mensajes!=null);
+  const rMT=[...R].reverse().find(r=>r.metricas.mt_meses&&r.metricas.mt_meses.length);
+  const hayConsultas = !rMT && !(campFin && campFin.terminada) && R.some(r=>r.metricas.msj_mensajes!=null);
+  if(rMT){
+    const M=rMT.metricas.mt_meses, x=M[M.length-1], xa=M.length>1?M[M.length-2]:{};
+    const NM=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    const nm=k=>NM[Number(k.slice(5,7))-1], eM=M.map(k=>nm(k.mes).slice(0,3)+' '+k.mes.slice(2,4));
+    const cpv=y=>(y.ventas&&y.inversion)?y.inversion/y.ventas:null, roa=y=>(y.ingreso!=null&&y.inversion)?y.ingreso/y.inversion:null;
+    h+=`<h2>${rMT.metricas.mt_nombre||'Mensajes Talleres'}</h2><p class="sub">Se mide por mes. Estos son los números de ${nm(x.mes)} ${x.mes.slice(0,4)}, comparados con ${xa.mes?nm(xa.mes):'el mes anterior'}.</p><div class="tarj">
+      ${card('Mensajes', fmt(x.mensajes), [x.mensajes, xa.mensajes],0,true)}
+      ${x.costo!=null?card('Costo por mensaje', mon(x.costo,2), [x.costo, xa.costo],2,false,true):''}
+      ${card('Invertido', mon(x.inversion,2), [x.inversion, xa.inversion],2)}
+      ${x.ventas!=null?card('Ventas', fmt(x.ventas), [x.ventas, xa.ventas],0,true):''}
+      ${x.ingreso!=null?card('Ingreso', mon(x.ingreso,0), [x.ingreso, xa.ingreso],0,true):''}
+      ${cpv(x)!=null?card('Costo por venta', mon(cpv(x),2), [cpv(x), cpv(xa)],2,false,true):''}
+      ${roa(x)!=null?card('ROAS', fmt(roa(x),2), [roa(x), roa(xa)],2,true):''}
+    </div>`;
+    if(M.length>1){
+      h+=grafico('Mensajes por mes','Cuánta gente escribió por los talleres cada mes.',M.map(y=>y.mensajes),eM,'#87863A');
+      h+=grafico('Costo por mensaje','Cuánto costó cada persona que escribió, mes a mes. Mientras más baja la línea, mejor.',M.map(y=>y.costo),eM,'#E2767C',true);
+      if(M.filter(y=>y.ventas!=null).length>1) h+=grafico('Ventas por mes','Cuántas inscripciones salieron de los mensajes cada mes.',M.map(y=>y.ventas??null),eM,'#1A2456');
+    }
+  }
   if(hayConsultas){
     h+=`<h2>${m.msj_nombre||'Consultas'}</h2><p class="sub">${m.msj_nombre?'Todo lo que trajo esta campaña.':'Gente que escribió preguntando por lo que ofrecés.'}</p><div class="tarj">
       ${card('Mensajes', fmt(m.msj_mensajes), [m.msj_mensajes, ma.msj_mensajes],0,true)}
