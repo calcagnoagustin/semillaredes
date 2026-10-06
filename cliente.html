@@ -1049,6 +1049,9 @@ function pintarMixto(d){
   }
 
   const hayTk = R.some(r=>r.metricas.tk_tickets!=null || r.metricas.tk_inversion!=null);
+  const fd=x=>x?x.slice(8,10)+'/'+x.slice(5,7):'';
+  const tkClave=(m.tk_nombre||'Los Cuartos Oscuros')+' · '+(u?fd(u.desde)+' al '+fd(u.hasta):'');
+  const tkVenta=!!(u && (d.cliente.ventas||{})[tkClave]);
   if(hayTk){
     h+=`<h2>${m.tk_nombre||'Los Cuartos Oscuros'}</h2><p class="sub">Solo la campaña de venta.</p><div class="tarj">
       ${card('Ventas', fmt(m.tk_tickets), [m.tk_tickets, ma.tk_tickets],0,true)}
@@ -1056,10 +1059,14 @@ function pintarMixto(d){
       ${m.tk_clics!=null?card('Clics al link', fmt(m.tk_clics), [m.tk_clics, ma.tk_clics]):''}
       ${card('Invertido', mon(m.tk_inversion,2), [m.tk_inversion, ma.tk_inversion],2)}
       ${m.tk_ingreso!=null?card('Ingreso', mon(m.tk_ingreso,0), [m.tk_ingreso, ma.tk_ingreso],0):''}
-      ${m.tk_roas!=null?card('ROAS', fmt(m.tk_roas,2), [m.tk_roas, ma.tk_roas],2):''}
+      ${(m.tk_roas!=null && !tkVenta)?card('ROAS', fmt(m.tk_roas,2), [m.tk_roas, ma.tk_roas],2):''}
     </div>`;
+    if(u) h+=bloqueVentas(d, tkClave, Number(m.tk_inversion||0), {titulo:'Lo que facturó la obra en el período',
+      que:'Cargá cuánto facturó '+(m.tk_nombre||'la obra')+' del '+fd(u.desde)+' al '+fd(u.hasta)+' y el ROAS se calcula solo. Cada período se carga aparte.'});
     if(R.filter(r=>r.metricas.tk_tickets!=null).length>1)
       h+=grafico('Ventas','Cuántas entradas se vendieron en cada período.',R.map(r=>r.metricas.tk_tickets),et,'#7A1F3A');
+    if(R.filter(r=>r.metricas.tk_costo_ticket!=null).length>1)
+      h+=grafico('Costo por venta','Cuánto cuesta cada entrada vendida. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.tk_costo_ticket),et,'#E2767C',true);
   }
 
   const hayVentas = !!u && (u.metricas.msj_conversiones!=null || u.metricas.msj_ingreso!=null);
@@ -1670,7 +1677,8 @@ function armarIndice(){
   });
 }
 
-function bloqueVentas(d, campania, invTotal){
+function bloqueVentas(d, campania, invTotal, o){
+  o=o||{};
   const v=(d.cliente.ventas||{})[campania];
   const ing=v?Number(v.ingreso):null, nv=v?Number(v.ventas||0):null;
   const roas=(ing!=null&&invTotal>0)?ing/invTotal:null;
@@ -1683,8 +1691,8 @@ function bloqueVentas(d, campania, invTotal){
       <div class="n"><div class="l">Invertido en el período</div><div class="v">${fmt(invTotal,0)}</div><div class="d">${MON}</div></div>
     </div>` : '';
   const fecha_act = v&&v.actualizado ? new Date(v.actualizado).toLocaleDateString('es-AR',{day:'numeric',month:'long'}) : '';
-  return `<div class="camp ventaBox"><h3>Lo que facturó la campaña</h3>
-    <p class="que">Cargá cuánto vendiste con esta campaña en este período y el ROAS se calcula solo.</p>
+  return `<div class="camp ventaBox"><h3>${o.titulo||'Lo que facturó la campaña'}</h3>
+    <p class="que">${o.que||'Cargá cuánto vendiste con esta campaña en este período y el ROAS se calcula solo.'}</p>
     ${nums}
     ${fecha_act?`<div class="act">Última carga: ${fecha_act}</div>`:''}
     <div class="formv">
