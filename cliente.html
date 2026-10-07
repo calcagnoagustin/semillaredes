@@ -54,6 +54,12 @@ svg.linea{width:100%;height:170px;display:block;overflow:visible}
 .mark.en_curso{border-color:var(--rosa);background:repeating-linear-gradient(45deg,var(--rosa),var(--rosa) 3px,#fff 3px,#fff 6px)}
 .it .tx{flex:1}
 .it .tt{font-size:15.5px;font-weight:600;color:var(--navy)}
+.tar .it .tx{min-width:0;cursor:pointer}
+.tar .it .tx .tt{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tar .it .tx .de{display:none}
+.tar .it .tx.abierta .tt{white-space:normal}
+.tar .it .tx.abierta .de{display:block}
+.tar .it .mark{cursor:pointer}
 .it.hecha .tt{color:var(--mute);text-decoration:line-through}
 .it .de{font-size:13px;color:var(--mute)}
 
@@ -238,6 +244,7 @@ details.hist table{border:0;border-radius:0}
 .tuweb{background:#fff;border:1px solid var(--linea);border-radius:16px;padding:18px 18px 16px}
 .tuweb .twTop{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
 .tuweb .twTop a{font-weight:700;color:var(--navy);text-decoration:none;font-size:15px}
+.tuweb .twTop a.twLapiz{background:var(--navy);color:#fff;border-radius:10px;padding:9px 14px;font-size:14.5px}
 .tuweb .twCarg{color:var(--mute);font-size:14px}
 .tuweb .twLista{display:flex;flex-direction:column;gap:12px;margin:12px 0 16px}
 .tuweb .twVacio{color:var(--mute);font-size:14.5px;line-height:1.5}
@@ -1553,7 +1560,8 @@ async function cargarTuWeb(){
     else if(p.estado==='descartado') r=`<div class="resp espera"><div class="est">Descartado</div>No se publicó nada.</div>`;
     return `<div class="burb">${twEsc(p.texto)}${p.fotos&&p.fotos.length?`<div class="fts">${p.fotos.map(f=>`<img src="${API_WEB}/foto/${slug}/${f}" alt="">`).join('')}</div>`:''}<div class="twNota" style="margin-top:6px">${fh(p.creado)}</div></div>${r}`;
   }).join('');
-  caja.innerHTML=`<div class="twTop"><a href="${d.sitio.url}" target="_blank" rel="noopener">Ver tu web ↗</a></div>
+  caja.innerHTML=`<div class="twTop"><a href="${d.sitio.url}" target="_blank" rel="noopener">Ver tu web ↗</a><a class="twLapiz" href="${d.sitio.url}?editar=${encodeURIComponent(slug)}&k=${encodeURIComponent(tok)}" target="_blank" rel="noopener">✎ Editar textos y fotos</a></div>
+    <p class="twNota" style="margin:2px 0 4px">Con el lápiz cambiás textos y fotos directo en tu web y se publica al instante. Para cambios más grandes, pedilos acá abajo.</p>
     <div class="twLista">${lista||'<div class="twVacio">Por ejemplo: “Cambiá la foto de portada por esta”, “Sumá una fecha nueva en la agenda” o “Acortá la biografía”.</div>'}</div>
     <div class="twForm"><textarea id="twTxt" placeholder="¿Qué querés cambiar en tu web?"></textarea>
       <div class="twFts" id="twFts"></div>
@@ -1699,7 +1707,7 @@ function pintarResto(d,h){
       ${T.map(t=>`<div class="it ${t.estado}"><span class="mark ${t.estado}" data-tid="${t.id}" data-est="${t.estado}"></span><span class="tx" data-tid2="${t.id}" data-est2="${t.estado}"><span class="tt">${t.titulo}</span>${t.detalle?`<span class="de">${t.detalle}</span>`:''}</span><button class="lap" data-ed="tarea" data-id="${t.id}" title="Editar" aria-label="Editar"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button class="x" data-delt="${t.id}" title="Borrar">×</button></div>`).join('')}
     </div>
     <div class="agregarT"><input id="t_nueva" placeholder="Agregar algo que quieras hacer o pedirnos"><button id="t_add">Agregar</button></div>
-    <p class="pista">Tocá una tarea para cambiarle el estado: pendiente, en curso o hecha. La × la borra.</p>`;
+    <p class="pista">Tocá el círculo para cambiarle el estado: pendiente, en curso o hecha. Tocá el texto para leerla completa. La × la borra.</p>`;
   }
 
   const A=d.activos||[];
@@ -1752,7 +1760,7 @@ function pintarResto(d,h){
     if(r.ok) recargar();
   };
   document.querySelectorAll('[data-tid]').forEach(el=>el.onclick=e=>{e.stopPropagation();cambiar(el.dataset.tid,el.dataset.est);});
-  document.querySelectorAll('[data-tid2]').forEach(el=>el.onclick=e=>{e.stopPropagation();cambiar(el.dataset.tid2,el.dataset.est2);});
+  document.querySelectorAll('[data-tid2]').forEach(el=>el.onclick=e=>{e.stopPropagation(); el.classList.toggle('abierta');});   // el texto se despliega; el estado se cambia con el circulo
   document.querySelectorAll('[data-delt]').forEach(b=>b.onclick=async e=>{
     e.stopPropagation();
     if(!confirm('¿Borrar esta tarea?')) return;
@@ -2097,7 +2105,7 @@ const DICT={
 'Seguidores nuevos por período':'New followers per period','Cómo viene creciendo la cuenta.':'How the account is growing.',
 'Las metas que nos pusimos para este proyecto. Podés sumar las tuyas.':'The goals we set for this project. You can add your own.',
 'Agregar hito':'Add milestone','¡Logrado!':'Achieved!','Tarea para el hogar':'Homework','Lo que ya está hecho y lo que sigue.':'What is done and what comes next.',
-'Agregar':'Add','Tocá una tarea para cambiarle el estado: pendiente, en curso o hecha. La × la borra.':'Tap a task to change its status: pending, in progress or done. The × deletes it.',
+'Agregar':'Add','Tocá el círculo para cambiarle el estado: pendiente, en curso o hecha. Tocá el texto para leerla completa. La × la borra.':'Tap the circle to change the status: pending, in progress or done. Tap the text to read it in full. The × deletes it.',
 'Pendiente':'Pending','En curso':'In progress','Hecha':'Done','Tus activos':'Your assets',
 'Tus enlaces a mano: carpetas, materiales, links importantes. Podés sumar los tuyos.':'Your links at hand: folders, materials, important links. You can add your own.',
 'Todavía no hay enlaces. Pegá el primero acá abajo.':'No links yet. Paste the first one below.','Agregar activo':'Add asset','Tus notas':'Your notes',
