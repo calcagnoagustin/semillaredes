@@ -799,6 +799,14 @@ function pintarSemilla(d){
 function pintarVentas(d){
   MON=(d.cliente.moneda||'USD');
   const R=d.reportes||[];
+  // ganancia = margen x facturado - inversion (Animales del Rock: 75%). Lo facturado se carga por periodo en el casillero.
+  const MG={'animales-del-rock':0.75}[slug];
+  const claveP=r=>`Facturación · ${fecha(r.desde)} al ${fecha(r.hasta)}`;
+  if(MG!=null) R.forEach(r=>{ const x=r.metricas, v=(d.cliente.ventas||{})[claveP(r)];
+    if(v&&v.ingreso!=null) x.vta_ingreso=Number(v.ingreso);
+    if(x.vta_ingreso!=null&&Number(x.vta_inversion)>0){ const inv=Number(x.vta_inversion), ing=Number(x.vta_ingreso);
+      x.vta_ganancia=Math.round((ing*MG-inv)*100)/100; x.vta_roas=Math.round(ing/inv*100)/100; x.vta_roi=Math.round(x.vta_ganancia/inv*100);
+      x._cuenta=`${Math.round(MG*100)}% de lo facturado (${mon(ing,2)}) = ${mon(ing*MG,2)}, menos la inversión en la campaña (${mon(inv,2)}) = <b>${mon(x.vta_ganancia,2)}</b>`; } });
   const u=R[R.length-1]||null, a=R.length>1?R[R.length-2]:null;
   const ultimo=(k)=>{ for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null) return x; } return null; };
   const previo=(k)=>{ let visto=false; for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null){ if(visto) return x; visto=true; } } return null; };
@@ -886,7 +894,10 @@ function pintarVentas(d){
   if(hay('vta_roas'))
     h+=`<div class="graf"><h3>Qué es el ROAS</h3><p class="leyenda">Por cada dólar puesto en publicidad, cuántos volvieron en ventas. Un ROAS de 5 significa que cada dólar trajo cinco.</p></div>`;
 
-  h+=bloqueVentas(d, m.vta_nombre||'Campaña de venta', Number((u&&u.metricas.vta_inversion)||0));
+  if(MG!=null&&u) h+=bloqueVentas(d, claveP(u), Number(u.metricas.vta_inversion||0), {titulo:`Lo que facturó la tienda del ${fecha(u.desde)} al ${fecha(u.hasta)}`,
+      que:`Cargá lo facturado en el período. Las ventas salen del pixel y la ganancia se calcula sola: ${Math.round(MG*100)}% de lo facturado menos la inversión en la campaña.`,
+      sinVentas:true, nv:u.metricas.vta_ventas, extra:u.metricas._cuenta?`<p class="que" style="margin-top:8px">Ganancia neta: ${u.metricas._cuenta}.</p>`:''});
+  else h+=bloqueVentas(d, m.vta_nombre||'Campaña de venta', Number((u&&u.metricas.vta_inversion)||0));
 
   if(R.filter(r=>r.metricas.vta_ventas!=null).length>1){
     h+=grafico('Ventas','Cuántas ventas trajo la campaña en cada período.',R.map(r=>r.metricas.vta_ventas),et,'#7A1F3A');
@@ -1725,7 +1736,7 @@ function armarIndice(){
 function bloqueVentas(d, campania, invTotal, o){
   o=o||{};
   const v=(d.cliente.ventas||{})[campania];
-  const ing=v?Number(v.ingreso):null, nv=v?Number(v.ventas||0):null;
+  const ing=v?Number(v.ingreso):null, nv=o.nv!=null?Number(o.nv):(v?Number(v.ventas||0):null);
   const roas=(ing!=null&&invTotal>0)?ing/invTotal:null;
   const cpv=(nv&&invTotal>0)?invTotal/nv:null;
   const nums = v ? `<div class="nums">
@@ -1734,7 +1745,7 @@ function bloqueVentas(d, campania, invTotal, o){
       <div class="n"><div class="l">ROAS</div><div class="v roas ${roas>=1?'bien':'mal'}">${roas!=null?fmt(roas,2):'—'}</div><div class="d">${MON==='ARS'?'por cada peso invertido':'por cada dólar invertido'}</div></div>
       ${cpv?`<div class="n"><div class="l">Costo por venta</div><div class="v">${fmt(cpv,0)}</div><div class="d">${MON}</div></div>`:''}
       <div class="n"><div class="l">Invertido en el período</div><div class="v">${fmt(invTotal,0)}</div><div class="d">${MON}</div></div>
-    </div>` : '';
+    </div>${o.extra||''}` : '';
   const fecha_act = v&&v.actualizado ? new Date(v.actualizado).toLocaleDateString('es-AR',{day:'numeric',month:'long'}) : '';
   return `<div class="camp ventaBox"><h3>${o.titulo||'Lo que facturó la campaña'}</h3>
     <p class="que">${o.que||'Cargá cuánto vendiste con esta campaña en este período y el ROAS se calcula solo.'}</p>
@@ -1742,7 +1753,7 @@ function bloqueVentas(d, campania, invTotal, o){
     ${fecha_act?`<div class="act">Última carga: ${fecha_act}</div>`:''}
     <div class="formv">
       <div><label>${o.lm||'Facturado'} en ${MON}</label><input type="text" inputmode="decimal" data-vi="${campania}" placeholder="${ing!=null?fmt(ing,0):'Ej: 250.000'}"></div>
-      <div><label>${o.lv||'Ventas'}</label><input type="text" inputmode="numeric" data-vn="${campania}" placeholder="${nv!=null?nv:'Ej: 3'}" style="width:90px"></div>
+      ${o.sinVentas?'':`<div><label>${o.lv||'Ventas'}</label><input type="text" inputmode="numeric" data-vn="${campania}" placeholder="${nv!=null?nv:'Ej: 3'}" style="width:90px"></div>`}
       <button data-vguardar="${campania}">Guardar</button>
     </div>
   </div>`;
@@ -1753,7 +1764,7 @@ document.addEventListener('click', async e=>{
   const limpia=x=>{ x=(x||'').trim().replace(/[^\d.,]/g,''); if(!x) return null;
     if(x.includes(',')) x=x.replace(/\./g,'').replace(',','.'); else x=x.replace(/\./g,''); const n=parseFloat(x); return isNaN(n)?null:n; };
   const ing=limpia(document.querySelector(`[data-vi="${camp}"]`).value);
-  const nv=limpia(document.querySelector(`[data-vn="${camp}"]`).value);
+  const elN=document.querySelector(`[data-vn="${camp}"]`); const nv=elN?limpia(elN.value):null;
   if(ing==null){ alert('Poné cuánto facturaste'); return; }
   b.disabled=true; b.textContent='Guardando…';
   const r=await rpc('sub_venta_cliente',{p_slug:slug,p_k:tok,p_campania:camp,p_ingreso:ing,p_ventas:nv==null?0:Math.round(nv)});
