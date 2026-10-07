@@ -433,6 +433,11 @@ const convIG=(R)=>{ const L=(R||[]).filter(r=>Number(r.metricas.ig_visitas)>0&&r
   const f=r=>Number(r.metricas.ig_followers_nuevos)/Number(r.metricas.ig_visitas)*100;
   const c=f(L[L.length-1]), p=L.length>1?f(L[L.length-2]):null;
   return card('Conversión de visitas a seguidores', fmt(c,1)+'%', [c,p],1); };
+// grafico de conversion visita -> seguidor por periodo (descarta periodos de menos de 3 dias y los pisados por uno mas nuevo con el mismo inicio)
+const grafConv=(R,et)=>{ const S=(R||[]).map((r,i)=>{ const x=r.metricas, v=Number(x.ig_visitas), n=x.ig_followers_nuevos;
+    if(!(v>0)||n==null) return null; if((new Date(r.hasta)-new Date(r.desde))/864e5<3) return null;
+    if(R.slice(i+1).some(o=>o.desde===r.desde)) return null; return Math.round(Number(n)/v*1000)/10; });
+  return S.filter(v=>v!=null).length>1 ? grafico('Conversión de visitas a seguidores','De cada 100 personas que visitaron el perfil, cuántas se hicieron seguidoras en cada período (en %). Cuanto más alta la línea, mejor.',S,et,'#2F5D62') : ''; };
 // conjuntos de la campaña de seguidores (igc1..igc4) del ultimo reporte
 const conjIG=(u)=>{ if(!u) return ''; const x=u.metricas, L=[]; // igcN_visitas = visitas al perfil; si la campaña es de reproducciones o interacción, igcN_res
   for(let i=1;i<=6;i++){ const n=x['igc'+i+'_nombre']; if(!n) continue;
@@ -676,6 +681,7 @@ function pintarTrafico(d){
       h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#518BAF');
       if(hay('ig_costo_follower'))
         h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#F15C32',true);
+      h+=grafConv(R,et);
     }
   }
 
@@ -832,6 +838,7 @@ function pintarVentas(d){
     h+=conjIG(u);
     h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
     h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
+    h+=grafConv(R,et);
   }
 
   // --- Ferias del Libro: acumulado de cada feria (el cron los trae de Meta) ---
@@ -1007,6 +1014,7 @@ function pintarMixto(d){
     h+=grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
   else if(R.filter(r=>r.metricas.ig_inversion!=null).length>1 && R.filter(r=>r.metricas.ig_followers_total!=null).length<2)
     h+=grafico('Inversión en seguidores','Lo que se puso en la campaña de seguidores cada período.',R.map(r=>r.metricas.ig_inversion??null),et,'#87863A');
+  h+=grafConv(R,et);
 
   // interaccion: es Instagram, va pegada a seguidores
   const hayInter = !!u && u.metricas.int_interacciones!=null;   // solo si la campaña corrio en ESTE periodo (si se apago, la seccion se va)
@@ -1247,6 +1255,7 @@ function pintarSteam(d){
   h+=conjIG(u);
   h+=grafico('Seguidores','C&oacute;mo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
   h+=grafico('Costo por seguidor','Cu&aacute;nto cuesta cada seguidor nuevo. Mientras m&aacute;s baja la l&iacute;nea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
+  h+=grafConv(R,et);
 
   const haySteam = R.some(r=>r.metricas.stm_visitas!=null || r.metricas.stm_wishlist!=null);
   if(haySteam){
@@ -1325,6 +1334,7 @@ function pintar(d){ window.__D=d; if(MONEDA[slug]) d.cliente.moneda=MONEDA[slug]
   h+=conjIG(u);
   h+=grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#7A1F3A');
   if(hay('ig_costo_follower')) h+=grafico('Costo por seguidor','Mientras más baja la línea, mejor: cada seguidor nuevo te sale menos.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
+  h+=grafConv(R,et);
 
   if(hay('sp_oyentes_perfil')||hay('sp_listeners')||hay('sp_monthly')||hay('sp_streams')||hay('sp_followers')){
     h+=`<h2>Spotify</h2><p class="sub">Los mismos números que ves en Spotify for Artists, últimos 7 días.</p>`;
