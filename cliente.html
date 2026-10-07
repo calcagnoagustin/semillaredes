@@ -235,6 +235,33 @@ details.hist table{border:0;border-radius:0}
 .tar .it:hover{background:#FBF8F2}
 .mark{transition:all .15s}
 .pista{font-size:12.5px;color:var(--mute);margin:8px 0 0}
+.tuweb{background:#fff;border:1px solid var(--linea);border-radius:16px;padding:18px 18px 16px}
+.tuweb .twTop{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.tuweb .twTop a{font-weight:700;color:var(--navy);text-decoration:none;font-size:15px}
+.tuweb .twCarg{color:var(--mute);font-size:14px}
+.tuweb .twLista{display:flex;flex-direction:column;gap:12px;margin:12px 0 16px}
+.tuweb .twVacio{color:var(--mute);font-size:14.5px;line-height:1.5}
+.tuweb .burb{align-self:flex-end;max-width:88%;background:var(--crema);border-radius:14px 14px 4px 14px;padding:11px 14px;font-size:15px;line-height:1.5;white-space:pre-wrap}
+.tuweb .burb .fts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tuweb .burb .fts img{width:62px;height:62px;object-fit:cover;border-radius:8px}
+.tuweb .resp{align-self:flex-start;max-width:92%;background:#F4F6FB;border:1px solid #E1E6F2;border-radius:14px 14px 14px 4px;padding:12px 14px;font-size:15px;line-height:1.5}
+.tuweb .resp .est{font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--oliva);margin-bottom:5px}
+.tuweb .resp.espera{background:#FBFAF6;border-style:dashed;color:var(--mute)}
+.tuweb .resp .bts{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+.tuweb .resp .bts a,.tuweb .resp .bts button{border:1px solid var(--navy);background:#fff;color:var(--navy);border-radius:999px;padding:8px 15px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none}
+.tuweb .resp .bts .pub{background:var(--navy);color:#fff}
+.tuweb .resp .bts .des{border-color:#D8D3C7;color:var(--mute)}
+.tuweb .twForm textarea{width:100%;min-height:84px;border:1px solid #DDD6C7;border-radius:12px;background:#fff;padding:12px 13px;font:inherit;font-size:16px;color:var(--tinta);resize:vertical}
+.tuweb .twFila{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:9px;flex-wrap:wrap}
+.tuweb .twAdj{display:inline-flex;align-items:center;gap:7px;color:var(--navy);font-weight:700;font-size:14.5px;cursor:pointer}
+.tuweb .twAdj input{display:none}
+.tuweb .twEnv{background:var(--navy);color:#fff;border:0;border-radius:11px;padding:11px 18px;font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+.tuweb .twEnv:disabled{opacity:.55}
+.tuweb .twFts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.tuweb .twFts .ft{position:relative}
+.tuweb .twFts img{width:70px;height:70px;object-fit:cover;border-radius:9px;display:block}
+.tuweb .twFts .ft button{position:absolute;top:-7px;right:-7px;width:22px;height:22px;border-radius:50%;border:0;background:var(--navy);color:#fff;font-size:13px;line-height:22px;padding:0;cursor:pointer}
+.tuweb .twNota{font-size:12.5px;color:var(--mute);margin-top:8px}
 .notas textarea{width:100%;min-height:96px;border:1px solid #DDD6C7;border-radius:11px;background:#fff;padding:12px 13px;font:inherit;font-size:15px;color:var(--tinta);resize:vertical}
 .notas textarea:focus{outline:2px solid var(--oliva);border-color:transparent}
 .notas button{border:0;background:var(--vino);color:#fff;font:inherit;font-weight:600;border-radius:10px;padding:11px 20px;cursor:pointer;margin-top:9px}
@@ -1505,6 +1532,71 @@ function pintar(d){ window.__D=d; if(MONEDA[slug]) d.cliente.moneda=MONEDA[slug]
   return pintarResto(d,h);
 }
 
+// ===== TU WEB: pedidos de cambios en la web del cliente (API en la VM, gratis: los atiende Semilla en menos de una hora) =====
+const WEBS={'hernan-onirico':1};
+const API_WEB='https://vm.semillaredes.com/web';
+let TW_FOTOS=[];
+const twEsc=t=>String(t||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function cargarTuWeb(){
+  const caja=document.getElementById('tuweb'); if(!caja) return;
+  let d; try{ d=await (await fetch(`${API_WEB}/estado?c=${encodeURIComponent(slug)}&k=${encodeURIComponent(tok)}`)).json(); }catch(e){ caja.innerHTML='<div class="twCarg">No se pudo cargar. Probá de nuevo en un rato.</div>'; return; }
+  if(!d||!d.sitio){ caja.innerHTML='<div class="twCarg">Tu web todavía no está conectada.</div>'; return; }
+  const P=(d.pedidos||[]).slice().reverse().slice(-8);
+  const fh=x=>{ try{ return new Date(x).toLocaleString('es-AR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } };
+  const lista=P.map(p=>{
+    let r='';
+    if(p.estado==='pendiente') r=`<div class="resp espera"><div class="est">En preparación</div>Ya lo estamos armando. Te avisamos al celular cuando esté lista la propuesta (suele tardar menos de una hora).</div>`;
+    else if(p.estado==='propuesta') r=`<div class="resp"><div class="est">Propuesta lista</div>${twEsc(p.respuesta)}
+      <div class="bts"><a href="${p.vista_previa}" target="_blank" rel="noopener">Ver cómo queda ↗</a><button class="pub" data-twacc="publicar" data-twid="${p.id}">Publicar</button><button class="des" data-twacc="descartar" data-twid="${p.id}">Descartar</button></div></div>`;
+    else if(p.estado==='publicado') r=`<div class="resp"><div class="est">Publicado ✓</div>${twEsc(p.respuesta)}</div>`;
+    else if(p.estado==='respuesta') r=`<div class="resp"><div class="est">Respuesta</div>${twEsc(p.respuesta)}</div>`;
+    else if(p.estado==='descartado') r=`<div class="resp espera"><div class="est">Descartado</div>No se publicó nada.</div>`;
+    return `<div class="burb">${twEsc(p.texto)}${p.fotos&&p.fotos.length?`<div class="fts">${p.fotos.map(f=>`<img src="${API_WEB}/foto/${slug}/${f}" alt="">`).join('')}</div>`:''}<div class="twNota" style="margin-top:6px">${fh(p.creado)}</div></div>${r}`;
+  }).join('');
+  caja.innerHTML=`<div class="twTop"><a href="${d.sitio.url}" target="_blank" rel="noopener">Ver tu web ↗</a></div>
+    <div class="twLista">${lista||'<div class="twVacio">Por ejemplo: “Cambiá la foto de portada por esta”, “Sumá la fecha del 15 de noviembre en Capilla del Monte” o “Acortá la biografía”.</div>'}</div>
+    <div class="twForm"><textarea id="twTxt" placeholder="¿Qué querés cambiar en tu web?"></textarea>
+      <div class="twFts" id="twFts"></div>
+      <div class="twFila"><label class="twAdj"><input type="file" id="twFile" accept="image/*" multiple>📎 Sumar fotos</label><button class="twEnv" id="twEnv">Enviar pedido</button></div>
+      <div class="twNota">Nada se publica sin que lo veas y lo apruebes.</div></div>`;
+  pintarFotosTW();
+  document.getElementById('twFile').onchange=async e=>{
+    const fs=[...e.target.files]; e.target.value='';
+    for(const f of fs){ if(TW_FOTOS.length>=10) break;
+      const it={nombre:f.name, url:URL.createObjectURL(f), id:null, subiendo:true}; TW_FOTOS.push(it); pintarFotosTW();
+      try{ const b64=await achicarFoto(f, 2000);
+        const r=await (await fetch(`${API_WEB}/foto`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,nombre:f.name,b64})})).json();
+        if(r&&r.ok){ it.id=r.foto; it.subiendo=false; } else { TW_FOTOS=TW_FOTOS.filter(x=>x!==it); alert((r&&r.error)||'No se pudo subir la foto'); }
+      }catch(err){ TW_FOTOS=TW_FOTOS.filter(x=>x!==it); alert('No se pudo subir la foto'); }
+      pintarFotosTW(); }
+  };
+  document.getElementById('twEnv').onclick=async()=>{
+    const t=document.getElementById('twTxt').value.trim(), b=document.getElementById('twEnv');
+    if(TW_FOTOS.some(x=>x.subiendo)){ alert('Esperá a que terminen de subir las fotos'); return; }
+    if(!t&&!TW_FOTOS.length){ document.getElementById('twTxt').focus(); return; }
+    b.disabled=true; b.textContent='Enviando…';
+    try{ const r=await (await fetch(`${API_WEB}/pedido`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,texto:t,fotos:TW_FOTOS.map(x=>x.id)})})).json();
+      if(r&&r.ok){ TW_FOTOS=[]; cargarTuWeb(); } else { alert((r&&r.error)||'No se pudo enviar'); b.disabled=false; b.textContent='Enviar pedido'; }
+    }catch(e){ alert('No se pudo enviar'); b.disabled=false; b.textContent='Enviar pedido'; }
+  };
+}
+function pintarFotosTW(){
+  const c=document.getElementById('twFts'); if(!c) return;
+  c.innerHTML=TW_FOTOS.map((x,i)=>`<div class="ft"><img src="${x.url}" alt="" style="${x.subiendo?'opacity:.45':''}"><button data-twq="${i}" aria-label="Quitar">×</button></div>`).join('');
+  c.querySelectorAll('[data-twq]').forEach(b=>b.onclick=()=>{ TW_FOTOS.splice(Number(b.dataset.twq),1); pintarFotosTW(); });
+}
+function achicarFoto(f,max){ return new Promise((ok,mal)=>{ const im=new Image(); im.onload=()=>{ let w=im.naturalWidth,h=im.naturalHeight; const k=Math.min(1,max/Math.max(w,h)); w=Math.round(w*k); h=Math.round(h*k);
+  const cv=document.createElement('canvas'); cv.width=w; cv.height=h; cv.getContext('2d').drawImage(im,0,0,w,h); ok(cv.toDataURL('image/jpeg',0.86)); }; im.onerror=mal; im.src=URL.createObjectURL(f); }); }
+document.addEventListener('click', async e=>{
+  const b=e.target.closest('[data-twacc]'); if(!b) return;
+  const acc=b.dataset.twacc;
+  if(acc==='publicar'&&!confirm('¿Publicamos este cambio en tu web?')) return;
+  b.disabled=true; b.textContent=acc==='publicar'?'Publicando…':'…';
+  try{ const r=await (await fetch(`${API_WEB}/accion`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,id:b.dataset.twid,accion:acc})})).json();
+    if(!(r&&r.ok)) alert((r&&r.error)||'No se pudo'); }catch(err){ alert('No se pudo'); }
+  cargarTuWeb();
+});
+
 function pintarResto(d,h){
   const R=d.reportes||[]; const u=R[R.length-1]||null; const m=u?u.metricas:{};
   const NOMBRES={ig_followers_total:'Seguidores en Instagram',ig_followers_nuevos:'Seguidores nuevos por período',
@@ -1516,6 +1608,11 @@ function pintarResto(d,h){
     cal_mensajes:'Mensajes Calificadas',ej_mensajes:'Mensajes Ejecutivo',total_mensajes:'Mensajes totales'};
   const disponibles=[...new Set(R.flatMap(r=>Object.keys(r.metricas||{})))].filter(k=>NOMBRES[k]);
 
+  if(WEBS[slug]){
+    h+=`<h2>Tu web</h2><p class="sub">Pedí los cambios que quieras en tu web, como se lo pedirías a alguien de tu equipo. Antes de publicar te mostramos cómo queda.</p>
+      <div class="tuweb" id="tuweb"><div class="twCarg">Cargando…</div></div>`;
+    setTimeout(cargarTuWeb,0);
+  }
   const HI=(d.hitos||[]).slice();
   {
     // Hitos siempre completo: si no hay meta de seguidores, mostramos una sugerida
