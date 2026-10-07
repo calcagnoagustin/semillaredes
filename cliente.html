@@ -436,12 +436,20 @@ const convIG=(R)=>{ const L=(R||[]).filter(r=>Number(r.metricas.ig_visitas)>0&&r
 const conjIG=(u)=>{ if(!u) return ''; const x=u.metricas, L=[]; // igcN_visitas = visitas al perfil; si la campaña es de reproducciones o interacción, igcN_res
   for(let i=1;i<=6;i++){ const n=x['igc'+i+'_nombre']; if(!n) continue;
     const inv=Number(x['igc'+i+'_inversion']), s=Number(x['igc'+i+'_visitas']), r=x['igc'+i+'_res']!=null?Number(x['igc'+i+'_res']):null;
-    L.push({n, inv, s:isNaN(s)?null:s, r, rl:x['igc'+i+'_res_lab']||''}); }
+    const sg=x['igc'+i+'_seguidores']!=null?Number(x['igc'+i+'_seguidores']):null;
+    L.push({n, inv, s:isNaN(s)?null:s, r, rl:x['igc'+i+'_res_lab']||'', sg}); }
   if(!L.length) return '';
   const es=t=>String(t).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
   const porVis=L.some(z=>z.s>0);
+  if(porVis && L.some(z=>z.sg!=null)){   // seguidores por conjunto (columna de Ads Manager, cargada a mano): conversion por conjunto
+    const gc='grid-template-columns:1fr 70px 78px 84px 84px';
+    return `<div class="desglose"><h3>Conjuntos de anuncios de seguidores</h3>
+    <p class="leyenda">Del ${fecha(u.desde)} al ${fecha(u.hasta)}: cuántos seguidores trajo cada conjunto y qué porcentaje de las visitas al perfil terminó siguiendo. Los seguidores por conjunto salen del Administrador de anuncios, que cuenta distinto que Instagram: sirven para comparar los conjuntos entre sí.</p>
+    <div class="fila2 cab2 conj" style="${gc}"><span>Conjunto</span><span style="text-align:right">Visitas</span><span style="text-align:right">Seguidores</span><span style="text-align:right">Conversión</span><span style="text-align:right">Costo x seg.</span></div>
+    ${L.map(z=>`<div class="fila2 conj" style="${gc}"><span class="nom">${es(z.n)}</span><span class="v">${z.s!=null?fmt(z.s):''}</span><span class="v">${z.sg!=null?fmt(z.sg):''}</span><span class="v">${z.sg!=null&&z.s>0?fmt(z.sg/z.s*100,1)+'%':''}</span><span class="c">${z.sg>0?mon(z.inv/z.sg,2):''}</span></div>`).join('')}
+  </div>`; }
   if(porVis) return `<div class="desglose"><h3>Conjuntos de anuncios de seguidores</h3>
-    <p class="leyenda">Del ${fecha(u.desde)} al ${fecha(u.hasta)}: cuántas visitas al perfil trajo cada conjunto y cuánto costó cada una. Es el resultado que busca la campaña.</p>
+    <p class="leyenda">Del ${fecha(u.desde)} al ${fecha(u.hasta)}: cuántas visitas al perfil trajo cada conjunto y cuánto costó cada una.</p>
     <div class="fila2 cab2 conj"><span>Conjunto</span><span style="text-align:right">Visitas al perfil</span><span style="text-align:right">Costo c/u</span></div>
     ${L.map(z=>`<div class="fila2 conj"><span class="nom">${es(z.n)}</span><span class="v">${z.s!=null?fmt(z.s):''}</span><span class="c">${z.s>0?mon(z.inv/z.s,2):''}</span></div>`).join('')}
   </div>`;
