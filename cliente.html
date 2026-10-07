@@ -432,12 +432,12 @@ const convIG=(R)=>{ const L=(R||[]).filter(r=>Number(r.metricas.ig_visitas)>0&&r
   if(!L.length) return '';
   const f=r=>Number(r.metricas.ig_followers_nuevos)/Number(r.metricas.ig_visitas)*100;
   const c=f(L[L.length-1]), p=L.length>1?f(L[L.length-2]):null;
-  return card('Conversión de visitas a seguidores', fmt(c,1)+'%', [c,p],1); };
+  return card('Tasa de conversión de visitas a seguidores', fmt(c,1)+'%', [c,p],1); };
 // grafico de conversion visita -> seguidor por periodo (descarta periodos de menos de 3 dias y los pisados por uno mas nuevo con el mismo inicio)
 const grafConv=(R,et)=>{ const S=(R||[]).map((r,i)=>{ const x=r.metricas, v=Number(x.ig_visitas), n=x.ig_followers_nuevos;
     if(!(v>0)||n==null) return null; if((new Date(r.hasta)-new Date(r.desde))/864e5<3) return null;
     if(R.slice(i+1).some(o=>o.desde===r.desde)) return null; return Math.round(Number(n)/v*1000)/10; });
-  return S.filter(v=>v!=null).length>1 ? grafico('Conversión de visitas a seguidores','De cada 100 personas que visitaron el perfil, cuántas se hicieron seguidoras en cada período (en %). Cuanto más alta la línea, mejor.',S,et,'#2F5D62') : ''; };
+  return S.filter(v=>v!=null).length>1 ? grafico('Tasa de conversión de visitas a seguidores','De cada 100 personas que visitaron el perfil, cuántas se hicieron seguidoras en cada período (en %). Cuanto más alta la línea, mejor.',S,et,'#2F5D62') : ''; };
 // conjuntos de la campaña de seguidores (igc1..igc4) del ultimo reporte
 const conjIG=(u)=>{ if(!u) return ''; const x=u.metricas, L=[]; // igcN_visitas = visitas al perfil; si la campaña es de reproducciones o interacción, igcN_res
   for(let i=1;i<=6;i++){ const n=x['igc'+i+'_nombre']; if(!n) continue;
@@ -570,7 +570,7 @@ function pintarTrafico(d){
     const tot=trf+seg, totA=trfA+segA;
     const dia=n(cu.ld_inversion_diaria)+n(cu.tr_inversion_diaria)+n(cu.ig_inversion_diaria);
     const diaA=n(ca.ld_inversion_diaria)+n(ca.tr_inversion_diaria)+n(ca.ig_inversion_diaria);
-    if(tot>0) h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
+    if(tot>0) h+=`<h2>Inversión en el período</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
       ${trf?card('Campañas de tráfico',mon(trf,2),trfA?[trf,trfA]:null,2):''}
       ${seg?card('Campañas de seguidores',mon(seg,2),segA?[seg,segA]:null,2):''}
       ${dia?card('Inversión diaria',mon(dia,2),diaA?[dia,diaA]:null,2):''}
@@ -616,6 +616,7 @@ function pintarTrafico(d){
       <div class="fila2 cab2 conj" ${gc}><span>Público</span>${hayV?'<span style="text-align:right">Visitas</span>':''}<span style="text-align:right">Registros</span>${hayV?'<span style="text-align:right">Conversión</span>':''}<span style="text-align:right">Costo c/u</span></div>
       ${LP.map(x=>`<div class="fila2 conj" ${gc}><span class="nom">${x.t}</span>${hayV?`<span class="v">${fmt(x.vi||0)}</span>`:''}<span class="v">${fmt(x.r||0)}</span>${hayV?`<span class="v">${x.vi?fmt((x.r||0)*100/x.vi,1)+'%':'—'}</span>`:''}<span class="c">${x.c!=null?mon(x.c,2):'—'}</span></div>`).join('')}</div>`;
   }
+    if(!['audova'].includes(slug)){ // Audova: sin Tráfico a la página ni Los tres públicos (pedido de Agus 07/10)
     const trPaus = u && u.metricas.tr_visitas==null;
     const trUlt = [...R].reverse().find(r=>r.metricas.tr_visitas!=null);
     h+=`<h2>Tráfico a la página</h2><p class="sub">${trPaus&&trUlt?`Campaña pausada. Estos son sus últimos datos, del ${fecha(trUlt.desde)} al ${fecha(trUlt.hasta)}.`:'Gente que llegó al sitio desde la campaña.'}</p><div class="tarj">
@@ -664,6 +665,7 @@ function pintarTrafico(d){
           <svg class="linea" viewBox="0 0 ${W} ${H}">${cuerpo}</svg></div>`;
       }
     }
+    } // fin ocultar trafico
   }
 
   // ===== 2. SEGUIDORES =====
@@ -686,6 +688,18 @@ function pintarTrafico(d){
   }
 
   if(u) h+=contenidosHTML(u.metricas.contenidos);
+
+  // ===== Campañas desde el inicio (Audova): totales de todos los reportes =====
+  if(['audova'].includes(slug) && R.length){
+    const sum=f=>R.reduce((a,r)=>a+(Number(f(r.metricas))||0),0);
+    const invT=sum(x=>Object.keys(x).filter(k=>/^(ig|ld|tr|frm|msj|vta|stm)_inversion$/.test(k)).reduce((a,k)=>a+(Number(x[k])||0),0));
+    const segT=sum(x=>x.ig_followers_nuevos), wlT=sum(x=>x.ld_leads);
+    h+=`<h2>Campañas desde el inicio</h2><p class="sub">La suma de todo lo que trajeron las campañas desde que arrancaron.</p><div class="tarj">
+      ${card('Inversión total', mon(invT,2), null,2,true)}
+      ${card('Nuevos seguidores', fmt(segT), null,0)}
+      ${card('Nuevos en la waitlist', fmt(wlT), null,0)}
+    </div>`;
+  }
 
   if(R.length>1){
     h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
@@ -947,7 +961,7 @@ function pintarVentas(d){
 
   // --- inversion, solo si hay mas de una fuente ---
   if(hay('ig_inversion')){
-    h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
+    h+=`<h2>Inversión en el período</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
       ${card('En seguidores',mon(m.ig_inversion,2),[m.ig_inversion,ma.ig_inversion],2)}
       ${card('En ventas',mon(m.vta_inversion,2),[m.vta_inversion,ma.vta_inversion],2)}
       ${card('Total',mon(Number(m.ig_inversion||0)+Number(m.vta_inversion||0),2),null,2,true)}
@@ -1049,7 +1063,7 @@ function pintarMixto(d){
       ${hay('ed_followers_total')?card('Seguidores', fmt(m.ed_followers_total), [m.ed_followers_total, ma.ed_followers_total]):''}
       ${hay('ed_followers_nuevos')?card('Nuevos en el período', fmt(m.ed_followers_nuevos), [m.ed_followers_nuevos, ma.ed_followers_nuevos]):''}
       ${hay('ed_visitas')?card('Visitas al perfil', fmt(m.ed_visitas), [m.ed_visitas, ma.ed_visitas]):''}
-      ${convE!=null?card('Conversión de visitas a seguidores', fmt(convE,1)+'%', null,1):''}
+      ${convE!=null?card('Tasa de conversión de visitas a seguidores', fmt(convE,1)+'%', null,1):''}
       ${hay('ed_costo_follower')?card('Costo por seguidor', mon(m.ed_costo_follower,2), [m.ed_costo_follower, ma.ed_costo_follower],2,true,true):''}
       ${hay('ed_inversion')&&!hay('ed_costo_follower')?card('Invertido en seguidores', mon(m.ed_inversion,0), [m.ed_inversion, ma.ed_inversion],0):''}
     </div>`;
@@ -1155,7 +1169,7 @@ function pintarMixto(d){
   {
     const cu=u?u.metricas:{}, ca=a?a.metricas:{};
     const tot=Number(cu.ig_inversion||0)+Number(cu.ed_inversion||0)+Number(cu.msj_inversion||0)+Number(cu.int_inversion||0)+Number(cu.tk_inversion||0);
-    if(tot>0) h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
+    if(tot>0) h+=`<h2>Inversión en el período</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
       ${cu.ig_inversion!=null?card('En seguidores'+(m.ig_nombre?' de '+m.ig_nombre:''),mon(cu.ig_inversion,2),[cu.ig_inversion,ca.ig_inversion],2):''}
       ${cu.ed_inversion!=null?card('En seguidores de '+(m.ed_nombre||'la segunda cuenta'),mon(cu.ed_inversion,2),[cu.ed_inversion,ca.ed_inversion],2):''}
       ${cu.msj_inversion!=null?card('En '+(cu.msj_nombre||m.msj_nombre||'consultas'),mon(cu.msj_inversion,2),[cu.msj_inversion,ca.msj_inversion],2):''}
@@ -1428,7 +1442,7 @@ function pintar(d){ window.__D=d; if(MONEDA[slug]) d.cliente.moneda=MONEDA[slug]
     const cu=u?u.metricas:{}, ca=a?a.metricas:{};
     const tot=Number(cu.ig_inversion||0)+Number(cu.sp_inversion||0)+Number(cu.yt_inversion||0);
     if(tot>0){
-      h+=`<h2>Inversión</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
+      h+=`<h2>Inversión en el período</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
         ${cu.ig_inversion!=null?card('En Instagram',mon(cu.ig_inversion,2),[cu.ig_inversion,ca.ig_inversion],2):''}
         ${cu.sp_inversion!=null?card('En Spotify',mon(cu.sp_inversion,2),[cu.sp_inversion,ca.sp_inversion],2):''}
         ${cu.yt_inversion!=null?card('En YouTube',mon(cu.yt_inversion,2),[cu.yt_inversion,ca.yt_inversion],2):''}
@@ -1928,7 +1942,7 @@ const DICT={
 'Este informe se actualiza todos los lunes.':'This report is updated every Monday.','Este informe se actualiza todos los martes.':'This report is updated every Tuesday.',
 'Este informe se actualiza todos los miércoles.':'This report is updated every Wednesday.','Este informe se actualiza todos los viernes.':'This report is updated every Friday.',
 'Los números que ves no son en vivo: corresponden al último período cerrado.':'These numbers are not live: they cover the last closed period.',
-'Tráfico a la página':'Website traffic','Los tres públicos':'The three audiences','Seguidores':'Followers','Inversión':'Investment',
+'Tráfico a la página':'Website traffic','Inversión en el período':'Spend this period','Tasa de conversión de visitas a seguidores':'Visit-to-follower conversion rate','Campañas desde el inicio':'Campaigns since launch','La suma de todo lo que trajeron las campañas desde que arrancaron.':'Everything the campaigns have brought in since they started.','Inversión total':'Total spend','Nuevos seguidores':'New followers','Nuevos en la waitlist':'New waitlist sign-ups','De cada 100 personas que visitaron el perfil, cuántas se hicieron seguidoras en cada período (en %). Cuanto más alta la línea, mejor.':'Out of every 100 people who visited the profile, how many became followers each period (in %). The higher the line, the better.','Los tres públicos':'The three audiences','Seguidores':'Followers','Inversión':'Investment',
 'Historial':'History','Hitos':'Milestones','Tareas':'Tasks','Activos':'Assets','Notas':'Notes','Consejos':'Tips','↑ Arriba':'↑ Top',
 'Gente que llegó al sitio desde la campaña.':'People who reached the site from the campaign.','Visitas totales':'Total visits',
 'Costo por visita':'Cost per visit','Invertido':'Spent','Personas alcanzadas':'People reached','Visitas':'Visits',
@@ -1939,7 +1953,7 @@ const DICT={
 '2. Profesionales MD/DO, PA, NP':'2. Professionals MD/DO, PA, NP','3. Estudiantes y trainees de salud':'3. Health students and trainees',
 'Alcance':'Reach','personas':'people','Visitas por público':'Visits by audience','Los tres públicos comparados.':'The three audiences compared.',
 'Público 1':'Audience 1','Público 2':'Audience 2','Público 3':'Audience 3','Crecimiento de la cuenta.':'Account growth.',
-'Nuevos en el período':'New this period','Visitas al perfil':'Profile visits','Conversión de visitas':'Visit conversion','Conversión de visitas a seguidores':'Visit-to-follower conversion','Procesado con IA, entrenada en el Método Semilla':'AI-processed, trained on the Semilla Method',
+'Nuevos en el período':'New this period','Visitas al perfil':'Profile visits','Conversión de visitas':'Visit conversion','Tasa de conversión de visitas a seguidores':'Visit-to-follower conversion rate','Procesado con IA, entrenada en el Método Semilla':'AI-processed, trained on the Semilla Method',
 'Costo por seguidor':'Cost per follower','Lo que se puso en pauta en este período.':'What went into ads this period.',
 'En tráfico':'On traffic','En seguidores':'On followers','Total':'Total','Inversión diaria':'Daily budget',
 'Todos los reportes.':'All reports.','Período':'Period','Costo x visita':'Cost per visit','Nuevos':'New','Seguidores en Instagram':'Instagram followers',
