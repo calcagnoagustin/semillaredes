@@ -175,6 +175,12 @@ details.hist table{border:0;border-radius:0}
 .nuevoHito{background:#fff;border:1px dashed #D8CFBB;border-radius:13px;padding:16px;margin-top:12px}
 .nuevoHito select,.nuevoHito input{width:100%;border:1px solid #DDD6C7;border-radius:9px;background:#FDFCF9;padding:10px 12px;font:inherit;font-size:14.5px;margin-bottom:8px}
 .desglose{background:#fff;border:1px solid var(--linea);border-radius:13px;padding:18px 20px;margin-top:12px}
+.ldDesp summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ldDesp summary::-webkit-details-marker{display:none}
+.ldDesp summary h3{margin:0}
+.ldDesp .fl{font-size:15px;color:var(--mute);transition:transform .2s}
+.ldDesp[open] .fl{transform:rotate(90deg)}
+.ldDesp[open] summary{margin-bottom:8px}
 .desglose h3{font-size:14px;color:var(--navy);margin:0 0 2px}
 .desglose .leyenda{font-size:12.5px;color:var(--mute);margin:0 0 12px}
 .desglose .fila2{display:grid;grid-template-columns:1fr 70px 90px;gap:10px;padding:10px 0;border-top:1px solid var(--linea);font-size:14.5px;align-items:baseline}
@@ -618,11 +624,11 @@ function pintarTrafico(d){
     // ubicaciones (IG / FB) y regiones de la campaña de registros / descargas
     const tablaLd=(lista,tit,ley,col1)=>{ lista=(lista||[]).filter(x=>x.registros>0); if(!lista.length) return '';
       const conR=lista.some(x=>x.registros>0), gc='style="grid-template-columns:1fr 64px 70px 86px;column-gap:8px"';
-      return `<div class="desglose"><h3>${tit}</h3><p class="leyenda">${ley}</p>
+      return `<details class="desglose ldDesp"><summary><h3>${tit}</h3><span class="fl">▸</span></summary><p class="leyenda">${ley}</p>
         <div class="fila2 cab2 conj" ${gc}><span>${col1}</span>${conR?'<span style="text-align:right">Registros</span><span style="text-align:right">Costo c/u</span>':'<span></span><span style="text-align:right">Clics</span>'}<span style="text-align:right">Invertido</span></div>
         ${lista.map(x=>`<div class="fila2 conj" ${gc}><span class="nom">${x.nombre}</span>
           ${conR?`<span class="v">${fmt(x.registros||0)}</span><span class="c">${x.costo!=null?mon(x.costo,2):'—'}</span>`:`<span></span><span class="v">${fmt(x.clics||0)}</span>`}
-          <span class="c">${mon(x.inversion,2)}</span></div>`).join('')}</div>`; };
+          <span class="c">${mon(x.inversion,2)}</span></div>`).join('')}</details>`; };
     h+=tablaLd(L.ld_ubicaciones,'Registros por ubicación','Dónde apareció el anuncio cuando la gente se anotó: Instagram o Facebook, y en qué parte (feed, reels, stories).','Ubicación');
     h+=tablaLd(L.ld_regiones,'Regiones','Cuántos registros trajo cada región y cuánto costó cada uno.','Región');
   }
