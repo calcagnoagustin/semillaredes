@@ -1533,7 +1533,7 @@ function pintar(d){ window.__D=d; if(MONEDA[slug]) d.cliente.moneda=MONEDA[slug]
 }
 
 // ===== TU WEB: pedidos de cambios en la web del cliente (API en la VM, gratis: los atiende Semilla en menos de una hora) =====
-const WEBS={'hernan-onirico':1};
+const WEBS={'semilla-redes':1};   // hernan-onirico: listo en la VM, todavía oculto
 const API_WEB='https://vm.semillaredes.com/web';
 let TW_FOTOS=[];
 const twEsc=t=>String(t||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -1554,7 +1554,7 @@ async function cargarTuWeb(){
     return `<div class="burb">${twEsc(p.texto)}${p.fotos&&p.fotos.length?`<div class="fts">${p.fotos.map(f=>`<img src="${API_WEB}/foto/${slug}/${f}" alt="">`).join('')}</div>`:''}<div class="twNota" style="margin-top:6px">${fh(p.creado)}</div></div>${r}`;
   }).join('');
   caja.innerHTML=`<div class="twTop"><a href="${d.sitio.url}" target="_blank" rel="noopener">Ver tu web ↗</a></div>
-    <div class="twLista">${lista||'<div class="twVacio">Por ejemplo: “Cambiá la foto de portada por esta”, “Sumá la fecha del 15 de noviembre en Capilla del Monte” o “Acortá la biografía”.</div>'}</div>
+    <div class="twLista">${lista||'<div class="twVacio">Por ejemplo: “Cambiá la foto de portada por esta”, “Sumá una fecha nueva en la agenda” o “Acortá la biografía”.</div>'}</div>
     <div class="twForm"><textarea id="twTxt" placeholder="¿Qué querés cambiar en tu web?"></textarea>
       <div class="twFts" id="twFts"></div>
       <div class="twFila"><label class="twAdj"><input type="file" id="twFile" accept="image/*" multiple>📎 Sumar fotos</label><button class="twEnv" id="twEnv">Enviar pedido</button></div>
