@@ -796,7 +796,9 @@ function pintarSemilla(d){
   return h;
 }
 
+let PER_SEL=null, PER_ABIERTO=false, ULT_D=null;
 function pintarVentas(d){
+  ULT_D=d;
   MON=(d.cliente.moneda||'USD');
   const R=d.reportes||[];
   // ganancia = margen x facturado - inversion (Animales del Rock: 75%). Lo facturado se carga por periodo en el casillero.
@@ -894,9 +896,13 @@ function pintarVentas(d){
   if(hay('vta_roas'))
     h+=`<div class="graf"><h3>Qué es el ROAS</h3><p class="leyenda">Por cada dólar puesto en publicidad, cuántos volvieron en ventas. Un ROAS de 5 significa que cada dólar trajo cinco.</p></div>`;
 
-  if(MG!=null&&u) h+=bloqueVentas(d, claveP(u), Number(u.metricas.vta_inversion||0), {titulo:`Lo que facturó la tienda del ${fecha(u.desde)} al ${fecha(u.hasta)}`,
+  const pe=(MG!=null&&R.find(r=>claveP(r)===PER_SEL))||u;
+  if(MG!=null&&pe&&pe.metricas.vta_ingreso!=null){ d.cliente.ventas=d.cliente.ventas||{};
+    if(!d.cliente.ventas[claveP(pe)]) d.cliente.ventas[claveP(pe)]={ingreso:pe.metricas.vta_ingreso, ventas:pe.metricas.vta_ventas}; }
+  if(MG!=null&&u) h+=`<div id="cajaFact"></div>`+bloqueVentas(d, claveP(pe), Number(pe.metricas.vta_inversion||0), {titulo:`Lo que facturó la tienda del ${fecha(pe.desde)} al ${fecha(pe.hasta)}`, editable:true, abierto:PER_ABIERTO&&PER_SEL===claveP(pe),
+      volver:pe!==u,
       que:`Cargá lo facturado en el período. Las ventas salen del pixel y la ganancia se calcula sola: ${Math.round(MG*100)}% de lo facturado menos la inversión en la campaña.`,
-      sinVentas:true, nv:u.metricas.vta_ventas, extra:u.metricas._cuenta?`<p class="que" style="margin-top:8px">Ganancia neta: ${u.metricas._cuenta}.</p>`:''});
+      sinVentas:true, nv:pe.metricas.vta_ventas, extra:pe.metricas._cuenta?`<p class="que" style="margin-top:8px">Ganancia neta: ${pe.metricas._cuenta}.</p>`:''});
   else h+=bloqueVentas(d, m.vta_nombre||'Campaña de venta', Number((u&&u.metricas.vta_inversion)||0));
 
   if(R.filter(r=>r.metricas.vta_ventas!=null).length>1){
@@ -944,11 +950,12 @@ function pintarVentas(d){
     const conIG=hay('ig_followers_total');
     h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
       <details class="hist"><summary><span class="flecha">▶</span> Ver los ${R.length} reportes</summary><table>
-      <tr><th>Período</th>${conIG?'<th>Seguidores</th>':''}<th>Ventas</th>${hay('vta_ingreso')?'<th>Facturación</th>':''}<th>Costo x venta</th>${hay('vta_roas')?'<th>ROAS</th>':''}<th>Inversión</th></tr>
+      <tr><th>Período</th>${conIG?'<th>Seguidores</th>':''}<th>Ventas</th>${hay('vta_ingreso')||MG!=null?'<th>Facturación</th>':''}${MG!=null?'<th>Ganancia</th>':''}<th>Costo x venta</th>${hay('vta_roas')?'<th>ROAS</th>':''}<th>Inversión</th></tr>
       ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
         ${conIG?`<td>${fmt(x.ig_followers_total)}</td>`:''}
         <td><b>${fmt(x.vta_ventas)}</b></td>
-        ${hay('vta_ingreso')?`<td>${fmt(x.vta_ingreso)}</td>`:''}
+        ${hay('vta_ingreso')||MG!=null?`<td style="white-space:nowrap">${fmt(x.vta_ingreso)}${MG!=null?` <button class="lapizp" data-vper="${claveP(r)}" title="Editar lo facturado de este período" style="border:0;background:none;cursor:pointer;font-size:15px;padding:0 2px">✎</button>`:''}</td>`:''}
+        ${MG!=null?`<td>${fmt(x.vta_ganancia)}</td>`:''}
         <td>${fmt(x.vta_costo_venta,2)}</td>
         ${hay('vta_roas')?`<td>${fmt(x.vta_roas,2)}</td>`:''}
         <td>${fmt(Number(x.ig_inversion||0)+Number(x.vta_inversion||0),2)}</td></tr>`}).join('')}
@@ -1751,13 +1758,22 @@ function bloqueVentas(d, campania, invTotal, o){
     <p class="que">${o.que||'Cargá cuánto vendiste con esta campaña en este período y el ROAS se calcula solo.'}</p>
     ${nums}
     ${fecha_act?`<div class="act">Última carga: ${fecha_act}</div>`:''}
-    <div class="formv">
+    ${o.editable&&v&&!o.abierto?`<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button data-veditar="${campania}">✎ Editar</button>${o.volver?`<button data-vvolver="1">Volver a la última semana</button>`:''}</div>`:''}
+    <div class="formv" ${o.editable&&v&&!o.abierto?'style="display:none"':''}>
       <div><label>${o.lm||'Facturado'} en ${MON}</label><input type="text" inputmode="decimal" data-vi="${campania}" placeholder="${ing!=null?fmt(ing,0):'Ej: 250.000'}"></div>
       ${o.sinVentas?'':`<div><label>${o.lv||'Ventas'}</label><input type="text" inputmode="numeric" data-vn="${campania}" placeholder="${nv!=null?nv:'Ej: 3'}" style="width:90px"></div>`}
       <button data-vguardar="${campania}">Guardar</button>
     </div>
   </div>`;
 }
+document.addEventListener('click', e=>{
+  const ed=e.target.closest('[data-veditar],[data-vper],[data-vvolver]'); if(!ed||!ULT_D) return;
+  if(ed.dataset.vvolver){ PER_SEL=null; PER_ABIERTO=false; }
+  else { PER_SEL=ed.dataset.veditar||ed.dataset.vper; PER_ABIERTO=true; }
+  pintar(ULT_D);
+  setTimeout(()=>{ const c=document.getElementById('cajaFact'); if(c) c.scrollIntoView({behavior:'smooth',block:'start'});
+    const i=document.querySelector('[data-vi]'); if(i&&PER_ABIERTO) i.focus(); },60);
+});
 document.addEventListener('click', async e=>{
   const b=e.target.closest('[data-vguardar]'); if(!b) return;
   const camp=b.dataset.vguardar;
@@ -1768,7 +1784,7 @@ document.addEventListener('click', async e=>{
   if(ing==null){ alert('Poné cuánto facturaste'); return; }
   b.disabled=true; b.textContent='Guardando…';
   const r=await rpc('sub_venta_cliente',{p_slug:slug,p_k:tok,p_campania:camp,p_ingreso:ing,p_ventas:nv==null?0:Math.round(nv)});
-  if(r&&r.ok) rpc('sub_get',{p_slug:slug,p_k:tok}).then(pintar);
+  if(r&&r.ok){ PER_ABIERTO=false; rpc('sub_get',{p_slug:slug,p_k:tok}).then(pintar); }
   else { b.disabled=false; b.textContent='Guardar'; alert('No se pudo guardar'); }
 });
 
