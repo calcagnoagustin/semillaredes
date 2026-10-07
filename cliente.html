@@ -623,11 +623,11 @@ function pintarTrafico(d){
       ${LP.map(x=>`<div class="fila2 conj" ${gc}><span class="nom">${x.t}</span>${hayV?`<span class="v">${fmt(x.vi||0)}</span>`:''}<span class="v">${fmt(x.r||0)}</span>${hayV?`<span class="v">${x.vi?fmt((x.r||0)*100/x.vi,1)+'%':'—'}</span>`:''}<span class="c">${x.c!=null?mon(x.c,2):'—'}</span></div>`).join('')}</div>`;
     // ubicaciones (IG / FB) y regiones de la campaña de registros / descargas
     const tablaLd=(lista,tit,ley,col1)=>{ lista=(lista||[]).filter(x=>x.registros>0); if(!lista.length) return '';
-      const conR=lista.some(x=>x.registros>0), gc='style="grid-template-columns:1fr 64px 70px 86px;column-gap:8px"';
+      const gc='style="grid-template-columns:1fr 64px 70px 86px;column-gap:8px"';
       return `<details class="desglose ldDesp"><summary><h3>${tit}</h3><span class="fl">▸</span></summary><p class="leyenda">${ley}</p>
-        <div class="fila2 cab2 conj" ${gc}><span>${col1}</span>${conR?'<span style="text-align:right">Registros</span><span style="text-align:right">Costo c/u</span>':'<span></span><span style="text-align:right">Clics</span>'}<span style="text-align:right">Invertido</span></div>
+        <div class="fila2 cab2 conj" ${gc}><span>${col1}</span><span style="text-align:right">Registros</span><span style="text-align:right">Costo c/u</span><span style="text-align:right">Invertido</span></div>
         ${lista.map(x=>`<div class="fila2 conj" ${gc}><span class="nom">${x.nombre}</span>
-          ${conR?`<span class="v">${fmt(x.registros||0)}</span><span class="c">${x.costo!=null?mon(x.costo,2):'—'}</span>`:`<span></span><span class="v">${fmt(x.clics||0)}</span>`}
+          <span class="v">${fmt(x.registros||0)}</span><span class="c">${x.costo!=null?mon(x.costo,2):'—'}</span>
           <span class="c">${mon(x.inversion,2)}</span></div>`).join('')}</details>`; };
     h+=tablaLd(L.ld_ubicaciones,'Registros por ubicación','Dónde apareció el anuncio cuando la gente se anotó: Instagram o Facebook, y en qué parte (feed, reels, stories).','Ubicación');
     h+=tablaLd(L.ld_regiones,'Regiones','Cuántos registros trajo cada región y cuánto costó cada uno.','Región');
