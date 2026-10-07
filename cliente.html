@@ -610,13 +610,13 @@ function pintarTrafico(d){
       ${L.ld_visitas?card('Conversión de visitas a registros', fmt((L.ld_leads||0)*100/L.ld_visitas,1)+'%', LA.ld_visitas?[(L.ld_leads||0)*100/L.ld_visitas,(LA.ld_leads||0)*100/LA.ld_visitas]:null,1,true):''}
     </div>`;
     if(L.ld_visitas) h+=`<p class="sub" style="margin-top:9px">De cada 100 personas que entraron a la página desde estos anuncios, cuántas se anotaron en la waitlist.</p>`;
-    const LP=AUD.map((x,i)=>({t:x.tit, r:L['lp'+(i+1)+'_leads'], v:L['lp'+(i+1)+'_inversion'], c:L['lp'+(i+1)+'_costo'], vi:L['lp'+(i+1)+'_visitas']})).filter(x=>x.v!=null);
+    const LP=AUD.map((x,i)=>({t:x.tit, r:L['lp'+(i+1)+'_leads'], v:L['lp'+(i+1)+'_inversion'], c:L['lp'+(i+1)+'_costo'], vi:L['lp'+(i+1)+'_visitas']})).filter(x=>x.v!=null&&Number(x.r)>0);
     const hayV=LP.some(x=>x.vi!=null), gc=hayV?'style="grid-template-columns:1fr 62px 62px 74px 76px;column-gap:8px"':'';
     if(LP.length) h+=`<div class="desglose"><h3>Registros por público</h3><p class="leyenda">${hayV?'Cuántos entraron a la página y cuántos se anotaron desde cada público, qué porcentaje convirtió y cuánto costó cada registro.':'Cuántos se anotaron desde cada público y cuánto costó cada uno.'}</p>
       <div class="fila2 cab2 conj" ${gc}><span>Público</span>${hayV?'<span style="text-align:right">Visitas</span>':''}<span style="text-align:right">Registros</span>${hayV?'<span style="text-align:right">Conversión</span>':''}<span style="text-align:right">Costo c/u</span></div>
       ${LP.map(x=>`<div class="fila2 conj" ${gc}><span class="nom">${x.t}</span>${hayV?`<span class="v">${fmt(x.vi||0)}</span>`:''}<span class="v">${fmt(x.r||0)}</span>${hayV?`<span class="v">${x.vi?fmt((x.r||0)*100/x.vi,1)+'%':'—'}</span>`:''}<span class="c">${x.c!=null?mon(x.c,2):'—'}</span></div>`).join('')}</div>`;
     // ubicaciones (IG / FB) y regiones de la campaña de registros / descargas
-    const tablaLd=(lista,tit,ley,col1)=>{ if(!lista||!lista.length) return '';
+    const tablaLd=(lista,tit,ley,col1)=>{ lista=(lista||[]).filter(x=>x.registros>0); if(!lista.length) return '';
       const conR=lista.some(x=>x.registros>0), gc='style="grid-template-columns:1fr 64px 70px 86px;column-gap:8px"';
       return `<div class="desglose"><h3>${tit}</h3><p class="leyenda">${ley}</p>
         <div class="fila2 cab2 conj" ${gc}><span>${col1}</span>${conR?'<span style="text-align:right">Registros</span><span style="text-align:right">Costo c/u</span>':'<span></span><span style="text-align:right">Clics</span>'}<span style="text-align:right">Invertido</span></div>
@@ -624,8 +624,7 @@ function pintarTrafico(d){
           ${conR?`<span class="v">${fmt(x.registros||0)}</span><span class="c">${x.costo!=null?mon(x.costo,2):'—'}</span>`:`<span></span><span class="v">${fmt(x.clics||0)}</span>`}
           <span class="c">${mon(x.inversion,2)}</span></div>`).join('')}</div>`; };
     h+=tablaLd(L.ld_ubicaciones,'Registros por ubicación','Dónde apareció el anuncio cuando la gente se anotó: Instagram o Facebook, y en qué parte (feed, reels, stories).','Ubicación');
-    if(L.ld_regiones&&L.ld_regiones.length){ const conR=L.ld_regiones.some(x=>x.registros>0);
-      h+=tablaLd(L.ld_regiones,'Regiones',conR?'Cuántos registros trajo cada región y cuánto costó cada uno.':'Meta no informa en qué región se anotó cada persona. Esto muestra dónde se invirtió y cuántos clics a la página trajo cada región.','Región'); }
+    h+=tablaLd(L.ld_regiones,'Regiones','Cuántos registros trajo cada región y cuánto costó cada uno.','Región');
   }
     if(!['audova'].includes(slug)){ // Audova: sin Tráfico a la página ni Los tres públicos (pedido de Agus 07/10)
     const trPaus = u && u.metricas.tr_visitas==null;
