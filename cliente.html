@@ -258,6 +258,8 @@ details.hist table{border:0;border-radius:0}
 .tuweb .resp .bts a,.tuweb .resp .bts button{border:1px solid var(--navy);background:#fff;color:var(--navy);border-radius:999px;padding:8px 15px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none}
 .tuweb .resp .bts .pub{background:var(--navy);color:#fff}
 .tuweb .resp .bts .des{border-color:#D8D3C7;color:var(--mute)}
+.tuweb .twSel{width:100%;border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:10px 12px;font:inherit;font-size:15px;margin-bottom:8px}
+.tuweb .twTop+.twTop{margin-top:8px}
 .tuweb .twForm textarea{width:100%;min-height:84px;border:1px solid #DDD6C7;border-radius:12px;background:#fff;padding:12px 13px;font:inherit;font-size:16px;color:var(--tinta);resize:vertical}
 .tuweb .twFila{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:9px;flex-wrap:wrap}
 .tuweb .twAdj{display:inline-flex;align-items:center;gap:7px;color:var(--navy);font-weight:700;font-size:14.5px;cursor:pointer}
@@ -1540,7 +1542,7 @@ function pintar(d){ window.__D=d; if(MONEDA[slug]) d.cliente.moneda=MONEDA[slug]
 }
 
 // ===== TU WEB: pedidos de cambios en la web del cliente (API en la VM, gratis: los atiende Semilla en menos de una hora) =====
-const WEBS={'semilla-redes':1};   // hernan-onirico: listo en la VM, todavía oculto
+const WEBS={'semilla-redes':1,'piku-yoga':1};   // hernan-onirico: listo en la VM, todavía oculto
 const API_WEB='https://vm.semillaredes.com/web';
 let TW_FOTOS=[];
 const twEsc=t=>String(t||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -1548,22 +1550,25 @@ async function cargarTuWeb(){
   const caja=document.getElementById('tuweb'); if(!caja) return;
   let d; try{ d=await (await fetch(`${API_WEB}/estado?c=${encodeURIComponent(slug)}&k=${encodeURIComponent(tok)}`)).json(); }catch(e){ caja.innerHTML='<div class="twCarg">No se pudo cargar. Probá de nuevo en un rato.</div>'; return; }
   if(!d||!d.sitio){ caja.innerHTML='<div class="twCarg">Tu web todavía no está conectada.</div>'; return; }
+  const WS=d.webs||[d.sitio], titW=id=>{ const w=WS.find(x=>x.id===id); return w?w.titulo:''; };
+  const conEd=u=>`${u}${u.includes('?')?'&':'?'}editar=${encodeURIComponent(slug)}&k=${encodeURIComponent(tok)}`;
   const P=(d.pedidos||[]).slice().reverse().slice(-8);
   const fh=x=>{ try{ return new Date(x).toLocaleString('es-AR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } };
   const lista=P.map(p=>{
     let r='';
     if(p.estado==='pendiente') r=`<div class="resp espera"><div class="est">En preparación</div>Ya lo estamos armando. Te avisamos al celular cuando esté lista la propuesta (suele tardar menos de una hora).</div>`;
     else if(p.estado==='propuesta') r=`<div class="resp"><div class="est">Propuesta lista</div>${twEsc(p.respuesta)}
-      <div class="bts"><a href="${p.vista_previa}" target="_blank" rel="noopener">Ver cómo queda ↗</a><button class="pub" data-twacc="publicar" data-twid="${p.id}">Publicar</button><button class="des" data-twacc="descartar" data-twid="${p.id}">Descartar</button></div></div>`;
+      <div class="bts"><a href="${conEd(p.vista_previa)}" target="_blank" rel="noopener">Ver cómo queda ↗</a><button class="pub" data-twacc="publicar" data-twid="${p.id}">Publicar</button><button class="des" data-twacc="descartar" data-twid="${p.id}">Descartar</button></div>
+      <div class="twNota">En la vista previa podés corregir cualquier texto o foto antes de publicar.</div></div>`;
     else if(p.estado==='publicado') r=`<div class="resp"><div class="est">Publicado ✓</div>${twEsc(p.respuesta)}</div>`;
     else if(p.estado==='respuesta') r=`<div class="resp"><div class="est">Respuesta</div>${twEsc(p.respuesta)}</div>`;
     else if(p.estado==='descartado') r=`<div class="resp espera"><div class="est">Descartado</div>No se publicó nada.</div>`;
-    return `<div class="burb">${twEsc(p.texto)}${p.fotos&&p.fotos.length?`<div class="fts">${p.fotos.map(f=>`<img src="${API_WEB}/foto/${slug}/${f}" alt="">`).join('')}</div>`:''}<div class="twNota" style="margin-top:6px">${fh(p.creado)}</div></div>${r}`;
+    return `<div class="burb">${WS.length>1&&p.web?`<div class="twNota" style="margin:0 0 4px;font-weight:700">${twEsc(titW(p.web))}</div>`:''}${twEsc(p.texto)}${p.fotos&&p.fotos.length?`<div class="fts">${p.fotos.map(f=>`<img src="${API_WEB}/foto/${slug}/${f}" alt="">`).join('')}</div>`:''}<div class="twNota" style="margin-top:6px">${fh(p.creado)}</div></div>${r}`;
   }).join('');
-  caja.innerHTML=`<div class="twTop"><a href="${d.sitio.url}" target="_blank" rel="noopener">Ver tu web ↗</a><a class="twLapiz" href="${d.sitio.url}?editar=${encodeURIComponent(slug)}&k=${encodeURIComponent(tok)}" target="_blank" rel="noopener">✎ Editar textos y fotos</a></div>
+  caja.innerHTML=`${WS.map(w=>`<div class="twTop"><a href="${w.url}" target="_blank" rel="noopener">${WS.length>1?twEsc(w.titulo):'Ver tu web'} ↗</a><a class="twLapiz" href="${conEd(w.url)}" target="_blank" rel="noopener">✎ Editar textos y fotos</a></div>`).join('')}
     <p class="twNota" style="margin:2px 0 4px">Con el lápiz cambiás textos y fotos directo en tu web y se publica al instante. Para cambios más grandes, pedilos acá abajo.</p>
     <div class="twLista">${lista||'<div class="twVacio">Por ejemplo: “Cambiá la foto de portada por esta”, “Sumá una fecha nueva en la agenda” o “Acortá la biografía”.</div>'}</div>
-    <div class="twForm"><textarea id="twTxt" placeholder="¿Qué querés cambiar en tu web?"></textarea>
+    <div class="twForm">${WS.length>1?`<select id="twWeb" class="twSel">${WS.map(w=>`<option value="${w.id}">${twEsc(w.titulo)}</option>`).join('')}</select>`:''}<textarea id="twTxt" placeholder="¿Qué querés cambiar en tu web?"></textarea>
       <div class="twFts" id="twFts"></div>
       <div class="twFila"><label class="twAdj"><input type="file" id="twFile" accept="image/*" multiple>📎 Sumar fotos</label><button class="twEnv" id="twEnv">Enviar pedido</button></div>
       <div class="twNota">Nada se publica sin que lo veas y lo apruebes.</div></div>`;
@@ -1583,7 +1588,7 @@ async function cargarTuWeb(){
     if(TW_FOTOS.some(x=>x.subiendo)){ alert('Esperá a que terminen de subir las fotos'); return; }
     if(!t&&!TW_FOTOS.length){ document.getElementById('twTxt').focus(); return; }
     b.disabled=true; b.textContent='Enviando…';
-    try{ const r=await (await fetch(`${API_WEB}/pedido`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,texto:t,fotos:TW_FOTOS.map(x=>x.id)})})).json();
+    try{ const r=await (await fetch(`${API_WEB}/pedido`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,texto:t,web:(document.getElementById('twWeb')||{}).value||WS[0].id,fotos:TW_FOTOS.map(x=>x.id)})})).json();
       if(r&&r.ok){ TW_FOTOS=[]; cargarTuWeb(); } else { alert((r&&r.error)||'No se pudo enviar'); b.disabled=false; b.textContent='Enviar pedido'; }
     }catch(e){ alert('No se pudo enviar'); b.disabled=false; b.textContent='Enviar pedido'; }
   };
