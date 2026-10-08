@@ -1567,7 +1567,7 @@ function pintar(d){ window.__D=d; if(MONEDA[slug]) d.cliente.moneda=MONEDA[slug]
 }
 
 // ===== TU WEB: pedidos de cambios en la web del cliente (API en la VM, gratis: los atiende Semilla en menos de una hora) =====
-const WEBS={'semilla-redes':1,'piku-yoga':1};   // hernan-onirico: listo en la VM, todavía oculto
+const WEBS={'semilla-redes':1,'piku-yoga':1,'hernan-onirico':1};
 const API_WEB='https://vm.semillaredes.com/web';
 let TW_FOTOS=[];
 const twEsc=t=>String(t||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -2303,7 +2303,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261008e';
+var SR_VER='20261008f';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
