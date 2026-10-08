@@ -1571,11 +1571,7 @@ async function cargarTuWeb(){
     else if(p.estado==='descartado') r=`<div class="resp espera"><div class="est">Descartado</div>No se publicó nada.</div>`;
     return `<div class="burb">${WS.length>1&&p.web?`<div class="twNota" style="margin:0 0 4px;font-weight:700">${twEsc(titW(p.web))}</div>`:''}${twEsc(p.texto)}${p.fotos&&p.fotos.length?`<div class="fts">${p.fotos.map(f=>`<img src="${API_WEB}/foto/${slug}/${f}" alt="">`).join('')}</div>`:''}<div class="twNota" style="margin-top:6px">${fh(p.creado)}</div></div>${r}`;
   }).join('');
-  const hace3=Date.now()-3*864e5;
-  const abiertos=(d.pedidos||[]).filter(p=>p.estado==='pendiente'||p.estado==='propuesta'||(p.estado==='respuesta'&&new Date(p.respondido||p.creado).getTime()>hace3)).slice().reverse();
-  caja.innerHTML=`<div class="twBtns">${WS.map(w=>`<a class="twVerde" href="${conEd(w.url)}" target="_blank" rel="noopener"><span>✎</span>${WS.length>1?`Editar ${twEsc(w.titulo)}`:'Editar mi web'}</a>`).join('')}</div>
-    <div class="twLinks">${WS.map(w=>`<a href="${w.url}" target="_blank" rel="noopener">Ver ${WS.length>1?twEsc(w.titulo):'mi web'} publicada ↗</a>`).join('')}</div>
-    ${abiertos.length?`<div class="twLista" style="margin-top:16px">${abiertos.map(p=>`<div class="burb">${twEsc(p.texto)}</div>`+(p.estado==='respuesta'?`<div class="resp"><div class="est">Respuesta de SemillaIA</div>${twEsc(p.respuesta)}<div class="bts"><a href="${conEd((WS.find(w=>w.id===p.web)||WS[0]).url)}" target="_blank" rel="noopener">Responder en el chat ↗</a></div></div>`:p.estado==='pendiente'?`<div class="resp espera"><div class="est">En preparación</div>El equipo de Semilla lo está armando. Te avisamos al celular cuando esté listo para revisar.</div>`:`<div class="resp"><div class="est">Propuesta lista</div>${twEsc(p.respuesta)}<div class="bts"><a href="${conEd(p.vista_previa)}" target="_blank" rel="noopener">Ver y corregir ↗</a><button class="pub" data-twacc="publicar" data-twid="${p.id}">Publicar</button><button class="des" data-twacc="descartar" data-twid="${p.id}">Descartar</button></div></div>`)).join('')}</div>`:''}`;
+  caja.innerHTML=`<div class="twBtns">${WS.map(w=>`<a class="twVerde" href="${conEd(w.url)}" target="_blank" rel="noopener"><span>✎</span>${WS.length>1?`Editá ${twEsc(w.titulo)}`:'Editá tu web'}</a>`).join('')}</div>`;
   return;
   pintarFotosTW();
   document.getElementById('twFile').onchange=async e=>{
@@ -1628,7 +1624,7 @@ function pintarResto(d,h){
 
   if(WEBS[slug]){
     h+=`<h2>Tu web</h2><p class="sub">Abrí tu web en modo edición: tocá cualquier texto o foto para cambiarlo, o pedile cambios a SemillaIA con el botón de abajo a la derecha. Nada se publica sin que lo apruebes.</p>
-      <div class="tuweb" id="tuweb"><div class="twCarg">Cargando…</div></div>`;
+      <div class="tuweb" id="tuweb" style="background:none;border:0;padding:0"><div class="twCarg">Cargando…</div></div>`;
     setTimeout(cargarTuWeb,0);
   }
   const HI=(d.hitos||[]).slice();
