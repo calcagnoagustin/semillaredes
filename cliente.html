@@ -181,6 +181,21 @@ details.hist table{border:0;border-radius:0}
 .nuevoHito{background:#fff;border:1px dashed #D8CFBB;border-radius:13px;padding:16px;margin-top:12px}
 .nuevoHito select,.nuevoHito input{width:100%;border:1px solid #DDD6C7;border-radius:9px;background:#FDFCF9;padding:10px 12px;font:inherit;font-size:14.5px;margin-bottom:8px}
 .desglose{background:#fff;border:1px solid var(--linea);border-radius:13px;padding:18px 20px;margin-top:12px}
+.fechaGrid{display:grid;grid-template-columns:118px 1fr;gap:16px;align-items:start}
+.fechaImg img{width:118px;aspect-ratio:3/4;object-fit:cover;border-radius:9px;border:1px solid var(--linea);display:block}
+.fechaInfo{min-width:0}
+.fechaCab{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-bottom:4px}
+.fechaCab h3{font-size:16px}
+.pill{font-size:11px;letter-spacing:.6px;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:999px;background:#F1EDE2;color:#6E6A78}
+.pill.act{background:#E3F1E6;color:#2E7D4F}.pill.pau{background:#F7E6D3;color:#9A5A12}.pill.borr{background:#ECEAF6;color:var(--navy)}
+.fechaDatos{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px 14px;margin:6px 0 10px}
+.fechaDatos div{display:flex;flex-direction:column;gap:1px}
+.fechaDatos .k{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--oliva);font-weight:700}
+.fechaDatos .v{font-family:'Playfair Display',serif;font-size:19px;color:var(--navy);text-align:left}
+.fechaDatos .dest{grid-column:1/-1;border-top:1px solid var(--linea);padding-top:8px}
+.fechaDatos .dest .v{font-size:24px;color:var(--vino)}
+.fechaPie{margin:0}.fechaPie a{color:var(--navy)}
+@media(max-width:520px){.fechaGrid{grid-template-columns:92px 1fr;gap:12px}.fechaImg img{width:92px}}
 .ldDesp summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .ldDesp summary::-webkit-details-marker{display:none}
 .ldDesp summary h3{margin:0}
@@ -648,6 +663,41 @@ function aplicarMarca(marca){
   }
 }
 
+function fechasHTML(L,u){
+  if(!L||!L.length) return '';
+  const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+  const fl=s=>{const [a,m,d]=s.split('-');return `${+d} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][+m-1]}`;};
+  const EST={borrador:['Campaña armada, todavía sin publicar','borr'],activa:['Campaña activa','act'],pausada:['Campaña pausada','pau']};
+  const tot=L.reduce((a,x)=>a+(x.proyectada||0),0), inv=L.reduce((a,x)=>a+(x.inv_acum||0),0), ent=L.reduce((a,x)=>a+(x.entradas_acum||0),0);
+  let h=`<h2>Venta de entradas</h2><p class="sub">Una campaña por fecha. La inversión proyectada es lo invertido hasta hoy más el presupuesto diario por los días que faltan hasta el concierto.</p>
+  <div class="tarj">
+    ${card('Fechas con campaña', fmt(L.length))}
+    ${card('Invertido hasta hoy', mon(inv,2))}
+    ${card('Entradas por la pauta', fmt(ent))}
+    ${card('Inversión proyectada total', mon(tot,2),null,2,true)}
+  </div>`;
+  L.forEach(x=>{
+    const e=EST[x.estado]||EST.borrador;
+    h+=`<div class="desglose fechaShow">
+      <div class="fechaGrid">
+        ${x.img?`<a class="fechaImg" href="${esc(x.post||x.img)}" target="_blank" rel="noopener"><img src="${esc(x.img)}" alt="Contenido promocionado: ${esc(x.ciudad)}" loading="lazy"></a>`:''}
+        <div class="fechaInfo">
+          <div class="fechaCab"><h3>${esc(x.ciudad)} · ${fl(x.fecha)}${x.lugar?` · ${esc(x.lugar)}`:''}</h3><span class="pill ${e[1]}">${e[0]}</span></div>
+          <p class="leyenda">${x.dias>0?`Faltan ${x.dias} días.`:'Ya pasó.'} ${x.publico?esc(x.publico)+'.':''}</p>
+          <div class="fechaDatos">
+            <div><span class="k">Invertido hasta hoy</span><span class="v">${mon(x.inv_acum||0,2)}</span></div>
+            <div><span class="k">Presupuesto diario</span><span class="v">${mon(x.pres||0,2)}</span></div>
+            <div><span class="k">Entradas por la pauta</span><span class="v">${fmt(x.entradas_acum||0)}</span></div>
+            <div><span class="k">Costo por entrada</span><span class="v">${x.costo_entrada!=null?mon(x.costo_entrada,2):'—'}</span></div>
+            <div class="dest"><span class="k">Inversión proyectada hasta el concierto</span><span class="v">${mon(x.proyectada||0,2)}</span></div>
+          </div>
+          <p class="leyenda fechaPie"><b>Contenido promocionado:</b> ${x.post?`<a href="${esc(x.post)}" target="_blank" rel="noopener">publicación de Instagram</a>`:'publicación de Instagram'}${x.post_txt?` · “${esc(x.post_txt)}”`:''}${x.tickets?` · Entradas: <a href="${esc(x.tickets)}" target="_blank" rel="noopener">${esc(x.ticketera||'ticketera')}</a>`:''}</p>
+        </div>
+      </div>
+    </div>`;
+  });
+  return h;
+}
 function contenidosHTML(L){
   if(!L||!L.length) return '';
   const camps=[...new Set(L.map(x=>x.c))];
@@ -1468,7 +1518,8 @@ function pintarSteam(d){
 }
 
 // cuando se actualiza cada status (va arriba de todo, en el aviso)
-const ACTUALIZA={'alan-sutton':'todos los lunes a las 7 de la mañana','los-soplafortune':'todos los lunes a las 7 de la mañana'};
+const ACTUALIZA={'alan-sutton':'todos los lunes a las 7 de la mañana','los-soplafortune':'todos los lunes a las 7 de la mañana','koino':'todos los jueves a las 7 de la mañana'};
+const ACTUALIZA_SUB={'koino':'Cada reporte es una semana, de jueves a jueves. Los números no son en vivo: corresponden a la última semana cerrada. Las fechas de la gira se ven siempre, aunque la campaña todavía no esté publicada.'};
 // moneda de la cuenta publicitaria cuando la base todavia dice otra
 const MONEDA={'los-soplafortune':'ARS'};
 function pintar(d){ window.__D=d; if(MONEDA[slug]) d.cliente.moneda=MONEDA[slug];
@@ -1493,7 +1544,7 @@ function pintar(d){ window.__D=d; if(MONEDA[slug]) d.cliente.moneda=MONEDA[slug]
   <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>${ACTUALIZA[slug]?`
   <div class="avisoActualiza">
     <div class="tit">Este informe se actualiza ${ACTUALIZA[slug]}.</div>
-    <p class="sub">Cada reporte es una semana, de lunes a lunes. Los números no son en vivo: corresponden a la última semana cerrada.</p>
+    <p class="sub">${ACTUALIZA_SUB[slug]||'Cada reporte es una semana, de lunes a lunes. Los números no son en vivo: corresponden a la última semana cerrada.'}</p>
   </div>`:''}`;
   if(['mensajes','mixto','ventas','steam','trafico','semilla'].includes(d.cliente.tipo)){ return pintarResto(d,h); }
 
@@ -1510,6 +1561,7 @@ function pintar(d){ window.__D=d; if(MONEDA[slug]) d.cliente.moneda=MONEDA[slug]
   if(hay('ig_costo_follower')) h+=grafico('Costo por seguidor','Mientras más baja la línea, mejor: cada seguidor nuevo te sale menos.',R.map(r=>r.metricas.ig_costo_follower),et,'#1A2456',true);
   h+=grafNuevos(R,et);h+=grafConv(R,et);
   h+=segRegion(R);
+  h+=fechasHTML(m.fechas,u);
 
   if(hay('sp_oyentes_perfil')||hay('sp_listeners')||hay('sp_monthly')||hay('sp_streams')||hay('sp_followers')){
     h+=`<h2>Spotify</h2><p class="sub">Los mismos números que ves en Spotify for Artists, últimos 7 días.</p>`;
