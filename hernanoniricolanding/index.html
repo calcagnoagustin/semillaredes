@@ -142,6 +142,18 @@ p{margin:0 0 16px}
   .hero img{object-position:62% 20%}
   .fest li{font-size:24px}
 }
+.fechas{background:var(--crema)}
+.fechas .lista{margin-top:34px;border-top:1px solid rgba(42,35,56,.14)}
+.fechas .fe{display:grid;grid-template-columns:92px 1fr auto;align-items:center;gap:26px;padding:24px 0;border-bottom:1px solid rgba(42,35,56,.14);text-decoration:none;color:inherit;transition:background .2s}
+.fechas a.fe:hover{background:rgba(233,161,91,.08)}
+.fechas .dia{display:flex;flex-direction:column;align-items:center;line-height:1}
+.fechas .dia b{font-family:'Josefin Sans',sans-serif;font-weight:200;font-size:40px;letter-spacing:.02em}
+.fechas .dia small{font-family:'Josefin Sans',sans-serif;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--ambar);margin-top:6px}
+.fechas .tit{font-size:21px;line-height:1.3}
+.fechas .tit small{display:block;font-size:14px;color:var(--gris);letter-spacing:.06em;margin-top:4px}
+.fechas .lnk{font-family:'Josefin Sans',sans-serif;font-size:13px;letter-spacing:.18em;text-transform:uppercase;font-weight:400;color:var(--ambar);white-space:nowrap}
+.fechas .nada{margin-top:34px;padding:28px 0;border-top:1px solid rgba(42,35,56,.14);border-bottom:1px solid rgba(42,35,56,.14);color:var(--gris);font-size:19px}
+@media(max-width:640px){.fechas .fe{grid-template-columns:64px 1fr;gap:16px;padding:18px 0}.fechas .dia b{font-size:32px}.fechas .tit{font-size:18px}.fechas .lnk{grid-column:2;font-size:12px}}
 </style>
 </head>
 <body>
@@ -256,6 +268,16 @@ p{margin:0 0 16px}
       <a href="https://www.youtube.com/shorts/y03jOWAdcm0" target="_blank" rel="noopener" data-e="78">En vivo en Yatay</a>
     </div>
     <div class="spoti"><iframe title="Hernán Onírico en Spotify" src="https://open.spotify.com/embed/artist/0mUnpa3yDR9caLZcz7UV17?utm_source=generator&theme=0" width="100%" height="352" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="border:0;display:block"></iframe></div>
+  </div>
+</section>
+
+<section id="fechas" class="fechas" data-b="14">
+  <div class="wrap">
+    <p class="eti" data-e="110">Agenda</p>
+    <h2 data-e="111">Próximas fechas</h2>
+    <div id="sr-fechas" data-sr-fechas="hernan-onirico"><!-- sr-fechas -->
+<p class="nada">Pronto nuevas fechas.</p>
+<!-- /sr-fechas --></div>
   </div>
 </section>
 
