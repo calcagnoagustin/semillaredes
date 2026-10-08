@@ -258,6 +258,12 @@ details.hist table{border:0;border-radius:0}
 .tuweb .resp .bts a,.tuweb .resp .bts button{border:1px solid var(--navy);background:#fff;color:var(--navy);border-radius:999px;padding:8px 15px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none}
 .tuweb .resp .bts .pub{background:var(--navy);color:#fff}
 .tuweb .resp .bts .des{border-color:#D8D3C7;color:var(--mute)}
+.tuweb .twBtns{display:flex;flex-wrap:wrap;gap:10px}
+.tuweb .twVerde{display:inline-flex;align-items:center;gap:10px;background:#5E7B3C;color:#fff;text-decoration:none;font-weight:700;font-size:17px;padding:15px 22px;border-radius:14px;box-shadow:0 8px 20px -10px rgba(94,123,60,.8)}
+.tuweb .twVerde:hover{background:#4F6A31}
+.tuweb .twVerde span{font-size:19px}
+.tuweb .twLinks{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px}
+.tuweb .twLinks a{color:var(--navy);font-weight:600;font-size:14.5px;text-decoration:none}
 .tuweb .twSel{width:100%;border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:10px 12px;font:inherit;font-size:15px;margin-bottom:8px}
 .tuweb .twTop+.twTop{margin-top:8px}
 .tuweb .twForm textarea{width:100%;min-height:84px;border:1px solid #DDD6C7;border-radius:12px;background:#fff;padding:12px 13px;font:inherit;font-size:16px;color:var(--tinta);resize:vertical}
@@ -1565,13 +1571,11 @@ async function cargarTuWeb(){
     else if(p.estado==='descartado') r=`<div class="resp espera"><div class="est">Descartado</div>No se publicó nada.</div>`;
     return `<div class="burb">${WS.length>1&&p.web?`<div class="twNota" style="margin:0 0 4px;font-weight:700">${twEsc(titW(p.web))}</div>`:''}${twEsc(p.texto)}${p.fotos&&p.fotos.length?`<div class="fts">${p.fotos.map(f=>`<img src="${API_WEB}/foto/${slug}/${f}" alt="">`).join('')}</div>`:''}<div class="twNota" style="margin-top:6px">${fh(p.creado)}</div></div>${r}`;
   }).join('');
-  caja.innerHTML=`${WS.map(w=>`<div class="twTop"><a href="${w.url}" target="_blank" rel="noopener">${WS.length>1?twEsc(w.titulo):'Ver tu web'} ↗</a><a class="twLapiz" href="${conEd(w.url)}" target="_blank" rel="noopener">✎ Editar textos y fotos</a></div>`).join('')}
-    <p class="twNota" style="margin:2px 0 4px">Con el lápiz cambiás textos y fotos directo en tu web y se publica al instante. Para cambios más grandes, pedilos acá abajo.</p>
-    <div class="twLista">${lista||'<div class="twVacio">Por ejemplo: “Cambiá la foto de portada por esta”, “Sumá una fecha nueva en la agenda” o “Acortá la biografía”.</div>'}</div>
-    <div class="twForm">${WS.length>1?`<select id="twWeb" class="twSel">${WS.map(w=>`<option value="${w.id}">${twEsc(w.titulo)}</option>`).join('')}</select>`:''}<textarea id="twTxt" placeholder="¿Qué querés cambiar en tu web?"></textarea>
-      <div class="twFts" id="twFts"></div>
-      <div class="twFila"><label class="twAdj"><input type="file" id="twFile" accept="image/*" multiple>📎 Sumar fotos</label><button class="twEnv" id="twEnv">Enviar pedido</button></div>
-      <div class="twNota">Nada se publica sin que lo veas y lo apruebes.</div></div>`;
+  const abiertos=(d.pedidos||[]).filter(p=>p.estado==='pendiente'||p.estado==='propuesta').slice().reverse();
+  caja.innerHTML=`<div class="twBtns">${WS.map(w=>`<a class="twVerde" href="${conEd(w.url)}" target="_blank" rel="noopener"><span>✎</span>${WS.length>1?`Editar ${twEsc(w.titulo)}`:'Editar mi web'}</a>`).join('')}</div>
+    <div class="twLinks">${WS.map(w=>`<a href="${w.url}" target="_blank" rel="noopener">Ver ${WS.length>1?twEsc(w.titulo):'mi web'} publicada ↗</a>`).join('')}</div>
+    ${abiertos.length?`<div class="twLista" style="margin-top:16px">${abiertos.map(p=>`<div class="burb">${twEsc(p.texto)}</div>`+(p.estado==='pendiente'?`<div class="resp espera"><div class="est">En preparación</div>El equipo de Semilla lo está armando. Te avisamos al celular cuando esté listo para revisar.</div>`:`<div class="resp"><div class="est">Propuesta lista</div>${twEsc(p.respuesta)}<div class="bts"><a href="${conEd(p.vista_previa)}" target="_blank" rel="noopener">Ver y corregir ↗</a><button class="pub" data-twacc="publicar" data-twid="${p.id}">Publicar</button><button class="des" data-twacc="descartar" data-twid="${p.id}">Descartar</button></div></div>`)).join('')}</div>`:''}`;
+  return;
   pintarFotosTW();
   document.getElementById('twFile').onchange=async e=>{
     const fs=[...e.target.files]; e.target.value='';
@@ -1622,7 +1626,7 @@ function pintarResto(d,h){
   const disponibles=[...new Set(R.flatMap(r=>Object.keys(r.metricas||{})))].filter(k=>NOMBRES[k]);
 
   if(WEBS[slug]){
-    h+=`<h2>Tu web</h2><p class="sub">Pedí los cambios que quieras en tu web, como se lo pedirías a alguien de tu equipo. Antes de publicar te mostramos cómo queda.</p>
+    h+=`<h2>Tu web</h2><p class="sub">Abrí tu web en modo edición: tocá cualquier texto o foto para cambiarlo, o pedile cambios a SemillaIA con el botón de abajo a la derecha. Nada se publica sin que lo apruebes.</p>
       <div class="tuweb" id="tuweb"><div class="twCarg">Cargando…</div></div>`;
     setTimeout(cargarTuWeb,0);
   }
