@@ -350,6 +350,7 @@ details.hist table{border:0;border-radius:0}
 .repCaja .ft div{display:grid;grid-template-columns:1fr auto;column-gap:12px;align-items:baseline;padding:8px 0 0;font-size:13.5px;color:#55525F}
 .repCaja .ft b{color:var(--navy);font-variant-numeric:tabular-nums;white-space:nowrap}
 .repCaja .cmpley{font-size:12.5px;color:#8A8577;margin:-4px 0 0}
+@media(max-width:380px){.repCaja .kp .l,.repCaja .hijo .kp .l{font-size:10.5px}.repCaja .kp>div,.repCaja .hijo .kp>div{padding:10px 8px 9px}}
 @media(max-width:400px){.repCaja .kp .v{font-size:21px}.repCaja .cmp{padding:14px 12px 12px}.repCaja .hijo{padding:12px 10px 10px}}
 .repCaja .blq{border:1px solid #E5DFD2;border-radius:14px;padding:4px 16px 6px;margin-top:12px}
 .repCaja .blq h3{margin:14px 0 8px;line-height:1.35}
@@ -2349,7 +2350,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261008k';
+var SR_VER='20261008l';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
