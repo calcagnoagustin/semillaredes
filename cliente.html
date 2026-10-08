@@ -501,9 +501,8 @@ const grafConv=(R,et)=>{ const S=(R||[]).map((r,i)=>{ const x=r.metricas, v=Numb
     if(!(v>0)||n==null) return null; if((new Date(r.hasta)-new Date(r.desde))/864e5<3) return null;
     if(R.slice(i+1).some(o=>o.desde===r.desde)) return null; return Math.round(Number(n)/v*1000)/10; });
   return S.filter(v=>v!=null).length>1 ? grafico('Tasa de conversión de visitas a seguidores','De cada 100 personas que visitaron el perfil, cuántas se hicieron seguidoras en cada período (en %). Cuanto más alta la línea, mejor.',S,et,'#2F5D62') : ''; };
-// seguidores nuevos por periodo semanal (solo mediciones de 3 a 9 dias, para que un mes no se mezcle con semanas). De a uno por cliente.
-const NUEVOS_G=new Set(['lara-fichera']);
-const grafNuevos=(R,et)=>{ if(!NUEVOS_G.has(slug)) return ''; const S=(R||[]).map((r,i)=>{ const n=r.metricas.ig_followers_nuevos, dd=(new Date(r.hasta)-new Date(r.desde))/864e5;
+// seguidores nuevos por periodo semanal (solo mediciones de 3 a 9 dias, para que un mes no se mezcle con semanas). En todos los perfiles.
+const grafNuevos=(R,et)=>{ const S=(R||[]).map((r,i)=>{ const n=r.metricas.ig_followers_nuevos, dd=(new Date(r.hasta)-new Date(r.desde))/864e5;
     if(n==null||dd<3||dd>9) return null; if(R.slice(i+1).some(o=>o.desde===r.desde)) return null; return Number(n); });
   return S.filter(v=>v!=null).length>1 ? grafico('Seguidores nuevos','Cuántos seguidores nuevos entraron en cada medición semanal (según Business Manager).',S,et,'#87863A') : ''; };
 // tabla desplegable de regiones: nombre, una metrica (clics o visitas) e inversion
@@ -2304,7 +2303,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261008d';
+var SR_VER='20261008e';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
