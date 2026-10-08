@@ -233,6 +233,15 @@ details.hist table{border:0;border-radius:0}
 .iasello{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #DDD6C7;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600;color:#1A2456;margin:0 0 14px}
 .agregarW{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px;max-width:420px}
 .agregarW input{border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:11px 13px;font:inherit;font-size:15px;min-width:0}
+.it.fe{align-items:center}
+.ff{flex:none;min-width:74px;font-size:14px;color:var(--navy);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ff b{font-weight:600;text-transform:capitalize;color:#8A8577;margin-right:2px}
+.tk{flex:none;display:inline-flex;align-items:center;gap:6px;border:1px solid #DDD6C7;background:#fff;color:var(--navy);border-radius:999px;padding:6px 11px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.tk.ok{background:var(--oliva);border-color:var(--oliva);color:#fff}
+.agregarF{display:grid;grid-template-columns:150px 1fr 1fr auto;gap:8px;margin-top:10px}
+.agregarF input{border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:11px 13px;font:inherit;font-size:15px;min-width:0}
+.agregarF button{border:0;background:var(--oliva);color:#fff;font:inherit;font-weight:600;border-radius:10px;padding:11px 18px;cursor:pointer}
+@media(max-width:640px){.agregarF{grid-template-columns:1fr auto}.agregarF #f_tit,.agregarF #f_url{grid-column:1/-1}.agregarF #f_tit{order:-2}.agregarF #f_url{order:-1}}
 .agregarV{display:grid;grid-template-columns:150px 1fr 130px auto;gap:8px;margin-top:10px}
 .agregarV input{border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:11px 13px;font:inherit;font-size:15px;min-width:0}
 @media(max-width:640px){.agregarV{grid-template-columns:1fr 1fr}.agregarV #v_det{grid-column:1/-1;order:-1}}
@@ -1715,6 +1724,17 @@ function pintarResto(d,h){
     <div class="agregarV"><input id="v_fecha" type="date" value="${hoyV}"><input id="v_det" placeholder="Qué se vendió (y a quién, si querés)"><input id="v_monto" inputmode="decimal" placeholder="Monto"><button id="v_add">Agregar</button></div>`;
   }
 
+  const FE=d.fechas||[];
+  {
+    const escF=s=>String(s??'').replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+    const DS=['dom','lun','mar','mié','jue','vie','sáb'];
+    const fF=f=>{const p=String(f).slice(0,10).split('-'); const dt=new Date(+p[0],+p[1]-1,+p[2]); return `<b>${DS[dt.getDay()]}</b> ${p[2]}/${p[1]}`;};
+    h+=`<h2>Próximas fechas</h2><p class="sub">Poné aquí las próximas fechas y los links a la ticketera, de ser necesario.</p>
+    ${FE.length?`<div class="tar">${FE.map(x=>`<div class="it fe"><span class="ff">${fF(x.fecha)}</span><span class="tx"><span class="tt">${escF(x.titulo)}</span></span>${x.url?`<button class="tk" data-copia="${escF(x.url)}" title="Copiar el link de entradas"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 15V5a1 1 0 0 1 1-1h10" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span>Copiar link</span></button>`:''}<button class="lap" data-ed="fecha" data-id="${x.id}" title="Editar" aria-label="Editar"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button class="x" data-delf="${x.id}" title="Borrar">×</button></div>`).join('')}</div>`
+      :'<p class="pista">Todavía no hay fechas cargadas. Sumá la primera acá abajo.</p>'}
+    <div class="agregarF"><input id="f_fecha" type="date" aria-label="Fecha"><input id="f_tit" placeholder="Título. Por ejemplo: Show en La Tangente"><input id="f_url" placeholder="Link a la ticketera (opcional)"><button id="f_add">Agregar</button></div>`;
+  }
+
   const T=d.tareas||[];
   {
     h+=`<h2>Tarea para el hogar</h2><p class="sub">Lo que ya está hecho y lo que sigue.</p>
@@ -1806,6 +1826,24 @@ function pintarResto(d,h){
     const r=await rpc('sub_activo_cliente_borrar',{p_slug:slug,p_k:tok,p_id:b.dataset.dela});
     if(r.ok) recargar();
   });
+  document.querySelectorAll('[data-delf]').forEach(b=>b.onclick=async e=>{
+    e.preventDefault(); e.stopPropagation();
+    if(!confirm('¿Borrar esta fecha?')) return;
+    const r=await rpc('sub_fecha_borrar',{p_slug:slug,p_k:tok,p_id:b.dataset.delf}); if(r.ok) recargar();
+  });
+  document.querySelectorAll('[data-copia]').forEach(b=>b.onclick=async e=>{
+    e.preventDefault(); e.stopPropagation(); const u=b.dataset.copia, sp=b.querySelector('span');
+    let ok=false; try{ await navigator.clipboard.writeText(u); ok=true; }catch(_){ try{ const ta=document.createElement('textarea'); ta.value=u; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); ok=document.execCommand('copy'); ta.remove(); }catch(__){} }
+    sp.textContent=ok?'Copiado':'No se pudo copiar'; b.classList.toggle('ok',ok); setTimeout(()=>{ sp.textContent='Copiar link'; b.classList.remove('ok'); },1800);
+  });
+  const fa=$('f_add');
+  if(fa) fa.onclick=async()=>{
+    const f=$('f_fecha').value, t=$('f_tit').value.trim();
+    if(!f||!t){ alert('Poné la fecha y el título'); return; }
+    fa.disabled=true; fa.textContent='…';
+    const r=await rpc('sub_fecha_guardar',{p_slug:slug,p_k:tok,p_fecha:f,p_titulo:t,p_url:$('f_url').value.trim()||null});
+    if(r.ok) recargar(); else { fa.disabled=false; fa.textContent='Agregar'; alert('No se pudo agregar'); }
+  };
   const aa=$('a_add');
   if(aa) aa.onclick=async()=>{
     const t=$('a_tit').value.trim(); if(!t) return;
@@ -1855,9 +1893,10 @@ function pintarResto(d,h){
   };
 }
 
-function recargar(){ rpc('sub_get',{p_slug:slug,p_k:tok}).then(pintar); }
+function traerD(){ return Promise.all([rpc('sub_get',{p_slug:slug,p_k:tok}), rpc('sub_fechas_get',{p_slug:slug,p_k:tok}).catch(()=>({}))]).then(([d,f])=>{ if(d&&!d.error) d.fechas=(f&&f.fechas)||[]; return d; }); }
+function recargar(){ traerD().then(pintar); }
 
-rpc('sub_get',{p_slug:slug,p_k:tok}).then(d=>{
+traerD().then(d=>{
   if(d.error){ $('cargando').classList.add('oculto'); $('error').classList.remove('oculto'); return; }
   pintar(d);
 }).catch(()=>{ $('cargando').classList.add('oculto'); $('error').classList.remove('oculto'); });
@@ -1868,7 +1907,7 @@ function desplegarSecciones(d){
   if(d.cliente.tipo==='semilla') return;           // Semilla ya se arma con paneles
   if(!(new URLSearchParams(location.search).get('v2')||PANELES_V2.has(slug))) return;
   const app=$('app'); if(!app) return;
-  const NO=['Historial','Hitos','Tarea para el hogar','Tus activos','Tus notas','Consejos de la Inteligencia colectiva','Ventas','Waitlist'];
+  const NO=['Historial','Hitos','Próximas fechas','Tarea para el hogar','Tus activos','Tus notas','Consejos de la Inteligencia colectiva','Ventas','Waitlist'];
   const hs=[...app.children].filter(e=>e.tagName==='H2');
   hs.forEach(h=>{
     const t=h.textContent.trim();
@@ -1900,7 +1939,7 @@ function armarIndice(){
   app.querySelectorAll('h2 .volver').forEach(x=>x.remove());
   const hs=[...app.querySelectorAll('h2')];
   if(hs.length<3) return;
-  const corto={'Consejos de la Inteligencia colectiva':'Consejos','Tarea para el hogar':'Tareas','Ventas':'Ventas','Tus activos':'Activos','Tus notas':'Notas'};
+  const corto={'Próximas fechas':'Fechas','Consejos de la Inteligencia colectiva':'Consejos','Tarea para el hogar':'Tareas','Ventas':'Ventas','Tus activos':'Activos','Tus notas':'Notas'};
   const nav=document.createElement('nav'); nav.className='indice'; nav.id='indice'; nav.setAttribute('aria-label','Secciones');
   nav.innerHTML='<div class="fila">'+hs.map((h,i)=>{
     const t=h.textContent.trim(); h.id='sec-'+i;
@@ -1969,7 +2008,7 @@ document.addEventListener('click', async e=>{
   if(ing==null){ alert('Poné cuánto facturaste'); return; }
   b.disabled=true; b.textContent='Guardando…';
   const r=await rpc('sub_venta_cliente',{p_slug:slug,p_k:tok,p_campania:camp,p_ingreso:ing,p_ventas:nv==null?0:Math.round(nv)});
-  if(r&&r.ok){ PER_ABIERTO=false; rpc('sub_get',{p_slug:slug,p_k:tok}).then(pintar); }
+  if(r&&r.ok){ PER_ABIERTO=false; traerD().then(pintar); }
   else { b.disabled=false; b.textContent='Guardar'; alert('No se pudo guardar'); }
 });
 
@@ -2119,7 +2158,7 @@ const DICT={
 'Todos los reportes.':'All reports.','Período':'Period','Costo x visita':'Cost per visit','Nuevos':'New','Seguidores en Instagram':'Instagram followers',
 'Seguidores nuevos por período':'New followers per period','Cómo viene creciendo la cuenta.':'How the account is growing.',
 'Las metas que nos pusimos para este proyecto. Podés sumar las tuyas.':'The goals we set for this project. You can add your own.',
-'Agregar hito':'Add milestone','¡Logrado!':'Achieved!','Tarea para el hogar':'Homework','Lo que ya está hecho y lo que sigue.':'What is done and what comes next.',
+'Agregar hito':'Add milestone','¡Logrado!':'Achieved!','Tarea para el hogar':'Homework','Próximas fechas':'Upcoming dates','Fechas':'Dates','Poné aquí las próximas fechas y los links a la ticketera, de ser necesario.':'Add your upcoming dates here, with the ticketing link if needed.','Copiar link':'Copy link','Copiado':'Copied','Todavía no hay fechas cargadas. Sumá la primera acá abajo.':'No dates yet. Add the first one below.','Editar fecha':'Edit date','Lo que ya está hecho y lo que sigue.':'What is done and what comes next.',
 'Agregar':'Add','Tocá el círculo para cambiarle el estado: pendiente, en curso o hecha. Tocá el texto para leerla completa. La × la borra.':'Tap the circle to change the status: pending, in progress or done. Tap the text to read it in full. The × deletes it.',
 'Pendiente':'Pending','En curso':'In progress','Hecha':'Done','Tus activos':'Your assets',
 'Tus enlaces a mano: carpetas, materiales, links importantes. Podés sumar los tuyos.':'Your links at hand: folders, materials, important links. You can add your own.',
@@ -2223,7 +2262,8 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
     nota:{t:'Editar nota', lista:'notas', f:[['texto','Nota','area']]},
     activo:{t:'Editar activo', lista:'activos', f:[['titulo','Nombre','text'],['url','Link','text'],['descripcion','Descripción','text']]},
     hito:{t:'Editar meta', lista:'hitos', f:[['titulo','Nombre de la meta','text'],['objetivo','Número a alcanzar','num']]},
-    venta:{t:'Editar venta', lista:'ventas_log', f:[['fecha','Fecha','date'],['detalle','Qué se vendió','text'],['monto','Monto','num']]}
+    venta:{t:'Editar venta', lista:'ventas_log', f:[['fecha','Fecha','date'],['detalle','Qué se vendió','text'],['monto','Monto','num']]},
+    fecha:{t:'Editar fecha', lista:'fechas', f:[['fecha','Fecha','date'],['titulo','Título','text'],['url','Link a la ticketera','text']]}
   };
   const esc=v=>String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const num=v=>{v=String(v??'').trim();if(!v)return '';v=v.includes(',')?v.replace(/\./g,'').replace(',','.'):(/^\d{1,3}(\.\d{3})+$/.test(v)?v.replace(/\./g,''):v);return v;};
@@ -2249,6 +2289,8 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
     if(!actual) return; const C=CAMPOS[actual.tipo], datos={};
     C.f.forEach(([k,l,t])=>{ const v=document.getElementById('ed_'+k).value; datos[k]=t==='num'?num(v):v; });
     const q=new URLSearchParams(location.search);
+    if(actual.tipo==='fecha'){ if(!datos.fecha||!String(datos.titulo).trim()){ alert('Poné la fecha y el título'); return; }
+      const r2=await rpc('sub_fecha_guardar',{p_slug:q.get('c'),p_k:q.get('k'),p_fecha:datos.fecha,p_titulo:datos.titulo,p_url:datos.url||null,p_id:actual.id}); cerrar(); if(r2&&r2.ok) recargar(); return; }
     const r=await rpc('sub_editar',{p_slug:q.get('c'),p_k:q.get('k'),p_tipo:actual.tipo,p_id:actual.id,p_datos:datos});
     cerrar(); if(r&&r.ok!==undefined) recargar();
   };
@@ -2257,7 +2299,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261008b';
+var SR_VER='20261008c';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
