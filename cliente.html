@@ -2423,7 +2423,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261008r';
+var SR_VER='20261008s';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
@@ -2438,34 +2438,34 @@ function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.n
 </script>
 
 <script>
-// tirar para abajo para actualizar (como en las redes), en la app y en el celular
+// tirar para abajo para actualizar (como en las apps: la página baja y aparece la ruedita gris arriba), en la app y en el celular
 (function(){
   if(!('ontouchstart' in window)) return;
   var st=document.createElement('style');
-  st.textContent='#ptr{position:fixed;left:0;right:0;top:0;height:0;z-index:9999;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;overflow:hidden;font:600 13px system-ui,-apple-system,sans-serif;color:#6F6B7C}'+
-    '#ptr .sp{position:relative;width:28px;height:28px;margin-bottom:6px}'+
-    '#ptr .sp i{position:absolute;left:12.5px;top:1px;width:3px;height:8px;border-radius:2px;background:#6F6B7C;transform-origin:1.5px 13px;opacity:0;transition:opacity .08s}'+
-    '#ptr .tx{margin-bottom:10px;white-space:nowrap}'+
-    '#ptr.gira .sp{animation:ptrg .9s steps(12) infinite}@keyframes ptrg{to{transform:rotate(360deg)}}'+
-    'html,body{overscroll-behavior-y:none}body.ptr-mov{transition:none}body.ptr-vuelve{transition:transform .25s ease}';
+  st.textContent='html,body{overscroll-behavior-y:none}'+
+    '#ptr{position:fixed;left:0;right:0;top:0;height:0;z-index:9999;pointer-events:none;display:flex;align-items:center;justify-content:center;overflow:hidden}'+
+    '#ptr .sp{position:relative;width:34px;height:34px;opacity:0;transform:scale(.6)}'+
+    '#ptr .sp i{position:absolute;left:14.5px;top:1px;width:5px;height:10px;border-radius:3px;background:#8E8E93;transform-origin:2.5px 16px}'+
+    '#ptr.gira .sp{animation:ptrg .8s steps(8) infinite}@keyframes ptrg{to{transform:rotate(360deg)}}'+
+    'body.ptr-vuelve{transition:transform .28s cubic-bezier(.2,.8,.2,1)}';
   document.head.appendChild(st);
   var ind=document.createElement('div'); ind.id='ptr'; var sp='<div class="sp">';
-  for(var i=0;i<12;i++) sp+='<i style="transform:rotate('+(i*30)+'deg)"></i>';
-  ind.innerHTML=sp+'</div><div class="tx">Tirá para actualizar</div>'; document.documentElement.appendChild(ind);
-  var palos=ind.querySelectorAll('.sp i'), tx=ind.querySelector('.tx');
-  var y0=null, d=0, UMBRAL=80, MAX=110, cargando=false;
-  var arriba=function(){ return (window.scrollY||document.documentElement.scrollTop||0)<=0; };
-  function pintar(h){ ind.style.height=h+'px'; document.body.style.transform=h?'translateY('+h+'px)':''; var k=Math.min(1,h/UMBRAL), n=Math.round(k*12);
-    palos.forEach(function(p,i){ p.style.opacity=cargando?(0.25+0.75*((12-i)%12)/12):(i<n?0.25+0.75*(i/12):0); });
-    tx.textContent=cargando?'Actualizando…':(h>=UMBRAL?'Soltá para actualizar':'Tirá para actualizar'); }
-  window.addEventListener('touchstart',function(e){ if(!cargando&&arriba()&&e.touches.length===1&&!e.target.closest('input,textarea,select,[contenteditable],.repFondo:not(.oculto)')){ y0=e.touches[0].clientY; d=0; document.body.classList.remove('ptr-vuelve'); } else y0=null; },{passive:true});
+  for(var i=0;i<8;i++) sp+='<i style="transform:rotate('+(i*45)+'deg);opacity:'+(0.25+0.75*(i/7)).toFixed(2)+'"></i>';
+  ind.innerHTML=sp+'</div>'; document.documentElement.appendChild(ind);
+  var rueda=ind.querySelector('.sp');
+  var y0=null, d=0, UMBRAL=70, MAX=120, ALTO=64, cargando=false, avisado=false;
+  var arriba=function(){ var se=document.scrollingElement||document.documentElement; return (window.scrollY||se.scrollTop||0)<=0; };
+  function log(q){ try{ if(!/[?&]c=semilla-redes/.test(location.search)) return; new Image().src='https://vm.semillaredes.com/web/log?p=ptr&e='+q; }catch(e){} }
+  function pintar(h){ ind.style.height=h+'px'; document.body.style.transform=h?'translateY('+h+'px)':'';
+    var k=Math.min(1,h/UMBRAL); rueda.style.opacity=cargando?1:k; rueda.style.transform=cargando?'':'scale('+(0.6+0.4*k)+') rotate('+(h*3)+'deg)'; }
+  window.addEventListener('touchstart',function(e){ if(!cargando&&arriba()&&e.touches.length===1&&!e.target.closest('input,textarea,select,[contenteditable],.repFondo:not(.oculto),#edvelo.on')){ y0=e.touches[0].clientY; d=0; document.body.classList.remove('ptr-vuelve'); } else y0=null; },{passive:true});
   window.addEventListener('touchmove',function(e){ if(y0==null) return; d=e.touches[0].clientY-y0; if(d<=0||!arriba()){ pintar(0); return; }
-    if(e.cancelable) e.preventDefault(); pintar(Math.min(MAX, d*0.55)); },{passive:false});
-  window.addEventListener('touchcancel',function(){ if(y0==null) return; y0=null; d=0; pintar(0); });
-  window.addEventListener('touchend',function(){ if(y0==null) return; y0=null; var h=Math.min(MAX,d*0.55); d=0; document.body.classList.add('ptr-vuelve');
-    if(h>=UMBRAL){ cargando=true; ind.classList.add('gira'); pintar(64);
-      setTimeout(function(){ srFresco(); },500); }
-    else { pintar(0); setTimeout(function(){ document.body.classList.remove('ptr-vuelve'); },260); } });
+    if(e.cancelable) e.preventDefault(); if(!avisado){ avisado=true; log('tira'); } pintar(Math.min(MAX, d*0.5)); },{passive:false});
+  window.addEventListener('touchcancel',function(){ if(y0==null) return; y0=null; d=0; document.body.classList.add('ptr-vuelve'); pintar(0); });
+  window.addEventListener('touchend',function(){ if(y0==null) return; y0=null; var h=Math.min(MAX,d*0.5); d=0; document.body.classList.add('ptr-vuelve');
+    if(h>=UMBRAL){ cargando=true; ind.classList.add('gira'); pintar(ALTO); log('recarga');
+      setTimeout(function(){ if(typeof srFresco==='function') srFresco(); else location.reload(); },650); }
+    else { pintar(0); setTimeout(function(){ document.body.classList.remove('ptr-vuelve'); },300); } });
 })();
 </script>
 </body>
