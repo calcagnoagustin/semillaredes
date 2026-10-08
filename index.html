@@ -8,7 +8,8 @@
   try{
     var slug = localStorage.getItem('sr_cliente_slug');
     var comoApp = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-    if (slug && comoApp && location.pathname === '/') {
+    var editando = /[?&]editar=/.test(location.search) || sessionStorage.getItem('sr_editar');
+    if (slug && comoApp && location.pathname === '/' && window.top === window && !editando) {
       location.replace('/' + slug + '/');
     }
   }catch(e){}
