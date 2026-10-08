@@ -328,12 +328,12 @@ details.hist table{border:0;border-radius:0}
 .repCaja .cmp .ct h4{margin:0;font-size:12.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--vino)}
 .repCaja .cmp .ct .dia{font-size:12.5px;color:#8A8577;white-space:nowrap}
 .repCaja .cmp .nt{font-size:12.5px;color:#8A8577;margin:3px 0 0}
-.repCaja .kp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
-.repCaja .kp>div{background:#FAF7F1;border-radius:12px;padding:10px 10px 9px;min-width:0}
-.repCaja .kp .l{font-size:11.5px;color:#8A8577;line-height:1.25;min-height:2.5em}
-.repCaja .kp .v{font-size:20px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;white-space:nowrap;margin-top:4px;line-height:1.1}
-.repCaja .kp .v small{font-size:11px;font-weight:600;margin-right:2px}
-.repCaja .kp .d{font-size:11.5px;font-weight:600;margin-top:4px;min-height:1.3em}
+.repCaja .kp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.repCaja .kp>div{background:#FAF7F1;border-radius:12px;padding:11px 12px 10px;min-width:0}
+.repCaja .kp .l{font-size:12px;color:#8A8577;line-height:1.25}
+.repCaja .kp .v{font-size:24px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;white-space:nowrap;margin-top:4px;line-height:1.1}
+.repCaja .kp .v small{font-size:12px;font-weight:600;margin-right:2px}
+.repCaja .kp .d{font-size:12px;font-weight:600;margin-top:4px;min-height:1.3em;white-space:nowrap}
 .repCaja .kp .d.si{color:#4E6B24}.repCaja .kp .d.no{color:#9B2C36}
 .repCaja .alc{margin-top:12px}
 .repCaja .alc .at{display:flex;justify-content:space-between;font-size:13.5px;color:#55525F}
@@ -346,7 +346,11 @@ details.hist table{border:0;border-radius:0}
 .repCaja .hijo{margin-top:14px;border-radius:14px;background:#FAF7F1;padding:14px 12px 12px;border-left:3px solid var(--vino)}
 .repCaja .hijo .kp>div{background:#fff}
 .repCaja .hijo .ct h4{color:var(--navy)}
-@media(max-width:400px){.repCaja .kp .v{font-size:17px}.repCaja .cmp{padding:14px 12px 12px}.repCaja .hijo{padding:12px 10px 10px}}
+.repCaja .ft{margin-top:12px;border-top:1px solid #F0EBE0}
+.repCaja .ft div{display:grid;grid-template-columns:1fr auto;column-gap:12px;align-items:baseline;padding:8px 0 0;font-size:13.5px;color:#55525F}
+.repCaja .ft b{color:var(--navy);font-variant-numeric:tabular-nums;white-space:nowrap}
+.repCaja .cmpley{font-size:12.5px;color:#8A8577;margin:-4px 0 0}
+@media(max-width:400px){.repCaja .kp .v{font-size:21px}.repCaja .cmp{padding:14px 12px 12px}.repCaja .hijo{padding:12px 10px 10px}}
 .repCaja .blq{border:1px solid #E5DFD2;border-radius:14px;padding:4px 16px 6px;margin-top:12px}
 .repCaja .blq h3{margin:14px 0 8px;line-height:1.35}
 .repCaja .blq h3 small{display:block;font-size:11.5px;letter-spacing:.4px;text-transform:none;font-weight:500;color:#8A8577;margin-top:2px}
@@ -2107,11 +2111,12 @@ function graficoBarras(titulo, leyenda, vals, etiquetas, color, dec){
     </div></div>`;
 }
 const pintaBlq=(B,hijo)=>{ const usd=v=>String(v).replace(/^USD /,'<small>USD</small>');
-      const dl=k=>{ if(k.d==null||Math.abs(k.d)<5||!k.bien) return '<div class="d"></div>'; const mej=(k.d>0)===(k.bien>0); return `<div class="d ${mej?'si':'no'}">${k.d>0?'▲':'▼'} ${Math.abs(k.d)}% vs anterior</div>`; };
+      const dl=k=>{ if(k.d==null||Math.abs(k.d)<5||!k.bien) return '<div class="d"></div>'; const mej=(k.d>0)===(k.bien>0); return `<div class="d ${mej?'si':'no'}">${k.d>0?'▲':'▼'} ${Math.abs(k.d)}%</div>`; };
       const P=(B.alcance&&B.alcance.partes)||[], tp=P.reduce((x,y)=>x+Number(y[1]||0),0)||1, nf=v=>Number(v).toLocaleString('es-AR');
-      return `<div class="${hijo?'hijo':'cmp'}"><div class="ct"><h4>${B.titulo}</h4>${B.diaria?`<span class="dia">${B.diaria} por día</span>`:''}</div>${B.nota?`<p class="nt">${B.nota}</p>`:''}
+      return `<div class="${hijo?'hijo':'cmp'}"><div class="ct"><h4>${B.titulo}</h4></div>${B.nota?`<p class="nt">${B.nota}</p>`:''}
         <div class="kp">${(B.kpis||[]).map(k=>`<div><div class="l">${k.l}</div><div class="v">${usd(k.v)}</div>${dl(k)}</div>`).join('')}</div>
         ${B.alcance?`<div class="alc"><div class="at"><span>Personas alcanzadas</span><b>${B.alcance.total}</b></div><div class="bar">${P.map(x=>`<i style="width:${(Number(x[1]||0)/tp*100).toFixed(1)}%"></i>`).join('')}</div><div class="lg">${P.map(x=>`<span>${x[0]} ${nf(x[1])}</span>`).join('')}</div></div>`:''}
+        ${(B.inversion||B.diaria)?`<div class="ft">${B.inversion?`<div><span>Inversión total</span><b>${B.inversion}</b></div>`:''}${B.diaria?`<div><span>Inversión diaria</span><b>${B.diaria}</b></div>`:''}</div>`:''}
         ${(B.hijos||[]).map(h=>pintaBlq(h,true)).join('')}</div>`; };
 function ponerReporte(d){
   document.querySelectorAll('.btnReporte,.repFondo').forEach(x=>x.remove());
@@ -2127,7 +2132,7 @@ function ponerReporte(d){
   fondo.innerHTML=`<div class="repCaja" role="dialog" aria-label="Reporte de la semana"><button class="x" type="button" aria-label="Cerrar">×</button>
     <div class="eti">Reporte · ${fecha(I.desde)} al ${fecha(I.hasta)}</div>
     <h2>Reporte de la semana</h2>
-    ${I.bloques&&I.bloques.length&&I.bloques[0].kpis?`${I.resumen?`<h3>Lo más importante</h3><div class="resu">${I.resumen}</div>`:''}<h3>Campañas</h3>${I.bloques.map(B=>pintaBlq(B)).join('')}`:I.bloques?`<p class="bajada">Los números de las campañas del período.</p>${I.bloques.map(B=>`<div class="blq"><h3>${B.titulo}${B.nota?`<small>${B.nota}</small>`:''}</h3>${(B.filas||[]).map(f=>`<div class="fr${f[2]?' sb':''}"><span>${f[0]}</span><span class="v">${f[1]}</span></div>`).join('')}</div>`).join('')}`:`<p class="bajada">Reporte y recomendaciones basadas en el Método Semilla y la experiencia de otros usuarios.</p>
+    ${I.bloques&&I.bloques.length&&I.bloques[0].kpis?`${I.resumen?`<h3>Lo más importante</h3><div class="resu">${I.resumen}</div>`:''}<h3>Campañas</h3>${I.comparado?`<p class="cmpley">Las flechas comparan con la medición anterior (${I.comparado}).</p>`:''}${I.bloques.map(B=>pintaBlq(B)).join('')}`:I.bloques?`<p class="bajada">Los números de las campañas del período.</p>${I.bloques.map(B=>`<div class="blq"><h3>${B.titulo}${B.nota?`<small>${B.nota}</small>`:''}</h3>${(B.filas||[]).map(f=>`<div class="fr${f[2]?' sb':''}"><span>${f[0]}</span><span class="v">${f[1]}</span></div>`).join('')}</div>`).join('')}`:`<p class="bajada">Reporte y recomendaciones basadas en el Método Semilla y la experiencia de otros usuarios.</p>
     <h3>Lo principal</h3><ol class="${(I.hallazgos||[]).some(x=>typeof x==='object')?'hz':''}">${(I.hallazgos||[]).map(x=>typeof x==='object'?`<li class="${x.tipo==='mal'?'mal':'bien'}">${x.t}</li>`:`<li>${x}</li>`).join('')}</ol>
     <h3>Qué hacer</h3><ol class="qh">${(I.recomendaciones||[]).map(x=>`<li>${x}</li>`).join('')}</ol>
     ${I.reunion?`<div class="reu"><b>En la próxima reunión con Agus</b> ${I.reunion}</div>`:''}`}
@@ -2344,7 +2349,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261008i';
+var SR_VER='20261008j';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
