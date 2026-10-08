@@ -1970,7 +1970,7 @@ function pintarResto(d,h){
   document.querySelectorAll('[data-delf]').forEach(b=>b.onclick=async e=>{
     e.preventDefault(); e.stopPropagation();
     if(!confirm('¿Borrar esta fecha?')) return;
-    const r=await rpc('sub_fecha_borrar',{p_slug:slug,p_k:tok,p_id:b.dataset.delf}); if(r.ok) recargar();
+    const r=await rpc('sub_fecha_borrar',{p_slug:slug,p_k:tok,p_id:b.dataset.delf}); if(r.ok){ avisarFechasWeb(); recargar(); }
   });
   document.querySelectorAll('[data-copia]').forEach(b=>b.onclick=async e=>{
     e.preventDefault(); e.stopPropagation(); const u=b.dataset.copia, sp=b.querySelector('span');
@@ -1983,7 +1983,7 @@ function pintarResto(d,h){
     if(!f||!t){ alert('Poné la fecha y el título'); return; }
     fa.disabled=true; fa.textContent='…';
     const r=await rpc('sub_fecha_guardar',{p_slug:slug,p_k:tok,p_fecha:f,p_titulo:t,p_url:$('f_url').value.trim()||null});
-    if(r.ok) recargar(); else { fa.disabled=false; fa.textContent='Agregar'; alert('No se pudo agregar'); }
+    if(r.ok){ avisarFechasWeb(); recargar(); } else { fa.disabled=false; fa.textContent='Agregar'; alert('No se pudo agregar'); }
   };
   const aa=$('a_add');
   if(aa) aa.onclick=async()=>{
@@ -2036,6 +2036,8 @@ function pintarResto(d,h){
 
 function traerD(){ return Promise.all([rpc('sub_get',{p_slug:slug,p_k:tok}), rpc('sub_fechas_get',{p_slug:slug,p_k:tok}).catch(()=>({}))]).then(([d,f])=>{ if(d&&!d.error) d.fechas=(f&&f.fechas)||[]; return d; }); }
 function recargar(){ traerD().then(pintar); }
+// el panel manda, la web obedece: al cambiar una fecha, la VM republica el bloque 'Próximas fechas' de la web del artista
+function avisarFechasWeb(){ try{ fetch(`${API_WEB}/fechas`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok})}).catch(()=>{}); }catch(e){} }
 
 traerD().then(d=>{
   if(d.error){ $('cargando').classList.add('oculto'); $('error').classList.remove('oculto'); return; }
@@ -2447,7 +2449,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
     C.f.forEach(([k,l,t])=>{ const v=document.getElementById('ed_'+k).value; datos[k]=t==='num'?num(v):v; });
     const q=new URLSearchParams(location.search);
     if(actual.tipo==='fecha'){ if(!datos.fecha||!String(datos.titulo).trim()){ alert('Poné la fecha y el título'); return; }
-      const r2=await rpc('sub_fecha_guardar',{p_slug:q.get('c'),p_k:q.get('k'),p_fecha:datos.fecha,p_titulo:datos.titulo,p_url:datos.url||null,p_id:actual.id}); cerrar(); if(r2&&r2.ok) recargar(); return; }
+      const r2=await rpc('sub_fecha_guardar',{p_slug:q.get('c'),p_k:q.get('k'),p_fecha:datos.fecha,p_titulo:datos.titulo,p_url:datos.url||null,p_id:actual.id}); cerrar(); if(r2&&r2.ok){ avisarFechasWeb(); recargar(); } return; }
     const r=await rpc('sub_editar',{p_slug:q.get('c'),p_k:q.get('k'),p_tipo:actual.tipo,p_id:actual.id,p_datos:datos});
     cerrar(); if(r&&r.ok!==undefined) recargar();
   };
@@ -2456,7 +2458,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261008u';
+var SR_VER='20261008v';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
