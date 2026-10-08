@@ -64,6 +64,10 @@ iframe{border:0;width:100%;height:100%;display:block}
 <script>
 const BASE='https://semillaredes.com/cliente.html?c=semilla-redes&k=14f43d8c92a4';
 const marco=document.getElementById('marco');
+// diagnostico del gesto de recarga (solo este panel): que ve el marco de la app cuando se toca la pantalla
+(function(){ var n=0; function lg(q){ try{ new Image().src='https://vm.semillaredes.com/web/log?p=wrap&e='+q; }catch(e){} }
+  window.addEventListener('touchstart',function(e){ if(n++<3) lg('ts_'+[Math.round(window.scrollY),(document.scrollingElement||document.documentElement).scrollTop,innerHeight,marco.offsetHeight,(e.target&&(e.target.id||e.target.tagName))||'?'].join('_')); },{passive:true,capture:true});
+  window.addEventListener('scroll',function(){ if(n++<6) lg('scroll_'+Math.round(window.scrollY)); },{passive:true}); })();
 try{ localStorage.setItem('sr_cliente_slug','semillaredes'); }catch(e){}
 function cargar(){ marco.src = BASE + '&v=' + Date.now() + (location.hash||''); }
 window.addEventListener('hashchange', cargar);
