@@ -602,8 +602,9 @@ const CAMPS=[
 
 // costo por mensaje de General = lo que queda de Calificadas sin Famosos ni Cata
 const costoGeneral=x=>{ const i=Number(x.cal_inversion||0)-Number(x.fam_inversion||0)-Number(x.cata_inversion||0), n=Number(x.cal_mensajes||0)-Number(x.fam_mensajes||0)-Number(x.cata_mensajes||0);
-  return (x.cal_mensajes!=null&&n>0&&i>0)?Math.round(i/n*100)/100:null; };
+  return (x.cal_mensajes!=null&&x.fam_mensajes!=null&&n>0&&i>0)?Math.round(i/n*100)/100:null; };
 function multiCamp(R,et,costo){
+  if(costo&&R.length>8){ R=R.slice(-8); et=et.slice(-8); }   // las ultimas 8 mediciones, para que se lean los numeros
   const base=[{k:'ej',lab:'Ejecutivo',color:'#7A1F3A'},{k:'cal',lab:'Calificadas',color:'#87863A'}].concat(costo?[{k:'gen',lab:'General (dentro de Calificadas)',color:'#2F5D62'}]:[]).concat([{k:'fam',lab:'Famosos (dentro de Calificadas)',color:'#E2767C'},{k:'cata',lab:'Cata (dentro de Calificadas)',color:'#1A2456'}]);
   const val=(r,k)=>{ const x=r.metricas; if(!costo) return x[k+'_mensajes']??null; if(k==='gen') return costoGeneral(x); const v=x[k+'_costo_mensaje']; return (v==null||!(Number(v)>0))?null:Number(v); };
   const series=base.map(x=>({...x, vals:R.map(r=>val(r,x.k))}))
@@ -2359,7 +2360,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261008m';
+var SR_VER='20261008n';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
