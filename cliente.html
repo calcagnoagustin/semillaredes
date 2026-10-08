@@ -321,6 +321,10 @@ details.hist table{border:0;border-radius:0}
 .repCaja ol.hz li.mal::before{content:'!';background:#F8E1E2;color:#9B2C36}
 .repCaja .reu{background:var(--crema);border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.5;color:var(--navy);margin-top:4px}
 .repCaja .reu b{font-weight:700}
+.proy{background:#5E7B3C;color:#fff;border-radius:16px;padding:16px 18px;margin:12px 0 4px}
+.proy .l{font-size:13px;font-weight:600;letter-spacing:.3px;opacity:.92}
+.proy .v{font-size:30px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums;line-height:1.1}
+.proy .d{font-size:13px;opacity:.9;margin-top:6px;line-height:1.4}
 .repCaja .resu{font-size:15.5px;line-height:1.55;color:#24242C;background:var(--crema);border-radius:14px;padding:14px 16px;margin:4px 0 6px}
 .repCaja .resu b{color:var(--navy)}
 .repCaja .cmp{border:1px solid #E5DFD2;border-radius:16px;padding:16px 16px 14px;margin-top:14px}
@@ -651,9 +655,11 @@ function contenidosHTML(L){
   camps.forEach(c=>{
     const X=L.filter(x=>x.c===c);
     const esLead=/lead|registro|waitlist/i.test(c), esSeg=/follow|seguidor/i.test(c);
-    const usaVis=!esLead && X.some(x=>x.vis);
-    const res=x=> esLead ? (x.lead||0) : usaVis ? (x.vis||0) : (x.clics||0);
-    const lab= esLead ? 'Registros' : usaVis ? 'Visitas a la página' : esSeg ? 'Visitas al perfil' : 'Clics';
+    const esMsj=!esLead && !esSeg && X.some(x=>x.mensajes);
+    const usaVis=!esLead && !esMsj && X.some(x=>x.vis);
+    const res=x=> esLead ? (x.lead||0) : esMsj ? (x.mensajes||0) : usaVis ? (x.vis||0) : (x.clics||0);
+    const lab= esLead ? 'Registros' : esMsj ? 'Mensajes' : usaVis ? 'Visitas a la página' : esSeg ? 'Visitas al perfil' : 'Clics';
+    const variosP=new Set(X.map(x=>x.p)).size>1;
     const sec= esLead ? (x=>x.vis||0) : (x=>0);
     X.sort((a,b)=> (b.inv>0)-(a.inv>0) || res(b)-res(a) || sec(b)-sec(a) || ((a.inv/(res(a)||1e9))-(b.inv/(res(b)||1e9))) || b.inv-a.inv);
     const conVis=esLead&&X.some(x=>x.vis), conCosto=X.some(x=>x.inv>0&&res(x)>0);
@@ -664,7 +670,7 @@ function contenidosHTML(L){
     const gc=`style="grid-template-columns:18px 1fr ${cols.map(z=>z[2]).join(' ')};column-gap:9px"`;
     h+=`<div class="desglose"><h3>${c}</h3>
       <div class="fila2 cab2 conj" ${gc}><span>#</span><span>Contenido</span>${cols.map(z=>`<span style="text-align:right">${z[0]}</span>`).join('')}</div>
-      ${X.map((x,k)=>`<div class="fila2 conj" ${gc}><span class="c">${k+1}</span><span class="nom">${x.url?`<a href="${x.url}" target="_blank" rel="noopener" style="color:inherit">${x.n}</a>`:x.n}</span>${x.inv>0
+      ${X.map((x,k)=>`<div class="fila2 conj" ${gc}><span class="c">${k+1}</span><span class="nom">${x.url?`<a href="${x.url}" target="_blank" rel="noopener" style="color:inherit">${x.n}</a>`:x.n}${variosP&&x.p?`<small style="display:block;color:#8A8577;font-size:12px;font-weight:400">${x.p}</small>`:''}</span>${x.inv>0
         ?cols.map(z=>z[1](x)).join('')
         :`<span class="c" style="grid-column:span ${cols.length};text-align:right"><span>Recién activado</span></span>`}</div>`).join('')}
       ${esLead&&X.some(x=>x.vis)?`<p class="leyenda" style="margin-top:8px"><span>Sin registros todavía: el orden sale de las visitas a la página que trajo cada uno.</span></p>`:''}
@@ -1361,6 +1367,9 @@ function pintarMensajes(d){
     ${card('Costo por mensaje', mon(inv(m)/(tot(m)||1),2), [inv(m)/(tot(m)||1), a?inv(ma)/(tot(ma)||1):null],2,false,true)}
     ${card('Personas alcanzadas', fmt(Number(m.ej_alcance||0)+Number(m.cal_alcance||0)+Number(m.esp_alcance||0)), null)}
   </div>`;
+  if(u){ const x=u.metricas, P=[['Ejecutivo','ej'],['General','cal'],['Famosos','fam'],['Cata','cata'],[x.esp_nombre||'Especial','esp']].map(([n,k])=>[n,Number(x[k+'_inv_diaria']||0)]).filter(z=>z[1]>0);
+    const dia=P.reduce((a,z)=>a+z[1],0);
+    if(dia>0) h+=`<div class="proy"><div class="l">Inversión proyectada para la próxima semana</div><div class="v">${mon(dia*7,0)}</div><div class="d">${mon(dia,0)} por día × 7 días · ${P.map(z=>`${z[0]} ${fmt(z[1])}`).join(' + ')}</div></div>`; }
 
   h+=multiCamp(R,et);
   h+=multiCamp(R,et,true)||grafico('Costo por mensaje','Cuánto cuesta cada consulta. Mientras más baja la línea, mejor.',R.map(r=>{const x=r.metricas;return Math.round(inv(x)/(tot(x)||1)*100)/100;}),et,'#87863A',true);
@@ -1380,6 +1389,7 @@ function pintarMensajes(d){
       <div class="zona"><span>PBA <b>${fmt(m[c.p+'_pba'])}</b></span><span>·</span><span>CABA <b>${fmt(m[c.p+'_caba'])}</b></span></div>
     </div>`;
   });
+  if(u) h+=contenidosHTML(u.metricas.contenidos);
 
   if(R.length>1){
     h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
@@ -2143,7 +2153,7 @@ function ponerReporte(d){
   fondo.innerHTML=`<div class="repCaja" role="dialog" aria-label="Reporte de la semana"><button class="x" type="button" aria-label="Cerrar">×</button>
     <div class="eti">Reporte · ${fecha(I.desde)} al ${fecha(I.hasta)}</div>
     <h2>Reporte de la semana</h2>
-    ${I.bloques&&I.bloques.length&&I.bloques[0].kpis?`${I.resumen?`<h3>Lo más importante</h3><div class="resu">${I.resumen}</div>`:''}<h3>Campañas</h3>${I.comparado?`<p class="cmpley">Las flechas comparan con la medición anterior (${I.comparado}).</p>`:''}${I.bloques.map(B=>pintaBlq(B)).join('')}`:I.bloques?`<p class="bajada">Los números de las campañas del período.</p>${I.bloques.map(B=>`<div class="blq"><h3>${B.titulo}${B.nota?`<small>${B.nota}</small>`:''}</h3>${(B.filas||[]).map(f=>`<div class="fr${f[2]?' sb':''}"><span>${f[0]}</span><span class="v">${f[1]}</span></div>`).join('')}</div>`).join('')}`:`<p class="bajada">Reporte y recomendaciones basadas en el Método Semilla y la experiencia de otros usuarios.</p>
+    ${I.bloques&&I.bloques.length&&I.bloques[0].kpis?`${I.resumen?`<h3>Lo más importante</h3><div class="resu">${I.resumen}</div>`:''}${I.proyectada?`<div class="proy"><div class="l">Inversión proyectada para la próxima semana</div><div class="v">${I.proyectada.total}</div><div class="d">${I.proyectada.detalle}</div></div>`:''}<h3>Campañas</h3>${I.comparado?`<p class="cmpley">Las flechas comparan con la medición anterior (${I.comparado}).</p>`:''}${I.bloques.map(B=>pintaBlq(B)).join('')}`:I.bloques?`<p class="bajada">Los números de las campañas del período.</p>${I.bloques.map(B=>`<div class="blq"><h3>${B.titulo}${B.nota?`<small>${B.nota}</small>`:''}</h3>${(B.filas||[]).map(f=>`<div class="fr${f[2]?' sb':''}"><span>${f[0]}</span><span class="v">${f[1]}</span></div>`).join('')}</div>`).join('')}`:`<p class="bajada">Reporte y recomendaciones basadas en el Método Semilla y la experiencia de otros usuarios.</p>
     <h3>Lo principal</h3><ol class="${(I.hallazgos||[]).some(x=>typeof x==='object')?'hz':''}">${(I.hallazgos||[]).map(x=>typeof x==='object'?`<li class="${x.tipo==='mal'?'mal':'bien'}">${x.t}</li>`:`<li>${x}</li>`).join('')}</ol>
     <h3>Qué hacer</h3><ol class="qh">${(I.recomendaciones||[]).map(x=>`<li>${x}</li>`).join('')}</ol>
     ${I.reunion?`<div class="reu"><b>En la próxima reunión con Agus</b> ${I.reunion}</div>`:''}`}
@@ -2202,7 +2212,7 @@ const DICT={
 'Este informe se actualiza todos los lunes.':'This report is updated every Monday.','Este informe se actualiza todos los martes.':'This report is updated every Tuesday.',
 'Este informe se actualiza todos los miércoles.':'This report is updated every Wednesday.','Este informe se actualiza todos los viernes.':'This report is updated every Friday.',
 'Los números que ves no son en vivo: corresponden al último período cerrado.':'These numbers are not live: they cover the last closed period.',
-'Tráfico a la página':'Website traffic','Clics a la página que trajo cada región y cuánto se invirtió en cada una. Meta no informa los registros por región.':'Page clicks from each region and how much was spent in each. Meta does not report sign-ups by region.','Visitas al perfil por región':'Profile visits by region','Cuántas visitas al perfil trajo la campaña de seguidores desde cada región y cuánto se invirtió en cada una.':'How many profile visits the follower campaign brought from each region and how much was spent in each.','Invertido':'Spent','Visitas':'Visits','Seguidores por región':'Followers by region','De dónde son los seguidores de la cuenta, según Instagram.':'Where the account followers are from, according to Instagram.','País':'Country','Ciudad':'City','Registros por ubicación':'Sign-ups by placement','Dónde apareció el anuncio cuando la gente se anotó: Instagram o Facebook, y en qué parte (feed, reels, stories).':'Where the ad was shown when people signed up: Instagram or Facebook, and in which spot (feed, reels, stories).','Ubicación':'Placement','Regiones':'Regions','Región':'Region','Clics':'Clicks','Cuántos registros trajo cada región y cuánto costó cada uno.':'How many sign-ups each region brought and what each one cost.','Meta no informa en qué región se anotó cada persona. Esto muestra dónde se invirtió y cuántos clics a la página trajo cada región.':'Meta does not report which region each sign-up came from. This shows where the budget went and how many page clicks each region brought.','Facebook · Feed':'Facebook · Feed','Sin dato':'No data','Inversión en el período':'Spend this period','Seguidores nuevos':'New followers','Cuántos seguidores nuevos entraron en cada medición semanal (según Business Manager).':'How many new followers came in each weekly measurement (per Business Manager).','Tasa de conversión de visitas a seguidores':'Visit-to-follower conversion rate','Campañas desde el inicio':'Campaigns since launch','La suma de todo lo que trajeron las campañas desde que arrancaron.':'Everything the campaigns have brought in since they started.','Inversión total':'Total spend','Nuevos seguidores':'New followers','Nuevos en la waitlist':'New waitlist sign-ups','De cada 100 personas que visitaron el perfil, cuántas se hicieron seguidoras en cada período (en %). Cuanto más alta la línea, mejor.':'Out of every 100 people who visited the profile, how many became followers each period (in %). The higher the line, the better.','Los tres públicos':'The three audiences','Seguidores':'Followers','Inversión':'Investment',
+'Tráfico a la página':'Website traffic','Clics a la página que trajo cada región y cuánto se invirtió en cada una. Meta no informa los registros por región.':'Page clicks from each region and how much was spent in each. Meta does not report sign-ups by region.','Visitas al perfil por región':'Profile visits by region','Cuántas visitas al perfil trajo la campaña de seguidores desde cada región y cuánto se invirtió en cada una.':'How many profile visits the follower campaign brought from each region and how much was spent in each.','Invertido':'Spent','Visitas':'Visits','Seguidores por región':'Followers by region','De dónde son los seguidores de la cuenta, según Instagram.':'Where the account followers are from, according to Instagram.','País':'Country','Ciudad':'City','Registros por ubicación':'Sign-ups by placement','Dónde apareció el anuncio cuando la gente se anotó: Instagram o Facebook, y en qué parte (feed, reels, stories).':'Where the ad was shown when people signed up: Instagram or Facebook, and in which spot (feed, reels, stories).','Ubicación':'Placement','Regiones':'Regions','Región':'Region','Clics':'Clicks','Cuántos registros trajo cada región y cuánto costó cada uno.':'How many sign-ups each region brought and what each one cost.','Meta no informa en qué región se anotó cada persona. Esto muestra dónde se invirtió y cuántos clics a la página trajo cada región.':'Meta does not report which region each sign-up came from. This shows where the budget went and how many page clicks each region brought.','Facebook · Feed':'Facebook · Feed','Sin dato':'No data','Inversión en el período':'Spend this period','Seguidores nuevos':'New followers','Cuántos seguidores nuevos entraron en cada medición semanal (según Business Manager).':'How many new followers came in each weekly measurement (per Business Manager).','Inversión proyectada para la próxima semana':'Projected spend for next week','Tasa de conversión de visitas a seguidores':'Visit-to-follower conversion rate','Campañas desde el inicio':'Campaigns since launch','La suma de todo lo que trajeron las campañas desde que arrancaron.':'Everything the campaigns have brought in since they started.','Inversión total':'Total spend','Nuevos seguidores':'New followers','Nuevos en la waitlist':'New waitlist sign-ups','De cada 100 personas que visitaron el perfil, cuántas se hicieron seguidoras en cada período (en %). Cuanto más alta la línea, mejor.':'Out of every 100 people who visited the profile, how many became followers each period (in %). The higher the line, the better.','Los tres públicos':'The three audiences','Seguidores':'Followers','Inversión':'Investment',
 'Historial':'History','Hitos':'Milestones','Tareas':'Tasks','Activos':'Assets','Notas':'Notes','Consejos':'Tips','↑ Arriba':'↑ Top',
 'Gente que llegó al sitio desde la campaña.':'People who reached the site from the campaign.','Visitas totales':'Total visits',
 'Costo por visita':'Cost per visit','Invertido':'Spent','Personas alcanzadas':'People reached','Visitas':'Visits',
@@ -2360,7 +2370,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261008o';
+var SR_VER='20261008p';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
