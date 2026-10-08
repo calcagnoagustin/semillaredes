@@ -15,7 +15,7 @@
 <style>html,body{margin:0;height:100%;background:#F2EDE4;overscroll-behavior:none}iframe{border:0;width:100%;height:100%;display:block}</style>
 </head>
 <body>
-<iframe id="marco" title="Tu seguimiento"></iframe>
+<iframe id="marco" allow="microphone; camera" title="Tu seguimiento"></iframe>
 <script>
 const a=new URLSearchParams(location.search).get('a')||'';
 const marco=document.getElementById('marco');
