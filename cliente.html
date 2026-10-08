@@ -261,6 +261,12 @@ details.hist table{border:0;border-radius:0}
 .tuweb .twBtns{display:flex;flex-wrap:wrap;gap:10px}
 .tuweb .twVerde{display:inline-flex;align-items:center;gap:10px;background:#5E7B3C;color:#fff;text-decoration:none;font-weight:700;font-size:17px;padding:15px 22px;border-radius:14px;box-shadow:0 8px 20px -10px rgba(94,123,60,.8)}
 .tuweb .twVerde:hover{background:#4F6A31}
+.tuweb .twWebs{display:flex;flex-direction:column;background:#fff;border:1px solid var(--linea);border-radius:14px;overflow:hidden}
+.tuweb .twWeb{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px}
+.tuweb .twWeb+.twWeb{border-top:1px solid var(--linea)}
+.tuweb .twWeb .tit{font-weight:700;color:var(--navy);font-size:15.5px}
+.tuweb .twWeb .url{font-size:12.5px;color:var(--mute);margin-top:2px;word-break:break-all}
+.tuweb .twVerde.chico{font-size:14px;padding:9px 14px;border-radius:10px;gap:7px;box-shadow:none;flex:none}
 .tuweb .twVerde span{font-size:19px}
 .tuweb .twLinks{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px}
 .tuweb .twLinks a{color:var(--navy);font-weight:600;font-size:14.5px;text-decoration:none}
@@ -1571,7 +1577,10 @@ async function cargarTuWeb(){
     else if(p.estado==='descartado') r=`<div class="resp espera"><div class="est">Descartado</div>No se publicó nada.</div>`;
     return `<div class="burb">${WS.length>1&&p.web?`<div class="twNota" style="margin:0 0 4px;font-weight:700">${twEsc(titW(p.web))}</div>`:''}${twEsc(p.texto)}${p.fotos&&p.fotos.length?`<div class="fts">${p.fotos.map(f=>`<img src="${API_WEB}/foto/${slug}/${f}" alt="">`).join('')}</div>`:''}<div class="twNota" style="margin-top:6px">${fh(p.creado)}</div></div>${r}`;
   }).join('');
-  caja.innerHTML=`<div class="twBtns">${WS.map(w=>`<a class="twVerde" href="${conEd(w.url)}" target="_blank" rel="noopener" onclick="if('ontouchstart' in window){event.preventDefault();location.href=this.href+'&volver='+encodeURIComponent(location.href)}"><span>✎</span>${WS.length>1?`Editá ${twEsc(w.titulo)}`:'Editá tu web'}</a>`).join('')}</div>`;
+  const onc=`onclick="if('ontouchstart' in window){event.preventDefault();location.href=this.href+'&volver='+encodeURIComponent(location.href)}"`;
+  const bonita=u=>u.replace(/^https?:\/\//,'').replace(/\/$/,'');
+  if(WS.length===1) caja.innerHTML=`<div class="twBtns"><a class="twVerde" href="${conEd(WS[0].url)}" target="_blank" rel="noopener" ${onc}><span>✎</span>Editá tu web</a></div>`;
+  else caja.innerHTML=`<div class="twWebs">${WS.map(w=>`<div class="twWeb"><div><div class="tit">${twEsc(w.titulo)}</div><div class="url">${twEsc(bonita(w.url))}</div></div><a class="twVerde chico" href="${conEd(w.url)}" target="_blank" rel="noopener" ${onc}><span>✎</span>Editá</a></div>`).join('')}</div>`;
   return;
   pintarFotosTW();
   document.getElementById('twFile').onchange=async e=>{
@@ -2248,7 +2257,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261008a';
+var SR_VER='20261008b';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
