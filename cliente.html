@@ -1571,7 +1571,7 @@ async function cargarTuWeb(){
     else if(p.estado==='descartado') r=`<div class="resp espera"><div class="est">Descartado</div>No se publicó nada.</div>`;
     return `<div class="burb">${WS.length>1&&p.web?`<div class="twNota" style="margin:0 0 4px;font-weight:700">${twEsc(titW(p.web))}</div>`:''}${twEsc(p.texto)}${p.fotos&&p.fotos.length?`<div class="fts">${p.fotos.map(f=>`<img src="${API_WEB}/foto/${slug}/${f}" alt="">`).join('')}</div>`:''}<div class="twNota" style="margin-top:6px">${fh(p.creado)}</div></div>${r}`;
   }).join('');
-  caja.innerHTML=`<div class="twBtns">${WS.map(w=>`<a class="twVerde" href="${conEd(w.url)}" target="_blank" rel="noopener" onclick="if(('ontouchstart' in window)&&window.top!==window){event.preventDefault();try{window.top.location.href=this.href+'&volver='+encodeURIComponent(window.top.location.href)}catch(e){location.href=this.href}}"><span>✎</span>${WS.length>1?`Editá ${twEsc(w.titulo)}`:'Editá tu web'}</a>`).join('')}</div>`;
+  caja.innerHTML=`<div class="twBtns">${WS.map(w=>`<a class="twVerde" href="${conEd(w.url)}" target="_blank" rel="noopener" onclick="if('ontouchstart' in window){event.preventDefault();location.href=this.href+'&volver='+encodeURIComponent(location.href)}"><span>✎</span>${WS.length>1?`Editá ${twEsc(w.titulo)}`:'Editá tu web'}</a>`).join('')}</div>`;
   return;
   pintarFotosTW();
   document.getElementById('twFile').onchange=async e=>{
@@ -2247,6 +2247,22 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 </script>
 
 <script>
+// version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
+var SR_VER='20261008a';
+function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
+(function(){
+  function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
+    if(!j||!j.v||j.v===SR_VER) return; var t=0; try{ t=+sessionStorage.getItem('sr_ver_t')||0; }catch(e){}
+    if(Date.now()-t<60000) return; try{ sessionStorage.setItem('sr_ver_t',Date.now()); }catch(e){} srFresco(); }).catch(function(){}); }
+  chequear();
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden) chequear(); });
+  window.addEventListener('pageshow',function(e){ if(e.persisted) chequear(); });
+  try{ var q=new URLSearchParams(location.search); if(q.get('c')==='semilla-redes'){ var sa=false; try{ sa=!!(window.top.navigator.standalone||window.top.matchMedia('(display-mode: standalone)').matches); }catch(e){}
+    new Image().src='https://vm.semillaredes.com/web/log?p=panel&v='+SR_VER+'&app='+(sa?1:0)+'&marco='+(window.top!==window?1:0); } }catch(e){}
+})();
+</script>
+
+<script>
 // tirar para abajo para actualizar (como en las redes), en la app y en el celular
 (function(){
   if(!('ontouchstart' in window)) return;
@@ -2256,7 +2272,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
     '#ptr .sp i{position:absolute;left:12.5px;top:1px;width:3px;height:8px;border-radius:2px;background:#6F6B7C;transform-origin:1.5px 13px;opacity:0;transition:opacity .08s}'+
     '#ptr .tx{margin-bottom:10px;white-space:nowrap}'+
     '#ptr.gira .sp{animation:ptrg .9s steps(12) infinite}@keyframes ptrg{to{transform:rotate(360deg)}}'+
-    'body.ptr-mov{transition:none}body.ptr-vuelve{transition:transform .25s ease}';
+    'html,body{overscroll-behavior-y:none}body.ptr-mov{transition:none}body.ptr-vuelve{transition:transform .25s ease}';
   document.head.appendChild(st);
   var ind=document.createElement('div'); ind.id='ptr'; var sp='<div class="sp">';
   for(var i=0;i<12;i++) sp+='<i style="transform:rotate('+(i*30)+'deg)"></i>';
@@ -2269,10 +2285,11 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
     tx.textContent=cargando?'Actualizando…':(h>=UMBRAL?'Soltá para actualizar':'Tirá para actualizar'); }
   window.addEventListener('touchstart',function(e){ if(!cargando&&arriba()&&e.touches.length===1&&!e.target.closest('input,textarea,select,[contenteditable],.repFondo:not(.oculto)')){ y0=e.touches[0].clientY; d=0; document.body.classList.remove('ptr-vuelve'); } else y0=null; },{passive:true});
   window.addEventListener('touchmove',function(e){ if(y0==null) return; d=e.touches[0].clientY-y0; if(d<=0||!arriba()){ pintar(0); return; }
-    pintar(Math.min(MAX, d*0.55)); },{passive:true});
+    if(e.cancelable) e.preventDefault(); pintar(Math.min(MAX, d*0.55)); },{passive:false});
+  window.addEventListener('touchcancel',function(){ if(y0==null) return; y0=null; d=0; pintar(0); });
   window.addEventListener('touchend',function(){ if(y0==null) return; y0=null; var h=Math.min(MAX,d*0.55); d=0; document.body.classList.add('ptr-vuelve');
     if(h>=UMBRAL){ cargando=true; ind.classList.add('gira'); pintar(64);
-      setTimeout(function(){ location.reload(); },500); }
+      setTimeout(function(){ srFresco(); },500); }
     else { pintar(0); setTimeout(function(){ document.body.classList.remove('ptr-vuelve'); },260); } });
 })();
 </script>
