@@ -330,7 +330,7 @@ details.hist table{border:0;border-radius:0}
 .repCaja .cmp .nt{font-size:12.5px;color:#8A8577;margin:3px 0 0}
 .repCaja .kp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
 .repCaja .kp>div{background:#FAF7F1;border-radius:12px;padding:11px 12px 10px;min-width:0}
-.repCaja .kp .l{font-size:12px;color:#8A8577;line-height:1.25}
+.repCaja .kp .l{font-size:12px;color:#8A8577;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .repCaja .kp .v{font-size:24px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;white-space:nowrap;margin-top:4px;line-height:1.1}
 .repCaja .kp .v small{font-size:12px;font-weight:600;margin-right:2px}
 .repCaja .kp .d{font-size:12px;font-weight:600;margin-top:4px;min-height:1.3em;white-space:nowrap}
@@ -344,7 +344,7 @@ details.hist table{border:0;border-radius:0}
 .repCaja .alc .lg span::before{content:'';display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:0;background:var(--navy)}
 .repCaja .alc .lg span:nth-child(2)::before{background:#87863A}
 .repCaja .hijo{margin-top:14px;border-radius:14px;background:#FAF7F1;padding:14px 12px 12px;border-left:3px solid var(--vino)}
-.repCaja .hijo .kp>div{background:#fff}
+.repCaja .hijo .kp>div{background:#fff;padding:10px 10px 9px}.repCaja .hijo .kp .l{font-size:11.5px}
 .repCaja .hijo .ct h4{color:var(--navy)}
 .repCaja .ft{margin-top:12px;border-top:1px solid #F0EBE0}
 .repCaja .ft div{display:grid;grid-template-columns:1fr auto;column-gap:12px;align-items:baseline;padding:8px 0 0;font-size:13.5px;color:#55525F}
@@ -2349,7 +2349,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261008j';
+var SR_VER='20261008k';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
