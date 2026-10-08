@@ -629,7 +629,7 @@ function multiCamp(R,et,costo){
   });
   // numeros de cada punto, separados para que no se pisen cuando dos lineas pasan cerca
   R.forEach((r,i)=>{ const L=series.filter(s=>s.vals[i]!=null).map(s=>({s,v:s.vals[i],yy:y(s.vals[i])-10})).sort((a,b)=>a.yy-b.yy);
-    for(let j=1;j<L.length;j++) if(L[j].yy-L[j-1].yy<13) L[j].yy=L[j-1].yy+13;
+    for(let j=1;j<L.length;j++) if(L[j].yy-L[j-1].yy<15) L[j].yy=L[j-1].yy+15;
     L.forEach(o=>{ cuerpo+=`<text x="${x(i)}" y="${o.yy}" font-size="10.5" font-weight="700" fill="${o.s.color}" text-anchor="middle" paint-order="stroke" stroke="#fff" stroke-width="3">${etq(o.v)}</text>`; }); });
   cuerpo+=R.map((r,i)=>`<text x="${x(i)}" y="${H-8}" font-size="13" fill="#8A8697" text-anchor="middle">${et[i]}</text>`).join('');
   const ley=series.map(s=>`<span style="display:inline-flex;align-items:center;gap:6px;margin-right:16px"><span style="width:10px;height:10px;border-radius:50%;background:${s.color};display:inline-block"></span>${s.lab}</span>`).join('');
@@ -2371,7 +2371,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261008q';
+var SR_VER='20261008r';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
