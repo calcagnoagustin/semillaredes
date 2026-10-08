@@ -818,7 +818,7 @@ function pintarTrafico(d){
         ${card('Invertido', mon(L.ld_inversion,2), [L.ld_inversion, LA.ld_inversion],2)}
         ${L.ld_alcance!=null?card('Personas alcanzadas', fmt(L.ld_alcance), [L.ld_alcance, LA.ld_alcance]):''}
         ${L.ld_visitas!=null?card('Visitas a la página', fmt(L.ld_visitas), [L.ld_visitas, LA.ld_visitas]):''}
-        ${L.ld_visitas?card('Conversión de visitas a registros', fmt((L.ld_leads||0)*100/L.ld_visitas,1)+'%', LA.ld_visitas?[(L.ld_leads||0)*100/L.ld_visitas,(LA.ld_leads||0)*100/LA.ld_visitas]:null,1,true):''}
+        ${L.ld_visitas?card('Conversión', fmt((L.ld_leads||0)*100/L.ld_visitas,1)+'%', LA.ld_visitas?[(L.ld_leads||0)*100/L.ld_visitas,(LA.ld_leads||0)*100/LA.ld_visitas]:null,1,true):''}
       </div>`;
       const LP=AUD.map((x,i)=>({t:x.tit, r:L['lp'+(i+1)+'_leads'], v:L['lp'+(i+1)+'_inversion'], c:L['lp'+(i+1)+'_costo'], vi:L['lp'+(i+1)+'_visitas']})).filter(x=>x.v!=null&&Number(x.r)>0);
       const hayV=LP.some(x=>x.vi!=null), gc=hayV?'style="grid-template-columns:1fr 62px 62px 74px 76px;column-gap:8px"':'';
