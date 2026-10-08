@@ -654,6 +654,7 @@ function contenidosHTML(L){
   let h=`<h2>Ranking de contenidos</h2><p class="sub">Los anuncios activos de cada campaña, ordenados por lo que trajo cada uno en este período.</p>`;
   camps.forEach(c=>{
     const X=L.filter(x=>x.c===c);
+    if(!X.some(x=>x.inv>0)) return;   // campaña sin gasto en el período: no suma al ranking
     const esLead=/lead|registro|waitlist/i.test(c), esSeg=/follow|seguidor/i.test(c);
     const esMsj=!esLead && !esSeg && X.some(x=>x.mensajes);
     const usaVis=!esLead && !esMsj && X.some(x=>x.vis);
@@ -2370,7 +2371,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261008p';
+var SR_VER='20261008q';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
