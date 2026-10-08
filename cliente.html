@@ -39,6 +39,12 @@ h2{font-family:'Playfair Display',serif;font-size:23px;color:var(--navy);margin:
 .t.destacada .val{color:var(--crema)}
 .t.destacada .delta{color:#B9B4C4}
 
+.tarj.mini{display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.tarj.mini .t{flex:1 0 auto;padding:9px 12px;border-radius:10px;min-width:0}
+.tarj.mini .t .lab{font-size:9.5px;letter-spacing:1.2px;white-space:nowrap}
+.tarj.mini .t .val{font-size:19px;margin-top:2px;white-space:nowrap}
+.tarj.mini .t .delta{display:none}
+.hist-ld{opacity:.92}
 .graf{background:#fff;border:1px solid var(--linea);border-radius:13px;padding:18px;margin-top:12px}
 .graf h3{font-size:14px;color:var(--navy);margin:0 0 2px}
 .graf .leyenda{font-size:12.5px;color:var(--mute);margin:0 0 10px}
@@ -771,53 +777,70 @@ function pintarTrafico(d){
   }
 
 
-  // ===== 1. TRAFICO =====
-  if(hay('tr_visitas')||hay('a1_visitas')||hay('a2_visitas')||hay('a3_visitas')){
-  // --- waitlist POR PERIODO: se carga una vez antes de cada jueves; las tarjetas muestran el cierre del periodo ---
+
+  // ===== Registros en la app (Audova: la app salió en vivo el 08/10/2026) =====
+  // El total de registrados se carga a mano (sub_waitlist_cargar); los jueves el cron calcula nuevos y costo por registro (wl_*).
+  const CORTE = slug==='audova' ? '2026-10-08' : null;   // desde acá se mide la app; lo anterior era la waitlist
   if(d.cliente.waitlist_on){
-    const WL=d.waitlist||[]; const ult=WL[0]||null;
+    const WL=(d.waitlist||[]).filter(x=>!CORTE||String(x.fecha).slice(0,10)>=CORTE); const ult=WL[0]||null;
     const fW=f=>{ const x=new Date(f); return String(x.getDate()).padStart(2,'0')+'/'+String(x.getMonth()+1).padStart(2,'0'); };
-    const uw=u?u.metricas:{}, aw=a?a.metricas:{};
-    const hayPer=uw.wl_total!=null;
-    h+=`<h2>Waitlist</h2><p class="sub">Cuánta gente se anotó en cada período. Cargá el total de anotados una vez, antes de cada jueves: ese día calculamos cuántos se sumaron y cuánto costó cada uno.</p>`;
-    if(hayPer) h+=`<div class="tarj">
-      ${card('Anotados al cierre', fmt(uw.wl_total), [uw.wl_total, aw.wl_total],0,true)}
+    const RA=R.filter(r=>r.metricas.wl_total!=null && (!CORTE||r.hasta>CORTE));
+    const ua=RA[RA.length-1]||null, aa=RA.length>1?RA[RA.length-2]:null;
+    const uw=ua?ua.metricas:{}, aw=aa?aa.metricas:{};
+    h+=`<h2>Registros en la app</h2><p class="sub">Cuánta gente creó su cuenta en la app desde que salió en vivo. Cargá el total de registrados una vez por semana, antes de cada jueves: ese día calculamos cuántos se sumaron en el período y cuánto costó cada uno.</p>`;
+    if(ua) h+=`<div class="tarj">
+      ${card('Registrados al cierre', fmt(uw.wl_total), [uw.wl_total, aw.wl_total],0,true)}
       ${uw.wl_nuevos!=null?card('Nuevos en el período', fmt(uw.wl_nuevos), [uw.wl_nuevos, aw.wl_nuevos]):''}
       ${uw.wl_costo!=null?card('Costo por registro', mon(uw.wl_costo,2), [uw.wl_costo, aw.wl_costo],2,false,true):''}
     </div>`;
-    h+=`<p class="pista">${ult?`Último número cargado: <b>${fmt(ult.total)}</b>, el ${fW(ult.fecha)}.`:'Todavía no hay un número cargado. Poné cuántos anotados hay hoy.'}</p>
-    <div class="agregarW"><input id="wl_total" type="number" min="0" inputmode="numeric" placeholder="Total de anotados"><button id="wl_add">Guardar</button></div>`;
-    if(R.filter(r=>r.metricas.wl_total!=null).length>1)
-      h+=grafico('Anotados en la waitlist','Total de anotados al cierre de cada período.',R.map(r=>r.metricas.wl_total??null),et,'#1A2456');
+    else h+=`<div class="tarj">
+      ${card('Registrados hasta hoy', ult?fmt(ult.total):'0', null,0,true)}
+      ${card('Nuevos en el período', '—', null)}
+      ${card('Costo por registro', '—', null)}
+    </div>
+    <p class="pista">La app salió en vivo el <span>${CORTE?fecha(CORTE):''}</span>. Los números del primer período aparecen el jueves que viene.</p>`;
+    h+=`<p class="pista">${ult?`Último número cargado: <b>${fmt(ult.total)}</b>, el ${fW(ult.fecha)}.`:'Todavía no hay un número cargado. Poné cuántos registrados hay hoy.'}</p>
+    <div class="agregarW"><input id="wl_total" type="number" min="0" inputmode="numeric" placeholder="Total de registrados hoy"><button id="wl_add">Guardar</button></div>`;
+    if(RA.length>1)
+      h+=grafico('Registrados en la app','Total de usuarios registrados al cierre de cada período.',RA.map(r=>r.metricas.wl_total??null),RA.map(r=>fecha(r.hasta)),'#1A2456');
   }
-  // --- campaña de registros (leads): va arriba de trafico; datos del periodo actual ---
-  if(u && u.metricas.ld_inversion!=null){
-    const L=u.metricas, LA=a?a.metricas:{};
-    h+=`<h2>Campaña de registros</h2><p class="sub">Gente que se anotó en la waitlist desde los anuncios. Lo cuenta el píxel de la página.</p><div class="tarj">
-      ${card('Registros', fmt(L.ld_leads||0), [L.ld_leads, LA.ld_leads],0,true)}
-      ${L.ld_costo!=null?card('Costo por registro', mon(L.ld_costo,2), [L.ld_costo, LA.ld_costo],2,false,true):''}
-      ${card('Invertido', mon(L.ld_inversion,2), [L.ld_inversion, LA.ld_inversion],2)}
-      ${L.ld_alcance!=null?card('Personas alcanzadas', fmt(L.ld_alcance), [L.ld_alcance, LA.ld_alcance]):''}
-      ${L.ld_visitas!=null?card('Visitas a la página', fmt(L.ld_visitas), [L.ld_visitas, LA.ld_visitas]):''}
-      ${L.ld_visitas?card('Conversión de visitas a registros', fmt((L.ld_leads||0)*100/L.ld_visitas,1)+'%', LA.ld_visitas?[(L.ld_leads||0)*100/L.ld_visitas,(LA.ld_leads||0)*100/LA.ld_visitas]:null,1,true):''}
-    </div>`;
-    if(L.ld_visitas) h+=`<p class="sub" style="margin-top:9px">De cada 100 personas que entraron a la página desde estos anuncios, cuántas se anotaron en la waitlist.</p>`;
-    const LP=AUD.map((x,i)=>({t:x.tit, r:L['lp'+(i+1)+'_leads'], v:L['lp'+(i+1)+'_inversion'], c:L['lp'+(i+1)+'_costo'], vi:L['lp'+(i+1)+'_visitas']})).filter(x=>x.v!=null&&Number(x.r)>0);
-    const hayV=LP.some(x=>x.vi!=null), gc=hayV?'style="grid-template-columns:1fr 62px 62px 74px 76px;column-gap:8px"':'';
-    if(LP.length) h+=`<div class="desglose"><h3>Registros por público</h3><p class="leyenda">${hayV?'Cuántos entraron a la página y cuántos se anotaron desde cada público, qué porcentaje convirtió y cuánto costó cada registro.':'Cuántos se anotaron desde cada público y cuánto costó cada uno.'}</p>
-      <div class="fila2 cab2 conj" ${gc}><span>Público</span>${hayV?'<span style="text-align:right">Visitas</span>':''}<span style="text-align:right">Registros</span>${hayV?'<span style="text-align:right">Conversión</span>':''}<span style="text-align:right">Costo c/u</span></div>
-      ${LP.map(x=>`<div class="fila2 conj" ${gc}><span class="nom">${x.t}</span>${hayV?`<span class="v">${fmt(x.vi||0)}</span>`:''}<span class="v">${fmt(x.r||0)}</span>${hayV?`<span class="v">${x.vi?fmt((x.r||0)*100/x.vi,1)+'%':'—'}</span>`:''}<span class="c">${x.c!=null?mon(x.c,2):'—'}</span></div>`).join('')}</div>`;
-    // ubicaciones (IG / FB) y regiones de la campaña de registros / descargas
-    const tablaLd=(lista,tit,ley,col1)=>{ lista=(lista||[]).filter(x=>x.registros>0); if(!lista.length) return '';
-      const gc='style="grid-template-columns:1fr 64px 70px 86px;column-gap:8px"';
-      return `<details class="desglose ldDesp"><summary><h3>${tit}</h3><span class="fl">▸</span></summary><p class="leyenda">${ley}</p>
-        <div class="fila2 cab2 conj" ${gc}><span>${col1}</span><span style="text-align:right">Registros</span><span style="text-align:right">Costo c/u</span><span style="text-align:right">Invertido</span></div>
-        ${lista.map(x=>`<div class="fila2 conj" ${gc}><span class="nom">${x.nombre}</span>
-          <span class="v">${fmt(x.registros||0)}</span><span class="c">${x.costo!=null?mon(x.costo,2):'—'}</span>
-          <span class="c">${mon(x.inversion,2)}</span></div>`).join('')}</details>`; };
-    h+=tablaLd(L.ld_ubicaciones,'Registros por ubicación','Dónde apareció el anuncio cuando la gente se anotó: Instagram o Facebook, y en qué parte (feed, reels, stories).','Ubicación');
-    h+=tablaReg(L.ld_regiones,'Regiones','Clics a la página que trajo cada región y cuánto se invirtió en cada una. Meta no informa los registros por región.','Clics','clics');
+
+  // ===== Campaña de registros a la waitlist: HISTÓRICO congelado (cerró cuando salió la app) =====
+  {
+    const LDR=R.filter(r=>r.metricas.ld_inversion!=null && (!CORTE||r.hasta<=CORTE));
+    if(LDR.length){
+      const ul=LDR[LDR.length-1], al=LDR.length>1?LDR[LDR.length-2]:null;
+      const L=ul.metricas, LA=al?al.metricas:{};
+      const desdeLd = slug==='audova' ? '2026-09-28' : LDR[0].desde;   // la campaña "Leads Waitlist 28/09" arrancó el 28/09
+      h+=`<div class="hist-ld"><h2>Campaña de registros a la waitlist</h2><p class="sub"><b>Histórico.</b> <span>Corrió del ${fecha(desdeLd)} al ${fecha(ul.hasta)}.</span> <span>Gente que se anotó en la waitlist desde los anuncios; lo contó el píxel de la página. Campaña cerrada: ahora los anuncios llevan a la app.</span></p><div class="tarj mini">
+        ${card('Registros', fmt(L.ld_leads||0), [L.ld_leads, LA.ld_leads],0,true)}
+        ${L.ld_costo!=null?card('Costo por registro', mon(L.ld_costo,2), [L.ld_costo, LA.ld_costo],2,false,true):''}
+        ${card('Invertido', mon(L.ld_inversion,2), [L.ld_inversion, LA.ld_inversion],2)}
+        ${L.ld_alcance!=null?card('Personas alcanzadas', fmt(L.ld_alcance), [L.ld_alcance, LA.ld_alcance]):''}
+        ${L.ld_visitas!=null?card('Visitas a la página', fmt(L.ld_visitas), [L.ld_visitas, LA.ld_visitas]):''}
+        ${L.ld_visitas?card('Conversión de visitas a registros', fmt((L.ld_leads||0)*100/L.ld_visitas,1)+'%', LA.ld_visitas?[(L.ld_leads||0)*100/L.ld_visitas,(LA.ld_leads||0)*100/LA.ld_visitas]:null,1,true):''}
+      </div>`;
+      const LP=AUD.map((x,i)=>({t:x.tit, r:L['lp'+(i+1)+'_leads'], v:L['lp'+(i+1)+'_inversion'], c:L['lp'+(i+1)+'_costo'], vi:L['lp'+(i+1)+'_visitas']})).filter(x=>x.v!=null&&Number(x.r)>0);
+      const hayV=LP.some(x=>x.vi!=null), gc=hayV?'style="grid-template-columns:1fr 62px 62px 74px 76px;column-gap:8px"':'';
+      if(LP.length) h+=`<div class="desglose"><h3>Registros por público</h3><p class="leyenda">${hayV?'Cuántos entraron a la página y cuántos se anotaron desde cada público, qué porcentaje convirtió y cuánto costó cada registro.':'Cuántos se anotaron desde cada público y cuánto costó cada uno.'}</p>
+        <div class="fila2 cab2 conj" ${gc}><span>Público</span>${hayV?'<span style="text-align:right">Visitas</span>':''}<span style="text-align:right">Registros</span>${hayV?'<span style="text-align:right">Conversión</span>':''}<span style="text-align:right">Costo c/u</span></div>
+        ${LP.map(x=>`<div class="fila2 conj" ${gc}><span class="nom">${x.t}</span>${hayV?`<span class="v">${fmt(x.vi||0)}</span>`:''}<span class="v">${fmt(x.r||0)}</span>${hayV?`<span class="v">${x.vi?fmt((x.r||0)*100/x.vi,1)+'%':'—'}</span>`:''}<span class="c">${x.c!=null?mon(x.c,2):'—'}</span></div>`).join('')}</div>`;
+      // ubicaciones (IG / FB) y regiones de la campaña de registros
+      const tablaLd=(lista,tit,ley,col1)=>{ lista=(lista||[]).filter(x=>x.registros>0); if(!lista.length) return '';
+        const gc='style="grid-template-columns:1fr 64px 70px 86px;column-gap:8px"';
+        return `<details class="desglose ldDesp"><summary><h3>${tit}</h3><span class="fl">▸</span></summary><p class="leyenda">${ley}</p>
+          <div class="fila2 cab2 conj" ${gc}><span>${col1}</span><span style="text-align:right">Registros</span><span style="text-align:right">Costo c/u</span><span style="text-align:right">Invertido</span></div>
+          ${lista.map(x=>`<div class="fila2 conj" ${gc}><span class="nom">${x.nombre}</span>
+            <span class="v">${fmt(x.registros||0)}</span><span class="c">${x.costo!=null?mon(x.costo,2):'—'}</span>
+            <span class="c">${mon(x.inversion,2)}</span></div>`).join('')}</details>`; };
+      h+=tablaLd(L.ld_ubicaciones,'Registros por ubicación','Dónde apareció el anuncio cuando la gente se anotó: Instagram o Facebook, y en qué parte (feed, reels, stories).','Ubicación');
+      h+=tablaReg(L.ld_regiones,'Regiones','Clics a la página que trajo cada región y cuánto se invirtió en cada una. Meta no informa los registros por región.','Clics','clics');
+      h+=`</div>`;
+    }
   }
+
+  // ===== 1. TRAFICO =====
+  if(hay('tr_visitas')||hay('a1_visitas')||hay('a2_visitas')||hay('a3_visitas')){
     if(!['audova'].includes(slug)){ // Audova: sin Tráfico a la página ni Los tres públicos (pedido de Agus 07/10)
     const trPaus = u && u.metricas.tr_visitas==null;
     const trUlt = [...R].reverse().find(r=>r.metricas.tr_visitas!=null);
@@ -897,10 +920,12 @@ function pintarTrafico(d){
     const sum=f=>R.reduce((a,r)=>a+(Number(f(r.metricas))||0),0);
     const invT=sum(x=>Object.keys(x).filter(k=>/^(ig|ld|tr|frm|msj|vta|stm)_inversion$/.test(k)).reduce((a,k)=>a+(Number(x[k])||0),0));
     const segT=sum(x=>x.ig_followers_nuevos), wlT=sum(x=>x.ld_leads);
+    const appT=[...R].reverse().find(r=>r.metricas.wl_total!=null && r.hasta>'2026-10-08');
     h+=`<h2>Campañas desde el inicio</h2><p class="sub">La suma de todo lo que trajeron las campañas desde que arrancaron.</p><div class="tarj">
       ${card('Inversión total', mon(invT,2), null,2,true)}
       ${card('Nuevos seguidores', fmt(segT), null,0)}
-      ${card('Nuevos en la waitlist', fmt(wlT), null,0)}
+      ${card('Anotados en la waitlist', fmt(wlT), null,0)}
+      ${appT?card('Registrados en la app', fmt(appT.metricas.wl_total), null,0):''}
     </div>`;
   }
 
@@ -2296,6 +2321,13 @@ const DICT={
 '@A qué número querés llegar':'What number do you want to reach','@Cómo querés llamarlo (opcional)':'What do you want to call it (optional)',
 '@Agregar algo que quieras hacer o pedirnos':'Add something you want to do or ask us for','@Nombre del activo. Por ejemplo: Mi carpeta de fotos':'Asset name. For example: My photo folder',
 '@Pegá el link (opcional)':'Paste the link (optional)','Waitlist':'Waitlist',
+'Registros en la app':'App sign-ups','Registrados al cierre':'Registered users at close','Registrados hasta hoy':'Registered users so far','Registrados en la app':'Registered users in the app',
+'Cuánta gente creó su cuenta en la app desde que salió en vivo. Cargá el total de registrados una vez por semana, antes de cada jueves: ese día calculamos cuántos se sumaron en el período y cuánto costó cada uno.':'How many people created their account in the app since it went live. Enter the total number of registered users once a week, before each Thursday: that day we calculate how many joined in the period and what each one cost.',
+'La app salió en vivo el':'The app went live on','. Los números del primer período aparecen el jueves que viene.':'. The first period\'s numbers will show up next Thursday.',
+'Todavía no hay un número cargado. Poné cuántos registrados hay hoy.':'No number has been entered yet. Enter how many registered users there are today.','@Total de registrados hoy':'Total registered users today',
+'Total de usuarios registrados al cierre de cada período.':'Total registered users at the close of each period.',
+'Campaña de registros a la waitlist':'Waitlist sign-up campaign','Histórico.':'Historical.',
+'Gente que se anotó en la waitlist desde los anuncios; lo contó el píxel de la página. Campaña cerrada: ahora los anuncios llevan a la app.':'People who joined the waitlist from the ads, tracked by the site pixel. Campaign closed: the ads now lead to the app.',
 'Cuánta gente se anotó en cada período. Cargá el total de anotados una vez, antes de cada jueves: ese día calculamos cuántos se sumaron y cuánto costó cada uno.':'How many people signed up in each period. Enter the total number of sign-ups once, before each Thursday: that day we calculate how many joined and what each one cost.',
 'Anotados al cierre':'Sign-ups at close','Agregados a playlists':'Playlist adds','Cuántas veces sumaron tus temas a una playlist en cada período.':'How many times your songs were added to a playlist each period.','Inversión en la campaña a Spotify':'Spotify campaign investment','Lo que se invirtió en llevar gente a Spotify, en los mismos períodos que los streams.':'What was invested in driving people to Spotify, in the same periods as the streams.','Inversión por período':'Investment per period','Cuánto se puso en pauta de Instagram en cada período.':'How much went into Instagram ads each period.','Visitas desde los anuncios':'Visits from ads','Visitas al perfil que trajo la pauta en cada período.':'Profile visits brought by ads each period.','Cuánto costó cada visita. Mientras más baja la línea, mejor.':'What each visit cost. The lower the line, the better.','Las ventas de este período todavía no se cargaron.':'Sales for this period have not been entered yet.','Campaña de registros':'Sign-up campaign',
 'Gente que se anotó en la waitlist desde los anuncios. Lo cuenta el píxel de la página.':'People who joined the waitlist from the ads, tracked by the site pixel.',
@@ -2321,6 +2353,7 @@ const REGLAS=[
  [/^(\d{1,2}) de (enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)( de (\d{4}))?$/, (m,d,me,x,y)=>`${MONL[MES.indexOf(me)]} ${d}${y?', '+y:''}`],
  [/^Del (.+) al (.+?)(:.*)?$/, (m,a,b,c)=>`From ${a} to ${b}${c||''}`],
  [/^(\d\d\/\d\d) al (\d\d\/\d\d)$/, (m,a,b)=>`${a} to ${b}`],
+ [/^Corrió del (\d\d\/\d\d) al (\d\d\/\d\d)\.$/, (m,a,b)=>`Ran from ${a} to ${b}.`],
  [/^Anotados al (.+)$/, (m,a)=>`Sign-ups as of ${a}`],
  [/^Campaña pausada\. Estos son sus últimos datos, del (.+) al (.+)\.$/, (m,a,b)=>`Campaign paused. These are its latest numbers, from ${a} to ${b}.`],
  [/^Último número cargado: (.+), el (.+)\.$/, (m,a,b)=>`Last number entered: ${a}, on ${b}.`],
