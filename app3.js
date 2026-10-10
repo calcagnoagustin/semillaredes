@@ -218,7 +218,11 @@
   const barras=(vals,color,w=140,h=44)=>{ const V=vals.filter(v=>v!=null); if(V.length<2) return ''; const mx=Math.max(...V)||1, n=V.length, bw=(w-(n-1)*5)/n;
     return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${V.map((v,i)=>{const bh=Math.max(3,v/mx*h);return `<rect x="${(i*(bw+5)).toFixed(1)}" y="${(h-bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="2" fill="${color}" opacity="${(0.45+0.55*(i+1)/n).toFixed(2)}"/>`;}).join('')}</svg>`; };
 
-  let TAB='hoy', SUBRED='ig', FILTRO='abiertas', FFORM=false;
+  const SS=(k,v)=>{ try{ if(v===undefined) return sessionStorage.getItem('v3_'+k); sessionStorage.setItem('v3_'+k,v); }catch(e){ return null; } };
+  let TAB=SS('tab')||'hoy', SUBRED=SS('red')||'ig', FILTRO=SS('filtro')||'abiertas', FFORM=false;
+  const Y0=+(SS('y')||0);   // al refrescar se vuelve a la misma sección y altura
+  window.addEventListener('pagehide',()=>{ SS('y',String(Math.round(window.scrollY||0))); SS('red',SUBRED); SS('filtro',FILTRO); });
+  window.addEventListener('beforeunload',()=>{ SS('y',String(Math.round(window.scrollY||0))); SS('red',SUBRED); SS('filtro',FILTRO); });
   const CHAT=[]; let CHAT_ON=false, CHAT_ESP=false;
 
   window.V3=function(d){
@@ -380,6 +384,7 @@
     const NV=[['hoy','Hoy'],['proyecto','Proyecto'],['actividades','Actividades'],['metricas','Métricas'],['ia','Reporte']];
     nav.innerHTML=NV.map(([k,t])=>`<button data-ir="${k}">${navIco[k]}<span>${t}</span></button>`).join('');
     ir(TAB,false);
+    if(Y0&&!window.__V3Y){ window.__V3Y=1; requestAnimationFrame(()=>window.scrollTo(0,Y0)); }
     chatMontar(nombre);
 
     // --- eventos ---
@@ -482,7 +487,7 @@
     pintar();
   }
 
-  function ir(t,scroll){ TAB=t;
+  function ir(t,scroll){ TAB=t; SS('tab',t); if(scroll) SS('y','0');
     document.querySelectorAll('#v3 .scr').forEach(s=>s.classList.toggle('on',s.dataset.scr===t));
     document.querySelectorAll('#v3nav button').forEach(b=>b.classList.toggle('on',b.dataset.ir===t));
     if(scroll) window.scrollTo(0,0); }
