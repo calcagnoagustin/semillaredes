@@ -160,13 +160,13 @@
 
   function armar(d){
     document.body.classList.add('v3');
-    const R=(d.reportes||[]).slice().sort((a,b)=>a.desde<b.desde?-1:a.desde>b.desde?1:(a.hasta<b.hasta?-1:1));
+    const R=(d.reportes||[]).filter(r=>(new Date(r.hasta)-new Date(r.desde))/864e5>=3).slice().sort((a,b)=>a.desde<b.desde?-1:a.desde>b.desde?1:(a.hasta<b.hasta?-1:1));
     const ult=k=>{ for(let i=R.length-1;i>=0;i--){ const v=R[i].metricas[k]; if(v!=null) return [v,i]; } return [null,-1]; };
     const ant=(k,desde)=>{ for(let i=desde-1;i>=0;i--){ const v=R[i].metricas[k]; if(v!=null) return v; } return null; };
     const val=k=>ult(k)[0];
     const dlt=k=>{ const [v,i]=ult(k); return i<0?null:pct(v, ant(k,i)); };
     const serie=(k,n=8)=>R.filter(r=>r.metricas[k]!=null&&(new Date(r.hasta)-new Date(r.desde))/864e5>=3).slice(-n).map(r=>Number(r.metricas[k]));
-    const repI=[...R].reverse().find(r=>r.metricas&&r.metricas.informe), I=repI?repI.metricas.informe:null;
+    const repI=[...(d.reportes||[])].reverse().find(r=>r.metricas&&r.metricas.informe), I=repI?repI.metricas.informe:null;
     const nombre=(d.cliente.nombre||'').replace(/\s+\d+$/,'').split(' ')[0];
     const ini=(d.cliente.nombre||'?').trim()[0].toUpperCase();
     const u=R[R.length-1];
@@ -277,8 +277,8 @@
     raiz.innerHTML=`<div class="cab"><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semilla-logo-horizontal.png" alt="Semilla Redes"><span class="sep"></span><span class="ia">semilla<b>IA</b></span><span class="esp"></span><button class="camp ${nuevoRep?'nuevo':''}" id="v3camp" aria-label="Reporte nuevo">${ico.camp}<i></i></button><span class="av">${ini}</span></div>
       <div class="scr" data-scr="hoy">${scrHoy}</div><div class="scr" data-scr="proyecto">${scrPro}</div><div class="scr" data-scr="actividades">${scrAct}</div><div class="scr" data-scr="metricas">${scrMet}</div><div class="scr" data-scr="ia">${scrIA}</div>`;
     const todo=raiz.querySelector('#v3todo'); if(app&&todo){ todo.appendChild(app); app.classList.remove('oculto'); }
-    const tw=app&&app.querySelector('.twBtns'); const web=raiz.querySelector('#v3web');
-    if(tw&&web){ web.innerHTML='<div class="tit2"><h2>Tu web</h2></div><p class="bj" style="margin:0 0 10px;font-size:14.5px">Abrí tu web en modo edición: tocá cualquier texto o foto para cambiarlo, o pedile cambios a SemillaIA. Nada se publica sin que lo apruebes.</p>'; web.appendChild(tw.cloneNode(true)); }
+    const web=raiz.querySelector('#v3web'); let intentos=0;
+    const ponerWeb=()=>{ const tw=app&&app.querySelector('.twBtns'); if(!tw||!web){ if(intentos++<20) setTimeout(ponerWeb,300); return; } web.innerHTML='<div class="tit2"><h2>Tu web</h2></div><p class="bj" style="margin:0 0 10px;font-size:14.5px">Abrí tu web en modo edición: tocá cualquier texto o foto para cambiarlo, o pedile cambios a SemillaIA. Nada se publica sin que lo apruebes.</p>'; web.appendChild(tw.cloneNode(true)); }; ponerWeb();
     let nav=document.getElementById('v3nav');
     if(!nav){ nav=document.createElement('nav'); nav.id='v3nav'; document.body.appendChild(nav); }
     const NV=[['hoy','Hoy'],['proyecto','Proyecto'],['actividades','Actividades'],['metricas','Métricas'],['ia','SemillaIA']];
