@@ -128,7 +128,7 @@
   const fd=s=>{const p=String(s).slice(0,10).split('-');return p[2]+'/'+p[1];};
   const MES=['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
   const ico={
-    ig:'<svg width="26" height="26" viewBox="0 0 24 24"><defs><linearGradient id="v3g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#F9A43A"/><stop offset=".5" stop-color="#E1306C"/><stop offset="1" stop-color="#7B3FE4"/></linearGradient></defs><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="url(#v3g)" stroke-width="2.2"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="url(#v3g)" stroke-width="2.2"/><circle cx="17.3" cy="6.7" r="1.3" fill="#E1306C"/></svg>',
+    ig:'<svg width="26" height="26" viewBox="0 0 24 24"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="url(#v3g)" stroke-width="2.2"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="url(#v3g)" stroke-width="2.2"/><circle cx="17.3" cy="6.7" r="1.3" fill="#E1306C"/></svg>',
     sp:'<svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="#1DB954"/><path d="M6.8 9.4c3.6-1.1 7.6-.8 10.6 1M7.4 12.4c3-.9 6.2-.6 8.7.9M8 15.2c2.4-.6 4.7-.4 6.7.7" stroke="#fff" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg>',
     yt:'<svg width="28" height="26" viewBox="0 0 28 20"><rect x="1" y="1" width="26" height="18" rx="5" fill="#FF0000"/><path d="M11.5 6v8l7-4z" fill="#fff"/></svg>',
     flecha:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
@@ -275,7 +275,7 @@
     const app=document.getElementById('app');
     if(!raiz){ raiz=document.createElement('div'); raiz.id='v3'; document.querySelector('.wrap').prepend(raiz); }
     if(app&&app.parentNode!==document.body) document.body.appendChild(app);   // sacarlo antes de reescribir
-    raiz.innerHTML=`<div class="cab"><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semilla-logo-horizontal.png" alt="Semilla Redes"><span class="sep"></span><span class="ia">semilla<b>IA</b></span><span class="esp"></span><button class="camp ${nuevoRep?'nuevo':''}" id="v3camp" aria-label="Reporte nuevo">${ico.camp}<i></i></button><span class="av">${ini}</span></div>
+    raiz.innerHTML=`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="v3g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#F9A43A"/><stop offset=".5" stop-color="#E1306C"/><stop offset="1" stop-color="#7B3FE4"/></linearGradient></defs></svg><div class="cab"><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semilla-logo-horizontal.png" alt="Semilla Redes"><span class="sep"></span><span class="ia">semilla<b>IA</b></span><span class="esp"></span><button class="camp ${nuevoRep?'nuevo':''}" id="v3camp" aria-label="Reporte nuevo">${ico.camp}<i></i></button><span class="av">${ini}</span></div>
       <div class="scr" data-scr="hoy">${scrHoy}</div><div class="scr" data-scr="proyecto">${scrPro}</div><div class="scr" data-scr="actividades">${scrAct}</div><div class="scr" data-scr="metricas">${scrMet}</div><div class="scr" data-scr="ia">${scrIA}</div>`;
     const todo=raiz.querySelector('#v3todo'); if(app&&todo){ todo.appendChild(app); app.classList.remove('oculto'); }
     const web=raiz.querySelector('#v3web'); let intentos=0;
