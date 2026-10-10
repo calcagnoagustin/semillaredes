@@ -199,7 +199,7 @@
     if(Nm('msj_conversiones')>0&&Nm('msj_ingreso')>0)
       hero=`<div class="e">Ventas del período</div><div class="p">${SIM}${nf(um.msj_ingreso)}</div><div class="x">${nf(um.msj_conversiones)} ${Nm('msj_conversiones')===1?'venta':'ventas'}${Nm('msj_inversion')?` con ${SIM}${nf(um.msj_inversion)} de publicidad`:''}${Nm('msj_roas')?`: cada ${UNI} invertido volvió ${SIM}${nf(um.msj_roas,2)}.`:'.'}</div>`;
     else if(Nm('ig_followers_nuevos')>0)
-      hero=`<div class="e">Tu progreso del período</div><div class="p">+${nf(um.ig_followers_nuevos)}</div><div class="x">seguidores nuevos en Instagram${Nm('ig_costo_follower')?`, a ${SIM}${nf(um.ig_costo_follower, Nm('ig_costo_follower')<100?2:0)} cada uno`:''}.</div>`;
+      hero=`<div class="e">Tu progreso del período</div><div class="p">+${nf(um.ig_followers_nuevos)}</div><div class="x">seguidores nuevos en Instagram en el período.</div>`;
     else if(dif('sp_monthly')>0)
       hero=`<div class="e">Tu progreso del período</div><div class="p">+${nf(dif('sp_monthly'))}</div><div class="x">oyentes mensuales en Spotify: hoy son ${nf(val('sp_monthly'))}.</div>`;
     else if(Nm('msj_mensajes')>0)
