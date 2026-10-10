@@ -150,6 +150,7 @@
   .v3hoja .tit2{display:flex;align-items:center;justify-content:space-between;margin:26px 2px 10px}.v3hoja .tit2 h2{margin:0;font-family:'Playfair Display',serif;font-weight:600;font-size:21px;color:${NAVY}}
   .v3hoja .rd{display:grid;grid-template-columns:30px 1fr auto;column-gap:12px;align-items:center;padding:13px 14px}
   .v3hoja .rd .ic{display:grid;place-items:center}
+  .v3hoja .rd .tx{min-width:0;overflow:hidden}.v3hoja .rd .tx span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .v3hoja .rd .tx b{font-size:15px;color:${NAVY}}.v3hoja .rd .tx span{font-size:13px;color:#8A8577}
   .v3hoja .st{font:600 12px/1 Inter,sans-serif;padding:7px 10px;border-radius:999px;background:#EEE9DF;color:#8A8577;white-space:nowrap}
   .v3hoja .st.ok{background:#E3F0E2;color:#2F6B2A}
