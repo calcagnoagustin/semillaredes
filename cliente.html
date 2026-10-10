@@ -439,7 +439,7 @@ details.hist table{border:0;border-radius:0}
 @media(max-width:560px){ .despl>summary{padding:16px 14px 16px 16px;gap:8px} .despl>summary h2{font-size:19px} .despl .big b{font-size:21px} .despl .lbl{font-size:9.5px;letter-spacing:1.2px} }
 @media(max-width:560px){ .barras{gap:4px} .barras .val{font-size:12.5px} .barras .fec{font-size:11px} }
 </style>
-<script>/* app nueva "Atelier": solo en perfiles de prueba */ if(/[?&]c=(hernan-onirico-2)(&|$)/.test(location.search)) document.write('<script src="/app3.js?v='+Date.now()+'"><\/script>');</script>
+<script>/* app nueva "Atelier": solo en perfiles de prueba */ if(/[?&]c=(hernan-onirico-2|piku-yoga)(&|$)/.test(location.search)) document.write('<script src="/app3.js?v='+Date.now()+'"><\/script>');</script>
 </head>
 <body>
 <div class="wrap">
@@ -2460,7 +2460,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261008x';
+var SR_VER='20261010a';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
