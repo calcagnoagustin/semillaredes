@@ -19,7 +19,7 @@
   #v3 .cab .camp i{position:absolute;top:4px;right:4px;width:9px;height:9px;border-radius:50%;background:#E2767C;border:2px solid #F2EDE4;display:none}
   #v3 .cab .camp.nuevo i{display:block}
   #v3 .cab .av{width:40px;height:40px;border-radius:50%;background:${NAVY};color:#F2EDE4;display:grid;place-items:center;font:700 16px/1 Inter,sans-serif}
-  #v3 h1.tt{font-family:'Playfair Display',serif;font-weight:600;font-size:34px;line-height:1.1;color:${NAVY};margin:0}
+  #v3 h1.v3t{font-family:'Playfair Display',serif;font-weight:600;font-size:34px;line-height:1.1;color:${NAVY};margin:0}
   #v3 .bj{font-size:16px;color:#55525F;margin:4px 0 0}
   #v3 .tit2{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 10px}
   #v3 .tit2 h3{margin:0;font-size:12.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#24242C}
@@ -118,7 +118,7 @@
   #v3nav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;font:500 12px/1 Inter,sans-serif;color:#6F6B7C;cursor:pointer;padding:4px 0}
   #v3nav button.on{color:${VINO};font-weight:700}
   #v3nav svg{width:24px;height:24px}
-  @media(max-width:380px){#v3 h1.tt{font-size:30px}#v3 .met .v{font-size:23px}#v3 .acc button{font-size:11.5px}#v3 .hero .p{font-size:48px}}
+  @media(max-width:380px){#v3 h1.v3t{font-size:30px}#v3 .met .v{font-size:23px}#v3 .acc button{font-size:11.5px}#v3 .hero .p{font-size:48px}}
   `;
   document.head.appendChild(css);
 
@@ -185,7 +185,7 @@
     const H=(d.hitos||[]).map(h=>({h,v:val(h.metrica)})).filter(x=>x.v!=null&&Number(x.v)<Number(x.h.objetivo));
     const hito=H.sort((a,b)=>(b.v/b.h.objetivo)-(a.v/a.h.objetivo))[0];
     const scrHoy=`
-      <h1 class="tt">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>
+      <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
       <div class="tit2"><h3>Métricas principales</h3><button data-ir="metricas">Ver todas</button></div>
       <div class="met">
@@ -193,7 +193,7 @@
         <div class="card"><div class="ic">${ico.sp}</div><div class="v">${nf(val('sp_monthly'))}</div><div class="l">oyentes</div><div class="d">${deltaTxt(dlt('sp_monthly'))}</div></div>
         <div class="card"><div class="ic">${ico.yt}</div><div class="v">${nf(val('yt_views'))}</div><div class="l">vistas</div><div class="d">${deltaTxt(dlt('yt_views'))}</div></div>
       </div>
-      ${hito?`<div class="card hito"><div>${ico.sol}</div><div><div class="tt">Tu próximo hito</div><div class="tx">${esc(hito.h.titulo||('Llegar a '+nf(hito.h.objetivo)))}</div></div><button class="ir" data-ir="proyecto" aria-label="Ver hitos">${ico.flecha}</button>
+      ${hito?`<div class="card hito"><div>${ico.sol}</div><div><div class="v3t">Tu próximo hito</div><div class="tx">${esc(hito.h.titulo||('Llegar a '+nf(hito.h.objetivo)))}</div></div><button class="ir" data-ir="proyecto" aria-label="Ver hitos">${ico.flecha}</button>
         <div class="bar"><div class="b"><i style="width:${Math.min(100,hito.v/hito.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(hito.v)} / ${nf(hito.h.objetivo)}</span></div></div>`:''}
       <div class="tit2"><h3>Accesos rápidos</h3></div>
       <div class="acc">
@@ -211,7 +211,7 @@
     const recs=(I&&I.recomendaciones)||((d.recomendaciones&&d.recomendaciones.recomendaciones)||[]).map(r=>r.texto||r.titulo);
     const idea=recs.length?recs[(hoy.getDate())%recs.length]:null;
     const scrAct=`
-      <div class="tit2" style="margin-top:0"><h1 class="tt">Tu plan</h1><span style="font-size:15px;color:#55525F">${DS[hoy.getDay()]} ${String(hoy.getDate()).padStart(2,'0')}/${String(hoy.getMonth()+1).padStart(2,'0')}</span></div>
+      <div class="tit2" style="margin-top:0"><h1 class="v3t">Tu plan</h1><span style="font-size:15px;color:#55525F">${DS[hoy.getDay()]} ${String(hoy.getDate()).padStart(2,'0')}/${String(hoy.getMonth()+1).padStart(2,'0')}</span></div>
       <p class="bj">Enfocate en lo importante.</p>
       <div class="pills">${Object.keys(lab).map(k=>`<button class="${k===FILTRO?'on':''}" data-filtro="${k}">${lab[k]} · ${T.filter(t=>t.estado===k).length}</button>`).join('')}</div>
       <div class="card lista">
@@ -222,7 +222,7 @@
       <p style="font-size:13px;color:#8A8577;margin:8px 2px 0">Tocá el círculo para cambiar el estado: pendiente, en curso o hecha.</p>
       <div class="tit2"><h2>Próximas fechas</h2><button id="v3fnueva">${FFORM?'Cerrar':'Agregar fecha'}</button></div>
       <div class="card">
-        ${F.length?F.map(f=>{const p=String(f.fecha).slice(0,10).split('-');return `<div class="fe"><div class="dd"><b>${p[2]}</b><span>${MES[+p[1]-1]}</span></div><div><div class="tt">${esc(f.titulo)}</div><div class="su">${f.url?`<button class="cp" data-copia="${esc(f.url)}">Copiar link de entradas</button>`:'Sin link de entradas'}</div></div><span class="ch" style="color:#A9A190">${ico.ch}</span></div>`;}).join('')
+        ${F.length?F.map(f=>{const p=String(f.fecha).slice(0,10).split('-');return `<div class="fe"><div class="dd"><b>${p[2]}</b><span>${MES[+p[1]-1]}</span></div><div><div class="v3t">${esc(f.titulo)}</div><div class="su">${f.url?`<button class="cp" data-copia="${esc(f.url)}">Copiar link de entradas</button>`:'Sin link de entradas'}</div></div><span class="ch" style="color:#A9A190">${ico.ch}</span></div>`;}).join('')
           :`<div class="vacio">Poné aquí las próximas fechas y los links a la ticketera, de ser necesario.</div>`}
         ${FFORM?`<div class="fform"><input id="v3ff" type="date"><input id="v3ft" placeholder="Título. Por ejemplo: Show en La Tangente"><input class="u" id="v3fu" placeholder="Link a la ticketera (opcional)"><button id="v3fadd">Guardar fecha</button></div>`:''}
       </div>
@@ -242,7 +242,7 @@
     const mini=(c)=>{ const v=val(c[0]); return `<div class="card"><div class="n">${c[2]?SIM:''}${nf(v, c[0]==='yt_horas'?1:0)}</div><div class="l">${c[1]}</div>${barras(serie(c[0]),c[3])}</div>`; };
     const imp=I&&I.hallazgos&&I.hallazgos.length?(typeof I.hallazgos[0]==='object'?I.hallazgos[0].t:I.hallazgos[0]):null;
     const scrMet=`
-      <div class="rep"><div><h1 class="tt" style="font-size:31px">Tu reporte</h1><p class="bj">${I?`Del ${fd(I.desde)} al ${fd(I.hasta)}`:'Todavía no hay reporte'}</p></div>${I?`<button class="ir" id="v3rep" aria-label="Abrir reporte">${ico.flecha}</button>`:''}</div>
+      <div class="rep"><div><h1 class="v3t" style="font-size:31px">Tu reporte</h1><p class="bj">${I?`Del ${fd(I.desde)} al ${fd(I.hasta)}`:'Todavía no hay reporte'}</p></div>${I?`<button class="ir" id="v3rep" aria-label="Abrir reporte">${ico.flecha}</button>`:''}</div>
       ${imp?`<div class="card imp"><div>${ico.sol}</div><div><h4>Lo más importante</h4><p>${imp}</p></div></div>`:''}
       <div class="red">${Object.keys(redes).map(k=>`<button class="${k===SUBRED?'on':''}" data-red="${k}">${redes[k].n}</button>`).join('')}</div>
       <div class="card big"><div><div style="display:flex;align-items:center;gap:10px">${ico[SUBRED]}<div class="n">${nf(val(RD.k))}</div></div><div class="l">${RD.l}</div><div class="d">${deltaTxt(dlt(RD.k))}<small>${RD.ex}</small></div></div><div class="sp">${linea(serie(RD.k),RD.col)}</div></div>
@@ -254,16 +254,16 @@
     const HT=(d.hitos||[]).map(h=>({h,v:val(h.metrica)}));
     const A=d.activos||[];
     const scrPro=`
-      <h1 class="tt">Tu proyecto</h1><p class="bj">Tus metas, tus links y tu web.</p>
+      <h1 class="v3t">Tu proyecto</h1><p class="bj">Tus metas, tus links y tu web.</p>
       <div class="tit2"><h2>Hitos</h2></div>
-      <div class="card">${HT.length?HT.map(x=>`<div class="hito" style="margin:0;border-top:1px solid #EDE6D8;grid-template-columns:38px 1fr"><div>${ico.sol}</div><div><div class="tt">${esc(x.h.titulo||nf(x.h.objetivo))}</div><div class="tx">${x.v!=null&&Number(x.v)>=Number(x.h.objetivo)?'¡Logrado!':'En camino'}</div></div><div class="bar"><div class="b"><i style="width:${x.v==null?0:Math.min(100,x.v/x.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(x.v)} / ${nf(x.h.objetivo)}</span></div></div>`).join(''):'<div class="vacio">Todavía no hay hitos.</div>'}</div>
+      <div class="card">${HT.length?HT.map(x=>`<div class="hito" style="margin:0;border-top:1px solid #EDE6D8;grid-template-columns:38px 1fr"><div>${ico.sol}</div><div><div class="v3t">${esc(x.h.titulo||nf(x.h.objetivo))}</div><div class="tx">${x.v!=null&&Number(x.v)>=Number(x.h.objetivo)?'¡Logrado!':'En camino'}</div></div><div class="bar"><div class="b"><i style="width:${x.v==null?0:Math.min(100,x.v/x.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(x.v)} / ${nf(x.h.objetivo)}</span></div></div>`).join(''):'<div class="vacio">Todavía no hay hitos.</div>'}</div>
       <div class="tit2"><h2>Tus activos</h2></div>
       <div class="card lista">${A.length?A.map(a=>`<div class="fila" style="grid-template-columns:1fr 18px">${a.url?`<a class="tx" style="color:${NAVY};text-decoration:none" href="${esc(a.url)}" target="_blank" rel="noopener"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">${esc(a.descripcion||'')}</span></a>`:`<span class="tx"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">En preparación</span></span>`}<span class="ch">${ico.ch}</span></div>`).join(''):'<div class="vacio">Todavía no hay enlaces.</div>'}</div>
       <div id="v3web"></div>`;
 
     // --- SemillaIA ---
     const scrIA=`
-      <h1 class="tt">SemillaIA</h1><p class="bj">Tu reporte, explicado y con próximos pasos.</p>
+      <h1 class="v3t">SemillaIA</h1><p class="bj">Tu reporte, explicado y con próximos pasos.</p>
       ${I?`<div class="card recos" style="margin-top:18px"><div class="h">${ico.sol}Lo principal</div>${(I.hallazgos||[]).map((h,i)=>`<div class="r"><span class="k" style="background:${(h.tipo==='mal')?'#9B2C36':'#4E8B3A'}">${h.tipo==='mal'?'!':'✓'}</span><p>${typeof h==='object'?h.t:h}</p></div>`).join('')}</div>
         <div class="card recos"><div class="h">${ico.hoja}Qué hacer</div>${(I.recomendaciones||[]).map((r,i)=>`<div class="r"><span class="k">${i+1}</span><p>${esc(r)}</p></div>`).join('')}</div>
         ${I.reunion?`<div class="card imp"><div>${ico.luz}</div><div><h4>En la próxima reunión con Agus</h4><p>${esc(I.reunion)}</p></div></div>`:''}
