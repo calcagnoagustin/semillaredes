@@ -22,6 +22,9 @@
   #v3 .cab .camp{position:relative;border:0;background:none;padding:6px;cursor:pointer;color:${VINO}}
   #v3 .cab .camp i{position:absolute;top:4px;right:4px;width:9px;height:9px;border-radius:50%;background:#E2767C;border:2px solid #F2EDE4;display:none}
   #v3 .cab .camp.nuevo i{display:block}
+  #v3 .cab .camp b{position:absolute;top:0;right:-2px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#D93A49;color:#fff;font:700 11.5px/19px Inter,sans-serif;text-align:center;border:2px solid #F2EDE4;box-sizing:border-box}
+  #v3 .cab .camp b:empty{display:none}
+  #v3 .cab .av{cursor:pointer;border:0;padding:0}
   #v3 .cab .av{width:40px;height:40px;border-radius:50%;background:${NAVY};color:#F2EDE4;display:grid;place-items:center;font:700 16px/1 Inter,sans-serif;overflow:hidden;position:relative}
   #v3 .cab .av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%}
   #v3 h1.v3t{font-family:'Playfair Display',serif;font-weight:600;font-size:34px;line-height:1.1;color:${NAVY};margin:0}
@@ -124,6 +127,33 @@
   #v3 details.todo #app{margin-top:10px}
   #v3 .vacio{padding:16px;font-size:14.5px;color:#8A8577}
   #v3 .scr{display:none}#v3 .scr.on{display:block}
+  .v3hoja{position:fixed;inset:0;z-index:80;background:#F2EDE4;overflow-y:auto;transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);font-family:Inter,system-ui,sans-serif;color:#24242C;-webkit-overflow-scrolling:touch}
+  .v3hoja.on{transform:none}
+  .v3hoja .hh{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;padding:calc(env(safe-area-inset-top,0px) + 10px) 10px 10px;background:rgba(242,237,228,.96);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid #E1D9C9}
+  .v3hoja .hh h2{margin:0;text-align:center;font:600 17px/1.2 Inter,sans-serif;color:${NAVY}}
+  .v3hoja .vo{width:44px;height:44px;border:0;background:none;color:${NAVY};display:grid;place-items:center;cursor:pointer}
+  .v3hoja .hc{max-width:560px;margin:0 auto;padding:16px 18px calc(40px + env(safe-area-inset-bottom,0px))}
+  .v3hoja .card{background:#FBF8F2;border:1px solid #E7DFCF;border-radius:18px}
+  .v3hoja .vacio{padding:22px 18px;color:#6F6B7C;font-size:15px;line-height:1.45;text-align:center}
+  .v3hoja .lista>*{border-top:1px solid #EDE6D8}.v3hoja .lista>*:first-child{border-top:0}
+  .v3hoja .ni{width:100%;display:grid;grid-template-columns:40px 1fr 10px;column-gap:12px;align-items:start;text-align:left;border:0;background:none;padding:14px;cursor:pointer;font:inherit;color:inherit}
+  .v3hoja .ni .ic{width:40px;height:40px;border-radius:50%;background:#EFEAD9;color:${OLIVA};display:grid;place-items:center}
+  .v3hoja .ni .tx{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .v3hoja .ni b{font-size:15px;color:${NAVY}}.v3hoja .ni .tx span{font-size:14px;line-height:1.4;color:#55525F}.v3hoja .ni small{font-size:12.5px;color:#8A8577}
+  .v3hoja .ni i{width:10px;height:10px;border-radius:50%;background:#D93A49;margin-top:15px}
+  .v3hoja .ni.nueva{background:#FFFDF8}
+  .v3hoja .pf{text-align:center;padding:8px 0 4px}
+  .v3hoja .pf .ft{width:104px;height:104px;margin:0 auto 14px;border-radius:50%;background:${NAVY};color:#F2EDE4;display:grid;place-items:center;font:700 40px/1 Inter,sans-serif;position:relative;overflow:hidden;box-shadow:0 6px 18px rgba(26,36,86,.18)}
+  .v3hoja .pf .ft img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .v3hoja .v3t{font-family:'Playfair Display',serif;font-weight:600;font-size:30px;line-height:1.1;color:${NAVY};margin:0}
+  .v3hoja .bj{color:#55525F;font-size:15.5px;margin:6px 0 0}
+  .v3hoja .tit2{display:flex;align-items:center;justify-content:space-between;margin:26px 2px 10px}.v3hoja .tit2 h2{margin:0;font-family:'Playfair Display',serif;font-weight:600;font-size:21px;color:${NAVY}}
+  .v3hoja .rd{display:grid;grid-template-columns:30px 1fr auto;column-gap:12px;align-items:center;padding:13px 14px}
+  .v3hoja .rd .ic{display:grid;place-items:center}
+  .v3hoja .rd .tx b{font-size:15px;color:${NAVY}}.v3hoja .rd .tx span{font-size:13px;color:#8A8577}
+  .v3hoja .st{font:600 12px/1 Inter,sans-serif;padding:7px 10px;border-radius:999px;background:#EEE9DF;color:#8A8577;white-space:nowrap}
+  .v3hoja .st.ok{background:#E3F0E2;color:#2F6B2A}
+  .v3hoja .cpL{border:0;background:${NAVY};color:#F2EDE4;border-radius:12px;padding:12px 18px;font:600 14.5px/1 Inter,sans-serif;cursor:pointer}
   #v3chatb{position:fixed;right:16px;bottom:calc(82px + env(safe-area-inset-bottom,0px));z-index:70;display:flex;align-items:center;gap:8px;border:0;border-radius:999px;background:${NAVY};color:#F2EDE4;padding:12px 16px 12px 14px;box-shadow:0 8px 24px rgba(26,36,86,.28);font:500 15px/1 Inter,sans-serif;cursor:pointer}
   #v3chatb b{color:#C9C27A;font-weight:700}
   #v3chatb.oc{display:none}
@@ -178,7 +208,7 @@
     proyecto:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 4v4h6V4M8 13h8M8 16.5h5"/></svg>',
     actividades:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 15.5 10.6 10.6 15.5 8.5 13.4 13.4z" stroke-linejoin="round"/></svg>',
     metricas:'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="11" width="4" height="9" rx="1"/><rect x="10" y="5" width="4" height="15" rx="1"/><rect x="16" y="8" width="4" height="12" rx="1"/></svg>',
-    ia:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5c2.6 1.5 2.6 7.5 0 9-2.6-1.5-2.6-7.5 0-9z"/><path d="M7.5 12h9"/></svg>'
+    ia:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7l4 4V20a.5.5 0 0 1-.5.5h-10A.5.5 0 0 1 7 20z" transform="translate(-.5 0)"/><path d="M13.5 3.5V8h4M9.5 12.5h5M9.5 16h5"/></svg>'
   };
   const linea=(vals,color,w=200,h=80)=>{ const V=vals.map((v,i)=>[i,v]).filter(x=>x[1]!=null); if(V.length<2) return '';
     const mn=Math.min(...V.map(x=>x[1])), mx=Math.max(...V.map(x=>x[1])), rg=(mx-mn)||1, n=vals.length-1||1;
@@ -252,7 +282,7 @@
         <button data-acc="rep"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M6 19v-5M10 19V9M14 19v-7M18 19V6"/></svg>Ver reporte</button>
         <button data-acc="tarea"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v8M8 12h8"/></svg>Agregar tarea</button>
         <button data-acc="fecha"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="14" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4M9 14.5h2M13 14.5h2"/></svg>Próxima fecha</button>
-        <button data-acc="ideas"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>Ideas</button>
+        <button data-acc="chat"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M4 5.5h16v10.5H10l-4.5 3.5V16H4z"/><path d="M8.5 9.5h7M8.5 12.5h4.5" stroke-linecap="round"/></svg>SemillaIA</button>
       </div>`;
 
     // --- Actividades ---
@@ -320,11 +350,11 @@
 
     // --- SemillaIA ---
     const scrIA=`
-      <h1 class="v3t">SemillaIA</h1><p class="bj">Tu reporte, explicado y con próximos pasos.</p>
+      <h1 class="v3t">Reporte</h1><p class="bj">${I?`Del ${fd(I.desde)} al ${fd(I.hasta)}: lo principal, explicado y con próximos pasos.`:"Lo principal, explicado y con próximos pasos."}</p>
       ${I?`<div class="card recos" style="margin-top:18px"><div class="h">${ico.sol}Lo principal</div>${(I.hallazgos||[]).map((h,i)=>`<div class="r"><span class="k" style="background:${(h.tipo==='mal')?'#9B2C36':'#4E8B3A'}">${h.tipo==='mal'?'!':'✓'}</span><p>${typeof h==='object'?h.t:h}</p></div>`).join('')}</div>
         <div class="card recos"><div class="h">${ico.hoja}Qué hacer</div>${(I.recomendaciones||[]).map((r,i)=>`<div class="r"><span class="k">${i+1}</span><p>${esc(r)}</p></div>`).join('')}</div>
         ${I.reunion?`<div class="card imp"><div>${ico.luz}</div><div><h4>En la próxima reunión con Agus</h4><p>${esc(I.reunion)}</p></div></div>`:''}
-        <div style="margin-top:16px;text-align:center"><button id="v3rep2" style="border:0;background:${NAVY};color:#F2EDE4;border-radius:14px;padding:13px 20px;font:600 15px Inter,sans-serif;cursor:pointer">Abrir el reporte para descargar</button></div>`
+        <div style="margin-top:16px;text-align:center"><button id="v3rep2" style="border:0;background:${NAVY};color:#F2EDE4;border-radius:14px;padding:13px 20px;font:600 15px Inter,sans-serif;cursor:pointer">Ver detalles</button></div>`
         :'<div class="card vacio" style="margin-top:18px">Cuando salga tu primer reporte lo vas a ver acá.</div>'}`;
 
     // --- montar ---
@@ -332,7 +362,7 @@
     const app=document.getElementById('app');
     if(!raiz){ raiz=document.createElement('div'); raiz.id='v3'; document.querySelector('.wrap').prepend(raiz); }
     if(app&&app.parentNode!==document.body) document.body.appendChild(app);   // sacarlo antes de reescribir
-    raiz.innerHTML=`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="v3g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#F9A43A"/><stop offset=".5" stop-color="#E1306C"/><stop offset="1" stop-color="#7B3FE4"/></linearGradient></defs></svg><div class="cab"><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semilla-logo-horizontal.png" alt="Semilla Redes"><span class="sep"></span><span class="ia">semilla<b>IA</b></span><span class="esp"></span><button class="camp ${nuevoRep?'nuevo':''}" id="v3camp" aria-label="Reporte nuevo">${ico.camp}<i></i></button><span class="av">${ini}<img src="/assets/avatars/${slug}.jpg?v=${new Date().toISOString().slice(0,10)}" alt="" onerror="this.remove()"></span></div>
+    raiz.innerHTML=`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="v3g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#F9A43A"/><stop offset=".5" stop-color="#E1306C"/><stop offset="1" stop-color="#7B3FE4"/></linearGradient></defs></svg><div class="cab"><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semilla-logo-horizontal.png" alt="Semilla Redes"><span class="sep"></span><span class="ia">semilla<b>IA</b></span><span class="esp"></span><button class="camp" id="v3camp" aria-label="Notificaciones">${ico.camp}<b id="v3nn"></b></button><button class="av" id="v3av" aria-label="Tu perfil">${ini}<img src="/assets/avatars/${slug}.jpg?v=${new Date().toISOString().slice(0,10)}" alt="" onerror="this.remove()"></button></div>
       <div class="scr" data-scr="hoy">${scrHoy}</div><div class="scr" data-scr="proyecto">${scrPro}</div><div class="scr" data-scr="actividades">${scrAct}</div><div class="scr" data-scr="metricas">${scrMet}</div><div class="scr" data-scr="ia">${scrIA}</div>`;
     const todo=raiz.querySelector('#v3todo'); if(app&&todo){ todo.appendChild(app); app.classList.remove('oculto'); }
     const web=raiz.querySelector('#v3web'); let intentos=0;
@@ -346,7 +376,7 @@
       web.querySelectorAll('[data-ed]').forEach(x=>{ const a=eds[+x.dataset.ed]; if(!a) return; const c=a.cloneNode(true); c.className='edt'; c.innerHTML='✎ Editá'; x.appendChild(c); }); }; ponerWeb();
     let nav=document.getElementById('v3nav');
     if(!nav){ nav=document.createElement('nav'); nav.id='v3nav'; document.body.appendChild(nav); }
-    const NV=[['hoy','Hoy'],['proyecto','Proyecto'],['actividades','Actividades'],['metricas','Métricas'],['ia','SemillaIA']];
+    const NV=[['hoy','Hoy'],['proyecto','Proyecto'],['actividades','Actividades'],['metricas','Métricas'],['ia','Reporte']];
     nav.innerHTML=NV.map(([k,t])=>`<button data-ir="${k}">${navIco[k]}<span>${t}</span></button>`).join('');
     ir(TAB,false);
     chatMontar(nombre);
@@ -354,14 +384,16 @@
     // --- eventos ---
     document.querySelectorAll('#v3 [data-ir], #v3nav [data-ir]').forEach(b=>b.onclick=()=>ir(b.dataset.ir,true));
     const abre=()=>{ verRep(); raiz.querySelector('#v3camp').classList.remove('nuevo'); };
-    raiz.querySelector('#v3camp').onclick=abre;
+    raiz.querySelector('#v3camp').onclick=()=>notifAbrir();
+    raiz.querySelector('#v3av').onclick=()=>perfilAbrir();
+    notifCargar();
     const r1=raiz.querySelector('#v3rep'); if(r1) r1.onclick=abre;
-    const r2=raiz.querySelector('#v3rep2'); if(r2) r2.onclick=abre;
+    const r2=raiz.querySelector('#v3rep2'); if(r2) r2.onclick=()=>ir('metricas',true);
     raiz.querySelectorAll('[data-acc]').forEach(b=>b.onclick=()=>{ const a=b.dataset.acc;
-      if(a==='rep') abre();
+      if(a==='rep') ir('ia',true);
       else if(a==='tarea'){ FILTRO='abiertas'; ir('actividades',true); setTimeout(()=>{ const i=document.getElementById('v3tarea'); i&&i.focus(); },60); }
       else if(a==='fecha'){ FFORM=true; TAB='actividades'; armar(window.__D); setTimeout(()=>{ const f=document.getElementById('v3ft'); f&&f.scrollIntoView({block:'center'}); },60); }
-      else if(a==='ideas') ir('ia',true); });
+      else if(a==='chat'){ const cb=document.getElementById('v3chatb'); cb&&cb.click(); } });
     raiz.querySelectorAll('[data-filtro]').forEach(b=>b.onclick=()=>{ FILTRO=b.dataset.filtro; armar(window.__D); });
     raiz.querySelectorAll('[data-red]').forEach(b=>b.onclick=()=>{ SUBRED=b.dataset.red; armar(window.__D); });
     raiz.querySelectorAll('[data-tab]').forEach(s=>s.onclick=()=>s.classList.toggle('ab'));
@@ -380,6 +412,49 @@
       const r=await rpc('sub_fecha_guardar',{p_slug:slug,p_k:tok,p_fecha:f,p_titulo:t,p_url:raiz.querySelector('#v3fu').value.trim()||null}); if(r&&r.ok){ FFORM=false; recargar(); } else fa.disabled=false; };
     raiz.querySelectorAll('[data-copia]').forEach(b=>b.onclick=async()=>{ let ok=false; try{ await navigator.clipboard.writeText(b.dataset.copia); ok=true; }catch(e){}
       b.textContent=ok?'Copiado':'No se pudo copiar'; setTimeout(()=>b.textContent='Copiar link de entradas',1600); });
+  }
+
+  // ---- Notificaciones ----
+  let NOTIFS=null;
+  const fechaN=f=>{ const d=new Date(f), h=new Date(); const dd=Math.round((new Date(h.toDateString())-new Date(d.toDateString()))/864e5);
+    return dd===0?'Hoy':dd===1?'Ayer':dd<7?`Hace ${dd} días`:`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`; };
+  function notifBadge(){ const n=(NOTIFS||[]).filter(x=>!x.leida).length; const b=document.getElementById('v3nn'); if(b) b.textContent=n?(n>9?'9+':n):''; }
+  function notifCargar(){ if(NOTIFS){ notifBadge(); return; } rpc('sub_notifs_get',{p_slug:slug,p_k:tok}).then(r=>{ NOTIFS=(r&&r.notifs)||[]; notifBadge(); }).catch(()=>{}); }
+  function hoja(id,titulo,html){ let h=document.getElementById(id); if(!h){ h=document.createElement('div'); h.id=id; h.className='v3hoja'; document.body.appendChild(h); }
+    h.innerHTML=`<div class="hh"><button class="vo" aria-label="Volver"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><h2>${titulo}</h2><span></span></div><div class="hc">${html}</div>`;
+    h.querySelector('.vo').onclick=()=>h.classList.remove('on'); requestAnimationFrame(()=>h.classList.add('on')); return h; }
+  function notifAbrir(){
+    const L=NOTIFS||[];
+    const ic={reporte:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M6 19v-5M10 19V9M14 19v-7M18 19V6"/></svg>',
+              aviso:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5h4"/></svg>'};
+    const h=hoja('v3notifs','Notificaciones', L.length?`<div class="card lista nl">${L.map(n=>`<button class="ni ${n.leida?'':'nueva'}" data-nt="${esc(n.tipo)}"><span class="ic">${ic[n.tipo]||ic.aviso}</span><span class="tx"><b>${esc(n.titulo)}</b>${n.texto?`<span>${esc(n.texto)}</span>`:''}<small>${fechaN(n.fecha)}</small></span>${n.leida?'':'<i></i>'}</button>`).join('')}</div>`
+      :'<div class="card vacio">Todavía no tenés notificaciones. Acá vas a ver cada reporte nuevo y los avisos que te mandemos.</div>');
+    h.querySelectorAll('[data-nt]').forEach(b=>b.onclick=()=>{ h.classList.remove('on'); if(b.dataset.nt==='reporte') ir('ia',true); });
+    if(L.some(x=>!x.leida)){ rpc('sub_notifs_leer',{p_slug:slug,p_k:tok}).then(()=>{ L.forEach(x=>x.leida=true); notifBadge(); }).catch(()=>{}); }
+  }
+  // ---- Perfil ----
+  function perfilAbrir(){
+    const d=window.__D||{}, c=d.cliente||{}, R=(d.reportes||[]).map(r=>r.metricas||{});
+    const hay=k=>R.some(m=>m[k]!=null), hayP=re=>R.some(m=>Object.keys(m).some(k=>re.test(k)&&m[k]!=null));
+    const W=window.__V3WEBS||[];
+    const tipos={musica:'Música',arte:'Arte visual',mixto:'Proyecto cultural',teatro:'Teatro',libros:'Libros'};
+    const redes=[
+      ['Instagram', c.instagram?'@'+String(c.instagram).replace(/^@/,''):'Seguidores, visitas y alcance', hay('ig_followers_total'), ico.ig],
+      ['Publicidad en Meta', 'Campañas en Instagram', hayP(/_inversion$/), '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1877F2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14V10l11-5v14L4 14z"/><path d="M15 9.5h2.5a2.5 2.5 0 0 1 0 5H15M7 14.5l1.5 4.5H11l-1-4"/></svg>'],
+      ['Spotify', 'Oyentes, reproducciones y seguidores', hay('sp_monthly'), ico.sp],
+      ['YouTube', 'Vistas y suscriptores', hay('yt_views'), ico.yt],
+      [W.length>1?'Tus webs':'Tu web', W.length?W.map(w=>String(w.url).replace(/^https?:\/\//,'').replace(/\/$/,'')).join(' · '):'Editable desde la app', W.length>0, '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="'+NAVY+'" stroke-width="1.9"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 2.5 14.4 0 17M12 3.5c-2.5 2.6-2.5 14.4 0 17"/></svg>']
+    ];
+    const link=(()=>{ try{ return window.top.location.href.split('#')[0]; }catch(e){ return location.href; } })();
+    const h=hoja('v3perfil','Tu perfil',`
+      <div class="pf"><div class="ft">${esc((c.nombre||'?').trim()[0].toUpperCase())}<img src="/assets/avatars/${slug}.jpg?v=${new Date().toISOString().slice(0,10)}" alt="" onerror="this.remove()"></div>
+        <h1 class="v3t">${esc(c.nombre||'')}</h1><p class="bj">${tipos[c.tipo]||'Proyecto'}${c.instagram?' · @'+esc(String(c.instagram).replace(/^@/,'')):''}</p></div>
+      <div class="tit2"><h2>Redes conectadas a SemillaIA</h2></div>
+      <div class="card lista">${redes.map(([n,dt,ok,ic2])=>`<div class="fila rd"><span class="ic">${ic2}</span><span class="tx"><b>${n}</b><br><span>${esc(dt)}</span></span><span class="st ${ok?'ok':''}">${ok?'Conectada':'Sin conectar'}</span></div>`).join('')}</div>
+      <p class="bj" style="font-size:13.5px;margin-top:10px">¿Querés sumar una red? Escribile a Agus y la conectamos.</p>
+      <div class="tit2"><h2>Tu acceso</h2></div>
+      <div class="card" style="padding:16px"><p style="margin:0 0 12px;font-size:14.5px;line-height:1.45;color:#3A3846">Entrás a tu app con un link privado, sin contraseña. No lo compartas: quien lo tenga puede ver tu panel.</p><button class="cpL" id="v3cpl">Copiar mi link</button></div>`);
+    const b=h.querySelector('#v3cpl'); b.onclick=async()=>{ let ok=false; try{ await navigator.clipboard.writeText(link); ok=true; }catch(e){} b.textContent=ok?'Copiado':'No se pudo copiar'; setTimeout(()=>b.textContent='Copiar mi link',1600); };
   }
 
   // ---- SemillaIA: burbuja de chat siempre visible ----
