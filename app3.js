@@ -56,6 +56,7 @@
   #v3 .pills{display:flex;gap:8px;margin:16px 0 12px;flex-wrap:nowrap}
   #v3 .pills button{white-space:nowrap;flex:0 1 auto;border:1px solid #E1D9C9;background:#FBF8F2;border-radius:999px;padding:8px 13px;font:500 13.5px/1 Inter,sans-serif;color:#55525F;cursor:pointer}
   #v3 .pills button.on{background:${OLIVA};border-color:${OLIVA};color:#fff}
+  #v3 .webs .edt{display:inline-block;border:0;background:#2F7A4F;color:#fff;border-radius:999px;padding:8px 13px;font:600 13px/1 Inter,sans-serif;text-decoration:none;white-space:nowrap}
   #v3 .lista .est{border:1px solid #E1D9C9;background:#FBF8F2;border-radius:999px;padding:6px 10px;font:500 12px/1 Inter,sans-serif;color:#6F6B7C;cursor:pointer;white-space:nowrap}
   #v3 .lista .est.on{background:#F1EEDB;border-color:${OLIVA};color:#5E5C22;font-weight:600}
   #v3 .lista .fila{display:grid;grid-template-columns:28px 1fr auto;column-gap:12px;align-items:center;padding:13px 14px;border-top:1px solid #EDE6D8}
@@ -333,7 +334,12 @@
     const web=raiz.querySelector('#v3web'); let intentos=0;
     let WEBV=window.__V3WEBS||[];
     if(!window.__V3WEBS){ window.__V3WEBS=[]; fetch('https://vm.semillaredes.com/web/estado?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(j=>{ if(j&&j.webs&&j.webs.length){ window.__V3WEBS=j.webs; WEBV=j.webs; intentos=0; ponerWeb(); } }).catch(()=>{}); }
-    const ponerWeb=()=>{ if(!web) return; const tw=app&&(app.querySelector('.twBtns')||app.querySelector('.twWebs')); if(!tw&&intentos++<20){ setTimeout(ponerWeb,300); if(!WEBV.length) return; } web.innerHTML=(WEBV.length?'<div class="tit2"><h2>'+(WEBV.length>1?'Tus webs':'Tu web')+'</h2></div><div class="card lista" style="margin-bottom:14px">'+WEBV.map(w=>'<a class="fila" style="grid-template-columns:1fr 18px;text-decoration:none" href="'+esc(w.url)+'" target="_blank" rel="noopener"><span class="tx"><b style="color:'+NAVY+'">'+esc(w.titulo||'Tu web')+'</b><br><span style="color:#8A8577;font-size:13.5px">'+esc(String(w.url).replace(/^https?:\/\//,'').replace(/\/(index\.html)?$/,''))+'</span></span><span class="ch">'+ico.ch+'</span></a>').join('')+'</div>':'<div class="tit2"><h2>Tu web</h2></div>')+'<p class="bj" style="margin:0 0 10px;font-size:14.5px">Para cambiarla: abrí tu web en modo edición: tocá cualquier texto o foto para cambiarlo, o pedile cambios a SemillaIA. Nada se publica sin que lo apruebes.</p>'; if(tw) web.appendChild(tw.cloneNode(true)); else if(!WEBV.length) web.innerHTML=''; }; ponerWeb();
+    const ponerWeb=()=>{ if(!web) return; const tw=app&&(app.querySelector('.twBtns')||app.querySelector('.twWebs')); if(!tw&&intentos++<20) setTimeout(ponerWeb,300);
+      const eds=tw?[...tw.querySelectorAll('a')]:[];
+      if(!WEBV.length&&!eds.length){ web.innerHTML=''; return; }
+      const lista=WEBV.length?WEBV:[{titulo:'Tu web',url:''}];
+      web.innerHTML='<div class="tit2"><h2>'+(lista.length>1?'Tus webs':'Tu web')+'</h2></div><p class="bj" style="margin:0 0 10px;font-size:14.5px">Tocá para verla. Con «Editá» la abrís en modo edición: cambiás textos y fotos, o le pedís cambios a SemillaIA. Nada se publica sin que lo apruebes.</p><div class="card lista webs">'+lista.map((w,n)=>'<div class="fila" style="grid-template-columns:1fr auto">'+(w.url?'<a class="tx" style="text-decoration:none" href="'+esc(w.url)+'" target="_blank" rel="noopener"><b style="color:'+NAVY+'">'+esc(w.titulo||'Tu web')+'</b><br><span style="color:#8A8577;font-size:13.5px">'+esc(String(w.url).replace(/^https?:\/\//,'').replace(/\/(index\.html)?$/,''))+'</span></a>':'<span class="tx"><b style="color:'+NAVY+'">Tu web</b></span>')+'<span class="ed" data-ed="'+n+'"></span></div>').join('')+'</div>';
+      web.querySelectorAll('[data-ed]').forEach(x=>{ const a=eds[+x.dataset.ed]; if(!a) return; const c=a.cloneNode(true); c.className='edt'; c.innerHTML='✎ Editá'; x.appendChild(c); }); }; ponerWeb();
     let nav=document.getElementById('v3nav');
     if(!nav){ nav=document.createElement('nav'); nav.id='v3nav'; document.body.appendChild(nav); }
     const NV=[['hoy','Hoy'],['proyecto','Proyecto'],['actividades','Actividades'],['metricas','Métricas'],['ia','SemillaIA']];
