@@ -8,6 +8,10 @@
   body.v3{background:#F2EDE4}
   body.v3 .wrap{padding:0;max-width:none}
   body.v3 .cabLogo, body.v3 .btnReporte{display:none!important}
+  .cabLogo,#cargando{display:none!important}
+  html,body{background:#F2EDE4}
+  body:not(.v3)::after{content:'';position:fixed;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;background:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cline x1='50' y1='50' x2='50.0' y2='17.0' stroke='%238C8040' stroke-width='2.6'/%3E%3Ccircle cx='50.0' cy='12.0' r='6.5' fill='%238C8040'/%3E%3Cline x1='50' y1='50' x2='73.3' y2='26.7' stroke='%238C8040' stroke-width='2.6'/%3E%3Ccircle cx='76.9' cy='23.1' r='6.5' fill='%238C8040'/%3E%3Cline x1='50' y1='50' x2='83.0' y2='50.0' stroke='%238C8040' stroke-width='2.6'/%3E%3Ccircle cx='88.0' cy='50.0' r='6.5' fill='%238C8040'/%3E%3Cline x1='50' y1='50' x2='73.3' y2='73.3' stroke='%238C8040' stroke-width='2.6'/%3E%3Ccircle cx='76.9' cy='76.9' r='6.5' fill='%238C8040'/%3E%3Cline x1='50' y1='50' x2='50.0' y2='83.0' stroke='%238C8040' stroke-width='2.6'/%3E%3Ccircle cx='50.0' cy='88.0' r='6.5' fill='%238C8040'/%3E%3Cline x1='50' y1='50' x2='26.7' y2='73.3' stroke='%238C8040' stroke-width='2.6'/%3E%3Ccircle cx='23.1' cy='76.9' r='6.5' fill='%238C8040'/%3E%3Cline x1='50' y1='50' x2='17.0' y2='50.0' stroke='%238C8040' stroke-width='2.6'/%3E%3Ccircle cx='12.0' cy='50.0' r='6.5' fill='%238C8040'/%3E%3Cline x1='50' y1='50' x2='26.7' y2='26.7' stroke='%238C8040' stroke-width='2.6'/%3E%3Ccircle cx='23.1' cy='23.1' r='6.5' fill='%238C8040'/%3E%3Cpath d='M50 21Q81 50 50 79Q19 50 50 21Z' fill='%238C8040'/%3E%3Cpath d='M50 23V77' stroke='%23F2EDE4' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;animation:v3spl 1.4s linear infinite}
+  @keyframes v3spl{to{transform:rotate(360deg)}}
   #v3{max-width:560px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 18px calc(150px + env(safe-area-inset-bottom,0px));font-family:Inter,system-ui,sans-serif;color:#24242C}
   #v3 .cab{display:flex;align-items:center;gap:12px;margin-bottom:18px}
   #v3 .cab img{height:34px;display:block}
