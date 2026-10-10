@@ -185,7 +185,7 @@
     const u=R[R.length-1];
     const deltaTxt=(p,inv)=>p==null?'<span class="ne">&nbsp;</span>':`<span class="${(p>=0)!==!!inv?'si':'no'}">${p>=0?'↑':'↓'} ${Math.abs(p)}%</span>`;
     const dK=(k,inv)=>{ const p=dlt(k); if(p!=null) return deltaTxt(p,inv); const x=dif(k); if(x==null||!Number(previo(k))) return deltaTxt(null);
-      return x===0?'<span class="ne">igual que antes</span>':`<span class="${(x>=0)!==!!inv?'si':'no'}">${x>0?'↑ +':'↓ '}${nf(x)} vs. anterior</span>`; };
+      return x===0?'<span class="ne">=</span>':`<span class="${(x>=0)!==!!inv?'si':'no'}">${x>0?'↑ +':'↓ '}${nf(x)}</span>`; };
     const SIM=(typeof MON!=='undefined'&&MON==='USD')?'USD ':'$ ', UNI=SIM==='USD '?'dólar':'peso';
     const verRep=()=>{ const b=document.querySelector('.btnReporte'); if(b) b.click(); };
     let visto=''; try{ visto=localStorage.getItem('sr_rep_'+slug)||''; }catch(e){}
