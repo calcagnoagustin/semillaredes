@@ -118,6 +118,8 @@
   #v3nav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;font:500 12px/1 Inter,sans-serif;color:#6F6B7C;cursor:pointer;padding:4px 0}
   #v3nav button.on{color:${VINO};font-weight:700}
   #v3nav svg{width:24px;height:24px}
+  #v3 .twBtns{display:flex;flex-wrap:wrap;gap:8px}
+  #v3 .twBtns a,#v3 .twBtns button{display:inline-flex;align-items:center;gap:8px;background:${NAVY};color:#fff!important;text-decoration:none;border:0;border-radius:999px;padding:12px 20px;font:600 14.5px/1 Inter,sans-serif}
   @media(max-width:380px){#v3 h1.v3t{font-size:30px}#v3 .met .v{font-size:23px}#v3 .acc button{font-size:11.5px}#v3 .hero .p{font-size:48px}}
   `;
   document.head.appendChild(css);
