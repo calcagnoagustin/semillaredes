@@ -442,20 +442,19 @@ cargar();
   var st=document.createElement('style');
   st.textContent='html,body{overscroll-behavior-y:none}'+
     '#ptr{position:fixed;left:0;right:0;top:0;height:0;z-index:9999;pointer-events:none;display:flex;align-items:center;justify-content:center;overflow:hidden}'+
-    '#ptr .sp{position:relative;width:34px;height:34px;opacity:0;transform:scale(.6)}'+
-    '#ptr .sp i{position:absolute;left:14.5px;top:1px;width:5px;height:10px;border-radius:3px;background:#8E8E93;transform-origin:2.5px 16px}'+
-    '#ptr.gira .sp{animation:ptrg .8s steps(8) infinite}@keyframes ptrg{to{transform:rotate(360deg)}}'+
+    '#ptr .sp{position:relative;width:40px;height:40px;opacity:0;transform:scale(.6)}#ptr .sp svg{display:block}#ptr .sp .r{transition:opacity .12s}'+
+    '#ptr.gira .sp{animation:ptrg 1.1s linear infinite}@keyframes ptrg{to{transform:rotate(360deg)}}'+
     'body.ptr-vuelve{transition:transform .28s cubic-bezier(.2,.8,.2,1)}';
   document.head.appendChild(st);
-  var ind=document.createElement('div'); ind.id='ptr'; var sp='<div class="sp">';
-  for(var i=0;i<8;i++) sp+='<i style="transform:rotate('+(i*45)+'deg);opacity:'+(0.25+0.75*(i/7)).toFixed(2)+'"></i>';
-  ind.innerHTML=sp+'</div>'; document.documentElement.appendChild(ind);
+  var ind=document.createElement('div'); ind.id='ptr';
+  ind.innerHTML='<div class="sp"><svg viewBox=\"0 0 100 100\" width=\"40\" height=\"40\"><g class=\"r\"><line x1=\"50\" y1=\"50\" x2=\"50.0\" y2=\"17.0\" stroke=\"#8C8040\" stroke-width=\"2.6\"/><circle cx=\"50.0\" cy=\"12.0\" r=\"6.5\" fill=\"#8C8040\"/></g><g class=\"r\"><line x1=\"50\" y1=\"50\" x2=\"73.3\" y2=\"26.7\" stroke=\"#8C8040\" stroke-width=\"2.6\"/><circle cx=\"76.9\" cy=\"23.1\" r=\"6.5\" fill=\"#8C8040\"/></g><g class=\"r\"><line x1=\"50\" y1=\"50\" x2=\"83.0\" y2=\"50.0\" stroke=\"#8C8040\" stroke-width=\"2.6\"/><circle cx=\"88.0\" cy=\"50.0\" r=\"6.5\" fill=\"#8C8040\"/></g><g class=\"r\"><line x1=\"50\" y1=\"50\" x2=\"73.3\" y2=\"73.3\" stroke=\"#8C8040\" stroke-width=\"2.6\"/><circle cx=\"76.9\" cy=\"76.9\" r=\"6.5\" fill=\"#8C8040\"/></g><g class=\"r\"><line x1=\"50\" y1=\"50\" x2=\"50.0\" y2=\"83.0\" stroke=\"#8C8040\" stroke-width=\"2.6\"/><circle cx=\"50.0\" cy=\"88.0\" r=\"6.5\" fill=\"#8C8040\"/></g><g class=\"r\"><line x1=\"50\" y1=\"50\" x2=\"26.7\" y2=\"73.3\" stroke=\"#8C8040\" stroke-width=\"2.6\"/><circle cx=\"23.1\" cy=\"76.9\" r=\"6.5\" fill=\"#8C8040\"/></g><g class=\"r\"><line x1=\"50\" y1=\"50\" x2=\"17.0\" y2=\"50.0\" stroke=\"#8C8040\" stroke-width=\"2.6\"/><circle cx=\"12.0\" cy=\"50.0\" r=\"6.5\" fill=\"#8C8040\"/></g><g class=\"r\"><line x1=\"50\" y1=\"50\" x2=\"26.7\" y2=\"26.7\" stroke=\"#8C8040\" stroke-width=\"2.6\"/><circle cx=\"23.1\" cy=\"23.1\" r=\"6.5\" fill=\"#8C8040\"/></g><path d=\"M50 22Q73 50 50 78Q27 50 50 22Z\" fill=\"#8C8040\"/><path d=\"M50 23V77\" stroke=\"#F2EDE4\" stroke-width=\"2\"/></svg></div>'; document.documentElement.appendChild(ind);
   var rueda=ind.querySelector('.sp');
   var y0=null, d=0, UMBRAL=70, MAX=120, ALTO=64, cargando=false, avisado=false;
   var arriba=function(){ var se=document.scrollingElement||document.documentElement; return (window.scrollY||se.scrollTop||0)<=0; };
   function log(q){ try{ if(!/[?&]c=semilla-redes/.test(location.search)) return; new Image().src='https://vm.semillaredes.com/web/log?p=ptr&e='+q; }catch(e){} }
   function pintar(h){ ind.style.height=h+'px'; document.body.style.transform=h?'translateY('+h+'px)':'';
-    var k=Math.min(1,h/UMBRAL); rueda.style.opacity=cargando?1:k; rueda.style.transform=cargando?'':'scale('+(0.6+0.4*k)+') rotate('+(h*3)+'deg)'; }
+    var k=Math.min(1,h/UMBRAL); rueda.style.opacity=cargando?1:k; rueda.style.transform=cargando?'':'scale('+(0.6+0.4*k)+') rotate('+(h*1.5)+'deg)';
+    var rr=rueda.querySelectorAll('.r'); for(var j=0;j<rr.length;j++) rr[j].style.opacity=(cargando||k>=(j+1)/8)?1:0.15; }
   window.addEventListener('touchstart',function(e){ if(!cargando&&arriba()&&e.touches.length===1&&!e.target.closest('input,textarea,select,[contenteditable],.repFondo:not(.oculto),#edvelo.on')){ y0=e.touches[0].clientY; d=0; document.body.classList.remove('ptr-vuelve'); } else y0=null; },{passive:true});
   window.addEventListener('touchmove',function(e){ if(y0==null) return; d=e.touches[0].clientY-y0; if(d<=0||!arriba()){ pintar(0); return; }
     if(e.cancelable) e.preventDefault(); if(!avisado){ avisado=true; log('tira'); } pintar(Math.min(MAX, d*0.5)); },{passive:false});
