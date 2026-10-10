@@ -481,6 +481,8 @@ function delta(act,ant,invertido){
   const pct=Math.round(d/ant*100);
   const bien = invertido ? d<0 : d>0;
   const flecha = d>0?'▲':'▼';
+  // base chica (menos de 10 y números enteros): un % engaña (1 a 3 = +200%), se muestra la diferencia
+  if(Math.abs(ant)<10&&Number.isInteger(+act)&&Number.isInteger(+ant)) return `<span class="delta ${bien?'up':'down'}">${flecha} ${d>0?'+':''}${fmt(d)} vs período anterior</span>`;
   return `<span class="delta ${bien?'up':'down'}">${flecha} ${Math.abs(pct)}% vs período anterior</span>`;
 }
 
@@ -2346,6 +2348,7 @@ const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','De
 const MONL=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const REGLAS=[
  [/^(▲|▼)\s*([\d.,]+)% vs período anterior$/, (m,a,b)=>`${a} ${b}% vs previous period`],
+ [/^(▲|▼)\s*([+-]?[\d.,]+) vs período anterior$/, (m,a,b)=>`${a} ${b} vs previous period`],
  [/^igual que el período anterior$/, ()=>'same as previous period'],
  [/^Ver los (\d+) reportes$/, (m,a)=>`See all ${a} reports`],
  [/^Ver el reporte$/, ()=>'See the report'],
@@ -2460,7 +2463,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261010a';
+var SR_VER='20261010b';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
