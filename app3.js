@@ -19,7 +19,7 @@
   #v3 .cab .camp i{position:absolute;top:4px;right:4px;width:9px;height:9px;border-radius:50%;background:#E2767C;border:2px solid #F2EDE4;display:none}
   #v3 .cab .camp.nuevo i{display:block}
   #v3 .cab .av{width:40px;height:40px;border-radius:50%;background:${NAVY};color:#F2EDE4;display:grid;place-items:center;font:700 16px/1 Inter,sans-serif}
-  #v3 h1.t{font-family:'Playfair Display',serif;font-weight:600;font-size:34px;line-height:1.1;color:${NAVY};margin:0}
+  #v3 h1.tt{font-family:'Playfair Display',serif;font-weight:600;font-size:34px;line-height:1.1;color:${NAVY};margin:0}
   #v3 .bj{font-size:16px;color:#55525F;margin:4px 0 0}
   #v3 .tit2{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 10px}
   #v3 .tit2 h3{margin:0;font-size:12.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#24242C}
@@ -50,8 +50,8 @@
   #v3 .acc{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
   #v3 .acc button{background:#FBF8F2;border:1px solid #E8E1D3;border-radius:16px;padding:14px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;font:500 12.5px/1.25 Inter,sans-serif;color:#24242C;cursor:pointer;min-height:96px}
   #v3 .acc svg{color:${OLIVA}}
-  #v3 .pills{display:flex;gap:8px;margin:16px 0 12px;flex-wrap:wrap}
-  #v3 .pills button{border:1px solid #E1D9C9;background:#FBF8F2;border-radius:999px;padding:8px 16px;font:500 14px/1 Inter,sans-serif;color:#55525F;cursor:pointer}
+  #v3 .pills{display:flex;gap:8px;margin:16px 0 12px;flex-wrap:nowrap}
+  #v3 .pills button{white-space:nowrap;flex:0 1 auto;border:1px solid #E1D9C9;background:#FBF8F2;border-radius:999px;padding:8px 13px;font:500 13.5px/1 Inter,sans-serif;color:#55525F;cursor:pointer}
   #v3 .pills button.on{background:${OLIVA};border-color:${OLIVA};color:#fff}
   #v3 .lista .fila{display:grid;grid-template-columns:28px 1fr 18px;column-gap:12px;align-items:center;padding:13px 14px;border-top:1px solid #EDE6D8}
   #v3 .lista .fila:first-child{border-top:0}
@@ -96,7 +96,8 @@
   #v3 .big .l{font-size:14px;color:#55525F;margin-top:2px}
   #v3 .big .d{font-size:14px;font-weight:600;margin-top:10px}
   #v3 .big .d small{display:block;font-weight:400;color:#8A8577;font-size:13px}
-  #v3 .big svg{width:100%;height:90px}
+  #v3 .big .sp svg{width:100%;height:90px;display:block}
+  #v3 .big .n,#v3 .big .ic{flex:none}
   #v3 .dos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
   #v3 .dos .card{padding:14px}
   #v3 .dos .n{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;color:${NAVY};line-height:1.1;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -117,7 +118,7 @@
   #v3nav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;font:500 12px/1 Inter,sans-serif;color:#6F6B7C;cursor:pointer;padding:4px 0}
   #v3nav button.on{color:${VINO};font-weight:700}
   #v3nav svg{width:24px;height:24px}
-  @media(max-width:380px){#v3 h1.t{font-size:30px}#v3 .met .v{font-size:23px}#v3 .acc button{font-size:11.5px}#v3 .hero .p{font-size:48px}}
+  @media(max-width:380px){#v3 h1.tt{font-size:30px}#v3 .met .v{font-size:23px}#v3 .acc button{font-size:11.5px}#v3 .hero .p{font-size:48px}}
   `;
   document.head.appendChild(css);
 
@@ -184,7 +185,7 @@
     const H=(d.hitos||[]).map(h=>({h,v:val(h.metrica)})).filter(x=>x.v!=null&&Number(x.v)<Number(x.h.objetivo));
     const hito=H.sort((a,b)=>(b.v/b.h.objetivo)-(a.v/a.h.objetivo))[0];
     const scrHoy=`
-      <h1 class="t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>
+      <h1 class="tt">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
       <div class="tit2"><h3>Métricas principales</h3><button data-ir="metricas">Ver todas</button></div>
       <div class="met">
@@ -210,7 +211,7 @@
     const recs=(I&&I.recomendaciones)||((d.recomendaciones&&d.recomendaciones.recomendaciones)||[]).map(r=>r.texto||r.titulo);
     const idea=recs.length?recs[(hoy.getDate())%recs.length]:null;
     const scrAct=`
-      <div class="tit2" style="margin-top:0"><h1 class="t">Tu plan</h1><span style="font-size:15px;color:#55525F">${DS[hoy.getDay()]} ${String(hoy.getDate()).padStart(2,'0')}/${String(hoy.getMonth()+1).padStart(2,'0')}</span></div>
+      <div class="tit2" style="margin-top:0"><h1 class="tt">Tu plan</h1><span style="font-size:15px;color:#55525F">${DS[hoy.getDay()]} ${String(hoy.getDate()).padStart(2,'0')}/${String(hoy.getMonth()+1).padStart(2,'0')}</span></div>
       <p class="bj">Enfocate en lo importante.</p>
       <div class="pills">${Object.keys(lab).map(k=>`<button class="${k===FILTRO?'on':''}" data-filtro="${k}">${lab[k]} · ${T.filter(t=>t.estado===k).length}</button>`).join('')}</div>
       <div class="card lista">
@@ -241,10 +242,10 @@
     const mini=(c)=>{ const v=val(c[0]); return `<div class="card"><div class="n">${c[2]?SIM:''}${nf(v, c[0]==='yt_horas'?1:0)}</div><div class="l">${c[1]}</div>${barras(serie(c[0]),c[3])}</div>`; };
     const imp=I&&I.hallazgos&&I.hallazgos.length?(typeof I.hallazgos[0]==='object'?I.hallazgos[0].t:I.hallazgos[0]):null;
     const scrMet=`
-      <div class="rep"><div><h1 class="t" style="font-size:31px">Tu reporte</h1><p class="bj">${I?`Del ${fd(I.desde)} al ${fd(I.hasta)}`:'Todavía no hay reporte'}</p></div>${I?`<button class="ir" id="v3rep" aria-label="Abrir reporte">${ico.flecha}</button>`:''}</div>
+      <div class="rep"><div><h1 class="tt" style="font-size:31px">Tu reporte</h1><p class="bj">${I?`Del ${fd(I.desde)} al ${fd(I.hasta)}`:'Todavía no hay reporte'}</p></div>${I?`<button class="ir" id="v3rep" aria-label="Abrir reporte">${ico.flecha}</button>`:''}</div>
       ${imp?`<div class="card imp"><div>${ico.sol}</div><div><h4>Lo más importante</h4><p>${imp}</p></div></div>`:''}
       <div class="red">${Object.keys(redes).map(k=>`<button class="${k===SUBRED?'on':''}" data-red="${k}">${redes[k].n}</button>`).join('')}</div>
-      <div class="card big"><div><div style="display:flex;align-items:center;gap:10px">${ico[SUBRED]}<div class="n">${nf(val(RD.k))}</div></div><div class="l">${RD.l}</div><div class="d">${deltaTxt(dlt(RD.k))}<small>${RD.ex}</small></div></div><div>${linea(serie(RD.k),RD.col)}</div></div>
+      <div class="card big"><div><div style="display:flex;align-items:center;gap:10px">${ico[SUBRED]}<div class="n">${nf(val(RD.k))}</div></div><div class="l">${RD.l}</div><div class="d">${deltaTxt(dlt(RD.k))}<small>${RD.ex}</small></div></div><div class="sp">${linea(serie(RD.k),RD.col)}</div></div>
       <div class="dos">${mini(RD.a)}${mini(RD.b)}</div>
       ${recs.length?`<div class="card recos"><div class="h">${ico.hoja}Recomendaciones SemillaIA</div>${recs.slice(0,3).map((r,i)=>`<div class="r"><span class="k">${i+1}</span><p>${esc(String(r).replace(/<[^>]+>/g,''))}</p></div>`).join('')}</div>`:''}
       <details class="todo" id="v3todo"><summary>Ver todas las métricas</summary></details>`;
@@ -253,7 +254,7 @@
     const HT=(d.hitos||[]).map(h=>({h,v:val(h.metrica)}));
     const A=d.activos||[];
     const scrPro=`
-      <h1 class="t">Tu proyecto</h1><p class="bj">Tus metas, tus links y tu web.</p>
+      <h1 class="tt">Tu proyecto</h1><p class="bj">Tus metas, tus links y tu web.</p>
       <div class="tit2"><h2>Hitos</h2></div>
       <div class="card">${HT.length?HT.map(x=>`<div class="hito" style="margin:0;border-top:1px solid #EDE6D8;grid-template-columns:38px 1fr"><div>${ico.sol}</div><div><div class="tt">${esc(x.h.titulo||nf(x.h.objetivo))}</div><div class="tx">${x.v!=null&&Number(x.v)>=Number(x.h.objetivo)?'¡Logrado!':'En camino'}</div></div><div class="bar"><div class="b"><i style="width:${x.v==null?0:Math.min(100,x.v/x.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(x.v)} / ${nf(x.h.objetivo)}</span></div></div>`).join(''):'<div class="vacio">Todavía no hay hitos.</div>'}</div>
       <div class="tit2"><h2>Tus activos</h2></div>
@@ -262,7 +263,7 @@
 
     // --- SemillaIA ---
     const scrIA=`
-      <h1 class="t">SemillaIA</h1><p class="bj">Tu reporte, explicado y con próximos pasos.</p>
+      <h1 class="tt">SemillaIA</h1><p class="bj">Tu reporte, explicado y con próximos pasos.</p>
       ${I?`<div class="card recos" style="margin-top:18px"><div class="h">${ico.sol}Lo principal</div>${(I.hallazgos||[]).map((h,i)=>`<div class="r"><span class="k" style="background:${(h.tipo==='mal')?'#9B2C36':'#4E8B3A'}">${h.tipo==='mal'?'!':'✓'}</span><p>${typeof h==='object'?h.t:h}</p></div>`).join('')}</div>
         <div class="card recos"><div class="h">${ico.hoja}Qué hacer</div>${(I.recomendaciones||[]).map((r,i)=>`<div class="r"><span class="k">${i+1}</span><p>${esc(r)}</p></div>`).join('')}</div>
         ${I.reunion?`<div class="card imp"><div>${ico.luz}</div><div><h4>En la próxima reunión con Agus</h4><p>${esc(I.reunion)}</p></div></div>`:''}
