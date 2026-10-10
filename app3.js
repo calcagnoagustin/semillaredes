@@ -30,6 +30,8 @@
   #v3 .hero{margin-top:18px;background:${NAVY};color:#F2EDE4;border-radius:20px;padding:20px 20px 18px;position:relative;overflow:hidden}
   #v3 .hero .e{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:.9}
   #v3 .hero .p{font-family:'Playfair Display',serif;font-size:56px;line-height:1;margin:14px 0 10px;font-weight:600}
+  #v3 .hero .desde{margin-top:14px;padding-top:12px;border-top:1px solid rgba(242,237,228,.18);font-size:13.5px;line-height:1.4;max-width:80%;opacity:.9}
+  #v3 .hero .desde b{color:#E8D9A8;font-weight:600}
   #v3 .hero .x{font-size:15px;line-height:1.45;max-width:78%;opacity:.95}
   #v3 .hero .ir{position:absolute;right:16px;bottom:16px;width:40px;height:40px;border-radius:50%;background:${OLIVA};color:#fff;border:0;display:grid;place-items:center;cursor:pointer}
   #v3 .hero svg.cielo{position:absolute;right:-30px;top:-10px;opacity:.9;pointer-events:none}
@@ -129,6 +131,7 @@
   const nf=(v,dec=0)=>v==null||isNaN(v)?'—':Number(v).toLocaleString('es-AR',{minimumFractionDigits:dec,maximumFractionDigits:dec});
   const pct=(a,b)=>(a==null||b==null||!Number(b))?null:Math.round((Number(a)-Number(b))/Number(b)*100);
   const fd=s=>{const p=String(s).slice(0,10).split('-');return p[2]+'/'+p[1];};
+  const MESL=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   const MES=['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
   const ico={
     ig:'<svg width="26" height="26" viewBox="0 0 24 24"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="url(#v3g)" stroke-width="2.2"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="url(#v3g)" stroke-width="2.2"/><circle cx="17.3" cy="6.7" r="1.3" fill="#E1306C"/></svg>',
@@ -168,24 +171,43 @@
     const R=(d.reportes||[]).filter(r=>(new Date(r.hasta)-new Date(r.desde))/864e5>=3).slice().sort((a,b)=>a.desde<b.desde?-1:a.desde>b.desde?1:(a.hasta<b.hasta?-1:1));
     const ult=k=>{ for(let i=R.length-1;i>=0;i--){ const v=R[i].metricas[k]; if(v!=null) return [v,i]; } return [null,-1]; };
     const ant=(k,desde)=>{ for(let i=desde-1;i>=0;i--){ const v=R[i].metricas[k]; if(v!=null) return v; } return null; };
-    const val=k=>ult(k)[0];
-    const dlt=k=>{ const [v,i]=ult(k); return i<0?null:pct(v, ant(k,i)); };
+    const MANUAL={msj_conversiones:1,msj_ingreso:1,msj_roas:1,msj_costo_conversion:1};
+    const ultM=k=>{ if(!MANUAL[k]) return ult(k); const i=R.length-1; return i>=0&&R[i].metricas[k]!=null?[R[i].metricas[k],i]:[null,-1]; };
+    const val=k=>ultM(k)[0];
+    const previo=k=>{ const [v,i]=ultM(k); return i<0?null:ant(k,i); };
+    // % solo si la base es confiable: con menos de 10 en la medición anterior se muestra la diferencia en números
+    const dlt=k=>{ const v=val(k), a=previo(k); if(v==null||a==null||Number(a)<10) return null; return pct(v,a); };
+    const dif=k=>{ const v=val(k), a=previo(k); return v==null||a==null?null:Number(v)-Number(a); };
     const serie=(k,n=8)=>R.filter(r=>r.metricas[k]!=null&&(new Date(r.hasta)-new Date(r.desde))/864e5>=3).slice(-n).map(r=>Number(r.metricas[k]));
     const repI=[...(d.reportes||[])].reverse().find(r=>r.metricas&&r.metricas.informe), I=repI?repI.metricas.informe:null;
     const nombre=(d.cliente.nombre||'').replace(/\s+\d+$/,'').split(' ')[0];
     const ini=(d.cliente.nombre||'?').trim()[0].toUpperCase();
     const u=R[R.length-1];
     const deltaTxt=(p,inv)=>p==null?'<span class="ne">&nbsp;</span>':`<span class="${(p>=0)!==!!inv?'si':'no'}">${p>=0?'↑':'↓'} ${Math.abs(p)}%</span>`;
+    const dK=(k,inv)=>{ const p=dlt(k); if(p!=null) return deltaTxt(p,inv); const x=dif(k); if(x==null||!Number(previo(k))) return deltaTxt(null);
+      return x===0?'<span class="ne">igual que antes</span>':`<span class="${(x>=0)!==!!inv?'si':'no'}">${x>0?'↑ +':'↓ '}${nf(x)} vs. anterior</span>`; };
+    const SIM=(typeof MON!=='undefined'&&MON==='USD')?'USD ':'$ ', UNI=SIM==='USD '?'dólar':'peso';
     const verRep=()=>{ const b=document.querySelector('.btnReporte'); if(b) b.click(); };
     let visto=''; try{ visto=localStorage.getItem('sr_rep_'+slug)||''; }catch(e){}
     const nuevoRep=I&&visto!==I.fecha;
 
     // --- Hoy ---
-    const cands=[['sp_monthly','oyentes mensuales en Spotify'],['ig_followers_nuevos','seguidores nuevos en Instagram'],['yt_views','vistas en YouTube'],['ig_visitas','visitas al perfil de Instagram'],['msj_conversiones','ventas'],['msj_mensajes','mensajes recibidos'],['ig_followers_total','seguidores en Instagram']]
-      .map(([k,t])=>({k,t,p:dlt(k)})).filter(x=>x.p!=null);
-    const mejor=cands.filter(x=>x.p>0).sort((a,b)=>b.p-a.p)[0];
-    const hero=mejor?`<div class="e">Tu progreso del período</div><div class="p">+${mejor.p}%</div><div class="x">Buen impulso. Tus ${mejor.t} crecieron un ${mejor.p}% respecto de la medición anterior.</div>`
-      :`<div class="e">Tu progreso del período</div><div class="p">${nf(val('ig_followers_total'))}</div><div class="x">Seguidores en Instagram. Seguimos sumando: cada medición cuenta.</div>`;
+    // Destacado: primero el resultado de negocio del período (ventas reales anotadas), después el crecimiento de la cuenta.
+    // Abajo, siempre que haya, cuánto creció desde que trabaja con Semilla.
+    const um=(R[R.length-1]||{}).metricas||{}, Nm=k=>Number(um[k]||0);
+    let hero;
+    if(Nm('msj_conversiones')>0&&Nm('msj_ingreso')>0)
+      hero=`<div class="e">Ventas del período</div><div class="p">${SIM}${nf(um.msj_ingreso)}</div><div class="x">${nf(um.msj_conversiones)} ${Nm('msj_conversiones')===1?'venta':'ventas'}${Nm('msj_inversion')?` con ${SIM}${nf(um.msj_inversion)} de publicidad`:''}${Nm('msj_roas')?`: cada ${UNI} invertido volvió ${SIM}${nf(um.msj_roas,2)}.`:'.'}</div>`;
+    else if(Nm('ig_followers_nuevos')>0)
+      hero=`<div class="e">Tu progreso del período</div><div class="p">+${nf(um.ig_followers_nuevos)}</div><div class="x">seguidores nuevos en Instagram${Nm('ig_costo_follower')?`, a ${SIM}${nf(um.ig_costo_follower, Nm('ig_costo_follower')<100?2:0)} cada uno`:''}.</div>`;
+    else if(dif('sp_monthly')>0)
+      hero=`<div class="e">Tu progreso del período</div><div class="p">+${nf(dif('sp_monthly'))}</div><div class="x">oyentes mensuales en Spotify: hoy son ${nf(val('sp_monthly'))}.</div>`;
+    else if(Nm('msj_mensajes')>0)
+      hero=`<div class="e">Tu progreso del período</div><div class="p">${nf(um.msj_mensajes)}</div><div class="x">consultas por mensaje en el período.</div>`;
+    else hero=`<div class="e">Tu comunidad</div><div class="p">${nf(val('ig_followers_total'))}</div><div class="x">seguidores en Instagram.</div>`;
+    const TODOS=(d.reportes||[]).filter(r=>r.metricas&&r.metricas.ig_followers_total!=null).sort((a,b)=>a.hasta<b.hasta?-1:1);
+    if(TODOS.length>1){ const a0=Number(TODOS[0].metricas.ig_followers_total), a1=Number(TODOS[TODOS.length-1].metricas.ig_followers_total), dd=new Date(TODOS[0].desde||TODOS[0].hasta);
+      if(a1>a0) hero+=`<div class="desde">Desde ${MESL[dd.getMonth()]}${dd.getFullYear()!==new Date().getFullYear()?' de '+dd.getFullYear():''} con Semilla: <b>+${nf(a1-a0)} seguidores</b> (de ${nf(a0)} a ${nf(a1)}).</div>`; }
     const H=(d.hitos||[]).map(h=>({h,v:val(h.metrica)})).filter(x=>x.v!=null&&Number(x.v)<Number(x.h.objetivo));
     const hito=H.sort((a,b)=>(b.v/b.h.objetivo)-(a.v/a.h.objetivo))[0];
     const tiene=k=>val(k)!=null;
@@ -194,7 +216,7 @@
       <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
       <div class="tit2"><h3>Métricas principales</h3><button data-ir="metricas">Ver todas</button></div>
-      <div class="met">${MET.slice(0,3).map(m=>`<div class="card"><div class="ic">${ico[m.ic]}</div><div class="v">${nf(val(m.k))}</div><div class="l">${m.l}</div><div class="d">${deltaTxt(dlt(m.k))}</div></div>`).join('')}</div>
+      <div class="met">${MET.slice(0,3).map(m=>`<div class="card"><div class="ic">${ico[m.ic]}</div><div class="v">${nf(val(m.k))}</div><div class="l">${m.l}</div><div class="d">${dK(m.k)}</div></div>`).join('')}</div>
       ${hito?`<div class="card hito"><div>${ico.sol}</div><div><div class="v3t">Tu próximo hito</div><div class="tx">${esc(hito.h.titulo||('Llegar a '+nf(hito.h.objetivo)))}</div></div><button class="ir" data-ir="proyecto" aria-label="Ver hitos">${ico.flecha}</button>
         <div class="bar"><div class="b"><i style="width:${Math.min(100,hito.v/hito.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(hito.v)} / ${nf(hito.h.objetivo)}</span></div></div>`:''}
       <div class="tit2"><h3>Accesos rápidos</h3></div>
@@ -245,14 +267,13 @@
     if(!redes[SUBRED]) SUBRED=Object.keys(redes)[0]||'ig';
     if(!redes[SUBRED]) redes[SUBRED]={n:'Instagram',k:'ig_followers_total',l:'seguidores',ex:'',col:VINO,a:['ig_costo_follower','costo por seguidor',true,'#E2767C'],b:['ig_inversion','inversión en el período',true,OLIVA]};
     const RD=redes[SUBRED];
-    const SIM=(typeof MON!=='undefined'&&MON==='USD')?'USD ':'$ ';
     const mini=(c)=>{ const v=val(c[0]); return `<div class="card"><div class="n">${c[2]?SIM:''}${nf(v, c[4]!=null?c[4]:c[0]==='yt_horas'?1:(c[2]&&v!=null&&Math.abs(v)<100?2:0))}</div><div class="l">${c[1]}</div>${barras(serie(c[0]),c[3])}</div>`; };
     const imp=I&&I.hallazgos&&I.hallazgos.length?(typeof I.hallazgos[0]==='object'?I.hallazgos[0].t:I.hallazgos[0]):null;
     const scrMet=`
       <div class="rep"><div><h1 class="v3t" style="font-size:31px">Tu reporte</h1><p class="bj">${I?`Del ${fd(I.desde)} al ${fd(I.hasta)}`:'Todavía no hay reporte'}</p></div>${I?`<button class="ir" id="v3rep" aria-label="Abrir reporte">${ico.flecha}</button>`:''}</div>
       ${imp?`<div class="card imp"><div>${ico.sol}</div><div><h4>Lo más importante</h4><p>${imp}</p></div></div>`:''}
       <div class="red">${Object.keys(redes).map(k=>`<button class="${k===SUBRED?'on':''}" data-red="${k}">${redes[k].n}</button>`).join('')}</div>
-      <div class="card big"><div><div style="display:flex;align-items:center;gap:10px">${ico[SUBRED]}<div class="n">${nf(val(RD.k))}</div></div><div class="l">${RD.l}</div><div class="d">${deltaTxt(dlt(RD.k))}<small>${RD.ex}</small></div></div><div class="sp">${linea(serie(RD.k),RD.col)}</div></div>
+      <div class="card big"><div><div style="display:flex;align-items:center;gap:10px">${ico[SUBRED]}<div class="n">${nf(val(RD.k))}</div></div><div class="l">${RD.l}</div><div class="d">${dK(RD.k)}<small>${RD.ex}</small></div></div><div class="sp">${linea(serie(RD.k),RD.col)}</div></div>
       <div class="dos">${mini(RD.a)}${mini(RD.b)}</div>
       ${recs.length?`<div class="card recos"><div class="h">${ico.hoja}Recomendaciones SemillaIA</div>${recs.slice(0,3).map((r,i)=>`<div class="r"><span class="k">${i+1}</span><p>${esc(String(r).replace(/<[^>]+>/g,''))}</p></div>`).join('')}</div>`:''}
       <details class="todo" id="v3todo"><summary>Ver todas las métricas</summary></details>`;
