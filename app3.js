@@ -193,6 +193,7 @@
   const MES=['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
   const ico={
     ig:'<svg width="26" height="26" viewBox="0 0 24 24"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="url(#v3g)" stroke-width="2.2"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="url(#v3g)" stroke-width="2.2"/><circle cx="17.3" cy="6.7" r="1.3" fill="#E1306C"/></svg>',
+    frm:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2F7A4F" stroke-width="2" stroke-linejoin="round"><path d="M2.5 9 12 4.5 21.5 9 12 13.5z"/><path d="M6.5 11v4.5c1.6 1.6 3.4 2.4 5.5 2.4s3.9-.8 5.5-2.4V11M21.5 9v5" stroke-linecap="round"/></svg>',
     msj:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#25A35A" stroke-width="2" stroke-linejoin="round"><path d="M4 5.5h16v10.5H10l-4.5 3.5V16H4z"/><path d="M8 9.5h8M8 12.5h5" stroke-linecap="round"/></svg>',
     sp:'<svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="#1DB954"/><path d="M6.8 9.4c3.6-1.1 7.6-.8 10.6 1M7.4 12.4c3-.9 6.2-.6 8.7.9M8 15.2c2.4-.6 4.7-.4 6.7.7" stroke="#fff" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg>',
     yt:'<svg width="28" height="26" viewBox="0 0 28 20"><rect x="1" y="1" width="26" height="18" rx="5" fill="#FF0000"/><path d="M11.5 6v8l7-4z" fill="#fff"/></svg>',
@@ -274,7 +275,7 @@
     const H=(d.hitos||[]).map(h=>({h,v:val(h.metrica)})).filter(x=>x.v!=null&&Number(x.v)<Number(x.h.objetivo));
     const hito=H.sort((a,b)=>(b.v/b.h.objetivo)-(a.v/a.h.objetivo))[0];
     const tiene=k=>val(k)!=null;
-    const MET=[['ig_followers_total','seguidores','ig'],['sp_monthly','oyentes','sp'],['yt_views','vistas','yt'],['msj_mensajes','mensajes','msj'],['msj_conversiones','ventas','msj'],['ig_visitas','visitas al perfil','ig']].filter(([k])=>tiene(k)).map(([k,l,ic])=>({k,l,ic}));
+    const MET=[['ig_followers_total','seguidores','ig'],['sp_monthly','oyentes','sp'],['yt_views','vistas','yt'],['msj_mensajes','mensajes','msj'],['msj_conversiones','ventas','msj'],['frm_visitas','visitas a la formación','frm'],['frm_mensajes','consultas','frm'],['ig_visitas','visitas al perfil','ig']].filter(([k])=>tiene(k)).map(([k,l,ic])=>({k,l,ic}));
     const scrHoy=`
       <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
@@ -324,6 +325,8 @@
           a:['sp_streams','reproducciones',false,'#1DB954'],b:['sp_followers','seguidores en Spotify',false,OLIVA]},
       yt:{n:'YouTube',k:'yt_views',l:'vistas',ex:`${val('yt_subs')!=null?nf(val('yt_subs'))+' suscriptores':''}`,col:'#FF0000',
           a:['yt_subs_nuevos','suscriptores nuevos',false,'#E2767C'],b:['yt_horas','horas vistas',false,OLIVA]},
+      frm:{n:'Formación',k:'frm_visitas',l:'visitas a la página',ex:`${val('frm_mensajes')!=null?nf(val('frm_mensajes'))+' consultas en el período':''}`,col:'#2F7A4F',
+          a:['frm_costo_visita','costo por visita',true,'#E2767C',2],b:['frm_inversion','inversión en el período',true,OLIVA]},
       msj:{n:'Mensajes',k:'msj_mensajes',l:'mensajes recibidos',ex:`${val('msj_conversiones')!=null?nf(val('msj_conversiones'))+' ventas en el período':''}`,col:'#25A35A',
           a:['msj_costo_mensaje','costo por mensaje',true,'#E2767C',2],b:['msj_inversion','inversión en el período',true,OLIVA]}
     };
