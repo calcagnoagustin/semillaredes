@@ -39,6 +39,8 @@
   #v3 .hero .p{font-family:'Playfair Display',serif;font-size:56px;line-height:1;margin:14px 0 10px;font-weight:600}
   #v3 .hero .desde{margin-top:14px;padding-top:12px;border-top:1px solid rgba(242,237,228,.18);font-size:13.5px;line-height:1.4;max-width:80%;opacity:.9}
   #v3 .hero .desde b{color:#E8D9A8;font-weight:600}
+  #v3 .hero .rg{font-size:14px;opacity:.85;margin-top:6px}
+  #v3 .met .v.ch{font-size:20px;white-space:nowrap}
   #v3 .hero .x{font-size:15px;line-height:1.45;max-width:78%;opacity:.95}
   #v3 .hero .ir{position:absolute;right:16px;bottom:16px;width:40px;height:40px;border-radius:50%;background:${OLIVA};color:#fff;border:0;display:grid;place-items:center;cursor:pointer}
   #v3 .hero svg.cielo{position:absolute;right:-30px;top:-10px;opacity:.9;pointer-events:none}
@@ -280,6 +282,8 @@
     const TODOS=(d.reportes||[]).filter(r=>r.metricas&&r.metricas.ig_followers_total!=null).sort((a,b)=>a.hasta<b.hasta?-1:1);
     if(TODOS.length>1){ const a0=Number(TODOS[0].metricas.ig_followers_total), a1=Number(TODOS[TODOS.length-1].metricas.ig_followers_total), dd=new Date(TODOS[0].desde||TODOS[0].hasta);
       if(a1>a0) hero+=`<div class="desde">Desde ${MESL[dd.getMonth()]}${dd.getFullYear()!==new Date().getFullYear()?' de '+dd.getFullYear():''} con Semilla: <b>+${nf(a1-a0)} seguidores</b> (de ${nf(a0)} a ${nf(a1)}).</div>`; }
+    const RG=um&&R.length?`<div class="rg">Del ${fd(R[R.length-1].desde)} al ${fd(R[R.length-1].hasta)}</div>`:'';
+    hero=hero.replace(/(<div class="e">[^<]*período<\/div>)/,'$1'+RG);
     if(!/class="desde"/.test(hero)){ const RV=(d.reportes||[]).filter(r=>r.metricas&&r.metricas.vta_ventas!=null&&(new Date(r.hasta)-new Date(r.desde))/864e5>=3).sort((a,b)=>a.desde<b.desde?-1:1);
       if(RV.length>1){ const tv=RV.reduce((a,r)=>a+Number(r.metricas.vta_ventas||0),0), ti=RV.reduce((a,r)=>a+Number(r.metricas.vta_ingreso||r.metricas.vta_ingreso_pixel||0),0), dd=new Date(RV[0].desde);
         hero+=`<div class="desde">Desde ${MESL[dd.getMonth()]} con Semilla: <b>${nf(tv)} ventas</b>${ti?` y ${SIM}${nf(ti)} facturados`:''}.</div>`; } }
@@ -292,7 +296,7 @@
       <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
       <div class="tit2"><h3>Métricas principales</h3><button data-ir="metricas">Ver todas</button></div>
-      <div class="met">${MET.slice(0,3).map(m=>`<div class="card"><div class="ic">${ico[m.ic]}</div><div class="v">${m.k==='vta_costo_venta'?SIM.trim()+' '+nf(val(m.k),2):m.k==='vta_roas_pixel'?nf(val(m.k),1)+'x':nf(val(m.k))}</div><div class="l">${Number(val(m.k))===1?m.l.replace(/^consultas$/,'consulta').replace(/^mensajes$/,'mensaje').replace(/^ventas$/,'venta').replace(/^seguidores$/,'seguidor'):m.l}</div><div class="d">${dK(m.k,m.k==='vta_costo_venta')}</div></div>`).join('')}</div>
+      <div class="met">${MET.slice(0,3).map(m=>`<div class="card"><div class="ic">${ico[m.ic]}</div><div class="v ${m.k==='vta_costo_venta'?'ch':''}">${m.k==='vta_costo_venta'?SIM.trim()+' '+nf(val(m.k),2):m.k==='vta_roas_pixel'?nf(val(m.k),1)+'x':nf(val(m.k))}</div><div class="l">${Number(val(m.k))===1?m.l.replace(/^consultas$/,'consulta').replace(/^mensajes$/,'mensaje').replace(/^ventas$/,'venta').replace(/^seguidores$/,'seguidor'):m.l}</div><div class="d">${dK(m.k,m.k==='vta_costo_venta')}</div></div>`).join('')}</div>
       ${hito?`<div class="card hito"><div>${ico.sol}</div><div><div class="v3t">Tu próximo hito</div><div class="tx">${esc(HTIT(hito.h))}</div></div><button class="ir" data-ir="proyecto" aria-label="Ver hitos">${ico.flecha}</button>
         <div class="bar"><div class="b"><i style="width:${Math.min(100,hito.v/hito.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(hito.v)} / ${nf(hito.h.objetivo)}</span></div></div>`:''}
       <div class="tit2"><h3>Accesos rápidos</h3></div>
