@@ -2135,10 +2135,10 @@ function bloqueVentas(d, campania, invTotal, o){
     ${fecha_act?`<div class="act">Última carga: ${fecha_act}</div>`:''}
     ${o.editable&&v&&!o.abierto?`<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button data-veditar="${campania}">✎ Editar</button>${o.volver?`<button data-vvolver="1">Volver a la última semana</button>`:''}</div>`:''}
     <div class="formv" ${o.editable&&v&&!o.abierto?'style="display:none"':''}>
-      <div><label>${o.lm||'Facturado'}</label><div class="vmon"><input type="text" inputmode="decimal" data-vi="${campania}" data-inv="${invTotal||0}" placeholder="${ing!=null?fmt(ing,0):(MON==='USD'?'Ej: 300':'Ej: 250.000')}">${MON==='USD'?`<select data-vmon="${campania}" aria-label="Moneda"><option value="USD">dólares (USD)</option><option value="ARS">pesos ($)</option></select>`:'<span class="vmonf">pesos ($)</span>'}</div></div>
-      ${o.sinVentas?'':`<div><label>${o.lv||'Ventas'}</label><input type="text" inputmode="numeric" data-vn="${campania}" placeholder="${nv!=null?nv:'Ej: 3'}" style="width:90px"></div>`}
+      <div><label>${o.lm||'Facturado'}</label><div class="vmon"><input type="text" inputmode="decimal" data-vi="${campania}" data-inv="${invTotal||0}" data-prev="${v&&v.ingreso_ars&&v.moneda_cargada==='ARS'?v.ingreso_ars:(ing!=null?ing:'')}" data-prevmon="${v&&v.moneda_cargada?v.moneda_cargada:MON}" placeholder="${v&&v.ingreso_ars&&v.moneda_cargada==='ARS'?fmt(v.ingreso_ars,0):(ing!=null?fmt(ing,0):(MON==='USD'?'Ej: 300':'Ej: 250.000'))}">${MON==='USD'?`<select data-vmon="${campania}" aria-label="Moneda"><option value="USD">dólares (USD)</option><option value="ARS"${v&&v.moneda_cargada==='ARS'?' selected':''}>pesos ($)</option></select>`:'<span class="vmonf">pesos ($)</span>'}</div></div>
+      ${o.sinVentas?'':`<div><label>${o.lv||'Ventas'}</label><input type="text" inputmode="numeric" data-vn="${campania}" data-prev="${nv!=null?nv:''}" placeholder="${nv!=null?nv:'Ej: 3'}" style="width:90px"></div>`}
       <button data-vguardar="${campania}">Guardar</button>
-      <p class="vnota" data-vnota="${campania}">${MON==='USD'?'Elegí en qué moneda cobraste. Si es en pesos, lo pasamos a dólares con el dólar MEP del día.':'Cargalo en pesos.'}</p>
+      <p class="vnota" data-vnota="${campania}">${MON==='USD'?'Elegí en qué moneda cobraste. Si es en pesos, lo pasamos a dólares con el dólar MEP del día.':'Cargalo en pesos.'}${v?' Lo que dejes vacío queda como estaba.':''}</p>
     </div>
   </div>`;
 }
@@ -2155,9 +2155,11 @@ document.addEventListener('click', async e=>{
   const camp=b.dataset.vguardar;
   const limpia=x=>{ x=(x||'').trim().replace(/[^\d.,]/g,''); if(!x) return null;
     if(x.includes(',')) x=x.replace(/\./g,'').replace(',','.'); else x=x.replace(/\./g,''); const n=parseFloat(x); return isNaN(n)?null:n; };
-  const elI=document.querySelector(`[data-vi="${camp}"]`); const ing=limpia(elI.value);
-  const elN=document.querySelector(`[data-vn="${camp}"]`); const nv=elN?limpia(elN.value):null;
-  const elM=document.querySelector(`[data-vmon="${camp}"]`); const mon=elM?elM.value:MON;
+  const elI=document.querySelector(`[data-vi="${camp}"]`); let ing=limpia(elI.value);
+  const elN=document.querySelector(`[data-vn="${camp}"]`); let nv=elN?limpia(elN.value):null; if(nv==null&&elN&&elN.dataset.prev!=='') nv=Number(elN.dataset.prev);
+  const elM=document.querySelector(`[data-vmon="${camp}"]`); let mon=elM?elM.value:MON;
+  // campo vacio = se mantiene lo que ya estaba cargado (no se pisa con cero)
+  if(ing==null&&elI.dataset.prev!==''){ ing=Number(elI.dataset.prev); mon=elI.dataset.prevmon||mon; }
   const nota=document.querySelector(`[data-vnota="${camp}"]`);
   if(ing==null){ if(nota){ nota.textContent='Poné cuánto facturaste.'; nota.className='vnota mal'; } return; }
   const inv=Number(elI.dataset.inv||0);
@@ -2513,7 +2515,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261012c';
+var SR_VER='20261012d';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
