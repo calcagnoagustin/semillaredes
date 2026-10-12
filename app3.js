@@ -39,6 +39,12 @@
   #v3 .hero .p{font-family:'Playfair Display',serif;font-size:56px;line-height:1;margin:14px 0 10px;font-weight:600}
   #v3 .hero .desde{margin-top:14px;padding-top:12px;border-top:1px solid rgba(242,237,228,.18);font-size:13.5px;line-height:1.4;max-width:80%;opacity:.9}
   #v3 .hero .desde b{color:#E8D9A8;font-weight:600}
+  #v3 .cta{display:grid;grid-template-columns:1fr auto;grid-template-areas:'l l' 'e n';row-gap:8px;align-items:center;margin-top:12px;padding:14px 16px;border:1px solid #E7DFCF;border-radius:16px;background:#FBF8F2}
+  #v3 .cta .l{grid-area:l;font:700 11.5px/1 Inter,sans-serif;letter-spacing:1.6px;text-transform:uppercase;color:#6F6B7C}
+  #v3 .cta .e{grid-area:e;display:flex;align-items:center;gap:8px;font:600 15px/1 Inter,sans-serif;color:#8A8577}
+  #v3 .cta .e i{width:9px;height:9px;border-radius:50%;background:#B9B19E}
+  #v3 .cta .e.on{color:#2F6B2A}#v3 .cta .e.on i{background:#3E9B3A;box-shadow:0 0 0 4px rgba(62,155,58,.15)}
+  #v3 .cta .n{grid-area:n;font:500 14.5px/1 Inter,sans-serif;color:${NAVY}}
   #v3 .hero .rg{font-size:14px;opacity:.85;margin-top:6px}
   #v3 .met .v.ch{font-size:20px;white-space:nowrap}
   #v3 .hero .x{font-size:15px;line-height:1.45;max-width:78%;opacity:.95}
@@ -297,6 +303,7 @@
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
       <div class="tit2"><h3>Métricas principales</h3><button data-ir="metricas">Ver todas</button></div>
       <div class="met">${MET.slice(0,3).map(m=>`<div class="card"><div class="ic">${ico[m.ic]}</div><div class="v ${m.k==='vta_costo_venta'?'ch':''}">${m.k==='vta_costo_venta'?SIM.trim()+' '+nf(val(m.k),2):m.k==='vta_roas_pixel'?nf(val(m.k),1)+'x':nf(val(m.k))}</div><div class="l">${Number(val(m.k))===1?m.l.replace(/^consultas$/,'consulta').replace(/^mensajes$/,'mensaje').replace(/^ventas$/,'venta').replace(/^seguidores$/,'seguidor'):m.l}</div><div class="d">${dK(m.k,m.k==='vta_costo_venta')}</div></div>`).join('')}</div>
+      <div id="v3cta"></div>
       ${hito?`<div class="card hito"><div>${ico.sol}</div><div><div class="v3t">Tu próximo hito</div><div class="tx">${esc(HTIT(hito.h))}</div></div><button class="ir" data-ir="proyecto" aria-label="Ver hitos">${ico.flecha}</button>
         <div class="bar"><div class="b"><i style="width:${Math.min(100,hito.v/hito.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(hito.v)} / ${nf(hito.h.objetivo)}</span></div></div>`:''}
       <div class="tit2"><h3>Accesos rápidos</h3></div>
@@ -407,6 +414,10 @@
     ir(TAB,false);
     if(Y0&&!window.__V3Y){ window.__V3Y=1; requestAnimationFrame(()=>window.scrollTo(0,Y0)); }
     chatMontar(nombre);
+    const pintaCta=c=>{ const el=document.getElementById('v3cta'); if(!el||!c||!c.hay) return;
+      el.innerHTML=`<div class="cta"><span class="l">Cuenta publicitaria</span><span class="e ${c.activa?'on':''}"><i></i>${c.activa?'Activa':esc(c.estado.charAt(0).toUpperCase()+c.estado.slice(1))}</span><span class="n">${c.campanas} ${c.campanas===1?'campaña corriendo':'campañas corriendo'}</span></div>`; };
+    if(window.__V3CTA) pintaCta(window.__V3CTA);
+    else fetch('https://vm.semillaredes.com/web/cuenta?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(c=>{ window.__V3CTA=c; pintaCta(c); }).catch(()=>{});
 
     // --- eventos ---
     document.querySelectorAll('#v3 [data-ir], #v3nav [data-ir]').forEach(b=>b.onclick=()=>ir(b.dataset.ir,true));
