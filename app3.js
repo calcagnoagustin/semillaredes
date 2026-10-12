@@ -45,6 +45,7 @@
   #v3 .cta .e i{width:9px;height:9px;border-radius:50%;background:#B9B19E}
   #v3 .cta .e.on{color:#2F6B2A}#v3 .cta .e.on i{background:#3E9B3A;box-shadow:0 0 0 4px rgba(62,155,58,.15)}
   #v3 .cta .n{grid-area:n;font:500 14.5px/1 Inter,sans-serif;color:${NAVY}}
+  #v3 .acc2{display:flex;width:max-content;max-width:100%;margin-top:8px;border:1px solid ${NAVY};background:#fff;color:${NAVY};border-radius:999px;padding:7px 13px;font:600 13.5px/1 Inter,sans-serif;cursor:pointer}
   #v3 .hero .rg{font-size:14px;opacity:.85;margin-top:6px}
   #v3 .met .v.ch{font-size:20px;white-space:nowrap}
   #v3 .hero .x{font-size:15px;line-height:1.45;max-width:78%;opacity:.95}
@@ -263,6 +264,7 @@
     const SIM=(typeof MON!=='undefined'&&MON==='USD')?'USD ':'$ ', UNI=SIM==='USD '?'dólar':'peso';
     const verRep=()=>{ const b=document.querySelector('.btnReporte'); if(b) b.click(); };
     let visto=''; try{ visto=localStorage.getItem('sr_rep_'+slug)||''; }catch(e){}
+    const accB=r=>{ const a=window.srAccion&&window.srAccion(r); return a?`<button class="acc2" data-v3acc="${a.k}">${a.t} →</button>`:''; };
     const nuevoRep=I&&visto!==I.fecha;
 
     // --- Hoy ---
@@ -367,7 +369,7 @@
       <div class="red">${Object.keys(redes).map(k=>`<button class="${k===SUBRED?'on':''}" data-red="${k}">${redes[k].n}</button>`).join('')}</div>
       <div class="card big"><div><div style="display:flex;align-items:center;gap:10px">${ico[SUBRED]}<div class="n">${nf(val(RD.k))}</div></div><div class="l">${RD.l}</div><div class="d">${dK(RD.k)}<small>${RD.ex}</small></div></div><div class="sp">${linea(serie(RD.k),RD.col)}</div></div>
       <div class="dos">${mini(RD.a)}${mini(RD.b)}</div>
-      ${recs.length?`<div class="card recos"><div class="h">${ico.hoja}Recomendaciones SemillaIA</div>${recs.slice(0,3).map((r,i)=>`<div class="r"><span class="k">${i+1}</span><p>${esc(String(r).replace(/<[^>]+>/g,''))}</p></div>`).join('')}</div>`:''}
+      ${recs.length?`<div class="card recos"><div class="h">${ico.hoja}Recomendaciones SemillaIA</div>${recs.slice(0,3).map((r,i)=>`<div class="r"><span class="k">${i+1}</span><p>${esc(String(r).replace(/<[^>]+>/g,''))}${accB(r)}</p></div>`).join('')}</div>`:''}
       <details class="todo" id="v3todo"><summary>Ver todas las métricas</summary></details>`;
 
     // --- Proyecto ---
@@ -385,7 +387,7 @@
     const scrIA=`
       <h1 class="v3t">Reporte</h1><p class="bj">${I?`Del ${fd(I.desde)} al ${fd(I.hasta)}: lo principal, explicado y con próximos pasos.`:"Lo principal, explicado y con próximos pasos."}</p>
       ${I?`<div class="card recos" style="margin-top:18px"><div class="h">${ico.sol}Lo principal</div>${(I.hallazgos||[]).map((h,i)=>`<div class="r"><span class="k" style="background:${(h.tipo==='mal')?'#9B2C36':'#4E8B3A'}">${h.tipo==='mal'?'!':'✓'}</span><p>${typeof h==='object'?h.t:h}</p></div>`).join('')}</div>
-        <div class="card recos"><div class="h">${ico.hoja}Qué hacer</div>${(I.recomendaciones||[]).map((r,i)=>`<div class="r"><span class="k">${i+1}</span><p>${esc(r)}</p></div>`).join('')}</div>
+        <div class="card recos"><div class="h">${ico.hoja}Qué hacer</div>${(I.recomendaciones||[]).map((r,i)=>`<div class="r"><span class="k">${i+1}</span><p>${esc(r)}${accB(r)}</p></div>`).join('')}</div>
         ${I.reunion?`<div class="card imp"><div>${ico.luz}</div><div><h4>En la próxima reunión con Agus</h4><p>${esc(I.reunion)}</p></div></div>`:''}
         <div style="margin-top:16px;text-align:center"><button id="v3rep2" style="border:0;background:${NAVY};color:#F2EDE4;border-radius:14px;padding:13px 20px;font:600 15px Inter,sans-serif;cursor:pointer">Ver detalles</button></div>`
         :'<div class="card vacio" style="margin-top:18px">Cuando salga tu primer reporte lo vas a ver acá.</div>'}`;
@@ -433,6 +435,7 @@
       else if(a==='fecha'){ FFORM=true; TAB='actividades'; armar(window.__D); setTimeout(()=>{ const f=document.getElementById('v3ft'); f&&f.scrollIntoView({block:'center'}); },60); }
       else if(a==='chat'){ const cb=document.getElementById('v3chatb'); cb&&cb.click(); } });
     raiz.querySelectorAll('[data-filtro]').forEach(b=>b.onclick=()=>{ FILTRO=b.dataset.filtro; armar(window.__D); });
+    raiz.querySelectorAll('[data-v3acc]').forEach(b=>b.onclick=()=>window.V3IR(b.dataset.v3acc));
     raiz.querySelectorAll('[data-red]').forEach(b=>b.onclick=()=>{ SUBRED=b.dataset.red; armar(window.__D); });
     raiz.querySelectorAll('[data-tab]').forEach(s=>s.onclick=()=>s.classList.toggle('ab'));
     const prevK=id=>'sr_tprev_'+id;
@@ -519,6 +522,13 @@
     pintar();
   }
 
+  window.V3IR=k=>{
+    const ve=(sel,fn)=>{ setTimeout(()=>{ const el=typeof sel==='function'?sel():document.querySelector(sel); if(el){ if(fn) fn(el); el.scrollIntoView({behavior:'smooth',block:'start'}); el.classList.add('srFlash'); setTimeout(()=>el.classList.remove('srFlash'),1800); } },120); };
+    if(k==='ventas'){ ir('metricas',true); const t=document.getElementById('v3todo'); if(t) t.open=true; ve(()=>[...document.querySelectorAll('#v3todo h2')].find(h=>/ventas/i.test(h.textContent))||t); }
+    else if(k==='fechas'){ FFORM=true; TAB='actividades'; SS('tab','actividades'); armar(window.__D); ve('#v3ff'); }
+    else if(k==='tareas'){ ir('actividades',true); ve('#v3tarea'); }
+    else if(k==='web'){ ir('proyecto',true); ve('#v3web'); }
+  };
   function ir(t,scroll){ TAB=t; SS('tab',t); if(scroll) SS('y','0');
     document.querySelectorAll('#v3 .scr').forEach(s=>s.classList.toggle('on',s.dataset.scr===t));
     document.querySelectorAll('#v3nav button').forEach(b=>b.classList.toggle('on',b.dataset.ir===t));

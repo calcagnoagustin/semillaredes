@@ -338,6 +338,8 @@ details.hist table{border:0;border-radius:0}
 .repCaja li{counter-increment:r;position:relative;padding:0 0 12px 34px;font-size:16px;line-height:1.5;color:var(--tinta)}
 .repCaja li::before{content:counter(r);position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;background:var(--crema);color:var(--navy);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
 .repCaja .qh li::before{background:var(--navy);color:var(--crema)}
+.srAcc{display:flex;width:max-content;max-width:100%;align-items:center;margin-top:8px;border:1px solid var(--navy);background:#fff;color:var(--navy);border-radius:999px;padding:7px 13px;font:600 13.5px/1 Inter,sans-serif;cursor:pointer}
+.srFlash{animation:srFl 1.8s ease}@keyframes srFl{0%,60%{background:#F6EFC8}100%{background:transparent}}
 .repCaja ol.hz li::before{content:'✓';background:#E7F0DC;color:#4E6B24;font-size:13px}
 .repCaja ol.hz li.mal::before{content:'!';background:#F8E1E2;color:#9B2C36}
 .repCaja .reu{background:var(--crema);border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.5;color:var(--navy);margin-top:4px}
@@ -2223,6 +2225,24 @@ const pintaBlq=(B,hijo)=>{ const usd=v=>String(v).replace(/^USD /,'<small>USD</s
         ${B.alcance?`<div class="alc"><div class="at"><span>Personas alcanzadas</span><b>${B.alcance.total}</b></div><div class="bar">${P.map(x=>`<i style="width:${(Number(x[1]||0)/tp*100).toFixed(1)}%"></i>`).join('')}</div><div class="lg">${P.map(x=>`<span>${x[0]} ${nf(x[1])}</span>`).join('')}</div></div>`:''}
         ${(B.inversion||B.diaria)?`<div class="ft">${B.inversion?`<div><span>Inversión total</span><b>${B.inversion}</b></div>`:''}${B.diaria?`<div><span>Inversión diaria</span><b>${B.diaria}</b></div>`:''}</div>`:''}
         ${(B.hijos||[]).map(h=>pintaBlq(h,true)).join('')}</div>`; };
+// Acción directa para cada recomendación: si dice "cargar ventas", "agregar la fecha", etc., lleva a la sección donde se hace.
+const SR_ACC=[
+  {re:/(carg|anot|registr|sum)\w*\s+(\w+\s+)?(las\s+|tus\s+)?ventas|ventas\s+(no\s+est[aá]n\s+)?(anotadas|cargadas)/i, k:'ventas', t:'Cargar las ventas'},
+  {re:/(carg|agreg|sum|anot|pon)\w*\s+(\w+\s+)?(la\s+|las\s+|una\s+|tus\s+)?(pr[oó]xima\s+)?fechas?|pr[oó]ximas fechas/i, k:'fechas', t:'Ir a Próximas fechas'},
+  {re:/\b(tu|la)\s+(web|landing|p[aá]gina web)\b|editar la web|en la web/i, k:'web', t:'Ir a tu web'},
+  {re:/\btareas?\b/i, k:'tareas', t:'Ir a tus tareas'}
+];
+function srAccion(txt){ const t=String(txt).replace(/<[^>]+>/g,''); for(const a of SR_ACC) if(a.re.test(t)) return a; return null; }
+function srIr(k){
+  document.querySelectorAll('.repFondo').forEach(x=>x.classList.add('oculto'));
+  if(window.V3IR){ window.V3IR(k); return; }
+  const tit={ventas:'Ventas',fechas:'Próximas fechas',tareas:'Tarea para el hogar'}[k];
+  let el=k==='web'?document.getElementById('tuweb'):[...document.querySelectorAll('#app h2')].find(h=>h.textContent.trim()===tit);
+  if(!el&&k==='ventas') el=[...document.querySelectorAll('#app h2')].find(h=>/ventas/i.test(h.textContent));
+  if(el){ el.scrollIntoView({behavior:'smooth',block:'start'}); el.classList.add('srFlash'); setTimeout(()=>el.classList.remove('srFlash'),1800); }
+}
+window.srAccion=srAccion; window.srIr=srIr;
+const srBtnAcc=x=>{ const a=srAccion(x); return a?`<button class="srAcc" type="button" data-sracc="${a.k}">${a.t} →</button>`:''; };
 function ponerReporte(d){
   document.querySelectorAll('.btnReporte,.repFondo').forEach(x=>x.remove());
   const R=d.reportes||[]; const r=[...R].reverse().find(x=>x.metricas&&x.metricas.informe);
@@ -2234,18 +2254,19 @@ function ponerReporte(d){
   const b=document.createElement('button'); b.className='btnReporte'; b.type='button';
   b.innerHTML=(nuevo?'<span class="punto"></span>':'')+'Reporte';
   const fondo=document.createElement('div'); fondo.className='repFondo oculto';
-  fondo.innerHTML=`<div class="repCaja" role="dialog" aria-label="Reporte de la semana"><button class="x" type="button" aria-label="Cerrar">×</button>
+  fondo.innerHTML=`<div class="repCaja" role="dialog" aria-label="Tu reporte"><button class="x" type="button" aria-label="Cerrar">×</button>
     <div class="eti">Reporte · ${fecha(I.desde)} al ${fecha(I.hasta)}</div>
-    <h2>Reporte de la semana</h2>
+    <h2>Tu reporte</h2>
     ${I.bloques&&I.bloques.length&&I.bloques[0].kpis?`${I.resumen?`<h3>Lo más importante</h3><div class="resu">${I.resumen}</div>`:''}${I.proyectada?`<div class="proy"><div class="l">Inversión proyectada para la próxima semana</div><div class="v">${I.proyectada.total}</div><div class="d">${I.proyectada.detalle}</div></div>`:''}<h3>Campañas</h3>${I.comparado?`<p class="cmpley">Las flechas comparan con la medición anterior (${I.comparado}).</p>`:''}${I.bloques.map(B=>pintaBlq(B)).join('')}`:I.bloques?`<p class="bajada">Los números de las campañas del período.</p>${I.bloques.map(B=>`<div class="blq"><h3>${B.titulo}${B.nota?`<small>${B.nota}</small>`:''}</h3>${(B.filas||[]).map(f=>`<div class="fr${f[2]?' sb':''}"><span>${f[0]}</span><span class="v">${f[1]}</span></div>`).join('')}</div>`).join('')}`:`<p class="bajada">Reporte y recomendaciones basadas en el Método Semilla y la experiencia de otros usuarios.</p>
     <h3>Lo principal</h3><ol class="${(I.hallazgos||[]).some(x=>typeof x==='object')?'hz':''}">${(I.hallazgos||[]).map(x=>typeof x==='object'?`<li class="${x.tipo==='mal'?'mal':'bien'}">${x.t}</li>`:`<li>${x}</li>`).join('')}</ol>
-    <h3>Qué hacer</h3><ol class="qh">${(I.recomendaciones||[]).map(x=>`<li>${x}</li>`).join('')}</ol>
+    <h3>Qué hacer</h3><ol class="qh">${(I.recomendaciones||[]).map(x=>`<li>${x}${srBtnAcc(x)}</li>`).join('')}</ol>
     ${I.reunion?`<div class="reu"><b>En la próxima reunión con Agus</b> ${I.reunion}</div>`:''}`}
     <p class="cuando">Las métricas en detalle están en el panel, más abajo. Siempre podés volver a este reporte arriba de la página, en el botón Reporte. Se actualiza ${I.cuando||'todos los lunes a las 7 de la mañana'}.</p><button class="descargar" type="button">Descargar</button></div>`;
   document.body.appendChild(b); document.body.appendChild(fondo);
   const abrir=()=>{ fondo.classList.remove('oculto'); try{ localStorage.setItem(clave,I.fecha); }catch(e){} const p=b.querySelector('.punto'); if(p) p.remove(); };
   const cerrar=()=>fondo.classList.add('oculto');
   b.onclick=abrir; fondo.querySelector('.x').onclick=cerrar;
+  fondo.querySelectorAll('[data-sracc]').forEach(x=>x.onclick=()=>srIr(x.dataset.sracc));
   fondo.querySelector('.descargar').onclick=async ev=>{
     const bt=ev.currentTarget; bt.textContent='Generando…';
     try{
@@ -2463,7 +2484,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261011a';
+var SR_VER='20261012a';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
