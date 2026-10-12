@@ -338,6 +338,8 @@ details.hist table{border:0;border-radius:0}
 .repCaja li{counter-increment:r;position:relative;padding:0 0 12px 34px;font-size:16px;line-height:1.5;color:var(--tinta)}
 .repCaja li::before{content:counter(r);position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;background:var(--crema);color:var(--navy);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
 .repCaja .qh li::before{background:var(--navy);color:var(--crema)}
+.vmon{display:flex;gap:8px;align-items:center}.vmon select{border:1px solid var(--linea);border-radius:10px;padding:10px;font:inherit;background:#fff}.vmonf{font-size:14px;color:var(--gris,#6F6B7C)}
+.vnota{flex-basis:100%;margin:8px 0 0;font-size:13.5px;color:#6F6B7C;line-height:1.4}.vnota.mal{color:#9B2C36}.vnota.bien{color:#2F6B2A}
 .srAcc{display:flex;width:max-content;max-width:100%;align-items:center;margin-top:8px;border:1px solid var(--navy);background:#fff;color:var(--navy);border-radius:999px;padding:7px 13px;font:600 13.5px/1 Inter,sans-serif;cursor:pointer}
 .srFlash{animation:srFl 1.8s ease}@keyframes srFl{0%,60%{background:#F6EFC8}100%{background:transparent}}
 .repCaja ol.hz li::before{content:'✓';background:#E7F0DC;color:#4E6B24;font-size:13px}
@@ -2120,7 +2122,7 @@ function bloqueVentas(d, campania, invTotal, o){
   const roas=(ing!=null&&invTotal>0)?ing/invTotal:null;
   const cpv=(nv&&invTotal>0)?invTotal/nv:null;
   const nums = v ? `<div class="nums">
-      <div class="n"><div class="l">${o.lm||'Facturado'}</div><div class="v">${fmt(ing,0)}</div><div class="d">${MON}</div></div>
+      <div class="n"><div class="l">${o.lm||'Facturado'}</div><div class="v">${fmt(ing,0)}</div><div class="d">${MON==='USD'?'dólares (USD)':'pesos ($)'}${v.ingreso_ars?` · cargado como $ ${fmt(v.ingreso_ars,0)} al dólar MEP ${fmt(v.tasa,0)}`:''}</div></div>
       <div class="n"><div class="l">${o.lv||'Ventas'}</div><div class="v">${fmt(nv,0)}</div><div class="d">&nbsp;</div></div>
       <div class="n"><div class="l">ROAS</div><div class="v roas ${roas>=1?'bien':'mal'}">${roas!=null?fmt(roas,2):'—'}</div><div class="d">${MON==='ARS'?'por cada peso invertido':'por cada dólar invertido'}</div></div>
       ${cpv?`<div class="n"><div class="l">Costo por venta</div><div class="v">${fmt(cpv,0)}</div><div class="d">${MON}</div></div>`:''}
@@ -2133,9 +2135,10 @@ function bloqueVentas(d, campania, invTotal, o){
     ${fecha_act?`<div class="act">Última carga: ${fecha_act}</div>`:''}
     ${o.editable&&v&&!o.abierto?`<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button data-veditar="${campania}">✎ Editar</button>${o.volver?`<button data-vvolver="1">Volver a la última semana</button>`:''}</div>`:''}
     <div class="formv" ${o.editable&&v&&!o.abierto?'style="display:none"':''}>
-      <div><label>${o.lm||'Facturado'} en ${MON}</label><input type="text" inputmode="decimal" data-vi="${campania}" placeholder="${ing!=null?fmt(ing,0):'Ej: 250.000'}"></div>
+      <div><label>${o.lm||'Facturado'}</label><div class="vmon"><input type="text" inputmode="decimal" data-vi="${campania}" data-inv="${invTotal||0}" placeholder="${ing!=null?fmt(ing,0):(MON==='USD'?'Ej: 300':'Ej: 250.000')}">${MON==='USD'?`<select data-vmon="${campania}" aria-label="Moneda"><option value="USD">dólares (USD)</option><option value="ARS">pesos ($)</option></select>`:'<span class="vmonf">pesos ($)</span>'}</div></div>
       ${o.sinVentas?'':`<div><label>${o.lv||'Ventas'}</label><input type="text" inputmode="numeric" data-vn="${campania}" placeholder="${nv!=null?nv:'Ej: 3'}" style="width:90px"></div>`}
       <button data-vguardar="${campania}">Guardar</button>
+      <p class="vnota" data-vnota="${campania}">${MON==='USD'?'Elegí en qué moneda cobraste. Si es en pesos, lo pasamos a dólares con el dólar MEP del día.':'Cargalo en pesos.'}</p>
     </div>
   </div>`;
 }
@@ -2152,13 +2155,24 @@ document.addEventListener('click', async e=>{
   const camp=b.dataset.vguardar;
   const limpia=x=>{ x=(x||'').trim().replace(/[^\d.,]/g,''); if(!x) return null;
     if(x.includes(',')) x=x.replace(/\./g,'').replace(',','.'); else x=x.replace(/\./g,''); const n=parseFloat(x); return isNaN(n)?null:n; };
-  const ing=limpia(document.querySelector(`[data-vi="${camp}"]`).value);
+  const elI=document.querySelector(`[data-vi="${camp}"]`); const ing=limpia(elI.value);
   const elN=document.querySelector(`[data-vn="${camp}"]`); const nv=elN?limpia(elN.value):null;
-  if(ing==null){ alert('Poné cuánto facturaste'); return; }
+  const elM=document.querySelector(`[data-vmon="${camp}"]`); const mon=elM?elM.value:MON;
+  const nota=document.querySelector(`[data-vnota="${camp}"]`);
+  if(ing==null){ if(nota){ nota.textContent='Poné cuánto facturaste.'; nota.className='vnota mal'; } return; }
+  const inv=Number(elI.dataset.inv||0);
+  // ¿se equivocó de moneda? un monto en dólares que da un retorno enorme suele ser un monto en pesos
+  if(MON==='USD'&&mon==='USD'&&inv>0&&ing/inv>15&&b.dataset.ok!=='1'){
+    if(nota){ nota.innerHTML=`<b>Ojo con la moneda:</b> USD ${fmt(ing,0)} contra USD ${fmt(inv,0)} invertidos da un retorno de ${fmt(ing/inv,0)} veces. ¿No serán pesos? Si son pesos, cambiá la moneda arriba. Si de verdad son dólares, tocá de nuevo Guardar.`; nota.className='vnota mal'; }
+    b.dataset.ok='1'; b.textContent='Sí, son dólares'; return; }
   b.disabled=true; b.textContent='Guardando…';
-  const r=await rpc('sub_venta_cliente',{p_slug:slug,p_k:tok,p_campania:camp,p_ingreso:ing,p_ventas:nv==null?0:Math.round(nv)});
-  if(r&&r.ok){ PER_ABIERTO=false; traerD().then(pintar); }
-  else { b.disabled=false; b.textContent='Guardar'; alert('No se pudo guardar'); }
+  let r=null; try{ r=await fetch(`${API_WEB}/venta`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,campania:camp,ingreso:ing,ventas:nv==null?0:Math.round(nv),moneda:mon})}).then(x=>x.json()); }catch(err){}
+  if(r&&r.ok){
+    PER_ABIERTO=false;
+    const msg=`Guardado${r.tasa?` (USD ${fmt(r.ingreso_usd,0)} al dólar MEP ${fmt(r.tasa,0)})`:''}. Estamos rehaciendo tu reporte y la página principal con estos datos: en un minuto lo ves actualizado.`;
+    traerD().then(dd=>{ pintar(dd); const n2=document.querySelector(`[data-vnota="${camp}"]`)||document.querySelector('.ventaBox .act'); if(n2){ n2.textContent=msg; n2.className=(n2.className||'')+' bien'; } });
+    [70000,140000].forEach(t=>setTimeout(()=>{ if(typeof srFresco==='function') srFresco(); else location.reload(); },t===70000?75000:150000));
+  } else { b.disabled=false; b.textContent='Guardar'; if(nota){ nota.textContent=(r&&r.error)||'No se pudo guardar. Probá de nuevo.'; nota.className='vnota mal'; } }
 });
 
 function graficoLinea(titulo, leyenda, vals, etiquetas, color, dec){
@@ -2499,7 +2513,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261012b';
+var SR_VER='20261012c';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
