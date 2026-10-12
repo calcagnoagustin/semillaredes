@@ -524,7 +524,7 @@
 
   window.V3IR=k=>{
     const ve=(sel,fn)=>{ setTimeout(()=>{ const el=typeof sel==='function'?sel():document.querySelector(sel); if(el){ if(fn) fn(el); el.scrollIntoView({behavior:'smooth',block:'start'}); el.classList.add('srFlash'); setTimeout(()=>el.classList.remove('srFlash'),1800); } },120); };
-    if(k==='ventas'){ ir('metricas',true); const t=document.getElementById('v3todo'); if(t) t.open=true; ve(()=>[...document.querySelectorAll('#v3todo h2')].find(h=>/ventas/i.test(h.textContent))||t); }
+    if(['ventas','hitos','activos','notas'].includes(k)&&window.srBuscar){ ir('metricas',true); const t=document.getElementById('v3todo'); if(t) t.open=true; setTimeout(()=>{ window.srIrA(window.srBuscar(k)||t); },150); }
     else if(k==='fechas'){ FFORM=true; TAB='actividades'; SS('tab','actividades'); armar(window.__D); ve('#v3ff'); }
     else if(k==='tareas'){ ir('actividades',true); ve('#v3tarea'); }
     else if(k==='web'){ ir('proyecto',true); ve('#v3web'); }

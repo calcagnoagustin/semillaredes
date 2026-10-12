@@ -2091,8 +2091,8 @@ function armarIndice(){
   const corto={'Próximas fechas':'Fechas','Consejos de la Inteligencia colectiva':'Consejos','Tarea para el hogar':'Tareas','Ventas':'Ventas','Tus activos':'Activos','Tus notas':'Notas'};
   const nav=document.createElement('nav'); nav.className='indice'; nav.id='indice'; nav.setAttribute('aria-label','Secciones');
   nav.innerHTML='<div class="fila">'+hs.map((h,i)=>{
-    const t=h.textContent.trim(); h.id='sec-'+i;
-    return `<a href="#sec-${i}" data-i="${i}">${corto[t]||t}</a>`;
+    const t=h.textContent.trim(); h.id='sec-'+t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); if(hs.some((o,j)=>j<i&&o.id===h.id)) h.id+='-'+i;
+    return `<a href="#${h.id}" data-i="${i}">${corto[t]||t}</a>`;
   }).join('')+'</div>';
   const primero=app.querySelector('.periodo')||app.querySelector('h1');
   const sig=primero && primero.nextElementSibling;
@@ -2233,14 +2233,29 @@ const SR_ACC=[
   {re:/\btareas?\b/i, k:'tareas', t:'Ir a tus tareas'}
 ];
 function srAccion(txt){ const t=String(txt).replace(/<[^>]+>/g,''); for(const a of SR_ACC) if(a.re.test(t)) return a; return null; }
+// Anclas: dónde vive cada acción dentro del panel. Primero lo más puntual (el formulario), después la sección.
+const SR_ANCLA={
+  ventas:['.ventaBox .formv','.ventaBox','.ventasF','#sec-ventas','#sec-consultas'],
+  fechas:['#f_fecha','#sec-proximas-fechas'],
+  tareas:['#t_nueva','#sec-tarea-para-el-hogar'],
+  web:['#tuweb','#sec-tu-web'],
+  hitos:['#h_met2','#sec-hitos'],
+  activos:['#a_tit','#sec-tus-activos'],
+  notas:['#nota_txt','#sec-tus-notas']
+};
+function srBuscar(k){ for(const sel of (SR_ANCLA[k]||['#sec-'+k])){ const el=document.querySelector('#app '+sel)||document.querySelector(sel); if(el&&el.getClientRects().length||el&&el.closest('details')) return el; } return null; }
+function srIrA(el){ if(!el) return false;
+  let d=el.closest('details'); while(d){ d.open=true; d=d.parentElement&&d.parentElement.closest('details'); }
+  const fv=el.matches('.formv')?el:null; if(fv&&fv.style.display==='none'){ const ed=fv.parentElement.querySelector('[data-veditar]'); if(ed) ed.click(); }
+  const vaya=()=>{ const y=el.getBoundingClientRect().top+window.scrollY-90; window.scrollTo({top:Math.max(0,y),behavior:'smooth'}); el.classList.add('srFlash'); setTimeout(()=>el.classList.remove('srFlash'),2000);
+    const inp=el.matches('input,textarea')?el:el.querySelector&&el.querySelector('input'); if(inp) setTimeout(()=>{ try{ inp.focus({preventScroll:true}); }catch(e){} },500); };
+  requestAnimationFrame(()=>requestAnimationFrame(vaya)); return true; }
 function srIr(k){
   document.querySelectorAll('.repFondo').forEach(x=>x.classList.add('oculto'));
   if(window.V3IR){ window.V3IR(k); return; }
-  const tit={ventas:'Ventas',fechas:'Próximas fechas',tareas:'Tarea para el hogar'}[k];
-  let el=k==='web'?document.getElementById('tuweb'):[...document.querySelectorAll('#app h2')].find(h=>h.textContent.trim()===tit);
-  if(!el&&k==='ventas') el=[...document.querySelectorAll('#app h2')].find(h=>/ventas/i.test(h.textContent));
-  if(el){ el.scrollIntoView({behavior:'smooth',block:'start'}); el.classList.add('srFlash'); setTimeout(()=>el.classList.remove('srFlash'),1800); }
+  srIrA(srBuscar(k));
 }
+window.srBuscar=srBuscar; window.srIrA=srIrA;
 window.srAccion=srAccion; window.srIr=srIr;
 const srBtnAcc=x=>{ const a=srAccion(x); return a?`<button class="srAcc" type="button" data-sracc="${a.k}">${a.t} →</button>`:''; };
 function ponerReporte(d){
@@ -2484,7 +2499,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261012a';
+var SR_VER='20261012b';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
