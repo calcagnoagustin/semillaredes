@@ -245,7 +245,8 @@
     const dif=k=>{ const v=val(k), a=previo(k); return v==null||a==null?null:Number(v)-Number(a); };
     const serie=(k,n=8)=>R.filter(r=>r.metricas[k]!=null&&(new Date(r.hasta)-new Date(r.desde))/864e5>=3).slice(-n).map(r=>Number(r.metricas[k]));
     const repI=[...(d.reportes||[])].reverse().find(r=>r.metricas&&r.metricas.informe), I=repI?repI.metricas.informe:null;
-    const nombre=slug==='semilla-redes'?'Agus':(d.cliente.nombre||'').replace(/\s+\d+$/,'').split(' ')[0];
+    const SALU={'semilla-redes':'Agus','animales-del-rock':'Mariana','animales-del-rock-2':'Mariana','mavela':'Mariana'};
+    const nombre=SALU[slug]?SALU[slug]:(d.cliente.nombre||'').replace(/\s+\d+$/,'').split(' ')[0];
     const ini=(d.cliente.nombre||'?').trim()[0].toUpperCase();
     const u=R[R.length-1];
     const deltaTxt=(p,inv)=>p==null?'<span class="ne">&nbsp;</span>':`<span class="${(p>=0)!==!!inv?'si':'no'}">${p>=0?'↑':'↓'} ${Math.abs(p)}%</span>`;
@@ -261,9 +262,12 @@
     // Abajo, siempre que haya, cuánto creció desde que trabaja con Semilla.
     const um=(R[R.length-1]||{}).metricas||{}, Nm=k=>Number(um[k]||0);
     let hero;
-    const vIng=Nm('vta_ingreso')||Nm('vta_ingreso_pixel'), vRoas=Nm('vta_ingreso')?Nm('vta_roas'):Nm('vta_roas_pixel');
+    const ultR=R[R.length-1]||{}, fdm=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
+    const FACT=(()=>{ const v=(d.cliente&&d.cliente.ventas)||{}; const k=Object.keys(v).find(k=>/^Facturaci/i.test(k)&&k.includes(fdm(ultR.desde))&&k.includes(fdm(ultR.hasta))); return k?Number(v[k].ingreso)||0:0; })();
+    const vIng=FACT||Nm('vta_ingreso')||Nm('vta_ingreso_pixel'), vRoas=(FACT&&Nm('vta_inversion'))?FACT/Nm('vta_inversion'):Nm('vta_ingreso')?Nm('vta_roas'):Nm('vta_roas_pixel');
+    const vGan=FACT&&Nm('vta_inversion')?Math.round(FACT*0.75-Nm('vta_inversion')):Nm('vta_ganancia');
     if(Nm('vta_ventas')>0&&vIng>0)
-      hero=`<div class="e">Ventas del período</div><div class="p">${SIM}${nf(vIng)}</div><div class="x">${nf(um.vta_ventas)} ${Nm('vta_ventas')===1?'venta':'ventas'}${Nm('vta_inversion')?` con ${SIM}${nf(um.vta_inversion)} de publicidad`:''}${vRoas?`: cada ${UNI} invertido volvió ${SIM}${nf(vRoas,2)}.`:'.'}</div>`;
+      hero=`<div class="e">Ventas del período</div><div class="p">${SIM}${nf(vIng)}</div><div class="x">${nf(um.vta_ventas)} ${Nm('vta_ventas')===1?'venta':'ventas'}${Nm('vta_inversion')?` con ${SIM}${nf(um.vta_inversion)} de publicidad`:''}${vRoas?`: cada ${UNI} invertido volvió ${SIM}${nf(vRoas,2)}.`:'.'}${vGan>0?` Ganancia neta: <b>${SIM}${nf(vGan)}</b>.`:''}</div>`;
     else if(Nm('msj_conversiones')>0&&Nm('msj_ingreso')>0)
       hero=`<div class="e">Ventas del período</div><div class="p">${SIM}${nf(um.msj_ingreso)}</div><div class="x">${nf(um.msj_conversiones)} ${Nm('msj_conversiones')===1?'venta':'ventas'}${Nm('msj_inversion')?` con ${SIM}${nf(um.msj_inversion)} de publicidad`:''}${Nm('msj_roas')?`: cada ${UNI} invertido volvió ${SIM}${nf(um.msj_roas,2)}.`:'.'}</div>`;
     else if(Nm('ig_followers_nuevos')>0)
@@ -279,6 +283,7 @@
     if(!/class="desde"/.test(hero)){ const RV=(d.reportes||[]).filter(r=>r.metricas&&r.metricas.vta_ventas!=null&&(new Date(r.hasta)-new Date(r.desde))/864e5>=3).sort((a,b)=>a.desde<b.desde?-1:1);
       if(RV.length>1){ const tv=RV.reduce((a,r)=>a+Number(r.metricas.vta_ventas||0),0), ti=RV.reduce((a,r)=>a+Number(r.metricas.vta_ingreso||r.metricas.vta_ingreso_pixel||0),0), dd=new Date(RV[0].desde);
         hero+=`<div class="desde">Desde ${MESL[dd.getMonth()]} con Semilla: <b>${nf(tv)} ventas</b>${ti?` y ${SIM}${nf(ti)} facturados`:''}.</div>`; } }
+    const HTIT=h=>{ if(h.titulo&&!/^[a-z]+_[a-z_]+$/.test(h.titulo)) return h.titulo; const L={vta_ventas:'ventas en el período',ig_followers_total:'seguidores en Instagram',sp_monthly:'oyentes mensuales en Spotify',msj_mensajes:'consultas por mensaje',yt_subs:'suscriptores en YouTube'}; return nf(h.objetivo)+' '+(L[h.metrica]||''); };
     const H=(d.hitos||[]).map(h=>({h,v:val(h.metrica)})).filter(x=>x.v!=null&&Number(x.v)<Number(x.h.objetivo));
     const hito=H.sort((a,b)=>(b.v/b.h.objetivo)-(a.v/a.h.objetivo))[0];
     const tiene=k=>val(k)!=null;
@@ -288,7 +293,7 @@
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
       <div class="tit2"><h3>Métricas principales</h3><button data-ir="metricas">Ver todas</button></div>
       <div class="met">${MET.slice(0,3).map(m=>`<div class="card"><div class="ic">${ico[m.ic]}</div><div class="v">${m.k==='vta_costo_venta'?SIM.trim()+' '+nf(val(m.k),2):m.k==='vta_roas_pixel'?nf(val(m.k),1)+'x':nf(val(m.k))}</div><div class="l">${Number(val(m.k))===1?m.l.replace(/^consultas$/,'consulta').replace(/^mensajes$/,'mensaje').replace(/^ventas$/,'venta').replace(/^seguidores$/,'seguidor'):m.l}</div><div class="d">${dK(m.k,m.k==='vta_costo_venta')}</div></div>`).join('')}</div>
-      ${hito?`<div class="card hito"><div>${ico.sol}</div><div><div class="v3t">Tu próximo hito</div><div class="tx">${esc(hito.h.titulo||('Llegar a '+nf(hito.h.objetivo)))}</div></div><button class="ir" data-ir="proyecto" aria-label="Ver hitos">${ico.flecha}</button>
+      ${hito?`<div class="card hito"><div>${ico.sol}</div><div><div class="v3t">Tu próximo hito</div><div class="tx">${esc(HTIT(hito.h))}</div></div><button class="ir" data-ir="proyecto" aria-label="Ver hitos">${ico.flecha}</button>
         <div class="bar"><div class="b"><i style="width:${Math.min(100,hito.v/hito.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(hito.v)} / ${nf(hito.h.objetivo)}</span></div></div>`:''}
       <div class="tit2"><h3>Accesos rápidos</h3></div>
       <div class="acc">
@@ -360,7 +365,7 @@
     const scrPro=`
       <h1 class="v3t">Tu proyecto</h1><p class="bj">Tus metas, tus links y tu web.</p>
       <div class="tit2"><h2>Hitos</h2></div>
-      <div class="card">${HT.length?HT.map(x=>`<div class="hito" style="margin:0;border-top:1px solid #EDE6D8;grid-template-columns:38px 1fr"><div>${ico.sol}</div><div><div class="v3t">${esc(x.h.titulo||nf(x.h.objetivo))}</div><div class="tx">${x.v!=null&&Number(x.v)>=Number(x.h.objetivo)?'¡Logrado!':'En camino'}</div></div><div class="bar"><div class="b"><i style="width:${x.v==null?0:Math.min(100,x.v/x.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(x.v)} / ${nf(x.h.objetivo)}</span></div></div>`).join(''):'<div class="vacio">Todavía no hay hitos.</div>'}</div>
+      <div class="card">${HT.length?HT.map(x=>`<div class="hito" style="margin:0;border-top:1px solid #EDE6D8;grid-template-columns:38px 1fr"><div>${ico.sol}</div><div><div class="v3t">${esc(HTIT(x.h))}</div><div class="tx">${x.v!=null&&Number(x.v)>=Number(x.h.objetivo)?'¡Logrado!':'En camino'}</div></div><div class="bar"><div class="b"><i style="width:${x.v==null?0:Math.min(100,x.v/x.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(x.v)} / ${nf(x.h.objetivo)}</span></div></div>`).join(''):'<div class="vacio">Todavía no hay hitos.</div>'}</div>
       <div class="tit2"><h2>Tus activos</h2></div>
       <div class="card lista">${A.length?A.map(a=>`<div class="fila" style="grid-template-columns:1fr 18px">${a.url?`<a class="tx" style="color:${NAVY};text-decoration:none" href="${esc(a.url)}" target="_blank" rel="noopener"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">${esc(a.descripcion||'')}</span></a>`:`<span class="tx"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">En preparación</span></span>`}<span class="ch">${ico.ch}</span></div>`).join(''):'<div class="vacio">Todavía no hay enlaces.</div>'}</div>
       <div id="v3web"></div>`;
