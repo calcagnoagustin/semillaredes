@@ -245,7 +245,9 @@
     const R=(d.reportes||[]).filter(r=>(new Date(r.hasta)-new Date(r.desde))/864e5>=3).slice().sort((a,b)=>a.desde<b.desde?-1:a.desde>b.desde?1:(a.hasta<b.hasta?-1:1));
     const ult=k=>{ for(let i=R.length-1;i>=0;i--){ const v=R[i].metricas[k]; if(v!=null) return [v,i]; } return [null,-1]; };
     const ant=(k,desde)=>{ for(let i=desde-1;i>=0;i--){ const v=R[i].metricas[k]; if(v!=null) return v; } return null; };
-    const MANUAL={msj_conversiones:1,msj_ingreso:1,msj_roas:1,msj_costo_conversion:1,vta_ingreso:1,vta_ganancia:1,vta_roas:1,vta_roi:1};
+    // ganancia de la campaña de mensajes = lo facturado (cargado por el cliente) menos la publicidad
+    R.forEach(r=>{ const m=r.metricas||{}; if(m.msj_ingreso!=null&&m.msj_inversion!=null&&m.msj_ganancia==null) m.msj_ganancia=Math.round((Number(m.msj_ingreso)-Number(m.msj_inversion))*100)/100; });
+    const MANUAL={msj_ganancia:1,msj_conversiones:1,msj_ingreso:1,msj_roas:1,msj_costo_conversion:1,vta_ingreso:1,vta_ganancia:1,vta_roas:1,vta_roi:1};
     const ultM=k=>{ if(!MANUAL[k]) return ult(k); const i=R.length-1; return i>=0&&R[i].metricas[k]!=null?[R[i].metricas[k],i]:[null,-1]; };
     const val=k=>ultM(k)[0];
     const previo=k=>{ const [v,i]=ultM(k); return i<0?null:ant(k,i); };
@@ -355,13 +357,15 @@
       frm:{n:'Formación',k:'frm_visitas',l:'visitas a la página',ex:`${val('frm_mensajes')!=null?nf(val('frm_mensajes'))+' consultas en el período':''}`,col:'#2F7A4F',
           a:['frm_costo_visita','costo por visita',true,'#E2767C',2],b:['frm_inversion','inversión en el período',true,OLIVA]},
       msj:{n:'Mensajes',k:'msj_mensajes',l:'mensajes recibidos',ex:`${val('msj_conversiones')!=null?nf(val('msj_conversiones'))+' ventas en el período':''}`,col:'#25A35A',
-          a:['msj_costo_mensaje','costo por mensaje',true,'#E2767C',2],b:['msj_inversion','inversión en el período',true,OLIVA]}
+          ...(Number(val('msj_conversiones'))>0&&val('msj_ganancia')!=null
+            ?{a:['msj_costo_conversion','costo por venta',true,'#E2767C',0],b:['msj_ganancia','ganancia (ventas − publicidad)',true,OLIVA,0]}
+            :{a:['msj_costo_mensaje','costo por mensaje',true,'#E2767C',2],b:['msj_inversion','inversión en el período',true,OLIVA]})}
     };
     Object.keys(redes).forEach(k=>{ if(!tiene(redes[k].k)) delete redes[k]; });
     if(!redes[SUBRED]) SUBRED=Object.keys(redes)[0]||'ig';
     if(!redes[SUBRED]) redes[SUBRED]={n:'Instagram',k:'ig_followers_total',l:'seguidores',ex:'',col:VINO,a:['ig_costo_follower','costo por seguidor',true,'#E2767C'],b:['ig_inversion','inversión en el período',true,OLIVA]};
     const RD=redes[SUBRED];
-    const mini=(c)=>{ const v=val(c[0]); return `<div class="card"><div class="n">${c[2]?SIM:''}${nf(v, c[4]!=null?c[4]:c[0]==='yt_horas'?1:(c[2]&&v!=null&&Math.abs(v)<100?2:0))}</div><div class="l">${c[1]}</div>${barras(serie(c[0]),c[3])}</div>`; };
+    const mini=(c)=>{ const v=val(c[0]), S=serie(c[0]); return `<div class="card"><div class="n">${v!=null&&v<0?'−':''}${c[2]?SIM:''}${nf(v!=null?Math.abs(v):v, c[4]!=null?c[4]:c[0]==='yt_horas'?1:(c[2]&&v!=null&&Math.abs(v)<100?2:0))}</div><div class="l">${c[1]}</div>${S.some(x=>x<0)?'':barras(S,c[3])}</div>`; };
     const imp=I&&I.hallazgos&&I.hallazgos.length?(typeof I.hallazgos[0]==='object'?I.hallazgos[0].t:I.hallazgos[0]):null;
     const scrMet=`
       <div class="rep"><div><h1 class="v3t" style="font-size:31px">Tus métricas</h1><p class="bj">${I?`Del ${fd(I.desde)} al ${fd(I.hasta)}`:'Tus números, red por red'}</p></div>${I?`<button class="ir" id="v3rep" aria-label="Abrir reporte">${ico.flecha}</button>`:''}</div>
