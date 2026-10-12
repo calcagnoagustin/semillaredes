@@ -119,6 +119,9 @@
   #v3 .big .d{font-size:14px;font-weight:600;margin-top:10px}
   #v3 .big .d small{display:block;font-weight:400;color:#8A8577;font-size:13px}
   #v3 .big .sp svg{width:100%;height:90px;display:block}
+  #v3 .big .kp{display:grid;gap:12px;padding-left:16px;border-left:1px solid #E4DED0;align-self:stretch;align-content:center}
+  #v3 .big .kp .n{font-size:28px}
+  #v3 .big .kp .l{font-size:13px}
   #v3 .big .n,#v3 .big .ic{flex:none}
   #v3 .dos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
   #v3 .dos .card{padding:14px}
@@ -357,9 +360,8 @@
       frm:{n:'Formación',k:'frm_visitas',l:'visitas a la página',ex:`${val('frm_mensajes')!=null?nf(val('frm_mensajes'))+' consultas en el período':''}`,col:'#2F7A4F',
           a:['frm_costo_visita','costo por visita',true,'#E2767C',2],b:['frm_inversion','inversión en el período',true,OLIVA]},
       msj:{n:'Mensajes',k:'msj_mensajes',l:'mensajes recibidos',ex:`${val('msj_conversiones')!=null?nf(val('msj_conversiones'))+' ventas en el período':''}`,col:'#25A35A',
-          ...(Number(val('msj_conversiones'))>0&&val('msj_ganancia')!=null
-            ?{a:['msj_costo_conversion','costo por venta',true,'#E2767C',0],b:['msj_ganancia','ganancia (ventas − publicidad)',true,OLIVA,0]}
-            :{a:['msj_costo_mensaje','costo por mensaje',true,'#E2767C',2],b:['msj_inversion','inversión en el período',true,OLIVA]})}
+          a:['msj_costo_mensaje','costo por mensaje',true,'#E2767C',2],b:['msj_inversion','inversión en el período',true,OLIVA],
+          ...(Number(val('msj_conversiones'))>0&&val('msj_ganancia')!=null?{kpis:[['msj_costo_conversion','costo por venta'],['msj_ganancia','ganancia total']]}:{})}
     };
     Object.keys(redes).forEach(k=>{ if(!tiene(redes[k].k)) delete redes[k]; });
     if(!redes[SUBRED]) SUBRED=Object.keys(redes)[0]||'ig';
@@ -371,7 +373,7 @@
       <div class="rep"><div><h1 class="v3t" style="font-size:31px">Tus métricas</h1><p class="bj">${I?`Del ${fd(I.desde)} al ${fd(I.hasta)}`:'Tus números, red por red'}</p></div>${I?`<button class="ir" id="v3rep" aria-label="Abrir reporte">${ico.flecha}</button>`:''}</div>
       ${imp?`<div class="card imp"><div>${ico.sol}</div><div><h4>Lo más importante</h4><p>${imp}</p></div></div>`:''}
       <div class="red">${Object.keys(redes).map(k=>`<button class="${k===SUBRED?'on':''}" data-red="${k}">${redes[k].n}</button>`).join('')}</div>
-      <div class="card big"><div><div style="display:flex;align-items:center;gap:10px">${ico[SUBRED]}<div class="n">${nf(val(RD.k))}</div></div><div class="l">${RD.l}</div><div class="d">${dK(RD.k)}<small>${RD.ex}</small></div></div><div class="sp">${linea(serie(RD.k),RD.col)}</div></div>
+      <div class="card big"><div><div style="display:flex;align-items:center;gap:10px">${ico[SUBRED]}<div class="n">${nf(val(RD.k))}</div></div><div class="l">${RD.l}</div><div class="d">${dK(RD.k)}<small>${RD.ex}</small></div></div>${RD.kpis?`<div class="kp">${RD.kpis.map(([k,l])=>{const v=Number(val(k));return `<div><div class="n">${v<0?'−':''}${SIM}${nf(Math.abs(v),0)}</div><div class="l">${l}</div></div>`;}).join('')}</div>`:`<div class="sp">${linea(serie(RD.k),RD.col)}</div>`}</div>
       <div class="dos">${mini(RD.a)}${mini(RD.b)}</div>
       ${recs.length?`<div class="card recos"><div class="h">${ico.hoja}Recomendaciones SemillaIA</div>${recs.slice(0,3).map((r,i)=>`<div class="r"><span class="k">${i+1}</span><p>${esc(String(r).replace(/<[^>]+>/g,''))}${accB(r)}</p></div>`).join('')}</div>`:''}
       <details class="todo" id="v3todo"><summary>Ver todas las métricas</summary></details>`;
