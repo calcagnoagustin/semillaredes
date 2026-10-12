@@ -281,12 +281,12 @@
     else hero=`<div class="e">Tu comunidad</div><div class="p">${nf(val('ig_followers_total'))}</div><div class="x">seguidores en Instagram.</div>`;
     const TODOS=(d.reportes||[]).filter(r=>r.metricas&&r.metricas.ig_followers_total!=null).sort((a,b)=>a.hasta<b.hasta?-1:1);
     if(TODOS.length>1){ const a0=Number(TODOS[0].metricas.ig_followers_total), a1=Number(TODOS[TODOS.length-1].metricas.ig_followers_total), dd=new Date(TODOS[0].desde||TODOS[0].hasta);
-      if(a1>a0) hero+=`<div class="desde">Desde ${MESL[dd.getMonth()]}${dd.getFullYear()!==new Date().getFullYear()?' de '+dd.getFullYear():''} con Semilla: <b>+${nf(a1-a0)} seguidores</b> (de ${nf(a0)} a ${nf(a1)}).</div>`; }
+      if(a1>a0) hero+=`<div class="desde">Desde ${MESL[dd.getUTCMonth()]}${dd.getUTCFullYear()!==new Date().getFullYear()?' de '+dd.getUTCFullYear():''} con Semilla: <b>+${nf(a1-a0)} seguidores</b> (de ${nf(a0)} a ${nf(a1)}).</div>`; }
     const RG=um&&R.length?`<div class="rg">Del ${fd(R[R.length-1].desde)} al ${fd(R[R.length-1].hasta)}</div>`:'';
     hero=hero.replace(/(<div class="e">[^<]*período<\/div>)/,'$1'+RG);
     if(!/class="desde"/.test(hero)){ const RV=(d.reportes||[]).filter(r=>r.metricas&&r.metricas.vta_ventas!=null&&(new Date(r.hasta)-new Date(r.desde))/864e5>=3).sort((a,b)=>a.desde<b.desde?-1:1);
       if(RV.length>1){ const tv=RV.reduce((a,r)=>a+Number(r.metricas.vta_ventas||0),0), ti=RV.reduce((a,r)=>a+Number(r.metricas.vta_ingreso||r.metricas.vta_ingreso_pixel||0),0), dd=new Date(RV[0].desde);
-        hero+=`<div class="desde">Desde ${MESL[dd.getMonth()]} con Semilla: <b>${nf(tv)} ventas</b>${ti?` y ${SIM}${nf(ti)} facturados`:''}.</div>`; } }
+        hero+=`<div class="desde">Desde ${MESL[dd.getUTCMonth()]} con Semilla: <b>${nf(tv)} ventas</b>${ti?` y ${SIM}${nf(ti)} facturados`:''}.</div>`; } }
     const HTIT=h=>{ if(h.titulo&&!/^[a-z]+_[a-z_]+$/.test(h.titulo)) return h.titulo; const L={vta_ventas:'ventas en el período',ig_followers_total:'seguidores en Instagram',sp_monthly:'oyentes mensuales en Spotify',msj_mensajes:'consultas por mensaje',yt_subs:'suscriptores en YouTube'}; return nf(h.objetivo)+' '+(L[h.metrica]||''); };
     const H=(d.hitos||[]).map(h=>({h,v:val(h.metrica)})).filter(x=>x.v!=null&&Number(x.v)<Number(x.h.objetivo));
     const hito=H.sort((a,b)=>(b.v/b.h.objetivo)-(a.v/a.h.objetivo))[0];
