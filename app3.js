@@ -139,6 +139,54 @@
   #v3 details.todo #app{margin-top:10px}
   #v3 .vacio{padding:16px;font-size:14.5px;color:#8A8577}
   #v3 .scr{display:none}#v3 .scr.on{display:block}
+  #v3 .rph{position:relative;padding-top:6px;margin-bottom:6px}
+  #v3 .rhoja{position:absolute;right:-8px;top:-6px;pointer-events:none;z-index:0}
+  #v3 h1.rpt{position:relative;font-size:46px;letter-spacing:-.5px}
+  #v3 .rpr{position:relative;display:flex;align-items:center;gap:14px;margin-top:10px;max-width:66%}
+  #v3 .rpr span{font:600 12.5px/1 Inter,sans-serif;letter-spacing:3px;text-transform:uppercase;color:#3A3846;white-space:nowrap}
+  #v3 .rpr i{flex:1;height:1px;background:#BDB49E}
+  #v3 .rps{position:relative;margin:10px 0 0;font:400 16.5px/1.4 'Playfair Display',serif;color:#55525F;max-width:60%}
+  #v3 .ci{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;flex:none;color:#fff}
+  #v3 .ci.ok{background:#5A6530}#v3 .ci.ma{background:#A3283A}#v3 .ci.nu{background:#4A5426;font:600 18px/1 'Playfair Display',serif}
+  #v3 .rdz{position:relative;z-index:1;margin-top:20px;padding:16px;display:grid;grid-template-columns:46px 1fr auto;grid-template-areas:'ci hd gr' 'tx tx tx';column-gap:12px;row-gap:10px;align-items:center;box-shadow:0 6px 18px rgba(26,36,86,.06)}
+  #v3 .rdz .ci{grid-area:ci}#v3 .rdz .hd{grid-area:hd;min-width:0}#v3 .rdz .gr{grid-area:gr}
+  #v3 .rdz .e{font:600 11px/1 Inter,sans-serif;letter-spacing:2.2px;text-transform:uppercase;color:#3A3846}
+  #v3 .rdz .v{margin-top:7px;font-family:'Playfair Display',serif;color:${NAVY};line-height:1.05}
+  #v3 .rdz .v b{font-size:32px;font-weight:600;font-variant-numeric:tabular-nums}#v3 .rdz .v span{font-size:21px;font-weight:600}
+  #v3 .rdz .gr{display:grid;justify-items:center;row-gap:5px;padding-left:12px;border-left:1px solid #E4DCCB}
+  #v3 .rdz .gr svg{display:block}
+  #v3 .rdz .pl{background:#F7D9D4;color:#8E2433;border-radius:999px;padding:6px 11px;font:600 15px/1 'Playfair Display',serif;white-space:nowrap}
+  #v3 .rdz small{font:600 8.5px/1.25 Inter,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:#6F6B7C;text-align:center;max-width:84px}
+  #v3 .rdz .tx{grid-area:tx;margin:2px 0 0;font-size:14.5px;line-height:1.5;color:#3A3846}
+  #v3 .rdz .tx b{color:${NAVY}}
+  #v3 .rsh{display:flex;align-items:center;gap:10px;margin:28px 0 12px}
+  #v3 .rsh svg{flex:none}
+  #v3 .rsh h2{margin:0;font-family:'Playfair Display',serif;font-size:27px;font-weight:600;color:${NAVY};white-space:nowrap}
+  #v3 .rsh i{flex:1;height:1px;background:#C9C0AA;min-width:16px}
+  #v3 .rsh span{font:600 10.5px/1 Inter,sans-serif;letter-spacing:2px;text-transform:uppercase;color:#55525F;white-space:nowrap}
+  #v3 .rit{display:grid;grid-template-columns:42px 1fr;column-gap:14px;align-items:start;padding:18px 16px 16px;margin-top:10px}
+  #v3 .rit .ci{width:42px;height:42px}
+  #v3 .rit h3{margin:0 0 4px;font:600 18px/23px 'Playfair Display',serif;color:${NAVY}}
+  #v3 .rit p{margin:0;font-size:14.5px;line-height:1.5;color:#55525F}
+  #v3 .rit p b{color:#3A3846;font-weight:600}
+  #v3 .rit .ci{margin-top:-9.5px}   /* centro del círculo = centro de la primera línea del título (23px) */
+  #v3 .rit>div>p:first-child{margin-top:.6px}
+  #v3 .rit.rq.con{grid-template-columns:42px 1fr 34px;cursor:pointer}
+  #v3 .rit.rq .ch{width:34px;height:34px;border-radius:50%;background:#F1ECE1;color:#55525F;display:grid;place-items:center;align-self:center}
+  #v3 .rit.rq.con:active{background:#F4EFE4}
+  #v3 .rru{margin-top:16px;display:grid;grid-template-columns:34px 1px 1fr;column-gap:14px;align-items:center;padding:16px;border-radius:18px;background:#F9E6E2;border:1px solid #EDC7C0}
+  #v3 .rru>svg{justify-self:center}
+  #v3 .rru>i{align-self:stretch;background:#E3B9B1}
+  #v3 .rru h4{margin:0 0 6px;font:600 10.5px/1.2 Inter,sans-serif;letter-spacing:2.2px;text-transform:uppercase;color:#7A1F3A}
+  #v3 .rru p{margin:0;font-size:15px;line-height:1.5;color:${NAVY}}
+  #v3 .rbt{display:grid;gap:10px;margin-top:20px}
+  #v3 .rbt button{display:flex;align-items:center;justify-content:center;gap:10px;border-radius:999px;padding:15px 20px;cursor:pointer;font:600 17px/1 'Playfair Display',serif}
+  #v3 .rbt .pri{border:0;background:${NAVY};color:#F2EDE4}
+  #v3 .rbt .sec{border:1px solid #CFC6B4;background:#FBF8F2;color:${NAVY};font:600 15px/1 Inter,sans-serif}
+  #v3 .rbt button:disabled{opacity:.7}
+  #v3 .v3exp{position:fixed;left:-10000px;top:0;width:560px;padding:26px 24px 30px;background:#F2EDE4;box-sizing:border-box}
+  #v3 .v3exp .cab .nm{font:600 14px/1.2 Inter,sans-serif;color:${NAVY};text-align:right;max-width:200px}
+  #v3 .v3exp .pie{margin-top:22px;text-align:center;font:500 12px/1 Inter,sans-serif;letter-spacing:1.5px;color:#8A8577}
   .v3hoja{position:fixed;inset:0;z-index:80;background:#F2EDE4;overflow-y:auto;transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);font-family:Inter,system-ui,sans-serif;color:#24242C;-webkit-overflow-scrolling:touch}
   .v3hoja.on{transform:none}
   .v3hoja .hh{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;padding:calc(env(safe-area-inset-top,0px) + 10px) 10px 10px;background:rgba(242,237,228,.96);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid #E1D9C9}
@@ -276,20 +324,26 @@
     // Destacado: primero el resultado de negocio del período (ventas reales anotadas), después el crecimiento de la cuenta.
     // Abajo, siempre que haya, cuánto creció desde que trabaja con Semilla.
     const um=(R[R.length-1]||{}).metricas||{}, Nm=k=>Number(um[k]||0);
-    let hero;
+    let hero, DZ=null;   // DZ: el destacado de la sección Reporte (misma prioridad que el hero)
     const ultR=R[R.length-1]||{}, fdm=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
     const FACT=(()=>{ const v=(d.cliente&&d.cliente.ventas)||{}; const k=Object.keys(v).find(k=>/^Facturaci/i.test(k)&&k.includes(fdm(ultR.desde))&&k.includes(fdm(ultR.hasta))); return k?Number(v[k].ingreso)||0:0; })();
     const vIng=FACT||Nm('vta_ingreso')||Nm('vta_ingreso_pixel'), vRoas=(FACT&&Nm('vta_inversion'))?FACT/Nm('vta_inversion'):Nm('vta_ingreso')?Nm('vta_roas'):Nm('vta_roas_pixel');
     const vGan=FACT&&Nm('vta_inversion')?Math.round(FACT*0.75-Nm('vta_inversion')):Nm('vta_ganancia');
     if(Nm('vta_ventas')>0&&vIng>0)
+      DZ={e:'Resultado destacado',v:SIM+nf(vIng),u:'en ventas',k:Nm('vta_ingreso')?'vta_ingreso':'vta_ingreso_pixel',ic:'vta'},
       hero=`<div class="e">Ventas del período</div><div class="p">${SIM}${nf(vIng)}</div><div class="x">${nf(um.vta_ventas)} ${Nm('vta_ventas')===1?'venta':'ventas'}${Nm('vta_inversion')?` con ${SIM}${nf(um.vta_inversion)} de publicidad`:''}${vRoas?`: cada ${UNI} invertido volvió ${SIM}${nf(vRoas,2)}.`:'.'}${vGan>0?` Ganancia neta: <b>${SIM}${nf(vGan)}</b>.`:''}</div>`;
     else if(Nm('msj_conversiones')>0&&Nm('msj_ingreso')>0)
+      DZ={e:'Resultado destacado',v:SIM+nf(um.msj_ingreso),u:'en ventas',k:'msj_ingreso',ic:'vta'},
       hero=`<div class="e">Ventas del período</div><div class="p">${SIM}${nf(um.msj_ingreso)}</div><div class="x">${nf(um.msj_conversiones)} ${Nm('msj_conversiones')===1?'venta':'ventas'}${Nm('msj_inversion')?` con ${SIM}${nf(um.msj_inversion)} de publicidad`:''}${Nm('msj_roas')?`: cada ${UNI} invertido volvió ${SIM}${nf(um.msj_roas,2)}.`:'.'}</div>`;
     else if(Nm('ig_followers_nuevos')>0)
+      DZ={e:'Crecimiento destacado',v:'+'+nf(um.ig_followers_nuevos),u:Nm('ig_followers_nuevos')===1?'seguidor':'seguidores',k:'ig_followers_nuevos',ic:'sube',
+        t:`nuevos en Instagram. La cuenta ya llega a <b>${nf(val('ig_followers_total'))}</b> seguidores${Nm('ig_costo_follower')?` y cada uno costó <b>${SIM}${nf(um.ig_costo_follower,Number(um.ig_costo_follower)<100?2:0)}</b>`:''}.`},
       hero=`<div class="e">Tu progreso del período</div><div class="p">+${nf(um.ig_followers_nuevos)}</div><div class="x">seguidores nuevos en Instagram en el período.</div>`;
     else if(dif('sp_monthly')>0)
+      DZ={e:'Crecimiento destacado',v:'+'+nf(dif('sp_monthly')),u:'oyentes',k:null,ic:'sube'},
       hero=`<div class="e">Tu progreso del período</div><div class="p">+${nf(dif('sp_monthly'))}</div><div class="x">oyentes mensuales en Spotify: hoy son ${nf(val('sp_monthly'))}.</div>`;
     else if(Nm('msj_mensajes')>0)
+      DZ={e:'Resultado destacado',v:nf(um.msj_mensajes),u:Nm('msj_mensajes')===1?'consulta':'consultas',k:'msj_mensajes',ic:'msj'},
       hero=`<div class="e">Tu progreso del período</div><div class="p">${nf(um.msj_mensajes)}</div><div class="x">consultas por mensaje en el período.</div>`;
     else hero=`<div class="e">Tu comunidad</div><div class="p">${nf(val('ig_followers_total'))}</div><div class="x">seguidores en Instagram.</div>`;
     const TODOS=(d.reportes||[]).filter(r=>r.metricas&&r.metricas.ig_followers_total!=null).sort((a,b)=>a.hasta<b.hasta?-1:1);
@@ -390,12 +444,36 @@
       <div id="v3web"></div>`;
 
     // --- SemillaIA ---
+    const hx=(hero.match(/<div class="x">([\s\S]*?)<\/div>/)||[])[1]||'';
+    if(DZ&&!DZ.t) DZ.t=hx;
+    const dzD=(()=>{ if(!DZ||!DZ.k) return null; const p=dlt(DZ.k); if(p!=null) return (p>=0?'+':'−')+Math.abs(p)+'%'; const x=dif(DZ.k); return x==null||!Number(previo(DZ.k))?null:x===0?'=':(x>0?'+':'−')+nf(Math.abs(x)); })();
+    const dzBar=(()=>{ const V=DZ&&DZ.k?serie(DZ.k,5).filter(v=>v!=null&&v>=0):[]; if(V.length<2) return ''; const mx=Math.max(...V)||1, n=V.length, W=86, H=58, bw=12, gp=(W-n*bw)/(n-1||1);
+      const C=['#E9E1CE','#DED3B8','#CFC39E','#BDB383','#9C9A5A'];
+      return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true">${V.map((v,i)=>{const h=Math.max(6,v/mx*(H-20));return `<rect x="${(i*(bw+gp)).toFixed(1)}" y="${(H-h).toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="2.5" fill="${C[C.length-n+i]}"/>`;}).join('')}<path d="M2 ${H-26} Q${W*.55} ${H-30} ${W-6} 6" fill="none" stroke="#E2767C" stroke-width="1.8" stroke-linecap="round"/><path d="M${W-14} 5.5 L${W-5} 5 L${W-7} 14" fill="none" stroke="#E2767C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`; })();
+    const rIco={
+      sube:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.5l5.2-5.2 3.6 3.6L20 7.7"/><path d="M14.5 7.5H20V13"/></svg>',
+      barras:'<svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><rect x="5" y="12" width="3.4" height="7" rx="1"/><rect x="10.3" y="7" width="3.4" height="12" rx="1"/><rect x="15.6" y="9.5" width="3.4" height="9.5" rx="1"/></svg>',
+      msj:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M12 4.5c4.7 0 8 2.9 8 6.6s-3.3 6.6-8 6.6c-.9 0-1.8-.1-2.6-.3L5 19.5l1.1-3.6C4.8 14.6 4 13 4 11.1 4 7.4 7.3 4.5 12 4.5z"/></svg>',
+      vta:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M5.5 8.5h13l-1 11h-11z"/><path d="M9 10.5V7a3 3 0 0 1 6 0v3.5"/></svg>',
+      play:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><rect x="3.5" y="6" width="17" height="12" rx="3.5"/><path d="M10.5 9.5v5l4.3-2.5z" fill="#fff"/></svg>',
+      mal:'<svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><rect x="10.6" y="5" width="2.8" height="9.5" rx="1.4"/><circle cx="12" cy="18" r="1.7"/></svg>'
+    };
+    const icoH=h=>{ if(h.tipo==='mal') return rIco.mal; const t=String(h.t||h).toLowerCase();
+      return /venta|factur|vend/.test(t)?rIco.vta:/mensaje|consulta|conversaci/.test(t)?rIco.msj:/youtube|video|spotify|oyente|reproduc/.test(t)?rIco.play:rIco.sube; };
+    const HZ=I?(I.hallazgos||[]).map(h=>typeof h==='object'?h:{t:h,tipo:'bien'}):[];
+    const RC=I?(I.recomendaciones||[]):[], RT=(I&&I.recos_titulos)||[];
+    const nPal=(n,s,p)=>n+' '+(n===1?s:p);
+    const hoja2='<svg class="rhoja" width="150" height="190" viewBox="0 0 150 190" aria-hidden="true"><circle cx="104" cy="70" r="66" fill="#EAE2D0" opacity=".55"/><path d="M146 188C122 150 104 104 66 8" fill="none" stroke="#77763A" stroke-width="2" stroke-linecap="round"/>'
+      +[[136,170,-158,'#8C8B45'],[124,140,-64,'#6F6E34'],[110,110,-166,'#8C8B45'],[98,82,-70,'#77763A'],[86,54,-172,'#8C8B45'],[76,30,-78,'#6F6E34']].map(([x,y,a,c])=>`<g transform="translate(${x} ${y}) rotate(${a})"><path d="M0 0C13-11 33-11 46 0 33 11 13 11 0 0z" fill="${c}" opacity=".82"/><path d="M3 0H43" stroke="#F2EDE4" stroke-width=".9" opacity=".45"/></g>`).join('')+'</svg>';
     const scrIA=`
-      <h1 class="v3t">Reporte</h1><p class="bj">${I?`Del ${fd(I.desde)} al ${fd(I.hasta)}: lo principal, explicado y con próximos pasos.`:"Lo principal, explicado y con próximos pasos."}</p>
-      ${I?`<div class="card recos" style="margin-top:18px"><div class="h">${ico.sol}Lo principal</div>${(I.hallazgos||[]).map((h,i)=>`<div class="r"><span class="k" style="background:${(h.tipo==='mal')?'#9B2C36':'#4E8B3A'}">${h.tipo==='mal'?'!':'✓'}</span><p>${typeof h==='object'?h.t:h}</p></div>`).join('')}</div>
-        <div class="card recos"><div class="h">${ico.hoja}Qué hacer</div>${(I.recomendaciones||[]).map((r,i)=>`<div class="r"><span class="k">${i+1}</span><p>${esc(r)}${accB(r)}</p></div>`).join('')}</div>
-        ${I.reunion?`<div class="card imp"><div>${ico.luz}</div><div><h4>En la próxima reunión con Agus</h4><p>${esc(I.reunion)}</p></div></div>`:''}
-        <div style="margin-top:16px;text-align:center"><button id="v3rep2" style="border:0;background:${NAVY};color:#F2EDE4;border-radius:14px;padding:13px 20px;font:600 15px Inter,sans-serif;cursor:pointer">Ver detalles</button></div>`
+      <div class="rph">${hoja2}<h1 class="v3t rpt">Reporte</h1>${I?`<div class="rpr"><span>Del ${fd(I.desde)} al ${fd(I.hasta)}</span><i></i></div>`:''}<p class="rps">Lo principal, explicado y con próximos pasos.</p></div>
+      ${I?`${DZ?`<div class="card rdz"><span class="ci ok">${DZ.ic==='vta'?rIco.vta:DZ.ic==='msj'?rIco.msj:rIco.barras}</span><div class="hd"><div class="e">${DZ.e}</div><div class="v"><b>${DZ.v}</b> <span>${DZ.u}</span></div></div>${dzBar||dzD?`<div class="gr">${dzBar}${dzD?`<span class="pl">${dzD}</span><small>vs. período anterior</small>`:''}</div>`:''}<p class="tx">${DZ.t}</p></div>`:''}
+        <div class="rsh">${ico.sol}<h2>Lo principal</h2><i></i><span>${nPal(HZ.length,'punto','puntos')}</span></div>
+        ${HZ.map(h=>`<div class="card rit"><span class="ci ${h.tipo==='mal'?'ma':'ok'}">${icoH(h)}</span><div>${h.titulo?`<h3>${esc(h.titulo)}</h3>`:''}<p>${h.t}</p></div></div>`).join('')}
+        <div class="rsh">${ico.hoja}<h2>Qué hacer</h2><i></i><span>${nPal(RC.length,'acción','acciones')}</span></div>
+        ${RC.map((r,i)=>{ const a=window.srAccion&&window.srAccion(r); return `<div class="card rit rq${a?' con':''}"${a?` data-v3acc="${a.k}" role="button" tabindex="0" aria-label="${esc(a.t)}"`:''}><span class="ci nu">${i+1}</span><div>${RT[i]?`<h3>${esc(RT[i])}</h3>`:''}<p>${esc(r)}</p></div>${a?`<span class="ch">${ico.ch}</span>`:''}</div>`; }).join('')}
+        ${I.reunion?`<div class="rru">${ico.luz}<i></i><div><h4>En la próxima reunión con Agus</h4><p>${esc(I.reunion)}</p></div></div>`:''}
+        <div class="rbt"><button id="v3rep2" class="pri">Ver detalles ${ico.flecha}</button><button id="v3pdf" class="sec"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></svg>Descargar reporte</button></div>`
         :'<div class="card vacio" style="margin-top:18px">Cuando salga tu primer reporte lo vas a ver acá.</div>'}`;
 
     // --- montar ---
@@ -435,6 +513,8 @@
     notifCargar();
     const r1=raiz.querySelector('#v3rep'); if(r1){ r1.onclick=()=>ir('ia',true); r1.setAttribute('aria-label','Ir al reporte'); }
     const r2=raiz.querySelector('#v3rep2'); if(r2) r2.onclick=()=>ir('metricas',true);
+    const pd=raiz.querySelector('#v3pdf'); if(pd) pd.onclick=()=>descargarRep(pd, I);
+    raiz.querySelectorAll('.rq.con').forEach(c=>c.onkeydown=e=>{ if(e.key==='Enter') c.click(); });
     raiz.querySelectorAll('[data-acc]').forEach(b=>b.onclick=()=>{ const a=b.dataset.acc;
       if(a==='rep') ir('ia',true);
       else if(a==='tarea'){ FILTRO='abiertas'; ir('actividades',true); setTimeout(()=>{ const i=document.getElementById('v3tarea'); i&&i.focus(); },60); }
@@ -459,6 +539,29 @@
       const r=await rpc('sub_fecha_guardar',{p_slug:slug,p_k:tok,p_fecha:f,p_titulo:t,p_url:raiz.querySelector('#v3fu').value.trim()||null}); if(r&&r.ok){ FFORM=false; recargar(); } else fa.disabled=false; };
     raiz.querySelectorAll('[data-copia]').forEach(b=>b.onclick=async()=>{ let ok=false; try{ await navigator.clipboard.writeText(b.dataset.copia); ok=true; }catch(e){}
       b.textContent=ok?'Copiado':'No se pudo copiar'; setTimeout(()=>b.textContent='Copiar link de entradas',1600); });
+  }
+
+  // ---- Descargar el reporte (PDF) ----
+  const cargarJs=src=>new Promise((ok,mal)=>{ const sc=document.createElement('script'); sc.src=src; sc.onload=ok; sc.onerror=mal; document.head.appendChild(sc); });
+  async function descargarRep(bt, I){
+    if(!I) return; const t0=bt.innerHTML; bt.disabled=true; bt.lastChild.textContent='Generando…';
+    const raiz=document.getElementById('v3'), scr=raiz.querySelector('[data-scr="ia"]'), nom=(window.__D&&window.__D.cliente&&window.__D.cliente.nombre)||'';
+    const w=document.createElement('div'); w.className='v3exp';
+    w.innerHTML=`<div class="cab"><img src="/assets/semilla-logo-horizontal.png" alt=""><span class="sep"></span><span class="ia">semilla<b>IA</b></span><span class="esp"></span><span class="nm">${esc(nom)}</span></div>`+scr.innerHTML+`<div class="pie">semillaredes.com</div>`;
+    w.querySelectorAll('.rbt,.ch').forEach(x=>x.remove());
+    raiz.appendChild(w);
+    try{
+      if(!window.html2canvas) await cargarJs('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+      if(!window.jspdf) await cargarJs('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+      await Promise.all([...w.querySelectorAll('img')].map(im=>im.complete?1:new Promise(r=>{ im.onload=im.onerror=r; })));
+      const cv=await html2canvas(w,{scale:2,backgroundColor:'#F2EDE4',useCORS:true});
+      const pw=210, ph=cv.height*pw/cv.width, pdf=new window.jspdf.jsPDF({unit:'mm',format:[pw,ph]});
+      pdf.addImage(cv.toDataURL('image/jpeg',0.92),'JPEG',0,0,pw,ph);
+      const archivo=`reporte-${slug}-${I.desde}-al-${I.hasta}.pdf`;
+      if(/iPhone|iPad|iPod/.test(navigator.userAgent)){ const u=pdf.output('bloburl'); const v=window.open(u,'_blank'); if(!v) location.href=u; }
+      else pdf.save(archivo);
+    }catch(e){ console.log('descargar',e); alert('No se pudo generar el PDF. Probá de nuevo.'); }
+    w.remove(); bt.innerHTML=t0; bt.disabled=false;
   }
 
   // ---- Notificaciones ----
