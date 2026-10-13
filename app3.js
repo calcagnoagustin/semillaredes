@@ -111,6 +111,15 @@
   #v3 .tkp .fila{grid-template-columns:1fr auto}
   #v3 .tkp .tx b{color:${NAVY};font-size:15.5px}#v3 .tkp .tx span{font-size:13.5px;color:#6F6B7C}
   #v3 .tkp .rt{text-align:right;line-height:1.1}#v3 .tkp .rt b{display:block;font:600 21px/1.1 'Playfair Display',serif;color:#2F6B2A}#v3 .tkp .rt small{font-size:11.5px;color:#8A8577}
+  #v3 .notas3 .nn{display:grid;gap:8px;padding:12px 14px}
+  #v3 .notas3 textarea{border:1px solid #DDD6C7;border-radius:12px;background:#fff;padding:11px 12px;font:15px/1.45 Inter,sans-serif;resize:vertical;min-height:72px}
+  #v3 .notas3 .nn button{justify-self:end;border:0;background:${OLIVA};color:#fff;border-radius:10px;padding:10px 16px;font:600 14px Inter,sans-serif;cursor:pointer}
+  #v3 .notas3 .nt{padding:12px 14px;border-top:1px solid #EDE6D8}
+  #v3 .notas3 .cb{display:flex;align-items:center;gap:8px}
+  #v3 .notas3 .cb b{font-size:13.5px;color:${NAVY}}#v3 .notas3 .cb b.sem{color:${VINO}}
+  #v3 .notas3 .cb small{font-size:12.5px;color:#8A8577}
+  #v3 .notas3 .nx{margin-left:auto;width:28px;height:28px;border:0;background:none;color:#A9A190;font:400 20px/1 Inter,sans-serif;cursor:pointer}
+  #v3 .notas3 .nt p{margin:4px 0 0;font-size:14.5px;line-height:1.45;color:#3A3846}
   #v3 .fform button{grid-column:1/-1;border:0;background:${OLIVA};color:#fff;border-radius:10px;padding:11px;font:600 14.5px Inter,sans-serif;cursor:pointer}
   #v3 .idea{margin-top:16px;padding:16px;display:grid;grid-template-columns:34px 1fr;column-gap:12px}
   #v3 .idea b{display:block;font-family:'Playfair Display',serif;font-size:19px;color:${NAVY};margin-bottom:4px}
@@ -465,6 +474,7 @@
     // --- Proyecto ---
     const HT=(d.hitos||[]).map(h=>({h,v:val(h.metrica)}));
     const A=d.activos||[];
+    const NT=d.notas||[];
     const scrPro=`
       <h1 class="v3t">Tu proyecto</h1><p class="bj">Tus metas, tus links y tu web.</p>
       <div class="tit2"><h2>Hitos</h2>${HDISP.length?`<button id="v3hnuevo">${HFORM?'Cerrar':'Agregar hito'}</button>`:''}</div>
@@ -472,6 +482,10 @@
         ${HFORM?`<div class="fform hform"><select id="v3hm">${HDISP.map(k=>`<option value="${k}">${HMET[k][0]}</option>`).join('')}</select><input id="v3ho" inputmode="decimal" placeholder="Meta (número)"><input id="v3ht" placeholder="Nombre (opcional)"><button id="v3hadd">Guardar hito</button></div>`:''}</div>
       <div class="tit2"><h2>Tus activos</h2></div>
       <div class="card lista">${A.length?A.map(a=>`<div class="fila" style="grid-template-columns:1fr 18px">${a.url?`<a class="tx" style="color:${NAVY};text-decoration:none" href="${esc(a.url)}" target="_blank" rel="noopener"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">${esc(a.descripcion||'')}</span></a>`:`<span class="tx"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">En preparación</span></span>`}<span class="ch">${ico.ch}</span></div>`).join(''):'<div class="vacio">Todavía no hay enlaces.</div>'}</div>
+      <div class="tit2"><h2>Tus notas</h2></div>
+      <p class="bj" style="margin:0 0 10px;font-size:14.5px">Dejanos lo que quieras que tengamos en cuenta: una idea, una duda, algo que pasó en estos días.</p>
+      <div class="card notas3"><div class="nn"><textarea id="v3nt" rows="3" placeholder="Escribí acá…"></textarea><button id="v3nadd">Guardar nota</button></div>
+        ${NT.map(n=>`<div class="nt"><div class="cb"><b class="${n.autor==='semilla'?'sem':''}">${n.autor==='semilla'?'Semilla Redes':'Vos'}</b><small>${new Date(n.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</small>${n.autor==='semilla'?'':`<button class="nx" data-ndel="${n.id}" aria-label="Borrar nota">×</button>`}</div><p>${esc(String(n.texto||'').replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g,'')).replace(/\n/g,'<br>')}</p></div>`).join('')}</div>
       <div id="v3web"></div>`;
 
     // --- SemillaIA ---
@@ -571,6 +585,9 @@
     const ta=raiz.querySelector('#v3tadd'), ti=raiz.querySelector('#v3tarea');
     const sumar=async()=>{ const t=ti.value.trim(); if(!t) return; ta.disabled=true; const r=await rpc('sub_tarea_cliente_alta',{p_slug:slug,p_k:tok,p_titulo:t}); if(r&&r.ok){ FILTRO='abiertas'; recargar(); } else ta.disabled=false; };
     if(ta){ ta.onclick=sumar; ti.onkeydown=e=>{ if(e.key==='Enter') sumar(); }; }
+    const nad=raiz.querySelector('#v3nadd'), ntx=raiz.querySelector('#v3nt');
+    if(nad) nad.onclick=async()=>{ const t=ntx.value.trim(); if(!t){ ntx.focus(); return; } nad.disabled=true; nad.textContent='Guardando…'; const r=await rpc('sub_nota_alta',{p_slug:slug,p_k:tok,p_texto:t}); if(r&&r.ok) recargar(); else { nad.disabled=false; nad.textContent='Guardar nota'; alert('No se pudo guardar la nota. Probá de nuevo.'); } };
+    raiz.querySelectorAll('[data-ndel]').forEach(b=>b.onclick=async()=>{ if(!confirm('¿Borrar esta nota?')) return; b.disabled=true; const r=await rpc('sub_nota_borrar',{p_slug:slug,p_k:tok,p_id:b.dataset.ndel}); if(r&&r.ok) recargar(); else b.disabled=false; });
     const hn=raiz.querySelector('#v3hnuevo'); if(hn) hn.onclick=()=>{ HFORM=!HFORM; armar(window.__D); if(HFORM) setTimeout(()=>{ const o=document.getElementById('v3ho'); o&&o.scrollIntoView({block:'center'}); },60); };
     const ha=raiz.querySelector('#v3hadd'); if(ha) ha.onclick=async()=>{ const m=raiz.querySelector('#v3hm').value, o=parseFloat((raiz.querySelector('#v3ho').value||'').replace(/\./g,'').replace(',','.'));
       if(!o||o<=0){ alert('Poné a qué número querés llegar'); return; } ha.disabled=true; ha.textContent='Guardando…';
@@ -681,7 +698,8 @@
   window.V3IR=k=>{
     const ve=(sel,fn)=>{ setTimeout(()=>{ const el=typeof sel==='function'?sel():document.querySelector(sel); if(el){ if(fn) fn(el); el.scrollIntoView({behavior:'smooth',block:'start'}); el.classList.add('srFlash'); setTimeout(()=>el.classList.remove('srFlash'),1800); } },120); };
     if(k==='hitos'){ HFORM=true; TAB='proyecto'; SS('tab','proyecto'); armar(window.__D); ve('#v3ho'); }
-    else if(['ventas','activos','notas'].includes(k)&&window.srBuscar){ ir('metricas',true); const t=document.getElementById('v3todo'); if(t) t.open=true; setTimeout(()=>{ window.srIrA(window.srBuscar(k)||t); },150); }
+    else if(k==='notas'){ ir('proyecto',true); ve('#v3nt',el=>el.focus()); }
+    else if(['ventas','activos'].includes(k)&&window.srBuscar){ ir('metricas',true); const t=document.getElementById('v3todo'); if(t) t.open=true; setTimeout(()=>{ window.srIrA(window.srBuscar(k)||t); },150); }
     else if(k==='fechas'){ FFORM=true; TAB='actividades'; SS('tab','actividades'); armar(window.__D); ve('#v3ff'); }
     else if(k==='tareas'){ ir('actividades',true); ve('#v3tarea'); }
     else if(k==='web'){ ir('proyecto',true); ve('#v3web'); }
