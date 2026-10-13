@@ -367,7 +367,7 @@
     if(!redes[SUBRED]) SUBRED=Object.keys(redes)[0]||'ig';
     if(!redes[SUBRED]) redes[SUBRED]={n:'Instagram',k:'ig_followers_total',l:'seguidores',ex:'',col:VINO,a:['ig_costo_follower','costo por seguidor',true,'#E2767C'],b:['ig_inversion','inversión en el período',true,OLIVA]};
     const RD=redes[SUBRED];
-    const mini=(c)=>{ const v=val(c[0]), S=serie(c[0]); return `<div class="card"><div class="n">${v!=null&&v<0?'−':''}${c[2]?SIM:''}${nf(v!=null?Math.abs(v):v, c[4]!=null?c[4]:c[0]==='yt_horas'?1:(c[2]&&v!=null&&Math.abs(v)<100?2:0))}</div><div class="l">${c[1]}</div>${S.some(x=>x<0)?'':barras(S,c[3])}</div>`; };
+    const mini=(c)=>{ const v=val(c[0]), S=serie(c[0]); return `<div class="card"><div class="n">${v!=null&&v<0?'−':''}${c[2]?SIM:''}${nf(v!=null?Math.abs(v):v, (c[2]&&v!=null&&Math.abs(v)>=100)?0:c[4]!=null?c[4]:c[0]==='yt_horas'?1:(c[2]&&v!=null&&Math.abs(v)<100?2:0))}</div><div class="l">${c[1]}</div>${S.some(x=>x<0)?'':barras(S,c[3])}</div>`; };
     const imp=I&&I.hallazgos&&I.hallazgos.length?(typeof I.hallazgos[0]==='object'?I.hallazgos[0].t:I.hallazgos[0]):null;
     const scrMet=`
       <div class="rep"><div><h1 class="v3t" style="font-size:31px">Tus métricas</h1><p class="bj">${I?`Del ${fd(I.desde)} al ${fd(I.hasta)}`:'Tus números, red por red'}</p></div>${I?`<button class="ir" id="v3rep" aria-label="Abrir reporte">${ico.flecha}</button>`:''}</div>
