@@ -305,8 +305,10 @@
     const ult=k=>{ for(let i=R.length-1;i>=0;i--){ const v=R[i].metricas[k]; if(v!=null) return [v,i]; } return [null,-1]; };
     const ant=(k,desde)=>{ for(let i=desde-1;i>=0;i--){ const v=R[i].metricas[k]; if(v!=null) return v; } return null; };
     // ganancia de la campaña de mensajes = lo facturado (cargado por el cliente) menos la publicidad
+    // tasa de conversión de visitas al perfil a seguidores: métrica central (13/10)
+    R.forEach(r=>{ const m=r.metricas||{}; if(m.ig_conv==null&&Number(m.ig_visitas)>0&&m.ig_followers_nuevos!=null) m.ig_conv=Math.round(Number(m.ig_followers_nuevos)*1000/Number(m.ig_visitas))/10; });
     R.forEach(r=>{ const m=r.metricas||{}; if(m.msj_ingreso!=null&&m.msj_inversion!=null&&m.msj_ganancia==null) m.msj_ganancia=Math.round((Number(m.msj_ingreso)-Number(m.msj_inversion))*100)/100; });
-    const MANUAL={msj_mensajes:1,msj_inversion:1,msj_costo_mensaje:1,tk_tickets:1,tk_roas:1,tk_inversion:1,tk_costo_ticket:1,vta_ventas:1,vta_inversion:1,vta_costo_venta:1,vta_ingreso_pixel:1,vta_roas_pixel:1,frm_visitas:1,frm_mensajes:1,frm_inversion:1,frm_costo_visita:1,   // del período: solo si están en la última medición (si la campaña se apagó no se muestra un número viejo como actual)
+    const MANUAL={ig_conv:1,msj_mensajes:1,msj_inversion:1,msj_costo_mensaje:1,tk_tickets:1,tk_roas:1,tk_inversion:1,tk_costo_ticket:1,vta_ventas:1,vta_inversion:1,vta_costo_venta:1,vta_ingreso_pixel:1,vta_roas_pixel:1,frm_visitas:1,frm_mensajes:1,frm_inversion:1,frm_costo_visita:1,   // del período: solo si están en la última medición (si la campaña se apagó no se muestra un número viejo como actual)
       msj_ganancia:1,msj_conversiones:1,msj_ingreso:1,msj_roas:1,msj_costo_conversion:1,vta_ingreso:1,vta_ganancia:1,vta_roas:1,vta_roi:1};
     const ultM=k=>{ if(!MANUAL[k]) return ult(k); const i=R.length-1; return i>=0&&R[i].metricas[k]!=null?[R[i].metricas[k],i]:[null,-1]; };
     const val=k=>ultM(k)[0];
@@ -323,6 +325,7 @@
     const deltaTxt=(p,inv)=>p==null?'<span class="ne">&nbsp;</span>':`<span class="${(p>=0)!==!!inv?'si':'no'}">${p>=0?'↑':'↓'} ${Math.abs(p)}%</span>`;
     const dK=(k,inv)=>{ const p=dlt(k); if(p!=null) return deltaTxt(p,inv); const x=dif(k); if(x==null||!Number(previo(k))) return deltaTxt(null);
       return x===0?'<span class="ne">=</span>':`<span class="${(x>=0)!==!!inv?'si':'no'}">${x>0?'↑ +':'↓ −'}${nf(Math.abs(x))}</span>`; };
+    const dPt=k=>{ const x=dif(k); if(x==null||previo(k)==null) return deltaTxt(null); const r=Math.round(x*10)/10; return r===0?'<span class="ne">=</span>':`<span class="${r>0?'si':'no'}">${r>0?'↑ +':'↓ −'}${nf(Math.abs(r),1)} pts</span>`; };
     const SIM=(typeof MON!=='undefined'&&MON==='USD')?'USD ':'$ ', UNI=SIM==='USD '?'dólar':'peso';
     const verRep=()=>{ const b=document.querySelector('.btnReporte'); if(b) b.click(); };
     let visto=''; try{ visto=localStorage.getItem('sr_rep_'+slug)||''; }catch(e){}
@@ -349,7 +352,7 @@
       hero=`<div class="e">Entradas del período</div><div class="p">${nf(um.tk_tickets)}</div><div class="x">${Nm('tk_tickets')===1?'entrada vendida':'entradas vendidas'}${um.tk_nombre?' para <b>'+esc(um.tk_nombre)+'</b>':''}${Nm('tk_inversion')?` con ${SIM}${nf(um.tk_inversion)} de publicidad`:''}${Nm('tk_roas')?`: cada ${UNI} invertido volvió ${SIM}${nf(um.tk_roas,2)}.`:'.'}</div>`;
     else if(Nm('ig_followers_nuevos')>0)
       DZ={e:'Crecimiento destacado',v:'+'+nf(um.ig_followers_nuevos),u:Nm('ig_followers_nuevos')===1?'seguidor':'seguidores',k:'ig_followers_nuevos',ic:'sube',
-        t:`La cuenta sumó <b>${nf(um.ig_followers_nuevos)} ${Nm('ig_followers_nuevos')===1?'seguidor nuevo':'seguidores nuevos'}</b> en Instagram y ya llega a ${nf(val('ig_followers_total'))}.${Nm('ig_costo_follower')?` Cada uno costó <b>${SIM}${nf(um.ig_costo_follower,Number(um.ig_costo_follower)<100?2:0)}</b>.`:''}`},
+        t:`La cuenta sumó <b>${nf(um.ig_followers_nuevos)} ${Nm('ig_followers_nuevos')===1?'seguidor nuevo':'seguidores nuevos'}</b> en Instagram y ya llega a ${nf(val('ig_followers_total'))}.${Nm('ig_costo_follower')?` Cada uno costó <b>${SIM}${nf(um.ig_costo_follower,Number(um.ig_costo_follower)<100?2:0)}</b>.`:''}${um.ig_conv!=null?` El <b>${nf(um.ig_conv,1)}%</b> de las visitas al perfil se hizo seguidor${Number(um.ig_conv)>=15?': una tasa de conversión muy alta':''}.`:''}`},
       hero=`<div class="e">Tu progreso del período</div><div class="p">+${nf(um.ig_followers_nuevos)}</div><div class="x">seguidores nuevos en Instagram en el período.</div>`;
     else if(dif('sp_monthly')>0)
       DZ={e:'Crecimiento destacado',v:'+'+nf(dif('sp_monthly')),u:'oyentes',k:null,ic:'sube'},
@@ -370,12 +373,12 @@
     const H=(d.hitos||[]).map(h=>({h,v:val(h.metrica)})).filter(x=>x.v!=null&&Number(x.v)<Number(x.h.objetivo));
     const hito=H.sort((a,b)=>(b.v/b.h.objetivo)-(a.v/a.h.objetivo))[0];
     const tiene=k=>val(k)!=null;
-    const MET=[['ig_followers_total','seguidores','ig'],['sp_monthly','oyentes','sp'],['yt_views','vistas','yt'],['msj_mensajes','mensajes','msj'],['msj_conversiones','ventas','msj'],['tk_tickets','entradas','tk'],['vta_ventas','ventas','vta'],['vta_roas_pixel','retorno por dólar','vta'],['vta_costo_venta','costo por venta','vta'],['frm_visitas','visitas a la formación','frm'],['frm_mensajes','consultas','frm'],['ig_visitas','visitas al perfil','ig']].filter(([k])=>tiene(k)).map(([k,l,ic])=>({k,l,ic}));
+    const MET=[['ig_followers_total','seguidores','ig'],['sp_monthly','oyentes','sp'],['yt_views','vistas','yt'],['msj_mensajes','mensajes','msj'],['msj_conversiones','ventas','msj'],['tk_tickets','entradas','tk'],['ig_conv','conversión de visitas','ig'],['vta_ventas','ventas','vta'],['vta_roas_pixel','retorno por dólar','vta'],['vta_costo_venta','costo por venta','vta'],['frm_visitas','visitas a la formación','frm'],['frm_mensajes','consultas','frm'],['ig_visitas','visitas al perfil','ig']].filter(([k])=>tiene(k)).map(([k,l,ic])=>({k,l,ic}));
     const scrHoy=`
       <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
       <div class="tit2"><h3>Métricas principales</h3><button data-ir="metricas">Ver todas</button></div>
-      <div class="met">${MET.slice(0,3).map(m=>`<div class="card"><div class="ic">${ico[m.ic]}</div><div class="v ${m.k==='vta_costo_venta'?'ch':''}">${m.k==='vta_costo_venta'?SIM.trim()+' '+nf(val(m.k),2):m.k==='vta_roas_pixel'?nf(val(m.k),1)+'x':nf(val(m.k))}</div><div class="l">${Number(val(m.k))===1?m.l.replace(/^consultas$/,'consulta').replace(/^mensajes$/,'mensaje').replace(/^ventas$/,'venta').replace(/^seguidores$/,'seguidor'):m.l}</div><div class="d">${dK(m.k,m.k==='vta_costo_venta')}</div></div>`).join('')}</div>
+      <div class="met">${MET.slice(0,3).map(m=>`<div class="card"><div class="ic">${ico[m.ic]}</div><div class="v ${m.k==='vta_costo_venta'?'ch':''}">${m.k==='ig_conv'?nf(val(m.k),1)+'%':m.k==='vta_costo_venta'?SIM.trim()+' '+nf(val(m.k),2):m.k==='vta_roas_pixel'?nf(val(m.k),1)+'x':nf(val(m.k))}</div><div class="l">${Number(val(m.k))===1?m.l.replace(/^consultas$/,'consulta').replace(/^mensajes$/,'mensaje').replace(/^ventas$/,'venta').replace(/^seguidores$/,'seguidor'):m.l}</div><div class="d">${m.k==='ig_conv'?dPt(m.k):dK(m.k,m.k==='vta_costo_venta')}</div></div>`).join('')}</div>
       <div id="v3cta"></div>
       ${hito?`<div class="card hito"><div>${ico.sol}</div><div><div class="v3t">Tu próximo hito</div><div class="tx">${esc(HTIT(hito.h))}</div></div><button class="ir" data-ir="proyecto" aria-label="Ver hitos">${ico.flecha}</button>
         <div class="bar"><div class="b"><i style="width:${Math.min(100,hito.v/hito.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(hito.v)} / ${nf(hito.h.objetivo)}</span></div></div>`:''}
@@ -415,7 +418,7 @@
 
     // --- Métricas ---
     const redes={
-      ig:{n:'Instagram',k:'ig_followers_total',l:'seguidores',ex:`${val('ig_followers_nuevos')!=null?'+'+nf(val('ig_followers_nuevos'))+' en el período':''}`,col:VINO,
+      ig:{n:'Instagram',k:'ig_followers_total',l:'seguidores',ex:`${val('ig_followers_nuevos')!=null?'+'+nf(val('ig_followers_nuevos'))+' en el período':''}${val('ig_conv')!=null?` · <b style="color:#3A3846">${nf(val('ig_conv'),1)}%</b> de las visitas al perfil se hizo seguidor`:''}`,col:VINO,
           a:['ig_costo_follower','costo por seguidor',true,'#E2767C'],b:['ig_inversion','inversión en el período',true,OLIVA]},
       sp:{n:'Spotify',k:'sp_monthly',l:'oyentes mensuales',ex:`${val('sp_streams')!=null?nf(val('sp_streams'))+' reproducciones':''}`,col:'#1DB954',
           a:['sp_streams','reproducciones',false,'#1DB954'],b:['sp_followers','seguidores en Spotify',false,OLIVA]},
