@@ -108,6 +108,9 @@
   #v3 .fform .u{grid-column:1/-1}
   #v3 .hform select{grid-column:1/-1;border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:10px 12px;font:15px Inter,sans-serif;color:#24242C}
   #v3 .hito .hx{position:absolute;top:10px;right:10px;width:28px;height:28px;border:0;border-radius:50%;background:none;color:#A9A190;font:400 20px/1 Inter,sans-serif;cursor:pointer}
+  #v3 .tkp .fila{grid-template-columns:1fr auto}
+  #v3 .tkp .tx b{color:${NAVY};font-size:15.5px}#v3 .tkp .tx span{font-size:13.5px;color:#6F6B7C}
+  #v3 .tkp .rt{text-align:right;line-height:1.1}#v3 .tkp .rt b{display:block;font:600 21px/1.1 'Playfair Display',serif;color:#2F6B2A}#v3 .tkp .rt small{font-size:11.5px;color:#8A8577}
   #v3 .fform button{grid-column:1/-1;border:0;background:${OLIVA};color:#fff;border-radius:10px;padding:11px;font:600 14.5px Inter,sans-serif;cursor:pointer}
   #v3 .idea{margin-top:16px;padding:16px;display:grid;grid-template-columns:34px 1fr;column-gap:12px}
   #v3 .idea b{display:block;font-family:'Playfair Display',serif;font-size:19px;color:${NAVY};margin-bottom:4px}
@@ -446,6 +449,7 @@
     if(!redes[SUBRED]) SUBRED=Object.keys(redes)[0]||'ig';
     if(!redes[SUBRED]) redes[SUBRED]={n:'Instagram',k:'ig_followers_total',l:'seguidores',ex:'',col:VINO,a:['ig_costo_follower','costo por seguidor',true,'#E2767C'],b:['ig_inversion','inversión en el período',true,OLIVA]};
     const RD=redes[SUBRED];
+    const TKP=[1,2,3,4].map(i=>({nombre:um['tk_p'+i+'_nombre'],tickets:Number(um['tk_p'+i+'_tickets']||0),inversion:Number(um['tk_p'+i+'_inversion']||0),costo:um['tk_p'+i+'_costo'],roas:um['tk_p'+i+'_roas'],alcance:um['tk_p'+i+'_alcance'],inicio:um['tk_p'+i+'_inicio']})).filter(p=>p.nombre);
     const mini=(c)=>{ const v=val(c[0]), S=serie(c[0]); return `<div class="card"><div class="n">${v!=null&&v<0?'−':''}${c[2]?SIM:''}${nf(v!=null?Math.abs(v):v, (c[2]&&v!=null&&Math.abs(v)>=100)?0:c[4]!=null?c[4]:c[0]==='yt_horas'?1:(c[2]&&v!=null&&Math.abs(v)<100?2:0))}</div><div class="l">${c[1]}</div>${S.some(x=>x<0)?'':barras(S,c[3])}</div>`; };
     const imp=I&&I.hallazgos&&I.hallazgos.length?(typeof I.hallazgos[0]==='object'?I.hallazgos[0].t:I.hallazgos[0]):null;
     const scrMet=`
@@ -454,6 +458,7 @@
       <div class="red">${Object.keys(redes).map(k=>`<button class="${k===SUBRED?'on':''}" data-red="${k}">${redes[k].n}</button>`).join('')}</div>
       <div class="card big"><div><div style="display:flex;align-items:center;gap:10px">${ico[SUBRED]}<div class="n">${nf(val(RD.k))}</div></div><div class="l">${RD.l}</div><div class="d">${dK(RD.k)}<small>${RD.ex}</small></div></div>${RD.kpis?`<div class="kp">${RD.kpis.map(([k,l])=>{const v=Number(val(k));return `<div><div class="n">${v<0?'−':''}${SIM}${nf(Math.abs(v),0)}</div><div class="l">${l}</div></div>`;}).join('')}</div>`:`<div class="sp">${linea(serie(RD.k),RD.col)}</div>`}</div>
       <div class="dos">${mini(RD.a)}${mini(RD.b)}</div>
+      ${SUBRED==='tk'&&TKP.length?`<div class="tit2"><h2>Públicos de la campaña</h2></div><div class="card lista tkp">${TKP.map(p=>`<div class="fila"><span class="tx ab"><b>${esc(p.nombre)}</b>${p.inversion>0?`<br><span>${nf(p.tickets)} ${p.tickets===1?'entrada':'entradas'} · ${p.costo!=null?SIM+nf(p.costo,2)+' por entrada':'sin ventas'}${p.alcance?` · ${nf(p.alcance)} personas`:''}</span>`:`<br><span>Público nuevo${p.inicio?`: arrancó el ${fd(p.inicio)}`:''}. Todavía sin resultados.</span>`}</span>${p.roas!=null&&p.inversion>0?`<span class="rt"><b>${nf(p.roas,2)}x</b><small>retorno</small></span>`:'<span></span>'}</div>`).join('')}</div>`:''}
       ${recs.length?`<div class="card recos"><div class="h">${ico.hoja}Recomendaciones SemillaIA</div>${recs.slice(0,3).map((r,i)=>`<div class="r"><span class="k">${i+1}</span><p>${esc(String(r).replace(/<[^>]+>/g,''))}${accB(r)}</p></div>`).join('')}</div>`:''}
       <details class="todo" id="v3todo"><summary>Ver todas las métricas</summary></details>`;
 
