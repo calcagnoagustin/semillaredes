@@ -262,6 +262,7 @@
     ig:'<svg width="26" height="26" viewBox="0 0 24 24"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="url(#v3g)" stroke-width="2.2"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="url(#v3g)" stroke-width="2.2"/><circle cx="17.3" cy="6.7" r="1.3" fill="#E1306C"/></svg>',
     vta:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2F7A4F" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M5 8h14l-1.2 11.5a1 1 0 0 1-1 .9H7.2a1 1 0 0 1-1-.9z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></svg>',
     frm:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2F7A4F" stroke-width="2" stroke-linejoin="round"><path d="M2.5 9 12 4.5 21.5 9 12 13.5z"/><path d="M6.5 11v4.5c1.6 1.6 3.4 2.4 5.5 2.4s3.9-.8 5.5-2.4V11M21.5 9v5" stroke-linecap="round"/></svg>',
+    tk:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2F7A4F" stroke-width="2" stroke-linejoin="round"><path d="M3.5 8.5V6.5h17v2a2.5 2.5 0 0 0 0 5v2h-17v-2a2.5 2.5 0 0 0 0-5z"/><path d="M14.5 7v1.5M14.5 11v1.5M14.5 15v1" stroke-linecap="round"/></svg>',
     msj:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#25A35A" stroke-width="2" stroke-linejoin="round"><path d="M4 5.5h16v10.5H10l-4.5 3.5V16H4z"/><path d="M8 9.5h8M8 12.5h5" stroke-linecap="round"/></svg>',
     sp:'<svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="#1DB954"/><path d="M6.8 9.4c3.6-1.1 7.6-.8 10.6 1M7.4 12.4c3-.9 6.2-.6 8.7.9M8 15.2c2.4-.6 4.7-.4 6.7.7" stroke="#fff" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg>',
     yt:'<svg width="28" height="26" viewBox="0 0 28 20"><rect x="1" y="1" width="26" height="18" rx="5" fill="#FF0000"/><path d="M11.5 6v8l7-4z" fill="#fff"/></svg>',
@@ -305,7 +306,8 @@
     const ant=(k,desde)=>{ for(let i=desde-1;i>=0;i--){ const v=R[i].metricas[k]; if(v!=null) return v; } return null; };
     // ganancia de la campaña de mensajes = lo facturado (cargado por el cliente) menos la publicidad
     R.forEach(r=>{ const m=r.metricas||{}; if(m.msj_ingreso!=null&&m.msj_inversion!=null&&m.msj_ganancia==null) m.msj_ganancia=Math.round((Number(m.msj_ingreso)-Number(m.msj_inversion))*100)/100; });
-    const MANUAL={msj_ganancia:1,msj_conversiones:1,msj_ingreso:1,msj_roas:1,msj_costo_conversion:1,vta_ingreso:1,vta_ganancia:1,vta_roas:1,vta_roi:1};
+    const MANUAL={msj_mensajes:1,msj_inversion:1,msj_costo_mensaje:1,tk_tickets:1,tk_roas:1,tk_inversion:1,tk_costo_ticket:1,vta_ventas:1,vta_inversion:1,vta_costo_venta:1,vta_ingreso_pixel:1,vta_roas_pixel:1,frm_visitas:1,frm_mensajes:1,frm_inversion:1,frm_costo_visita:1,   // del período: solo si están en la última medición (si la campaña se apagó no se muestra un número viejo como actual)
+      msj_ganancia:1,msj_conversiones:1,msj_ingreso:1,msj_roas:1,msj_costo_conversion:1,vta_ingreso:1,vta_ganancia:1,vta_roas:1,vta_roi:1};
     const ultM=k=>{ if(!MANUAL[k]) return ult(k); const i=R.length-1; return i>=0&&R[i].metricas[k]!=null?[R[i].metricas[k],i]:[null,-1]; };
     const val=k=>ultM(k)[0];
     const previo=k=>{ const [v,i]=ultM(k); return i<0?null:ant(k,i); };
@@ -342,6 +344,9 @@
     else if(Nm('msj_conversiones')>0&&Nm('msj_ingreso')>0)
       DZ={e:'Resultado destacado',v:SIM+nf(um.msj_ingreso),u:'en ventas',k:'msj_ingreso',ic:'vta'},
       hero=`<div class="e">Ventas del período</div><div class="p">${SIM}${nf(um.msj_ingreso)}</div><div class="x">${nf(um.msj_conversiones)} ${Nm('msj_conversiones')===1?'venta':'ventas'}${Nm('msj_inversion')?` con ${SIM}${nf(um.msj_inversion)} de publicidad`:''}${Nm('msj_roas')?`: cada ${UNI} invertido volvió ${SIM}${nf(um.msj_roas,2)}.`:'.'}</div>`;
+    else if(Nm('tk_tickets')>0)
+      DZ={e:'Resultado destacado',v:nf(um.tk_tickets),u:Nm('tk_tickets')===1?'entrada':'entradas',k:'tk_tickets',ic:'vta'},
+      hero=`<div class="e">Entradas del período</div><div class="p">${nf(um.tk_tickets)}</div><div class="x">${Nm('tk_tickets')===1?'entrada vendida':'entradas vendidas'}${um.tk_nombre?' para <b>'+esc(um.tk_nombre)+'</b>':''}${Nm('tk_inversion')?` con ${SIM}${nf(um.tk_inversion)} de publicidad`:''}${Nm('tk_roas')?`: cada ${UNI} invertido volvió ${SIM}${nf(um.tk_roas,2)}.`:'.'}</div>`;
     else if(Nm('ig_followers_nuevos')>0)
       DZ={e:'Crecimiento destacado',v:'+'+nf(um.ig_followers_nuevos),u:Nm('ig_followers_nuevos')===1?'seguidor':'seguidores',k:'ig_followers_nuevos',ic:'sube',
         t:`La cuenta sumó <b>${nf(um.ig_followers_nuevos)} ${Nm('ig_followers_nuevos')===1?'seguidor nuevo':'seguidores nuevos'}</b> en Instagram y ya llega a ${nf(val('ig_followers_total'))}.${Nm('ig_costo_follower')?` Cada uno costó <b>${SIM}${nf(um.ig_costo_follower,Number(um.ig_costo_follower)<100?2:0)}</b>.`:''}`},
@@ -365,7 +370,7 @@
     const H=(d.hitos||[]).map(h=>({h,v:val(h.metrica)})).filter(x=>x.v!=null&&Number(x.v)<Number(x.h.objetivo));
     const hito=H.sort((a,b)=>(b.v/b.h.objetivo)-(a.v/a.h.objetivo))[0];
     const tiene=k=>val(k)!=null;
-    const MET=[['ig_followers_total','seguidores','ig'],['sp_monthly','oyentes','sp'],['yt_views','vistas','yt'],['msj_mensajes','mensajes','msj'],['msj_conversiones','ventas','msj'],['vta_ventas','ventas','vta'],['vta_roas_pixel','retorno por dólar','vta'],['vta_costo_venta','costo por venta','vta'],['frm_visitas','visitas a la formación','frm'],['frm_mensajes','consultas','frm'],['ig_visitas','visitas al perfil','ig']].filter(([k])=>tiene(k)).map(([k,l,ic])=>({k,l,ic}));
+    const MET=[['ig_followers_total','seguidores','ig'],['sp_monthly','oyentes','sp'],['yt_views','vistas','yt'],['msj_mensajes','mensajes','msj'],['msj_conversiones','ventas','msj'],['tk_tickets','entradas','tk'],['vta_ventas','ventas','vta'],['vta_roas_pixel','retorno por dólar','vta'],['vta_costo_venta','costo por venta','vta'],['frm_visitas','visitas a la formación','frm'],['frm_mensajes','consultas','frm'],['ig_visitas','visitas al perfil','ig']].filter(([k])=>tiene(k)).map(([k,l,ic])=>({k,l,ic}));
     const scrHoy=`
       <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
@@ -420,6 +425,8 @@
           a:['vta_costo_venta','costo por venta',true,'#E2767C',2],b:['vta_inversion','inversión en el período',true,OLIVA]},
       frm:{n:'Formación',k:'frm_visitas',l:'visitas a la página',ex:`${val('frm_mensajes')!=null?nf(val('frm_mensajes'))+' consultas en el período':''}`,col:'#2F7A4F',
           a:['frm_costo_visita','costo por visita',true,'#E2767C',2],b:['frm_inversion','inversión en el período',true,OLIVA]},
+      tk:{n:'Entradas',k:'tk_tickets',l:'entradas vendidas',ex:`${val('tk_roas')!=null?'Retorno: '+SIM+nf(val('tk_roas'),2)+' por cada '+UNI:''}`,col:'#2F7A4F',
+          a:['tk_costo_ticket','costo por entrada',true,'#E2767C',2],b:['tk_inversion','inversión en el período',true,OLIVA]},
       msj:{n:'Mensajes',k:'msj_mensajes',l:'mensajes recibidos',ex:`${val('msj_conversiones')!=null?nf(val('msj_conversiones'))+' ventas en el período':''}`,col:'#25A35A',
           a:['msj_costo_mensaje','costo por mensaje',true,'#E2767C',2],b:['msj_inversion','inversión en el período',true,OLIVA],
           ...(Number(val('msj_conversiones'))>0&&val('msj_ganancia')!=null?{kpis:[['msj_costo_conversion','costo por venta'],['msj_ganancia','ganancia total']]}:{})}
