@@ -338,7 +338,7 @@
     const nombre=SALU[slug]?SALU[slug]:(d.cliente.nombre||'').replace(/\s+\d+$/,'').split(' ')[0];
     const ini=(d.cliente.nombre||'?').trim()[0].toUpperCase();
     const u=R[R.length-1];
-    const deltaTxt=(p,inv)=>p==null?'<span class="ne">&nbsp;</span>':`<span class="${(p>=0)!==!!inv?'si':'no'}">${p>=0?'↑':'↓'} ${Math.abs(p)}%</span>`;
+    const deltaTxt=(p,inv)=>p==null?'<span class="ne">&nbsp;</span>':p===0?'<span class="ne">=</span>':`<span class="${(p>=0)!==!!inv?'si':'no'}">${p>=0?'↑':'↓'} ${Math.abs(p)}%</span>`;
     const dK=(k,inv)=>{ const p=dlt(k); if(p!=null) return deltaTxt(p,inv); const x=dif(k); if(x==null||!Number(previo(k))) return deltaTxt(null);
       return x===0?'<span class="ne">=</span>':`<span class="${(x>=0)!==!!inv?'si':'no'}">${x>0?'↑ +':'↓ −'}${nf(Math.abs(x))}</span>`; };
     const dPt=k=>{ const x=dif(k); if(x==null||previo(k)==null) return deltaTxt(null); const r=Math.round(x*10)/10; return r===0?'<span class="ne">=</span>':`<span class="${Math.abs(r)<1?'ne':r>0?'si':'no'}">${r>0?'↑ +':'↓ −'}${nf(Math.abs(r),1)} pts</span>`; };
@@ -442,7 +442,7 @@
     const redes={
       ig:{n:'Instagram',k:'ig_followers_total',l:'seguidores',ex:`${val('ig_followers_nuevos')!=null?'+'+nf(val('ig_followers_nuevos'))+' en el período':''}${val('ig_conv')!=null?` · <b style="color:#3A3846">${nf(val('ig_conv'),1)}%</b> de las visitas al perfil se hizo seguidor`:''}`,col:VINO,
           a:['ig_costo_follower','costo por seguidor',true,'#E2767C'],b:['ig_inversion','inversión en el período',true,OLIVA]},
-      sp:{n:'Spotify',k:'sp_monthly',l:'oyentes mensuales',ex:`${val('sp_streams')!=null?nf(val('sp_streams'))+' reproducciones':''}`,col:'#1DB954',
+      sp:{n:'Spotify',k:'sp_monthly',l:'oyentes mensuales',ex:`${val('sp_guardados')!=null?nf(val('sp_guardados'))+' guardados':val('sp_streams')!=null?nf(val('sp_streams'))+' reproducciones':''}`,col:'#1DB954',
           a:['sp_streams','reproducciones',false,'#1DB954'],b:['sp_followers','seguidores en Spotify',false,OLIVA]},
       yt:{n:'YouTube',k:'yt_views',l:'vistas',ex:`${val('yt_subs')!=null?nf(val('yt_subs'))+' suscriptores':''}`,col:'#FF0000',
           a:['yt_subs_nuevos','suscriptores nuevos',false,'#E2767C'],b:['yt_horas','horas vistas',false,OLIVA]},
