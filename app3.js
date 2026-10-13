@@ -148,14 +148,15 @@
   #v3 .rps{position:relative;margin:10px 0 0;font:400 16.5px/1.4 'Playfair Display',serif;color:#55525F;max-width:60%}
   #v3 .ci{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;flex:none;color:#fff}
   #v3 .ci.ok{background:#5A6530}#v3 .ci.ma{background:#A3283A}#v3 .ci.nu{background:#4A5426;font:600 18px/1 'Playfair Display',serif}
-  #v3 .rdz{position:relative;z-index:1;margin-top:20px;padding:16px;display:grid;grid-template-columns:46px 1fr auto;grid-template-areas:'ci hd gr' 'tx tx tx';column-gap:12px;row-gap:10px;align-items:center;box-shadow:0 6px 18px rgba(26,36,86,.06)}
-  #v3 .rdz .ci{grid-area:ci}#v3 .rdz .hd{grid-area:hd;min-width:0}#v3 .rdz .gr{grid-area:gr}
-  #v3 .rdz .e{font:600 11px/1 Inter,sans-serif;letter-spacing:2.2px;text-transform:uppercase;color:#3A3846}
-  #v3 .rdz .v{margin-top:7px;font-family:'Playfair Display',serif;color:${NAVY};line-height:1.05}
+  #v3 .rdz{position:relative;z-index:1;margin-top:20px;padding:16px;display:grid;grid-template-columns:46px 1fr auto;grid-template-areas:'e e e' 'ci hd gr' 'tx tx tx';column-gap:12px;row-gap:10px;align-items:center;box-shadow:0 6px 18px rgba(26,36,86,.06)}
+  #v3 .rdz .ci{grid-area:ci}#v3 .rdz .e{grid-area:e}#v3 .rdz .hd{grid-area:hd;min-width:0}#v3 .rdz .gr{grid-area:gr}
+  #v3 .rdz .e{font:600 10.5px/1 Inter,sans-serif;letter-spacing:1.6px;white-space:nowrap;text-transform:uppercase;color:#3A3846}
+  #v3 .rdz .v{margin-top:0;font-family:'Playfair Display',serif;color:${NAVY};line-height:1.05}
   #v3 .rdz .v b{font-size:32px;font-weight:600;font-variant-numeric:tabular-nums}#v3 .rdz .v span{font-size:21px;font-weight:600}
   #v3 .rdz .gr{display:grid;justify-items:center;row-gap:5px;padding-left:12px;border-left:1px solid #E4DCCB}
   #v3 .rdz .gr svg{display:block}
   #v3 .rdz .pl{background:#F7D9D4;color:#8E2433;border-radius:999px;padding:6px 11px;font:600 15px/1 'Playfair Display',serif;white-space:nowrap}
+  #v3 .rdz .pl.baja{background:#ECE7DC;color:#55525F}
   #v3 .rdz small{font:600 8.5px/1.25 Inter,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:#6F6B7C;text-align:center;max-width:84px}
   #v3 .rdz .tx{grid-area:tx;margin:2px 0 0;font-size:14.5px;line-height:1.5;color:#3A3846}
   #v3 .rdz .tx b{color:${NAVY}}
@@ -337,7 +338,7 @@
       hero=`<div class="e">Ventas del período</div><div class="p">${SIM}${nf(um.msj_ingreso)}</div><div class="x">${nf(um.msj_conversiones)} ${Nm('msj_conversiones')===1?'venta':'ventas'}${Nm('msj_inversion')?` con ${SIM}${nf(um.msj_inversion)} de publicidad`:''}${Nm('msj_roas')?`: cada ${UNI} invertido volvió ${SIM}${nf(um.msj_roas,2)}.`:'.'}</div>`;
     else if(Nm('ig_followers_nuevos')>0)
       DZ={e:'Crecimiento destacado',v:'+'+nf(um.ig_followers_nuevos),u:Nm('ig_followers_nuevos')===1?'seguidor':'seguidores',k:'ig_followers_nuevos',ic:'sube',
-        t:`nuevos en Instagram. La cuenta ya llega a <b>${nf(val('ig_followers_total'))}</b> seguidores${Nm('ig_costo_follower')?` y cada uno costó <b>${SIM}${nf(um.ig_costo_follower,Number(um.ig_costo_follower)<100?2:0)}</b>`:''}.`},
+        t:`La cuenta sumó <b>${nf(um.ig_followers_nuevos)} ${Nm('ig_followers_nuevos')===1?'seguidor nuevo':'seguidores nuevos'}</b> en Instagram y ya llega a ${nf(val('ig_followers_total'))}.${Nm('ig_costo_follower')?` Cada uno costó <b>${SIM}${nf(um.ig_costo_follower,Number(um.ig_costo_follower)<100?2:0)}</b>.`:''}`},
       hero=`<div class="e">Tu progreso del período</div><div class="p">+${nf(um.ig_followers_nuevos)}</div><div class="x">seguidores nuevos en Instagram en el período.</div>`;
     else if(dif('sp_monthly')>0)
       DZ={e:'Crecimiento destacado',v:'+'+nf(dif('sp_monthly')),u:'oyentes',k:null,ic:'sube'},
@@ -449,7 +450,7 @@
     const dzD=(()=>{ if(!DZ||!DZ.k) return null; const p=dlt(DZ.k); if(p!=null) return (p>=0?'+':'−')+Math.abs(p)+'%'; const x=dif(DZ.k); return x==null||!Number(previo(DZ.k))?null:x===0?'=':(x>0?'+':'−')+nf(Math.abs(x)); })();
     const dzBar=(()=>{ const V=DZ&&DZ.k?serie(DZ.k,5).filter(v=>v!=null&&v>=0):[]; if(V.length<2) return ''; const mx=Math.max(...V)||1, n=V.length, W=86, H=58, bw=12, gp=(W-n*bw)/(n-1||1);
       const C=['#E9E1CE','#DED3B8','#CFC39E','#BDB383','#9C9A5A'];
-      return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true">${V.map((v,i)=>{const h=Math.max(6,v/mx*(H-20));return `<rect x="${(i*(bw+gp)).toFixed(1)}" y="${(H-h).toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="2.5" fill="${C[C.length-n+i]}"/>`;}).join('')}<path d="M2 ${H-26} Q${W*.55} ${H-30} ${W-6} 6" fill="none" stroke="#E2767C" stroke-width="1.8" stroke-linecap="round"/><path d="M${W-14} 5.5 L${W-5} 5 L${W-7} 14" fill="none" stroke="#E2767C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`; })();
+      return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true">${V.map((v,i)=>{const h=Math.max(6,v/mx*(H-20));return `<rect x="${(i*(bw+gp)).toFixed(1)}" y="${(H-h).toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="2.5" fill="${C[C.length-n+i]}"/>`;}).join('')}${dzD&&dzD[0]==='+'?`<path d="M2 ${H-26} Q${W*.55} ${H-30} ${W-6} 6" fill="none" stroke="#E2767C" stroke-width="1.8" stroke-linecap="round"/><path d="M${W-14} 5.5 L${W-5} 5 L${W-7} 14" fill="none" stroke="#E2767C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`:''}</svg>`; })();
     const rIco={
       sube:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.5l5.2-5.2 3.6 3.6L20 7.7"/><path d="M14.5 7.5H20V13"/></svg>',
       barras:'<svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><rect x="5" y="12" width="3.4" height="7" rx="1"/><rect x="10.3" y="7" width="3.4" height="12" rx="1"/><rect x="15.6" y="9.5" width="3.4" height="9.5" rx="1"/></svg>',
@@ -463,16 +464,17 @@
     const HZ=I?(I.hallazgos||[]).map(h=>typeof h==='object'?h:{t:h,tipo:'bien'}):[];
     const RC=I?(I.recomendaciones||[]):[], RT=(I&&I.recos_titulos)||[];
     const nPal=(n,s,p)=>n+' '+(n===1?s:p);
+    const pegaM=t=>String(t||'').replace(/(\$|USD) (?=[\d−-])/g,'$1&nbsp;');
     const hoja2='<svg class="rhoja" width="150" height="190" viewBox="0 0 150 190" aria-hidden="true"><circle cx="104" cy="70" r="66" fill="#EAE2D0" opacity=".55"/><path d="M146 188C122 150 104 104 66 8" fill="none" stroke="#77763A" stroke-width="2" stroke-linecap="round"/>'
       +[[136,170,-158,'#8C8B45'],[124,140,-64,'#6F6E34'],[110,110,-166,'#8C8B45'],[98,82,-70,'#77763A'],[86,54,-172,'#8C8B45'],[76,30,-78,'#6F6E34']].map(([x,y,a,c])=>`<g transform="translate(${x} ${y}) rotate(${a})"><path d="M0 0C13-11 33-11 46 0 33 11 13 11 0 0z" fill="${c}" opacity=".82"/><path d="M3 0H43" stroke="#F2EDE4" stroke-width=".9" opacity=".45"/></g>`).join('')+'</svg>';
     const scrIA=`
       <div class="rph">${hoja2}<h1 class="v3t rpt">Reporte</h1>${I?`<div class="rpr"><span>Del ${fd(I.desde)} al ${fd(I.hasta)}</span><i></i></div>`:''}<p class="rps">Lo principal, explicado y con próximos pasos.</p></div>
-      ${I?`${DZ?`<div class="card rdz"><span class="ci ok">${DZ.ic==='vta'?rIco.vta:DZ.ic==='msj'?rIco.msj:rIco.barras}</span><div class="hd"><div class="e">${DZ.e}</div><div class="v"><b>${DZ.v}</b> <span>${DZ.u}</span></div></div>${dzBar||dzD?`<div class="gr">${dzBar}${dzD?`<span class="pl">${dzD}</span><small>vs. período anterior</small>`:''}</div>`:''}<p class="tx">${DZ.t}</p></div>`:''}
+      ${I?`${DZ?`<div class="card rdz"><span class="ci ok">${DZ.ic==='vta'?rIco.vta:DZ.ic==='msj'?rIco.msj:rIco.barras}</span><div class="e">${DZ.e}</div><div class="hd"><div class="v"><b>${DZ.v}</b> <span>${DZ.u}</span></div></div>${dzBar||dzD?`<div class="gr">${dzBar}${dzD?`<span class="pl ${dzD[0]==='+'?'':'baja'}">${dzD}</span><small>vs. período anterior</small>`:''}</div>`:''}<p class="tx">${pegaM(DZ.t)}</p></div>`:''}
         <div class="rsh">${ico.sol}<h2>Lo principal</h2><i></i><span>${nPal(HZ.length,'punto','puntos')}</span></div>
-        ${HZ.map(h=>`<div class="card rit"><span class="ci ${h.tipo==='mal'?'ma':'ok'}">${icoH(h)}</span><div>${h.titulo?`<h3>${esc(h.titulo)}</h3>`:''}<p>${h.t}</p></div></div>`).join('')}
+        ${HZ.map(h=>`<div class="card rit"><span class="ci ${h.tipo==='mal'?'ma':'ok'}">${icoH(h)}</span><div>${h.titulo?`<h3>${esc(h.titulo)}</h3>`:''}<p>${pegaM(h.t)}</p></div></div>`).join('')}
         <div class="rsh">${ico.hoja}<h2>Qué hacer</h2><i></i><span>${nPal(RC.length,'acción','acciones')}</span></div>
-        ${RC.map((r,i)=>{ const a=window.srAccion&&window.srAccion(r); return `<div class="card rit rq${a?' con':''}"${a?` data-v3acc="${a.k}" role="button" tabindex="0" aria-label="${esc(a.t)}"`:''}><span class="ci nu">${i+1}</span><div>${RT[i]?`<h3>${esc(RT[i])}</h3>`:''}<p>${esc(r)}</p></div>${a?`<span class="ch">${ico.ch}</span>`:''}</div>`; }).join('')}
-        ${I.reunion?`<div class="rru">${ico.luz}<i></i><div><h4>En la próxima reunión con Agus</h4><p>${esc(I.reunion)}</p></div></div>`:''}
+        ${RC.map((r,i)=>{ const a=window.srAccion&&window.srAccion(r); return `<div class="card rit rq${a?' con':''}"${a?` data-v3acc="${a.k}" role="button" tabindex="0" aria-label="${esc(a.t)}"`:''}><span class="ci nu">${i+1}</span><div>${RT[i]?`<h3>${esc(RT[i])}</h3>`:''}<p>${pegaM(esc(r))}</p></div>${a?`<span class="ch">${ico.ch}</span>`:''}</div>`; }).join('')}
+        ${I.reunion?`<div class="rru">${ico.luz}<i></i><div><h4>En la próxima reunión con Agus</h4><p>${pegaM(esc(I.reunion))}</p></div></div>`:''}
         <div class="rbt"><button id="v3rep2" class="pri">Ver detalles ${ico.flecha}</button><button id="v3pdf" class="sec"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></svg>Descargar reporte</button></div>`
         :'<div class="card vacio" style="margin-top:18px">Cuando salga tu primer reporte lo vas a ver acá.</div>'}`;
 
