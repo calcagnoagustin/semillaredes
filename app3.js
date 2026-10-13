@@ -147,7 +147,7 @@
   #v3 .rpr i{flex:1;height:1px;background:#BDB49E}
   #v3 .rps{position:relative;margin:10px 0 0;font:400 16.5px/1.4 'Playfair Display',serif;color:#55525F;max-width:60%}
   #v3 .ci{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;flex:none;color:#fff}
-  #v3 .ci.ok{background:#5A6530}#v3 .ci.ma{background:#A3283A}#v3 .ci.nu{background:#4A5426;font:600 18px/1 'Playfair Display',serif}
+  #v3 .ci.ok{background:#5A6530}#v3 .ci.ma{background:#A3283A}#v3 .ci.nu{background:#4A5426;font:600 17px/1 Inter,sans-serif}
   #v3 .rdz{position:relative;z-index:1;margin-top:20px;padding:16px;display:grid;grid-template-columns:46px 1fr auto;grid-template-areas:'e e e' 'ci hd gr' 'tx tx tx';column-gap:12px;row-gap:10px;align-items:center;box-shadow:0 6px 18px rgba(26,36,86,.06)}
   #v3 .rdz .ci{grid-area:ci}#v3 .rdz .e{grid-area:e}#v3 .rdz .hd{grid-area:hd;min-width:0}#v3 .rdz .gr{grid-area:gr}
   #v3 .rdz .e{font:600 10.5px/1 Inter,sans-serif;letter-spacing:1.6px;white-space:nowrap;text-transform:uppercase;color:#3A3846}
@@ -178,7 +178,7 @@
   #v3 .rru{margin-top:16px;display:grid;grid-template-columns:34px 1px 1fr;column-gap:14px;align-items:center;padding:16px;border-radius:18px;background:#F9E6E2;border:1px solid #EDC7C0}
   #v3 .rru>svg{justify-self:center}
   #v3 .rru>i{align-self:stretch;background:#E3B9B1}
-  #v3 .rru h4{margin:0 0 6px;font:600 10.5px/1.2 Inter,sans-serif;letter-spacing:2.2px;text-transform:uppercase;color:#7A1F3A}
+  #v3 .rru h4{margin:0 0 6px;font:600 10px/1.2 Inter,sans-serif;letter-spacing:1.1px;white-space:nowrap;text-transform:uppercase;color:#7A1F3A}
   #v3 .rru p{margin:0;font-size:15px;line-height:1.5;color:${NAVY}}
   #v3 .rbt{display:grid;gap:10px;margin-top:20px}
   #v3 .rbt button{display:flex;align-items:center;justify-content:center;gap:10px;border-radius:999px;padding:15px 20px;cursor:pointer;font:600 17px/1 'Playfair Display',serif}
@@ -474,7 +474,7 @@
         ${HZ.map(h=>`<div class="card rit"><span class="ci ${h.tipo==='mal'?'ma':'ok'}">${icoH(h)}</span><div>${h.titulo?`<h3>${esc(h.titulo)}</h3>`:''}<p>${pegaM(h.t)}</p></div></div>`).join('')}
         <div class="rsh">${ico.hoja}<h2>Qué hacer</h2><i></i><span>${nPal(RC.length,'acción','acciones')}</span></div>
         ${RC.map((r,i)=>{ const a=window.srAccion&&window.srAccion(r); return `<div class="card rit rq${a?' con':''}"${a?` data-v3acc="${a.k}" role="button" tabindex="0" aria-label="${esc(a.t)}"`:''}><span class="ci nu">${i+1}</span><div>${RT[i]?`<h3>${esc(RT[i])}</h3>`:''}<p>${pegaM(esc(r))}</p></div>${a?`<span class="ch">${ico.ch}</span>`:''}</div>`; }).join('')}
-        ${I.reunion?`<div class="rru">${ico.luz}<i></i><div><h4>En la próxima reunión con Agus</h4><p>${pegaM(esc(I.reunion))}</p></div></div>`:''}
+        ${I.reunion?`<div class="rru">${ico.luz}<i></i><div><h4>En la próxima reunión con Agus</h4><p>${pegaM(esc(I.reunion.charAt(0).toUpperCase()+I.reunion.slice(1)))}</p></div></div>`:''}
         <div class="rbt"><button id="v3rep2" class="pri">Ver detalles ${ico.flecha}</button><button id="v3pdf" class="sec"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></svg>Descargar reporte</button></div>`
         :'<div class="card vacio" style="margin-top:18px">Cuando salga tu primer reporte lo vas a ver acá.</div>'}`;
 
