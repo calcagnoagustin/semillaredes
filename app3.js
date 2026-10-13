@@ -314,7 +314,7 @@
     const dif=k=>{ const v=val(k), a=previo(k); return v==null||a==null?null:Number(v)-Number(a); };
     const serie=(k,n=8)=>R.filter(r=>r.metricas[k]!=null&&(new Date(r.hasta)-new Date(r.desde))/864e5>=3).slice(-n).map(r=>Number(r.metricas[k]));
     const repI=[...(d.reportes||[])].reverse().find(r=>r.metricas&&r.metricas.informe), I=repI?repI.metricas.informe:null;
-    const SALU={'semilla-redes':'Agus','animales-del-rock':'Mariana','animales-del-rock-2':'Mariana','mavela':'Mariana','maria-marta-crespo':'María Marta'};
+    const SALU={'semilla-redes':'Agus','animales-del-rock':'Mariana','animales-del-rock-2':'Mariana','mavela':'Mariana','maria-marta-crespo':'María Marta','berco-estudio':'María'};
     const nombre=SALU[slug]?SALU[slug]:(d.cliente.nombre||'').replace(/\s+\d+$/,'').split(' ')[0];
     const ini=(d.cliente.nombre||'?').trim()[0].toUpperCase();
     const u=R[R.length-1];
