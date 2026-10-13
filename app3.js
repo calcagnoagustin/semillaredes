@@ -45,6 +45,12 @@
   #v3 .cta .e i{width:9px;height:9px;border-radius:50%;background:#B9B19E}
   #v3 .cta .e.on{color:#2F6B2A}#v3 .cta .e.on i{background:#3E9B3A;box-shadow:0 0 0 4px rgba(62,155,58,.15)}
   #v3 .cta .n{grid-area:n;font:500 14.5px/1 Inter,sans-serif;color:${NAVY}}
+  #v3 .cta .pg{grid-column:1/-1;margin-top:6px;padding-top:12px;border-top:1px solid #EAE3D5}
+  #v3 .cta .pg .r1{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+  #v3 .cta .pg .r1 span{font:500 14.5px/1.2 Inter,sans-serif;color:#55525F}
+  #v3 .cta .pg .r1 b{font:600 16px/1.2 Inter,sans-serif;color:${NAVY};white-space:nowrap;font-variant-numeric:tabular-nums}
+  #v3 .cta .pg p{margin:6px 0 0;font-size:13px;line-height:1.45;color:#6F6B7C}
+  #v3 .cta .pg p b{color:#3A3846;font-weight:600}
   #v3 .acc2{display:flex;width:max-content;max-width:100%;margin-top:8px;border:1px solid ${NAVY};background:#fff;color:${NAVY};border-radius:999px;padding:7px 13px;font:600 13.5px/1 Inter,sans-serif;cursor:pointer}
   #v3 .hero .rg{font-size:14px;opacity:.85;margin-top:6px}
   #v3 .met .v.ch{font-size:20px;white-space:nowrap}
@@ -503,7 +509,13 @@
     if(Y0&&!window.__V3Y){ window.__V3Y=1; requestAnimationFrame(()=>window.scrollTo(0,Y0)); }
     chatMontar(nombre);
     const pintaCta=c=>{ const el=document.getElementById('v3cta'); if(!el||!c||!c.hay) return;
-      el.innerHTML=`<div class="cta"><span class="l">Cuenta publicitaria</span><span class="e ${c.activa?'on':''}"><i></i>${c.activa?'Activa':esc(c.estado.charAt(0).toUpperCase()+c.estado.slice(1))}</span><span class="n">${c.campanas} ${c.campanas===1?'campaña corriendo':'campañas corriendo'}</span></div>`; };
+      const P=c.pago||{}, usd=P.moneda==='USD', pl=v=>v==null?'—':usd?'USD '+nf(v,2):'$ '+nf(v,0), met=String(P.metodo||'').replace(/\s*\*+\s*/,' ••');
+      const DS3=['dom','lun','mar','mié','jue','vie','sáb'], fch=f=>{ const x=new Date(f+'T12:00:00'); return DS3[x.getDay()]+' '+fd(f); };
+      const px=P.proximo, dia=(window.__V3CTA_DIA=P.umbral||null);
+      const pg=P.saldo==null?'':`<div class="pg">${px?`<div class="r1"><span>Próximo cobro</span><b>${fch(px.fecha)} · ${pl(px.monto)}</b></div>`:`<div class="r1"><span>Saldo a pagar</span><b>${pl(P.saldo)}</b></div>`}
+        <p>${px?`Se cobra solo${met?` a la <b>${esc(met)}</b>`:''} cuando el saldo llega a ${pl(P.umbral)}${px.motivo==='fecha'?` o el ${fd(px.fecha)}`:''}. Hoy el saldo es de ${pl(P.saldo)}${P.promedio_diario?` y se gastan unos ${pl(P.promedio_diario)} por día`:''}, por eso la fecha es aproximada.`
+          :`${P.prepago?'Cuenta prepaga: se descuenta de los fondos cargados.':`Se cobra solo${met?` a la <b>${esc(met)}</b>`:''} cuando el saldo llega al umbral de Meta o a fin del ciclo de facturación.`}`}</p></div>`;
+      el.innerHTML=`<div class="cta"><span class="l">Cuenta publicitaria</span><span class="e ${c.activa?'on':''}"><i></i>${c.activa?'Activa':esc(c.estado.charAt(0).toUpperCase()+c.estado.slice(1))}</span><span class="n">${c.campanas} ${c.campanas===1?'campaña corriendo':'campañas corriendo'}</span>${pg}</div>`; };
     if(window.__V3CTA) pintaCta(window.__V3CTA);
     else fetch('https://vm.semillaredes.com/web/cuenta?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(c=>{ window.__V3CTA=c; pintaCta(c); }).catch(()=>{});
 
