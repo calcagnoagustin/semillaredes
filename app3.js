@@ -562,7 +562,7 @@
       b.textContent=ok?'Copiado':'No se pudo copiar'; setTimeout(()=>b.textContent='Copiar link de entradas',1600); });
   }
 
-  // ---- Descargar el reporte (PDF) ----
+  // ---- Descargar el reporte (imagen JPG) ----
   const cargarJs=src=>new Promise((ok,mal)=>{ const sc=document.createElement('script'); sc.src=src; sc.onload=ok; sc.onerror=mal; document.head.appendChild(sc); });
   async function descargarRep(bt, I){
     if(!I) return; const t0=bt.innerHTML; bt.disabled=true; bt.lastChild.textContent='Generando…';
@@ -573,15 +573,18 @@
     raiz.appendChild(w);
     try{
       if(!window.html2canvas) await cargarJs('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
-      if(!window.jspdf) await cargarJs('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
       await Promise.all([...w.querySelectorAll('img')].map(im=>im.complete?1:new Promise(r=>{ im.onload=im.onerror=r; })));
       const cv=await html2canvas(w,{scale:2,backgroundColor:'#F2EDE4',useCORS:true});
-      const pw=210, ph=cv.height*pw/cv.width, pdf=new window.jspdf.jsPDF({unit:'mm',format:[pw,ph]});
-      pdf.addImage(cv.toDataURL('image/jpeg',0.92),'JPEG',0,0,pw,ph);
-      const archivo=`reporte-${slug}-${I.desde}-al-${I.hasta}.pdf`;
-      if(/iPhone|iPad|iPod/.test(navigator.userAgent)){ const u=pdf.output('bloburl'); const v=window.open(u,'_blank'); if(!v) location.href=u; }
-      else pdf.save(archivo);
-    }catch(e){ console.log('descargar',e); alert('No se pudo generar el PDF. Probá de nuevo.'); }
+      const archivo=`reporte-${slug}-${I.desde}-al-${I.hasta}.jpg`;
+      const blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',0.92));
+      const f=new File([blob],archivo,{type:'image/jpeg'});
+      // en el celu: compartir la imagen (deja guardarla en Fotos o mandarla por WhatsApp); en la compu: descarga directa
+      if(/iPhone|iPad|iPod|Android/.test(navigator.userAgent)&&navigator.canShare&&navigator.canShare({files:[f]})){
+        try{ await navigator.share({files:[f],title:'Tu reporte'}); }catch(e){ if(e&&e.name!=='AbortError') throw e; }
+      } else {
+        const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=archivo; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+      }
+    }catch(e){ console.log('descargar',e); alert('No se pudo generar la imagen. Probá de nuevo.'); }
     w.remove(); bt.innerHTML=t0; bt.disabled=false;
   }
 
