@@ -157,6 +157,17 @@
   #v3 details.todo>summary{list-style:none;cursor:pointer;text-align:center;padding:13px;border:1px solid #E1D9C9;border-radius:14px;background:#FBF8F2;font:600 15px Inter,sans-serif;color:${NAVY}}
   #v3 details.todo>summary::-webkit-details-marker{display:none}
   #v3 details.todo #app{margin-top:10px}
+  #v3 .cjs{margin-top:14px}
+  #v3 .cjs h3{font:600 17px Inter,sans-serif;color:${NAVY};margin:0 0 4px}
+  #v3 .cjs .bjc{font-size:13.5px;color:#8A8577;margin:0 0 12px}
+  #v3 .cj{background:#FBF8F2;border:1px solid #E1D9C9;border-radius:16px;padding:16px 16px 10px;margin-bottom:12px}
+  #v3 .cj .nm{font:600 15px Inter,sans-serif;color:${NAVY};margin:0 0 10px}
+  #v3 .cj .ks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+  #v3 .cj .ks div{background:#fff;border-radius:10px;padding:8px 10px}
+  #v3 .cj .ks b{display:block;font:600 17px Inter,sans-serif;color:${NAVY}}
+  #v3 .cj .ks span{font-size:12px;color:#8A8577}
+  #v3 .cj .gl{font-size:12px;color:#8A8577;margin:6px 0 0}
+  #v3 .cj svg{display:block;width:100%;height:auto}
   #v3 .vacio{padding:16px;font-size:14.5px;color:#8A8577}
   #v3 .scr{display:none}#v3 .scr.on{display:block}
   #v3 .perh{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 2px 0}
@@ -506,6 +517,23 @@
       else { const iI=sum(m=>m.ig_inversion); if(sN&&iI) it.push([SIM+nf(iI/sN,iI/sN<100?2:0),'costo por seguidor']); }
       if(it.length<2) return '';
       return `<div class="mesp"><div class="e">Resumen de ${mes}</div><div class="g">${it.slice(0,6).map(([v,l])=>`<div><b>${v}</b><span>${l}</span></div>`).join('')}</div><p>La suma de todos los reportes de ${mes}. Si un período cruza de un mes a otro, se reparte por días.</p></div>`; })();
+
+    // --- seguimiento por conjunto de anuncios de la campaña de seguidores (igcN_*), agrupando nombres que cambiaron ---
+    const CJS=(()=>{ const nt=x=>String(x||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').split(/[^a-z0-9]+/).filter(Boolean);
+      const RR=R.filter(r=>(new Date(r.hasta)-new Date(r.desde))/864e5>=3).slice(-10); if(!RR.length) return '';
+      const ult=RR[RR.length-1].metricas||{}; const act=[]; for(let i=1;i<=6;i++) if(ult['igc'+i+'_nombre']) act.push({n:ult['igc'+i+'_nombre'],t:nt(ult['igc'+i+'_nombre']),inv:Number(ult['igc'+i+'_inversion']||0)});
+      if(!act.length) return ''; act.sort((a,b)=>b.inv-a.inv);
+      const grupo=name=>{ const t=nt(name), eq=act.filter(a=>a.t.length===t.length&&a.t.every(x=>t.includes(x))); if(eq.length===1) return eq[0];
+        const sub=act.filter(a=>t.every(x=>a.t.includes(x))||a.t.every(x=>t.includes(x))); return sub.length===1?sub[0]:null; };
+      act.forEach(a=>a.p=RR.map(r=>{ const m=r.metricas||{}; for(let i=1;i<=6;i++){ const nm=m['igc'+i+'_nombre']; if(nm&&grupo(nm)===a){ const v=m['igc'+i+'_visitas']!=null?Number(m['igc'+i+'_visitas']):null, iv=m['igc'+i+'_inversion']!=null?Number(m['igc'+i+'_inversion']):null, sg=m['igc'+i+'_seguidores']!=null?Number(m['igc'+i+'_seguidores']):null;
+        return {f:r.hasta,v,iv,c:v&&iv?iv/v:null,sg}; } } return {f:r.hasta,v:null,iv:null,c:null,sg:null}; }));
+      const graf=(pts,k,col,fmt)=>{ const V=pts.map((p,i)=>[i,p[k]]).filter(x=>x[1]!=null); if(V.length<2) return ''; const W=320,H=128,n=pts.length-1||1,mn=Math.min(...V.map(x=>x[1])),mx=Math.max(...V.map(x=>x[1])),rg=(mx-mn)||1;
+        const X=i=>18+i*(W-36)/n, Y=v=>H-30-(v-mn)/rg*(H-58);
+        return `<svg viewBox="0 0 ${W} ${H}" role="img"><line x1="10" x2="${W-10}" y1="${H-22}" y2="${H-22}" stroke="#E1D9C9"/><path d="${V.map((p,j)=>(j?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ')}" fill="none" stroke="${col}" stroke-width="2.4" stroke-linejoin="round"/>${V.map(p=>`<circle cx="${X(p[0]).toFixed(1)}" cy="${Y(p[1]).toFixed(1)}" r="3.4" fill="${col}"/><text x="${X(p[0]).toFixed(1)}" y="${(Y(p[1])-8).toFixed(1)}" text-anchor="middle" font-size="10.5" font-family="Inter,sans-serif" fill="#3A3846">${fmt(p[1])}</text>`).join('')}${pts.map((p,i)=>`<text x="${X(i).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="10" font-family="Inter,sans-serif" fill="#8A8577">${fd(p.f)}</text>`).join('')}</svg>`; };
+      const sim=SIM;
+      return `<div class="cjs"><h3>Seguimiento por conjunto de anuncios</h3><p class="bjc">Campaña de seguidores, período por período. Meta da las visitas al perfil por conjunto; los seguidores nuevos solo los cuenta Instagram en total.</p>${act.map(a=>{ const u=a.p[a.p.length-1];
+        return `<div class="cj"><p class="nm">${esc(a.n)}</p><div class="ks"><div><b>${nf(u.v)}</b><span>visitas al perfil</span></div><div><b>${u.c!=null?sim+nf(u.c,2):'—'}</b><span>costo por visita</span></div><div><b>${u.iv!=null?sim+nf(u.iv,u.iv<100?2:0):'—'}</b><span>inversión</span></div></div>
+          <p class="gl">Visitas al perfil</p>${graf(a.p,'v',VINO,v=>nf(v))}<p class="gl">Costo por visita</p>${graf(a.p,'c','#E2767C',v=>sim+nf(v,2))}${a.p.some(p=>p.sg!=null)?`<p class="gl">Seguidores (cargados de Ads Manager)</p>${graf(a.p,'sg',OLIVA,v=>nf(v))}`:''}</div>`; }).join('')}</div>`; })();
     const scrMet=`
       <div class="rep"><div><h1 class="v3t" style="font-size:31px">Tus métricas</h1><p class="bj">${I?`Del ${fd(I.desde)} al ${fd(I.hasta)}`:'Tus números, red por red'}</p></div>${I?`<button class="ir" id="v3rep" aria-label="Abrir reporte">${ico.flecha}</button>`:''}</div>
       ${imp?`<div class="card imp"><div>${ico.sol}</div><div><h4>Lo más importante</h4><p>${imp}</p></div></div>`:''}
@@ -577,7 +605,7 @@
     if(app&&app.parentNode!==document.body) document.body.appendChild(app);   // sacarlo antes de reescribir
     raiz.innerHTML=`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="v3g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#F9A43A"/><stop offset=".5" stop-color="#E1306C"/><stop offset="1" stop-color="#7B3FE4"/></linearGradient></defs></svg><div class="cab"><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semilla-logo-horizontal.png" alt="Semilla Redes"><span class="sep"></span><span class="ia">semilla<b>IA</b></span><span class="esp"></span><button class="camp" id="v3camp" aria-label="Notificaciones">${ico.camp}<b id="v3nn"></b></button><button class="av" id="v3av" aria-label="Tu perfil">${ini}<img src="/assets/avatars/${slug}.jpg?v=${new Date().toISOString().slice(0,10)}" alt="" onerror="this.remove()"></button></div>
       <div class="scr" data-scr="hoy">${scrHoy}</div><div class="scr" data-scr="proyecto">${scrPro}</div><div class="scr" data-scr="actividades">${scrAct}</div><div class="scr" data-scr="metricas">${scrMet}</div><div class="scr" data-scr="ia">${scrIA}</div>`;
-    const todo=raiz.querySelector('#v3todo'); if(app&&todo){ todo.appendChild(app); app.classList.remove('oculto'); }
+    const todo=raiz.querySelector('#v3todo'); if(todo&&CJS) todo.insertAdjacentHTML('beforeend',CJS); if(app&&todo){ todo.appendChild(app); app.classList.remove('oculto'); }
     const web=raiz.querySelector('#v3web'); let intentos=0;
     let WEBV=window.__V3WEBS||[];
     if(!window.__V3WEBS){ window.__V3WEBS=[]; fetch('https://vm.semillaredes.com/web/estado?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(j=>{ if(j&&j.webs&&j.webs.length){ window.__V3WEBS=j.webs; WEBV=j.webs; intentos=0; ponerWeb(); } }).catch(()=>{}); }
