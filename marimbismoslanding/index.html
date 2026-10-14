@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marcos Cifuentes &amp; Marimbismos</title>
+<meta name="description" content="Marcos Cifuentes &amp; Marimbismos: sonoridades de raíz rioplatense y latinoamericana con improvisación y exploración tímbrica. Marimba, contrabajo, percusión y voces.">
+<meta property="og:title" content="Marcos Cifuentes &amp; Marimbismos">
+<meta property="og:description" content="Marimba, contrabajo, percusión y voces. Canciones y pasajes instrumentales entre la intensidad rítmica y la intimidad.">
+<meta property="og:image" content="https://semillaredes.com/marimbismoslanding/img/og.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--negro:#0B0B0B;--negro2:#161514;--hueso:#F1EEE7;--hueso2:#D9D4CA;--gris:#8C877E;--madera:#C9874B;--madera2:#E2AC78;--linea:rgba(241,238,231,.16)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--negro);color:var(--hueso);font-family:'Archivo',system-ui,sans-serif;font-weight:300;font-size:18px;line-height:1.65;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit}
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+h1,h2,h3{margin:0;font-weight:500;line-height:1.08}
+h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(38px,5.4vw,64px);letter-spacing:-.01em}
+h2 i{color:var(--madera2)}
+h3{font-size:21px;font-weight:500;letter-spacing:.01em}
+.eti{font-size:12.5px;letter-spacing:.32em;text-transform:uppercase;font-weight:500;color:var(--madera);margin:0 0 18px}
+section{padding:120px 0;position:relative}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:54px;padding:0 28px;border-radius:999px;font-size:13.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;text-decoration:none;transition:transform .2s,background .2s,color .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.pri{background:var(--hueso);color:var(--negro)}
+.btn.pri:hover{background:var(--madera2)}
+.btn.sec{border:1px solid rgba(241,238,231,.45);color:var(--hueso)}
+.btn.sec:hover{background:rgba(241,238,231,.08)}
+
+/* hero */
+.hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden;padding:0 0 9vh}
+.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;filter:grayscale(1) contrast(1.05)}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,11,11,.55) 0%,rgba(11,11,11,.15) 35%,rgba(11,11,11,.7) 72%,var(--negro) 100%)}
+.hero .wrap{position:relative;z-index:2;width:100%}
+.nav{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:24px 28px;font-size:12.5px;letter-spacing:.3em;text-transform:uppercase;font-weight:500}
+.nav a{text-decoration:none;border-bottom:1px solid rgba(241,238,231,.5);padding-bottom:3px}
+.logo{width:min(760px,92%);margin:0 0 26px}
+.hero .bajada{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(23px,2.6vw,31px);line-height:1.3;max-width:640px;margin:0 0 34px;color:var(--hueso)}
+.acciones{display:flex;flex-wrap:wrap;gap:14px}
+
+/* propuesta */
+.prop{background:var(--negro) url(img/granos.png) right -120px top 40px/520px no-repeat}
+.dos{display:grid;grid-template-columns:1.1fr .9fr;gap:72px;align-items:center}
+.lead{font-size:clamp(21px,2vw,25px);line-height:1.55;font-weight:300;margin:28px 0 0;color:var(--hueso)}
+.inst{display:flex;flex-wrap:wrap;gap:10px;margin:34px 0 0;padding:0;list-style:none}
+.inst li{height:40px;display:inline-flex;align-items:center;padding:0 18px;border:1px solid var(--linea);border-radius:999px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--hueso2)}
+.marco{background:var(--hueso);padding:12px;transform:rotate(1.2deg);box-shadow:0 30px 60px rgba(0,0,0,.5)}
+.marco img{width:100%;aspect-ratio:573/846;object-fit:cover;filter:grayscale(1)}
+
+/* trío */
+.trio{background:var(--hueso);color:var(--negro)}
+.trio .eti{color:#9A5F2A}
+.trio h2 i{color:#9A5F2A}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:36px;margin-top:56px}
+.card .ft{aspect-ratio:4/3;overflow:hidden;background:#222}
+.card .ft img{width:100%;height:100%;object-fit:cover;filter:grayscale(1)}
+.card .rol{font-size:12.5px;letter-spacing:.24em;text-transform:uppercase;font-weight:500;color:#9A5F2A;margin:24px 0 8px}
+.card h3{font-size:25px;padding-bottom:16px;border-bottom:1.5px solid var(--negro)}
+.card p{font-size:16.5px;line-height:1.65;margin:16px 0 0;color:#3A3732}
+
+/* en vivo */
+.vivo .cab{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap}
+.vids{display:grid;grid-template-columns:1.35fr 1fr;grid-template-rows:auto auto;gap:24px;margin-top:52px}
+.vid{position:relative;display:block;text-decoration:none;overflow:hidden;background:#111}
+.vid:first-child{grid-row:span 2}
+.vid img{width:100%;height:100%;object-fit:cover;transition:transform .6s,opacity .3s;opacity:.82}
+.vid:hover img{transform:scale(1.04);opacity:1}
+.vid .tx{position:absolute;left:0;right:0;bottom:0;padding:70px 26px 24px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.85))}
+.vid h3{font-size:22px}
+.vid small{display:block;font-size:14px;color:var(--hueso2);margin-top:6px;letter-spacing:.02em}
+.play{position:absolute;top:22px;right:22px;width:52px;height:52px;border-radius:50%;background:rgba(241,238,231,.92);display:grid;place-items:center}
+.play:after{content:"";margin-left:4px;border-left:15px solid var(--negro);border-top:9px solid transparent;border-bottom:9px solid transparent}
+.vid.v1{aspect-ratio:auto;min-height:560px}
+.vid.v2,.vid.v3{aspect-ratio:16/10}
+.spoti{margin-top:24px}
+
+/* galería */
+.gal{padding:0 0 120px}
+.tira{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.tira img{width:100%;aspect-ratio:362/246;object-fit:cover;border:6px solid var(--hueso)}
+
+/* fechas */
+.fechas{background:var(--negro2)}
+.fechas .lista{margin-top:40px;border-top:1px solid var(--linea)}
+.fechas .fe{display:grid;grid-template-columns:92px 1fr auto;align-items:center;gap:26px;padding:24px 0;border-bottom:1px solid var(--linea);text-decoration:none;color:inherit;transition:background .2s}
+.fechas a.fe:hover{background:rgba(201,135,75,.08)}
+.fechas .dia{display:flex;flex-direction:column;align-items:center;line-height:1}
+.fechas .dia b{font-family:'Instrument Serif',serif;font-weight:400;font-size:46px}
+.fechas .dia small{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--madera);margin-top:6px;font-weight:500}
+.fechas .tit{font-size:21px;line-height:1.3;font-weight:400}
+.fechas .tit small{display:block;font-size:14px;color:var(--gris);margin-top:4px}
+.fechas .lnk{font-size:13px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;color:var(--madera2);white-space:nowrap}
+.fechas .nada{margin-top:40px;padding:28px 0;border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);color:var(--gris);font-size:19px}
+
+/* contacto */
+.contacto{text-align:center;overflow:hidden}
+.contacto .logo{margin:0 auto 34px;width:min(520px,88%)}
+.contacto h2{max-width:780px;margin:0 auto}
+.contacto .lead{max-width:620px;margin:22px auto 0;color:var(--hueso2)}
+.contacto .acciones{justify-content:center;margin-top:38px}
+.redes{display:flex;justify-content:center;flex-wrap:wrap;gap:12px 34px;margin-top:46px;padding-top:30px;border-top:1px solid var(--linea);font-size:15px}
+.redes a{text-decoration:none;color:var(--hueso2)}
+.redes a:hover{color:var(--madera2)}
+.pie{margin:70px 0 0;font-size:12.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--gris)}
+
+@media(max-width:900px){
+  section{padding:88px 0}
+  .dos{grid-template-columns:1fr;gap:56px}
+  .marco{max-width:400px;margin:0 auto}
+  .cards{grid-template-columns:1fr;gap:56px}
+  .vids{grid-template-columns:1fr}
+  .vid:first-child{grid-row:auto}
+  .vid.v1{min-height:0;aspect-ratio:4/5}
+  .prop{background-size:340px;background-position:right -140px top 30px}
+}
+@media(max-width:640px){
+  body{font-size:17px}
+  .prop{background-image:none}
+  .hero{padding-bottom:7vh}
+  .nav{padding:20px 18px}
+  .acciones .btn{flex:1 1 100%}
+  .tira{grid-template-columns:1fr 1fr}
+  .tira img:last-child{display:none}
+  .fechas .fe{grid-template-columns:64px 1fr;gap:16px;padding:18px 0}
+  .fechas .dia b{font-size:36px}
+  .fechas .tit{font-size:18px}
+  .fechas .lnk{grid-column:2;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<header class="hero" data-b="1">
+  <img src="img/hero.jpg" alt="Marcos Cifuentes &amp; Marimbismos tocando en vivo" fetchpriority="high" data-e="1">
+  <nav class="nav" data-b="2"><b data-e="2">Marimbismos</b><a href="#contacto" data-e="3">Contratar</a></nav>
+  <div class="wrap">
+    <h1><img class="logo" src="img/logo.png" alt="Marcos Cifuentes y Marimbismos" data-e="4"></h1>
+    <p class="bajada" data-e="5">Raíz rioplatense y latinoamericana, improvisación y exploración tímbrica.</p>
+    <div class="acciones">
+      <a class="btn pri" href="https://wa.me/5491140860995?text=Hola%20Marcos%2C%20quiero%20consultar%20por%20un%20concierto%20de%20Marimbismos" target="_blank" rel="noopener" data-e="6">Contratar un concierto</a>
+      <a class="btn sec" href="#vivo" data-e="7">Ver en vivo</a>
+    </div>
+  </div>
+</header>
+
+<section class="prop" data-b="3">
+  <div class="wrap dos">
+    <div>
+      <p class="eti" data-e="8">La propuesta</p>
+      <h2 data-e="9">Entre la intensidad rítmica <i>y la intimidad</i></h2>
+      <p class="lead" data-e="10">Marcos Cifuentes &amp; Marimbismos combina sonoridades de raíz rioplatense y latinoamericana con improvisación y exploración tímbrica. Marimba, contrabajo, percusión y voces articulan canciones y pasajes instrumentales.</p>
+      <ul class="inst">
+        <li data-e="11">Marimba</li>
+        <li data-e="12">Contrabajo</li>
+        <li data-e="13">Percusión</li>
+        <li data-e="14">Voces</li>
+      </ul>
+    </div>
+    <div class="marco"><img src="img/trio.jpg" alt="Marcos Cifuentes, César Martinini y Mauro Caracotche" loading="lazy" data-e="15"></div>
+  </div>
+</section>
+
+<section class="trio" data-b="4">
+  <div class="wrap">
+    <p class="eti" data-e="16">El trío</p>
+    <h2 data-e="17">Tres trayectorias, <i>un mismo pulso</i></h2>
+    <div class="cards">
+      <article class="card">
+        <div class="ft"><img src="img/marcos.jpg" alt="Marcos Cifuentes con el contrabajo" loading="lazy" data-e="18"></div>
+        <p class="rol" data-e="19">Contrabajo y composición</p>
+        <h3 data-e="20">Marcos Cifuentes</h3>
+        <p data-e="21">Contrabajista y compositor. Reconocido como personalidad destacada de la cultura de Berazategui, su ciudad. Fue miembro fundador de la Orquesta Académica del Teatro Colón. Su primer disco, <i>Canciones de Contrabando</i>, fue seleccionado como disco del mes por el Club del Disco de Buenos Aires. Colaboró con artistas como Palo Pandolfo y Marta Gómez. Es primer contrabajo en la Banda Sinfónica de la Ciudad de Buenos Aires.</p>
+      </article>
+      <article class="card">
+        <div class="ft"><img src="img/cesar.jpg" alt="César Martinini tocando la marimba" loading="lazy" data-e="22"></div>
+        <p class="rol" data-e="23">Marimba</p>
+        <h3 data-e="24">César Martinini</h3>
+        <p data-e="25">Destacado marimbista de Buenos Aires. Becado por el FNA, editó dos libros: <i>Marimba meets Gardel</i> y <i>Nuevos arreglos de tango para dúo de marimba y vibráfono</i>. Integró la OSN y actualmente es percusionista en la Orquesta de Tango de la Ciudad de Buenos Aires.</p>
+      </article>
+      <article class="card">
+        <div class="ft"><img src="img/mauro.jpg" alt="Mauro Caracotche en la batería" loading="lazy" data-e="26"></div>
+        <p class="rol" data-e="27">Batería y percusión</p>
+        <h3 data-e="28">Mauro Caracotche</h3>
+        <p data-e="29">Oriundo de Trenque Lauquen, se formó en el Conservatorio Manuel de Falla y la EMPA. Cuenta con una sólida trayectoria en el folklore. Trabajó con artistas como María Creuza, Ángela Irene y Santaires, entre otros. Es baterista en la Orquesta del Tango de la Ciudad de Buenos Aires.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="vivo" id="vivo" data-b="5">
+  <div class="wrap">
+    <div class="cab">
+      <div>
+        <p class="eti" data-e="30">En vivo</p>
+        <h2 data-e="31">Ver y <i>escuchar</i></h2>
+      </div>
+      <a class="btn sec" href="https://open.spotify.com/artist/2yBDsFsDd0BD3bwC8JbxYm" target="_blank" rel="noopener" data-e="32">Escuchar en Spotify</a>
+    </div>
+    <div class="vids">
+      <a class="vid v1" href="https://www.youtube.com/watch?v=80fYQ6JUK3w" target="_blank" rel="noopener"><img src="img/mae.jpg" alt="" loading="lazy" data-e="33"><span class="play"></span><div class="tx"><h3 data-e="34">Festival MAE</h3><small data-e="35">Secretaría de Cultura de Berazategui</small></div></a>
+      <a class="vid v2" href="https://www.youtube.com/watch?v=YW5cRT8jSpw" target="_blank" rel="noopener"><img src="img/jazz.jpg" alt="" loading="lazy" data-e="36"><span class="play"></span><div class="tx"><h3 data-e="37">Festival de Jazz</h3><small data-e="38">Auditorio Rigolleau</small></div></a>
+      <a class="vid v3" href="https://www.youtube.com/shorts/aeHwSTLMf-Y" target="_blank" rel="noopener"><img src="img/flor.jpg" alt="" loading="lazy" data-e="39"><span class="play"></span><div class="tx"><h3 data-e="40">Flor de tu agua</h3><small data-e="41">En vivo</small></div></a>
+    </div>
+    <div class="spoti"><iframe title="Marcos Cifuentes en Spotify" src="https://open.spotify.com/embed/artist/2yBDsFsDd0BD3bwC8JbxYm?utm_source=generator&theme=0" width="100%" height="352" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="border:0;display:block;border-radius:12px"></iframe></div>
+  </div>
+</section>
+
+<section class="gal" data-b="6">
+  <div class="wrap tira">
+    <img src="img/g1.jpg" alt="Marimbismos en vivo" loading="lazy" data-e="42">
+    <img src="img/g2.jpg" alt="Marimbismos en vivo" loading="lazy" data-e="43">
+    <img src="img/g3.jpg" alt="Marimbismos en vivo" loading="lazy" data-e="44">
+  </div>
+</section>
+
+<section id="fechas" class="fechas" data-b="7">
+  <div class="wrap">
+    <p class="eti" data-e="45">Agenda</p>
+    <h2 data-e="46">Próximas <i>fechas</i></h2>
+    <div id="sr-fechas" data-sr-fechas="marcos-cifuentes"><!-- sr-fechas -->
+<p class="nada">Pronto nuevas fechas.</p>
+<!-- /sr-fechas --></div>
+  </div>
+</section>
+
+<section class="contacto" id="contacto" data-b="8">
+  <div class="wrap">
+    <img class="logo" src="img/logo.png" alt="Marcos Cifuentes y Marimbismos" loading="lazy" data-e="47">
+    <p class="eti" data-e="48">Contacto</p>
+    <h2 data-e="49">Llevá Marimbismos <i>a tu escenario</i></h2>
+    <p class="lead" data-e="50">Festivales, teatros, centros culturales y ciclos. Escribinos y armamos la propuesta.</p>
+    <div class="acciones">
+      <a class="btn pri" href="https://wa.me/5491140860995?text=Hola%20Marcos%2C%20quiero%20consultar%20por%20un%20concierto%20de%20Marimbismos" target="_blank" rel="noopener" data-e="51">Escribir por WhatsApp</a>
+      <a class="btn sec" href="mailto:marcoscifuentesmusic@gmail.com" data-e="52">Enviar un mail</a>
+    </div>
+    <div class="redes">
+      <a href="https://www.instagram.com/marcos.cifu/" target="_blank" rel="noopener" data-e="53">Instagram</a>
+      <a href="https://open.spotify.com/artist/2yBDsFsDd0BD3bwC8JbxYm" target="_blank" rel="noopener" data-e="54">Spotify</a>
+      <a href="mailto:marcoscifuentesmusic@gmail.com" data-e="55">marcoscifuentesmusic@gmail.com</a>
+      <a href="https://wa.me/5491140860995" target="_blank" rel="noopener" data-e="56">+54 9 11 4086-0995</a>
+    </div>
+    <p class="pie" data-e="57">Marcos Cifuentes &amp; Marimbismos</p>
+  </div>
+</section>
+
+<script src="https://vm.semillaredes.com/web/editor.js" defer></script>
+</body>
+</html>
