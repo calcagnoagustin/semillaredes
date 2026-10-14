@@ -159,6 +159,10 @@
   #v3 details.todo #app{margin-top:10px}
   #v3 .vacio{padding:16px;font-size:14.5px;color:#8A8577}
   #v3 .scr{display:none}#v3 .scr.on{display:block}
+  #v3 .perh{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 2px 0}
+  #v3 .perh h3{margin:0;font-family:'Playfair Display',serif;font-size:23px;font-weight:600;color:${NAVY}}
+  #v3 .perh span{font:600 12px/1 Inter,sans-serif;letter-spacing:1.6px;text-transform:uppercase;color:#55525F;white-space:nowrap}
+  #v3 .perh+.red{margin-top:12px}
   #v3 .mesp{margin-top:16px;background:${NAVY};color:#F2EDE4;border-radius:20px;padding:18px 18px 16px}
   #v3 .mesp .e{font:700 12px/1 Inter,sans-serif;letter-spacing:2px;text-transform:uppercase;opacity:.9}
   #v3 .mesp .g{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;margin-top:14px}
@@ -504,6 +508,7 @@
       <div class="rep"><div><h1 class="v3t" style="font-size:31px">Tus métricas</h1><p class="bj">${I?`Del ${fd(I.desde)} al ${fd(I.hasta)}`:'Tus números, red por red'}</p></div>${I?`<button class="ir" id="v3rep" aria-label="Abrir reporte">${ico.flecha}</button>`:''}</div>
       ${imp?`<div class="card imp"><div>${ico.sol}</div><div><h4>Lo más importante</h4><p>${imp}</p></div></div>`:''}
       ${MESP}
+      ${u?`<div class="perh"><h3>Resumen del período</h3><span>Del ${fd(u.desde)} al ${fd(u.hasta)}</span></div>`:''}
       <div class="red">${Object.keys(redes).map(k=>`<button class="${k===SUBRED?'on':''}" data-red="${k}">${redes[k].n}</button>`).join('')}</div>
       <div class="card big"><div><div style="display:flex;align-items:center;gap:10px">${ico[SUBRED]}<div class="n">${nf(val(RD.k),Number.isInteger(Number(val(RD.k)))?0:1)}</div></div><div class="l">${RD.l}</div><div class="d">${dK(RD.k)}<small>${RD.ex}</small></div></div>${RD.kpis?`<div class="kp">${RD.kpis.map(([k,l])=>{const v=Number(val(k));return `<div><div class="n">${v<0?'−':''}${SIM}${nf(Math.abs(v),0)}</div><div class="l">${l}</div></div>`;}).join('')}</div>`:`<div class="sp">${linea(serie(RD.k),RD.col)}</div>`}</div>
       <div class="dos">${mini(RD.a)}${mini(RD.b)}</div>
