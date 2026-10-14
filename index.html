@@ -139,13 +139,26 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
     .checks li{display:flex;align-items:center;gap:14px;font-size:17px}
     .checks .ck{width:30px;height:30px;border:2px solid var(--olive);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:var(--olive);flex:none}
     .serv{list-style:none;margin-bottom:34px}
-    .serv li{display:grid;grid-template-columns:44px 1fr 28px;align-items:center;gap:14px;padding:18px 0;border-bottom:1px solid var(--line)}
-    .serv li:first-child{padding-top:0}
-    .serv .n{font-family:'Playfair Display',serif;font-weight:700;color:var(--olive);font-size:22px}
-    .serv a.it{text-decoration:none;display:contents}
-    .serv b{font-family:'Playfair Display',serif;font-weight:700;color:var(--navy);font-size:22px;display:block;line-height:1.1}
-    .serv span{color:var(--muted);font-size:15px}
-    .serv .go{color:var(--navy)}
+    .serv li{border-bottom:1px solid var(--line)}
+    .serv .it{display:grid;grid-template-columns:44px 1fr 28px;align-items:start;gap:14px;width:100%;padding:18px 0;background:none;border:0;text-align:left;cursor:pointer;font:inherit;color:inherit}
+    .serv li:first-child .it{padding-top:0}
+    .serv .n{font-family:'Playfair Display',serif;font-weight:700;color:var(--olive);font-size:22px;line-height:26px}
+    .serv b{font-family:'Playfair Display',serif;font-weight:700;color:var(--navy);font-size:22px;display:block;line-height:26px}
+    .serv .it>span>span{color:var(--muted);font-size:15px;display:block;margin-top:2px}
+    .serv .go{color:var(--navy);font-size:16px;line-height:26px;text-align:center;transition:transform .25s}
+    .serv .it:hover b{color:var(--wine)}
+    .serv li.open .go{transform:rotate(180deg)}
+    .acc-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}
+    .serv li.open .acc-body{grid-template-rows:1fr}
+    .acc-in{overflow:hidden;padding-left:58px}
+    .acc-in>p{font-size:15px;color:var(--text);margin-bottom:12px}
+    .acc-precio{font-weight:700;color:var(--wine);font-size:17px;margin-bottom:4px}
+    .acc-precio.sec{font-size:15px;color:var(--navy)}
+    .acc-precio em{font-style:normal;font-weight:500;color:var(--muted);font-size:14px}
+    .acc-precio small{font-weight:600;color:var(--olive);font-size:13px}
+    .acc-links{display:flex;flex-wrap:wrap;gap:8px 22px;margin:12px 0 20px}
+    .acc-links a{font-size:15px;font-weight:600;color:var(--navy);text-decoration:none;border-bottom:2px solid var(--wine);padding-bottom:1px}
+    .acc-links a+a{border-bottom-color:var(--line)}
     .card .btn{align-self:flex-start;margin-top:auto}
 
     /* PRESENTACION */
@@ -202,6 +215,9 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
       .eje h3{font-size:30px;margin-bottom:6px}
       .eje p{font-size:17px}
       .op-grid{grid-template-columns:1fr}
+      .serv .it{grid-template-columns:34px 1fr 18px;gap:10px}
+      .acc-in{padding-left:0}
+      .acc-precio small{display:block;margin-top:2px}
       .nav-links{display:none}
       .nav-cta{padding:10px 16px;font-size:14px}
       .wrap{padding:0 22px}
@@ -296,9 +312,31 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
           <p class="eyebrow rose">Acompañamiento personalizado</p>
           <h3>Servicios a medida</h3>
           <ul class="serv">
-            <li><a class="it" href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20quiero%20saber%20m%C3%A1s%20sobre%20la%20Mentor%C3%ADa%20individual" target="_blank" rel="noopener"><span class="n">01</span><span><b>Mentoría individual</b><span>Estrategia y seguimiento para avanzar.</span></span><span class="go">→</span></a></li>
-            <li><a class="it" href="/setup.html"><span class="n">02</span><span><b>Setup inicial</b><span>Identidad, web y redes para empezar.</span></span><span class="go">→</span></a></li>
-            <li><a class="it" href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20quiero%20saber%20m%C3%A1s%20sobre%20Anuncios%20Avanzados" target="_blank" rel="noopener"><span class="n">03</span><span><b>Anuncios avanzados</b><span>Campañas dirigidas al público adecuado.</span></span><span class="go">→</span></a></li>
+            <li class="acc">
+              <button class="it" type="button" aria-expanded="false"><span class="n">01</span><span><b>Mentoría individual</b><span>Estrategia y seguimiento para avanzar.</span></span><span class="go" aria-hidden="true">▾</span></button>
+              <div class="acc-body"><div class="acc-in">
+                <p>Encuentros online 1:1 con Agus para trabajar temas puntuales de tu proyecto: estrategia, contenidos y campañas publicitarias.</p>
+                <div class="acc-precio"><span class="p-ar">$200.000 ARS <em>/ mes · 4 encuentros</em> <small>· USD 130</small></span><span class="p-intl">USD 130 <em>/ mes · 4 encuentros</em> <small>· $200.000 ARS</small></span></div>
+                <div class="acc-precio sec"><span class="p-ar">Sesión única de 1 hora: $60.000 ARS <small>· USD 45</small></span><span class="p-intl">Sesión única de 1 hora: USD 45 <small>· $60.000 ARS</small></span></div>
+                <div class="acc-links"><a href="https://aguscalcagno.com/s/auditoria-inicial-con-agus" target="_blank" rel="noopener">Reservá tu sesión →</a><a href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20quiero%20saber%20m%C3%A1s%20sobre%20la%20Mentor%C3%ADa%20individual" target="_blank" rel="noopener">Consultar por WhatsApp</a></div>
+              </div></div>
+            </li>
+            <li class="acc">
+              <button class="it" type="button" aria-expanded="false"><span class="n">02</span><span><b>Setup inicial</b><span>Identidad, web y redes para empezar.</span></span><span class="go" aria-hidden="true">▾</span></button>
+              <div class="acc-body"><div class="acc-in">
+                <p>Proceso integral de 6 meses para llevar tu proyecto de 0 a 100: identidad visual, web, contenidos de redes, pauta publicitaria y planificación estratégica.</p>
+                <div class="acc-precio"><span class="p-ar">$250.000 ARS <em>/ mes · proceso de 6 meses</em> <small>· USD 180</small></span><span class="p-intl">USD 180 <em>/ mes · proceso de 6 meses</em> <small>· $250.000 ARS</small></span></div>
+                <div class="acc-links"><a href="/setup.html">Ver el Setup Inicial →</a><a href="https://wa.me/5492665242011?text=Hola%20Agus.%20Quiero%20m%C3%A1s%20sobre%20el%20Setup%20inicial" target="_blank" rel="noopener">Consultar por WhatsApp</a></div>
+              </div></div>
+            </li>
+            <li class="acc">
+              <button class="it" type="button" aria-expanded="false"><span class="n">03</span><span><b>Anuncios avanzados</b><span>Campañas dirigidas al público adecuado.</span></span><span class="go" aria-hidden="true">▾</span></button>
+              <div class="acc-body"><div class="acc-in">
+                <p>Para proyectos con marca desarrollada que quieren escalar: más seguidores, venta de entradas, oyentes en Spotify o vistas en YouTube. Diseñamos, gestionamos y escalamos campañas en Meta Ads, YouTube Ads y Spotify Ads.</p>
+                <div class="acc-precio">USD 300 <em>/ mes</em></div>
+                <div class="acc-links"><a href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20quiero%20saber%20m%C3%A1s%20sobre%20Anuncios%20Avanzados" target="_blank" rel="noopener">Hablemos por WhatsApp →</a></div>
+              </div></div>
+            </li>
           </ul>
           <a href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20vi%20tu%20landing%20de%20Semilla%20Redes%20y%20quiero%20saber%20m%C3%A1s" target="_blank" rel="noopener" class="btn btn-wine">Hablemos de tu proyecto ↗</a>
         </div>
@@ -365,6 +403,11 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
       card.addEventListener('click',play); link.addEventListener('click',play);
       card.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' ') play(e); });
     })();
+    document.querySelectorAll('.serv .it').forEach(function(b){ b.addEventListener('click',function(){
+      var li=b.parentNode, open=li.classList.contains('open');
+      document.querySelectorAll('.serv li.open').forEach(function(x){x.classList.remove('open');x.querySelector('.it').setAttribute('aria-expanded','false');});
+      if(!open){li.classList.add('open');b.setAttribute('aria-expanded','true');}
+    });});
     document.addEventListener('click', function(e){
       var a = e.target.closest && e.target.closest('a[href*="wa.me"], a[href*="whatsapp"]');
       if(a && typeof fbq === 'function'){ fbq('track','Contact'); }
