@@ -244,7 +244,7 @@ section{padding:120px 0;position:relative}
 
 <script>
 document.querySelectorAll('.vid[data-yt]').forEach(b=>b.addEventListener('click',()=>{
-  if(document.body.classList.contains('sr-editando')) return;
+  if(document.getElementById('srBar')) return;
   const f=document.createElement('iframe');
   f.src='https://www.youtube-nocookie.com/embed/'+b.dataset.yt+'?autoplay=1&rel=0';
   f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen'; f.allowFullscreen=true; f.title=b.getAttribute('aria-label');
