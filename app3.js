@@ -321,6 +321,8 @@
     const ult=k=>{ for(let i=R.length-1;i>=0;i--){ const v=R[i].metricas[k]; if(v!=null) return [v,i]; } return [null,-1]; };
     const ant=(k,desde)=>{ for(let i=desde-1;i>=0;i--){ const v=R[i].metricas[k]; if(v!=null) return v; } return null; };
     // ganancia de la campaña de mensajes = lo facturado (cargado por el cliente) menos la publicidad
+    // ventas de tienda: si no se cargaron a mano, se usan las que contó el píxel de Meta (marcadas como tales)
+    R.forEach(r=>{ const m=r.metricas||{}; if(m.vta_ventas==null&&m.vta_atribuidas!=null){ m.vta_ventas=Number(m.vta_atribuidas); m.vta_ventas_fuente='pixel'; if(m.vta_costo_venta==null&&Number(m.vta_atribuidas)>0&&m.vta_inversion!=null) m.vta_costo_venta=Math.round(Number(m.vta_inversion)/Number(m.vta_atribuidas)*100)/100; } });
     // tasa de conversión de visitas al perfil a seguidores: métrica central (13/10)
     R.forEach(r=>{ const m=r.metricas||{}; if(m.ig_conv==null&&Number(m.ig_visitas)>0&&m.ig_followers_nuevos!=null) m.ig_conv=Math.round(Number(m.ig_followers_nuevos)*1000/Number(m.ig_visitas))/10; });
     R.forEach(r=>{ const m=r.metricas||{}; if(m.msj_ingreso!=null&&m.msj_inversion!=null&&m.msj_ganancia==null) m.msj_ganancia=Math.round((Number(m.msj_ingreso)-Number(m.msj_inversion))*100)/100; });
@@ -359,7 +361,7 @@
     const vGan=FACT&&Nm('vta_inversion')?Math.round(FACT*0.75-Nm('vta_inversion')):Nm('vta_ganancia');
     if(Nm('vta_ventas')>0&&vIng>0)
       DZ={e:'Resultado destacado',v:SIM+nf(vIng),u:'en ventas',k:Nm('vta_ingreso')?'vta_ingreso':'vta_ingreso_pixel',ic:'vta'},
-      hero=`<div class="e">Ventas del período</div><div class="p">${SIM}${nf(vIng)}</div><div class="x">${nf(um.vta_ventas)} ${Nm('vta_ventas')===1?'venta':'ventas'}${Nm('vta_inversion')?` con ${SIM}${nf(um.vta_inversion)} de publicidad`:''}${vRoas?`: cada ${UNI} invertido volvió ${SIM}${nf(vRoas,2)}.`:'.'}${vGan>0?` Ganancia neta: <b>${SIM}${nf(vGan)}</b>.`:''}</div>`;
+      hero=`<div class="e">Ventas del período</div><div class="p">${SIM}${nf(vIng)}</div><div class="x">${nf(um.vta_ventas)} ${Nm('vta_ventas')===1?'venta':'ventas'}${Nm('vta_inversion')?` con ${SIM}${nf(um.vta_inversion)} de publicidad`:''}${vRoas?`: cada ${UNI} invertido volvió ${SIM}${nf(vRoas,2)}.`:'.'}${vGan>0?` Ganancia neta: <b>${SIM}${nf(vGan)}</b>.`:''}${um.vta_ventas_fuente==='pixel'&&!FACT?' <span style="opacity:.8">(según el píxel de Meta)</span>':''}</div>`;
     else if(Nm('msj_conversiones')>0&&Nm('msj_ingreso')>0)
       DZ={e:'Resultado destacado',v:SIM+nf(um.msj_ingreso),u:'en ventas',k:'msj_ingreso',ic:'vta'},
       hero=`<div class="e">Ventas del período</div><div class="p">${SIM}${nf(um.msj_ingreso)}</div><div class="x">${nf(um.msj_conversiones)} ${Nm('msj_conversiones')===1?'venta':'ventas'}${Nm('msj_inversion')?` con ${SIM}${nf(um.msj_inversion)} de publicidad`:''}${Nm('msj_roas')?`: cada ${UNI} invertido volvió ${SIM}${nf(um.msj_roas,2)}.`:'.'}</div>`;
