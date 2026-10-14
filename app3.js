@@ -354,6 +354,8 @@
     // Destacado: primero el resultado de negocio del período (ventas reales anotadas), después el crecimiento de la cuenta.
     // Abajo, siempre que haya, cuánto creció desde que trabaja con Semilla.
     const um=(R[R.length-1]||{}).metricas||{}, Nm=k=>Number(um[k]||0);
+    // oyentes mensuales = el número público del perfil de Spotify (sp_oyentes_perfil); sp_monthly son los activos, mucho menos
+    const SPK=val('sp_oyentes_perfil')!=null?'sp_oyentes_perfil':'sp_monthly';
     let hero, DZ=null;   // DZ: el destacado de la sección Reporte (misma prioridad que el hero)
     const ultR=R[R.length-1]||{}, fdm=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
     const FACT=(()=>{ const v=(d.cliente&&d.cliente.ventas)||{}; const k=Object.keys(v).find(k=>/^Facturaci/i.test(k)&&k.includes(fdm(ultR.desde))&&k.includes(fdm(ultR.hasta))); return k?Number(v[k].ingreso)||0:0; })();
@@ -372,9 +374,9 @@
       DZ={e:'Crecimiento destacado',v:'+'+nf(um.ig_followers_nuevos),u:Nm('ig_followers_nuevos')===1?'seguidor':'seguidores',k:'ig_followers_nuevos',ic:'sube',
         t:`La cuenta sumó <b>${nf(um.ig_followers_nuevos)} ${Nm('ig_followers_nuevos')===1?'seguidor nuevo':'seguidores nuevos'}</b> en Instagram y ya llega a ${nf(val('ig_followers_total'))}.${Nm('ig_costo_follower')?` Cada uno costó <b>${SIM}${nf(um.ig_costo_follower,Number(um.ig_costo_follower)<100?2:0)}</b>.`:''}${um.ig_conv!=null?` El <b>${nf(um.ig_conv,1)}%</b> de las visitas al perfil se hizo seguidor${Number(um.ig_conv)>=15?': una tasa de conversión muy alta':''}.`:''}`},
       hero=`<div class="e">Tu progreso del período</div><div class="p">+${nf(um.ig_followers_nuevos)}</div><div class="x">seguidores nuevos en Instagram en el período.</div>`;
-    else if(dif('sp_monthly')>0)
-      DZ={e:'Crecimiento destacado',v:'+'+nf(dif('sp_monthly')),u:'oyentes',k:null,ic:'sube'},
-      hero=`<div class="e">Tu progreso del período</div><div class="p">+${nf(dif('sp_monthly'))}</div><div class="x">oyentes mensuales en Spotify: hoy son ${nf(val('sp_monthly'))}.</div>`;
+    else if(dif(SPK)>0)
+      DZ={e:'Crecimiento destacado',v:'+'+nf(dif(SPK)),u:'oyentes',k:null,ic:'sube'},
+      hero=`<div class="e">Tu progreso del período</div><div class="p">+${nf(dif(SPK))}</div><div class="x">oyentes mensuales en Spotify: hoy son ${nf(val(SPK))}.</div>`;
     else if(Nm('msj_mensajes')>0)
       DZ={e:'Resultado destacado',v:nf(um.msj_mensajes),u:Nm('msj_mensajes')===1?'consulta':'consultas',k:'msj_mensajes',ic:'msj'},
       hero=`<div class="e">Tu progreso del período</div><div class="p">${nf(um.msj_mensajes)}</div><div class="x">consultas por mensaje en el período.</div>`;
@@ -389,7 +391,7 @@
         hero+=`<div class="desde">Desde ${MESL[dd.getUTCMonth()]} con Semilla: <b>${nf(tv)} ventas</b>${ti?` y ${SIM}${nf(ti)} facturados`:''}.</div>`; } }
     // hitos: métricas que el cliente puede elegir (solo las que tiene medidas)
     const HMET={ig_followers_total:['Seguidores en Instagram','seguidores en Instagram'],ig_followers_nuevos:['Seguidores nuevos por período','seguidores nuevos en un período'],ig_visitas:['Visitas al perfil por período','visitas al perfil en un período'],
-      sp_monthly:['Oyentes mensuales en Spotify','oyentes mensuales en Spotify'],sp_followers:['Seguidores en Spotify','seguidores en Spotify'],sp_streams:['Reproducciones en Spotify por período','reproducciones en Spotify'],
+      sp_oyentes_perfil:['Oyentes mensuales en Spotify','oyentes mensuales en Spotify'],sp_monthly:['Oyentes mensuales activos en Spotify','oyentes mensuales activos en Spotify'],sp_followers:['Seguidores en Spotify','seguidores en Spotify'],sp_streams:['Reproducciones en Spotify por período','reproducciones en Spotify'],
       yt_subs:['Suscriptores en YouTube','suscriptores en YouTube'],yt_views:['Vistas en YouTube por período','vistas en YouTube en un período'],
       msj_mensajes:['Consultas por período','consultas por mensaje'],msj_conversiones:['Ventas por período','ventas en un período'],vta_ventas:['Ventas por período','ventas en un período'],tk_tickets:['Entradas vendidas por período','entradas vendidas en un período']};
     const HTIT=h=>{ if(h.titulo&&!/^[a-z]+_[a-z_]+$/.test(h.titulo)) return h.titulo; return nf(h.objetivo)+' '+((HMET[h.metrica]||[])[1]||''); };
@@ -397,7 +399,7 @@
     const H=(d.hitos||[]).map(h=>({h,v:val(h.metrica)})).filter(x=>x.v!=null&&Number(x.v)<Number(x.h.objetivo));
     const hito=H.sort((a,b)=>(b.v/b.h.objetivo)-(a.v/a.h.objetivo))[0];
     const tiene=k=>val(k)!=null;
-    const MET=[['ig_followers_total','seguidores','ig'],['sp_monthly','oyentes','sp'],['yt_views','vistas','yt'],['msj_mensajes','mensajes','msj'],['msj_conversiones','ventas','msj'],['tk_tickets','entradas','tk'],['stm_wishlist','wishlists en Steam','stm'],['vta_visitas','visitas a la tienda','vtv'],['ig_conv','conversión de visitas','ig'],['vta_ventas','ventas','vta'],['vta_roas_pixel','retorno por dólar','vta'],['vta_costo_venta','costo por venta','vta'],['frm_visitas','visitas a la formación','frm'],['frm_mensajes','consultas','frm'],['ig_visitas','visitas al perfil','ig']].filter(([k])=>tiene(k)&&!(k==='vta_visitas'&&tiene('vta_ventas'))).map(([k,l,ic])=>({k,l,ic}));
+    const MET=[['ig_followers_total','seguidores','ig'],[SPK,'oyentes mensuales','sp'],['yt_views','vistas','yt'],['msj_mensajes','mensajes','msj'],['msj_conversiones','ventas','msj'],['tk_tickets','entradas','tk'],['stm_wishlist','wishlists en Steam','stm'],['vta_visitas','visitas a la tienda','vtv'],['ig_conv','conversión de visitas','ig'],['vta_ventas','ventas','vta'],['vta_roas_pixel','retorno por dólar','vta'],['vta_costo_venta','costo por venta','vta'],['frm_visitas','visitas a la formación','frm'],['frm_mensajes','consultas','frm'],['ig_visitas','visitas al perfil','ig']].filter(([k])=>tiene(k)&&!(k==='vta_visitas'&&tiene('vta_ventas'))).map(([k,l,ic])=>({k,l,ic}));
     const scrHoy=`
       <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
@@ -444,7 +446,7 @@
     const redes={
       ig:{n:'Instagram',k:'ig_followers_total',l:'seguidores',ex:`${val('ig_followers_nuevos')!=null?'+'+nf(val('ig_followers_nuevos'))+' en el período':''}${val('ig_conv')!=null?` · <b style="color:#3A3846">${nf(val('ig_conv'),1)}%</b> de las visitas al perfil se hizo seguidor`:''}`,col:VINO,
           a:['ig_costo_follower','costo por seguidor',true,'#E2767C'],b:['ig_inversion','inversión en el período',true,OLIVA]},
-      sp:{n:'Spotify',k:'sp_monthly',l:'oyentes mensuales',ex:`${val('sp_guardados')!=null?nf(val('sp_guardados'))+' guardados':val('sp_streams')!=null?nf(val('sp_streams'))+' reproducciones':''}`,col:'#1DB954',
+      sp:{n:'Spotify',k:SPK,l:'oyentes mensuales',ex:`${val('sp_monthly')!=null&&SPK!=='sp_monthly'?nf(val('sp_monthly'))+' activos · ':''}${val('sp_guardados')!=null?nf(val('sp_guardados'))+' guardados':val('sp_streams')!=null?nf(val('sp_streams'))+' reproducciones':''}`,col:'#1DB954',
           a:['sp_streams','reproducciones',false,'#1DB954'],b:['sp_followers','seguidores en Spotify',false,OLIVA]},
       yt:{n:'YouTube',k:'yt_views',l:'vistas',ex:`${val('yt_subs')!=null?nf(val('yt_subs'))+' suscriptores':''}`,col:'#FF0000',
           a:['yt_subs_nuevos','suscriptores nuevos',false,'#E2767C'],b:['yt_horas','horas vistas',false,OLIVA]},
@@ -664,7 +666,7 @@
     const redes=[
       ['Instagram', c.instagram?'@'+String(c.instagram).replace(/^@/,''):'Seguidores, visitas y alcance', hay('ig_followers_total'), ico.ig],
       ['Publicidad en Meta', 'Campañas en Instagram', hayP(/_inversion$/), '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1877F2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14V10l11-5v14L4 14z"/><path d="M15 9.5h2.5a2.5 2.5 0 0 1 0 5H15M7 14.5l1.5 4.5H11l-1-4"/></svg>'],
-      ['Spotify', 'Oyentes, reproducciones y seguidores', hay('sp_monthly'), ico.sp],
+      ['Spotify', 'Oyentes, reproducciones y seguidores', hay('sp_monthly')||hay('sp_oyentes_perfil'), ico.sp],
       ['YouTube', 'Vistas y suscriptores', hay('yt_views'), ico.yt],
       [W.length>1?'Tus webs':'Tu web', W.length?W.map(w=>String(w.url).replace(/^https?:\/\//,'').replace(/\/$/,'')).join(' · '):'Editable desde la app', W.length>0, '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="'+NAVY+'" stroke-width="1.9"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 2.5 14.4 0 17M12 3.5c-2.5 2.6-2.5 14.4 0 17"/></svg>']
     ];
