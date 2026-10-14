@@ -336,7 +336,7 @@
     // tasa de conversión de visitas al perfil a seguidores: métrica central (13/10)
     R.forEach(r=>{ const m=r.metricas||{}; if(m.ig_conv==null&&Number(m.ig_visitas)>0&&m.ig_followers_nuevos!=null) m.ig_conv=Math.round(Number(m.ig_followers_nuevos)*1000/Number(m.ig_visitas))/10; });
     R.forEach(r=>{ const m=r.metricas||{}; if(m.msj_ingreso!=null&&m.msj_inversion!=null&&m.msj_ganancia==null) m.msj_ganancia=Math.round((Number(m.msj_ingreso)-Number(m.msj_inversion))*100)/100; });
-    const MANUAL={stm_wishlist:1,stm_costo_wishlist:1,stm_inversion:1,stm_clics:1,stm_visitas:1,vta_visitas:1,vta_clics:1,vta_costo_visita:1,ig_conv:1,msj_mensajes:1,msj_inversion:1,msj_costo_mensaje:1,tk_tickets:1,tk_roas:1,tk_inversion:1,tk_costo_ticket:1,vta_ventas:1,vta_inversion:1,vta_costo_venta:1,vta_ingreso_pixel:1,vta_roas_pixel:1,frm_visitas:1,frm_mensajes:1,frm_inversion:1,frm_costo_visita:1,   // del período: solo si están en la última medición (si la campaña se apagó no se muestra un número viejo como actual)
+    const MANUAL={stm_wishlist:1,stm_costo_wishlist:1,stm_inversion:1,stm_clics:1,stm_visitas:1,vta_visitas:1,vta_clics:1,vta_costo_visita:1,ig_conv:1,msj_mensajes:1,msj_inversion:1,msj_costo_mensaje:1,tk_tickets:1,tk_roas:1,tk_inversion:1,tk_costo_ticket:1,vta_ventas:1,vta_inversion:1,vta_costo_venta:1,vta_ingreso_pixel:1,vta_roas_pixel:1,frm_visitas:1,spad_inversion:1,spad_visitas:1,spad_costo_visita:1,spad_alcance:1,spad_clics:1,ytad_inversion:1,ytad_visitas:1,ytad_costo_visita:1,ytad_alcance:1,ytad_clics:1,frm_mensajes:1,frm_inversion:1,frm_costo_visita:1,   // del período: solo si están en la última medición (si la campaña se apagó no se muestra un número viejo como actual)
       msj_ganancia:1,msj_conversiones:1,msj_ingreso:1,msj_roas:1,msj_costo_conversion:1,vta_ingreso:1,vta_ganancia:1,vta_roas:1,vta_roi:1};
     const ultM=k=>{ if(!MANUAL[k]) return ult(k); const i=R.length-1; return i>=0&&R[i].metricas[k]!=null?[R[i].metricas[k],i]:[null,-1]; };
     const val=k=>ultM(k)[0];
@@ -457,9 +457,11 @@
       ig:{n:'Instagram',k:'ig_followers_total',l:'seguidores',ex:`${val('ig_followers_nuevos')!=null?'+'+nf(val('ig_followers_nuevos'))+' en el período':''}${val('ig_conv')!=null?` · <b style="color:#3A3846">${nf(val('ig_conv'),1)}%</b> de las visitas al perfil se hizo seguidor`:''}`,col:VINO,
           a:['ig_costo_follower','costo por seguidor',true,'#E2767C'],b:['ig_inversion','inversión en el período',true,OLIVA]},
       sp:{n:'Spotify',k:SPK,l:'oyentes mensuales',ex:`${val('sp_monthly')!=null&&SPK!=='sp_monthly'?nf(val('sp_monthly'))+' activos · ':''}${val('sp_guardados')!=null?nf(val('sp_guardados'))+' guardados':val('sp_streams')!=null?nf(val('sp_streams'))+' reproducciones':''}`,col:'#1DB954',
-          a:['sp_streams','reproducciones',false,'#1DB954'],b:['sp_followers','seguidores en Spotify',false,OLIVA]},
+          a:['sp_streams','reproducciones',false,'#1DB954'],b:['sp_followers','seguidores en Spotify',false,OLIVA],
+          ...(val('spad_inversion')!=null?{ad:['spad','Publicidad hacia Spotify','visitas a Spotify desde los anuncios']}:{})},
       yt:{n:'YouTube',k:'yt_views',l:'vistas',ex:`${val('yt_subs')!=null?nf(val('yt_subs'))+' suscriptores':''}`,col:'#FF0000',
-          a:['yt_subs_nuevos','suscriptores nuevos',false,'#E2767C'],b:['yt_horas','horas vistas',false,OLIVA]},
+          a:['yt_subs_nuevos','suscriptores nuevos',false,'#E2767C'],b:['yt_horas','horas vistas',false,OLIVA],
+          ...(val('ytad_inversion')!=null?{ad:['ytad','Publicidad hacia YouTube','visitas a YouTube desde los anuncios']}:{})},
       vta:{n:'Ventas',k:'vta_ventas',l:'ventas en el período',ex:`${(val('vta_ingreso')||val('vta_ingreso_pixel'))!=null?SIM+nf(val('vta_ingreso')||val('vta_ingreso_pixel'))+' facturados':''}`,col:'#2F7A4F',
           a:['vta_costo_venta','costo por venta',true,'#E2767C',2],b:['vta_inversion','inversión en el período',true,OLIVA]},
       frm:{n:'Formación',k:'frm_visitas',l:'visitas a la página',ex:`${val('frm_mensajes')!=null?nf(val('frm_mensajes'))+' consultas en el período':''}`,col:'#2F7A4F',
@@ -490,7 +492,7 @@
       const mes=MESL[ini.getUTCMonth()], it=[];
       const vV=sum(m=>m.vta_ventas), vF=sum(m=>m.vta_ingreso!=null?m.vta_ingreso:m.vta_ingreso_pixel), vG=sum(m=>m.vta_ganancia), vI=sum(m=>m.vta_inversion);
       const mV=sum(m=>m.msj_conversiones), mF=sum(m=>m.msj_ingreso), tT=sum(m=>m.tk_tickets), sN=sum(m=>m.ig_followers_nuevos), mM=sum(m=>m.msj_mensajes);
-      const inv=sum(m=>{ let t=0,h=false; Object.keys(m).forEach(k=>{ if(/^(ig|msj|vta|tk|frm|stm|ld|tr)_inversion$/.test(k)&&m[k]!=null){ t+=Number(m[k]); h=true; } }); return h?t:null; });
+      const inv=sum(m=>{ let t=0,h=false; Object.keys(m).forEach(k=>{ if(/^(ig|msj|vta|tk|frm|stm|ld|tr|spad|ytad|lan)_inversion$/.test(k)&&m[k]!=null){ t+=Number(m[k]); h=true; } }); return h?t:null; });
       if(vV!=null) it.push([nf(Math.round(vV)),'ventas']);
       if(vF!=null) it.push([SIM+nf(Math.round(vF)),'facturado']);
       if(vG!=null) it.push([SIM+nf(Math.round(vG)),'ganancia neta']);
@@ -512,6 +514,7 @@
       <div class="red">${Object.keys(redes).map(k=>`<button class="${k===SUBRED?'on':''}" data-red="${k}">${redes[k].n}</button>`).join('')}</div>
       <div class="card big"><div><div style="display:flex;align-items:center;gap:10px">${ico[SUBRED]}<div class="n">${nf(val(RD.k),Number.isInteger(Number(val(RD.k)))?0:1)}</div></div><div class="l">${RD.l}</div><div class="d">${dK(RD.k)}<small>${RD.ex}</small></div></div>${RD.kpis?`<div class="kp">${RD.kpis.map(([k,l])=>{const v=Number(val(k));return `<div><div class="n">${v<0?'−':''}${SIM}${nf(Math.abs(v),0)}</div><div class="l">${l}</div></div>`;}).join('')}</div>`:`<div class="sp">${linea(serie(RD.k),RD.col)}</div>`}</div>
       <div class="dos">${mini(RD.a)}${mini(RD.b)}</div>
+      ${RD.ad?(()=>{const [p,t,l]=RD.ad, vis=val(p+'_visitas')!=null?p+'_visitas':p+'_clics';return `<div class="tit2"><h2>${t}</h2></div><div class="card big"><div><div class="n">${nf(val(vis))}</div><div class="l">${l}</div><div class="d"><small>${val(p+'_alcance')!=null?nf(val(p+'_alcance'))+' personas alcanzadas':''}</small></div></div><div class="sp">${linea(serie(vis),RD.col)}</div></div><div class="dos">${mini([p+'_costo_visita','costo por visita',true,'#E2767C',2])}${mini([p+'_inversion','inversión en el período',true,OLIVA])}</div>`;})():''}
       ${SUBRED==='tk'&&TKP.length?`<div class="tit2"><h2>Públicos de la campaña</h2></div><div class="card lista tkp">${TKP.map(p=>`<div class="fila"><span class="tx ab"><b>${esc(p.nombre)}</b>${p.inversion>0?`<br><span>${nf(p.tickets)} ${p.tickets===1?'entrada':'entradas'} · ${p.costo!=null?SIM+nf(p.costo,2)+' por entrada':'sin ventas'}${p.alcance?` · ${nf(p.alcance)} personas`:''}</span>`:`<br><span>Público nuevo${p.inicio?`: arrancó el ${fd(p.inicio)}`:''}. Todavía sin resultados.</span>`}</span>${p.roas!=null&&p.inversion>0?`<span class="rt"><b>${nf(p.roas,2)}x</b><small>retorno</small></span>`:'<span></span>'}</div>`).join('')}</div>`:''}
       ${recs.length?`<div class="card recos"><div class="h">${ico.hoja}Recomendaciones SemillaIA</div>${recs.slice(0,3).map((r,i)=>`<div class="r"><span class="k">${i+1}</span><p>${esc(String(r).replace(/<[^>]+>/g,''))}${accB(r)}</p></div>`).join('')}</div>`:''}
       <details class="todo" id="v3todo"><summary>Ver todas las métricas</summary></details>`;
