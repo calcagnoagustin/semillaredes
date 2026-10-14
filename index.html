@@ -1,332 +1,375 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<title>Hernán Onírico · Música de luz</title>
-<meta name="description" content="Hernán Onírico: proyecto poético-musical de canciones autorales. Conciertos en formato solista, dúo o banda, set acústico y electrónico, experiencias y festivales.">
-<meta property="og:title" content="Hernán Onírico · Música de luz">
-<meta property="og:description" content="Canciones autorales de carácter sensible y profundo. Solista, dúo o banda. Set acústico y electrónico.">
-<meta property="og:image" content="https://hernanonirico.com/img/hero.jpg">
-<meta property="og:type" content="website">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Josefin+Sans:wght@200;300;400;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-:root{--noche:#231B36;--noche2:#30264A;--lila:#B9A6D9;--lila2:#E4DAF3;--ambar:#E9A15B;--ambar2:#F4C892;--crema:#F7F1E8;--tinta:#2A2338;--gris:#6B6478}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--crema);color:var(--tinta);font-family:'Jost',system-ui,sans-serif;font-weight:300;font-size:18px;line-height:1.65;-webkit-font-smoothing:antialiased}
-img{display:block;max-width:100%}
-a{color:inherit}
-.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
-h1,h2,h3{font-family:'Josefin Sans',sans-serif;font-weight:200;text-transform:uppercase;letter-spacing:.12em;line-height:1.1;margin:0}
-h2{font-size:clamp(30px,4.6vw,46px)}
-h3{font-size:20px;font-weight:300;letter-spacing:.14em}
-.eti{font-family:'Josefin Sans',sans-serif;font-size:13px;letter-spacing:.32em;text-transform:uppercase;font-weight:400;color:var(--ambar);margin:0 0 14px}
-.poe{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:400}
-section{padding:110px 0}
-.btn{display:inline-flex;align-items:center;gap:10px;padding:15px 26px;border-radius:999px;font-family:'Josefin Sans',sans-serif;font-size:14px;letter-spacing:.18em;text-transform:uppercase;font-weight:400;text-decoration:none;transition:transform .2s,background .2s}
-.btn:hover{transform:translateY(-2px)}
-.btn.pri{background:var(--ambar);color:var(--noche)}
-.btn.pri:hover{background:var(--ambar2)}
-.btn.sec{border:1px solid rgba(255,255,255,.5);color:#fff}
-.btn.sec:hover{background:rgba(255,255,255,.1)}
+  <meta charset="UTF-8" />
+<script>
+// Apps instaladas antes del arreglo: abren la raiz. Si sabemos quien es, lo llevamos a su panel.
+(function(){
+  try{
+    var slug = localStorage.getItem('sr_cliente_slug');
+    var comoApp = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    var editando = /[?&]editar=/.test(location.search) || sessionStorage.getItem('sr_editar');
+    if (slug && comoApp && location.pathname === '/' && window.top === window && !editando) {
+      location.replace('/' + slug + '/');
+    }
+  }catch(e){}
+})();
+</script>
 
-/* hero */
-.hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;color:#fff;background:var(--noche);overflow:hidden;padding:0}
-.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 30%}
-.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(35,27,54,0) 30%,rgba(35,27,54,.55) 62%,rgba(35,27,54,.96) 100%)}
-.hero .wrap{position:relative;z-index:1;padding-bottom:12vh;width:100%}
-.hero h1{font-size:clamp(46px,9vw,112px);letter-spacing:.16em;margin:0 0 12px}
-.hero .poe{font-size:clamp(24px,3.2vw,34px);color:var(--lila2);margin:0 0 30px;max-width:640px;line-height:1.3}
-.hero .acciones{display:flex;gap:12px;flex-wrap:wrap}
-.nav{position:absolute;top:0;left:0;right:0;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:22px 24px;max-width:1120px;margin:0 auto}
-.nav b{font-family:'Josefin Sans',sans-serif;font-weight:300;letter-spacing:.3em;font-size:14px}
-.nav a{font-family:'Josefin Sans',sans-serif;font-size:13px;letter-spacing:.24em;text-transform:uppercase;text-decoration:none;opacity:.9}
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JXRH3E28FF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-JXRH3E28FF');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Semilla Redes — Hacé crecer tu proyecto artístico</title>
+  <meta name="description" content="Agencia de estrategia digital para artistas y músicos. Con el Método Semilla ordenamos tu comunicación, redes y publicidad para convertir tu arte en ingresos."/>
+  <meta name="robots" content="index, follow"/>
+  <meta name="theme-color" content="#1A2456"/>
+  <link rel="canonical" href="https://semillaredes.com/"/>
+  <link rel="apple-touch-icon" href="icon-180.png"/>
+  <!-- Open Graph -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="Semilla Redes"/>
+  <meta property="og:locale" content="es_AR"/>
+  <meta property="og:url" content="https://semillaredes.com/"/>
+  <meta property="og:title" content="Semilla Redes — Redes sociales para artistas"/>
+  <meta property="og:description" content="Estrategia, comunicación y publicidad para proyectos artísticos. Con el Método Semilla transformá tu arte en un negocio digital."/>
+  <meta property="og:image" content="https://semillaredes.com/og-image.jpg"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta property="og:image:alt" content="Semilla Redes — Redes sociales para artistas"/>
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Semilla Redes — Redes sociales para artistas"/>
+  <meta name="twitter:description" content="Estrategia, comunicación y publicidad para proyectos artísticos. Transformá tu arte en un negocio digital."/>
+  <meta name="twitter:image" content="https://semillaredes.com/og-image.jpg"/>
+  <!-- Datos estructurados -->
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"Semilla Redes","url":"https://semillaredes.com","logo":"https://semillaredes.com/og-image.jpg","description":"Agencia de estrategia digital para artistas y músicos basada en el Método Semilla: estrategia, comunicación y publicidad para proyectos artísticos.","founder":{"@type":"Person","name":"Agus Calcagno"},"sameAs":["https://www.instagram.com/semillaredes"]}
+  </script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cline x1='22' y1='22' x2='4' y2='22' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='40' y2='22' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='22' y2='4' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='22' y2='40' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='8' y2='8' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='36' y2='36' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='36' y2='8' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='8' y2='36' stroke='%23C97080' stroke-width='1.5'/%3E%3Cpath d='M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z' fill='%237A8A42'/%3E%3Cline x1='22' y1='11' x2='22' y2='33' stroke='white' stroke-width='0.8' opacity='0.6'/%3E%3Cline x1='22' y1='16' x2='18' y2='19' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Cline x1='22' y1='16' x2='26' y2='19' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Cline x1='22' y1='22' x2='17' y2='23' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Cline x1='22' y1='22' x2='27' y2='23' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Cline x1='22' y1='27' x2='18' y2='29' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Cline x1='22' y1='27' x2='26' y2='29' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Ccircle cx='4' cy='22' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='40' cy='22' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='22' cy='4' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='22' cy='40' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='8' cy='8' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='36' cy='36' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='36' cy='8' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='8' cy='36' r='2.5' fill='%23C97080'/%3E%3C/svg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '953367820005998');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+  <script>
+  /* Semilla: precio destacado según país. Argentina => ARS grande; resto => USD grande. ?moneda=usd|ars fuerza. */
+  (function(){try{var q=new URLSearchParams(location.search).get('moneda');var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone||'');var ar=/Argentina|Buenos_Aires/i.test(tz);if(q==='usd')ar=false;if(q==='ars')ar=true;if(!ar)document.documentElement.classList.add('intl');}catch(e){}})();
+  </script>
+  <style>.p-intl{display:none}html.intl .p-ar{display:none}html.intl .p-intl{display:inline}html.intl div.p-intl{display:block}</style>
+  <style>
+    :root{--cream:#F2EDE4;--cream-2:#EDE6DB;--navy:#1A2456;--wine:#8B1E3F;--wine-dark:#6E1631;--rose:#E2767C;--rose-soft:#F3D6D4;--olive:#87863A;--olive-soft:#C9C79A;--text:#2A2A2A;--muted:#5E5A52;--line:#D9D0C2;--white:#FBF8F2}
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
+    a{color:inherit}
+    img{max-width:100%;display:block}
+    .wrap{max-width:1180px;margin:0 auto;padding:0 32px}
+    .eyebrow{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--olive)}
+    .eyebrow.rose{color:var(--wine)}
+    h1,h2,h3{font-family:'Playfair Display',serif;font-weight:900;color:var(--navy);line-height:1.02;letter-spacing:-.01em}
+    h2{font-size:clamp(36px,5vw,58px)}
+    .btn{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;text-decoration:none;border-radius:4px;padding:15px 24px;transition:background .2s,transform .2s}
+    .btn-wine{background:var(--wine);color:#fff}
+    .btn-wine:hover{background:var(--wine-dark)}
+    .btn-link{color:var(--navy);font-weight:600;text-decoration:none;border-bottom:2px solid var(--wine);padding-bottom:2px}
+    .btn-link:hover{color:var(--wine)}
+    .arrow{display:inline-block;width:18px;height:18px}
 
-/* propuesta */
-.dos{display:grid;grid-template-columns:1fr 1.1fr;gap:72px;align-items:center}
-.dos>*{min-width:0}
-.foto{border-radius:220px 220px 18px 18px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(35,27,54,.45)}
-.foto img{width:100%;height:100%;object-fit:cover}
-.lead{font-family:'Cormorant Garamond',serif;font-size:clamp(25px,2.8vw,31px);line-height:1.35;margin:18px 0 22px;color:var(--noche)}
-p{margin:0 0 16px}
+    /* NAV */
+    nav{position:sticky;top:0;z-index:50;background:rgba(242,237,228,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+    nav .wrap{display:flex;align-items:center;justify-content:space-between;height:76px}
+    .logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+    .logo-icon{width:40px;height:40px}
+    .logo-text{font-family:'Inter',sans-serif;font-weight:800;letter-spacing:.08em;color:var(--navy);font-size:18px;line-height:1}
+    .logo-text small{font-weight:400;letter-spacing:.3em;color:var(--navy)}
+    .nav-links{display:flex;gap:40px;font-weight:600;font-size:15px}
+    .nav-links a{text-decoration:none;color:var(--navy)}
+    .nav-links a:hover{color:var(--wine)}
+    .nav-cta{background:var(--wine);color:#fff;text-decoration:none;font-weight:700;font-size:15px;padding:12px 22px;border-radius:4px;white-space:nowrap}
 
-/* formatos */
-.formatos{background:var(--noche);color:#fff}
-.formatos .eti{color:var(--ambar2)}
-.tres{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px}
-.fmt{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4/5;background:var(--noche2)}
-.fmt img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
-.fmt:hover img{transform:scale(1.04)}
-.fmt:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(20,15,32,.9))}
-.fmt div{position:absolute;left:22px;bottom:20px;z-index:1}
-.fmt span{font-family:'Josefin Sans',sans-serif;font-size:13px;letter-spacing:.3em;color:var(--ambar2)}
-.fmt h3{font-size:26px;margin-top:4px}
-.bajada{max-width:640px;color:var(--lila2);margin-top:18px}
-.formatos .bajada{color:#D8CFE8}
+    /* HERO */
+    .hero{padding:72px 0 64px;border-bottom:1px solid var(--line)}
+    .hero .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center}
+    .hero h1{font-size:clamp(46px,5.9vw,86px);margin:18px 0 26px;letter-spacing:-.02em;white-space:nowrap}
+    .hero h1 .mark{color:var(--wine);background:linear-gradient(transparent 18%,var(--rose-soft) 18%,var(--rose-soft) 88%,transparent 88%);padding:0 .08em}
+    .hero p{font-size:19px;color:var(--text);max-width:520px;margin-bottom:34px}
+    .hero-ctas{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+    .hero-art img{width:100%;height:auto;clip-path:inset(3px 0 0 3px)}
 
-/* sets */
-.sets{background:linear-gradient(180deg,var(--lila2),var(--crema))}
-.setgrid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:52px}
-.set{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 24px 50px -32px rgba(35,27,54,.4)}
-.set .fotos{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:100%;gap:4px;height:300px;overflow:hidden}
-.set .fotos img{width:100%;height:100%;min-height:0;object-fit:cover;display:block}
-.set .fotos .col{display:grid;grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:4px;min-height:0;height:100%}
-.set .txt{padding:28px 30px 32px}
-.set h3{font-size:24px;margin-bottom:12px}
-.set.elec{background:var(--noche);color:#EDE6F7}
-.set.elec .eti{color:var(--lila)}
-.nota{text-align:center;margin:40px auto 0;max-width:620px;font-size:24px;color:var(--noche)}
+    /* EJES */
+    .ejes{padding:72px 0 80px;border-bottom:1px solid var(--line)}
+    .ejes .wrap{display:grid;grid-template-columns:.8fr 1fr 1fr 1fr;gap:36px;align-items:start}
+    .ejes h2{margin-top:14px;font-size:clamp(40px,4.6vw,56px)}
+    .ejes-sub{display:none;font-size:19px;color:var(--muted);margin:14px 0 8px}
+    .eje{border-left:1px solid var(--line);padding-left:28px}
+    .eje img{height:120px;width:auto;margin-bottom:22px}
+    .eje .n{font-size:13px;font-weight:700;color:var(--olive);margin-bottom:8px}
+    .eje-tag{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--olive);opacity:.9}
+    .eje h3{font-size:26px;margin-bottom:8px}
+    .eje p{color:var(--muted);font-size:15px}
 
-/* experiencias */
-.expe{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px}
-.exp{border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 20px 44px -30px rgba(35,27,54,.4)}
-.exp img{width:100%;aspect-ratio:1/1;object-fit:cover}
-.exp div{padding:18px 22px 22px}
-.exp h3{font-size:18px}
-.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
-.chip{border:1px solid var(--lila);border-radius:999px;padding:9px 18px;font-family:'Josefin Sans',sans-serif;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--noche)}
+    /* CAMINOS */
+    .caminos{padding:80px 0 72px}
+    .caminos h2{margin:14px 0 10px;font-size:clamp(44px,6vw,76px)}
+    .caminos .sub{font-size:19px;color:var(--text);margin-bottom:40px}
+    .cards{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+    .card{background:var(--cream-2);border:1px solid var(--line);border-radius:10px;padding:40px 36px 36px;display:flex;flex-direction:column}
+    .card h3{font-size:clamp(34px,3.6vw,46px);margin:14px 0 18px}
+    .card .desc{font-size:17px;color:var(--text);margin-bottom:28px;max-width:420px}
+    .checks{list-style:none;margin-bottom:36px;display:grid;gap:18px}
+    .checks li{display:flex;align-items:center;gap:14px;font-size:17px}
+    .checks .ck{width:30px;height:30px;border:2px solid var(--olive);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:var(--olive);flex:none}
+    .serv{list-style:none;margin-bottom:34px}
+    .serv li{display:grid;grid-template-columns:44px 1fr 28px;align-items:center;gap:14px;padding:18px 0;border-bottom:1px solid var(--line)}
+    .serv li:first-child{padding-top:0}
+    .serv .n{font-family:'Playfair Display',serif;font-weight:700;color:var(--olive);font-size:22px}
+    .serv a.it{text-decoration:none;display:contents}
+    .serv b{font-family:'Playfair Display',serif;font-weight:700;color:var(--navy);font-size:22px;display:block;line-height:1.1}
+    .serv span{color:var(--muted);font-size:15px}
+    .serv .go{color:var(--navy)}
+    .card .btn{align-self:flex-start;margin-top:auto}
 
-/* trayectoria */
-.tray{background:var(--noche);color:#fff}
-.tray .eti{color:var(--ambar2)}
-.fest{list-style:none;padding:0;margin:28px 0 0}
-.fest li{font-family:'Cormorant Garamond',serif;font-size:28px;line-height:1.25;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.12)}
-.cita{margin-top:34px;padding:26px 28px;border-left:2px solid var(--ambar);background:rgba(255,255,255,.04);border-radius:0 14px 14px 0;color:#DDD4EC}
-.cita b{color:#fff;font-weight:500}
-.cita a{color:var(--ambar2);text-decoration:none}
+    /* PRESENTACION */
+    .presenta{padding:24px 0 88px}
+    .presenta .wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+    .presenta h2{font-size:clamp(44px,5.6vw,72px);margin-bottom:14px}
+    .presenta p{font-size:19px;margin-bottom:22px}
+    .video-card{border-radius:10px;aspect-ratio:16/9;cursor:pointer;position:relative;overflow:hidden;background:#111}
+    .video-card>img{width:100%;height:100%;object-fit:cover;display:block}
+    .vc-over{position:absolute;inset:0;background:linear-gradient(180deg,rgba(26,36,86,.05),rgba(26,36,86,.55));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+    .video-card svg.sem{width:92px;height:92px}
+    .video-card .t{font-family:'Playfair Display',serif;font-weight:700;color:#fff;font-size:26px;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+    .video-card .play{width:70px;height:70px;border-radius:50%;background:var(--wine);display:flex;align-items:center;justify-content:center;transition:transform .2s;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+    .video-card:hover .play{transform:scale(1.06)}
+    .video-card iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:2}
 
-/* audiovisual */
-.videos{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:44px}
-.vid{position:relative;display:block;border-radius:16px;overflow:hidden;aspect-ratio:16/9;background:var(--noche);text-decoration:none}
-.vid img{width:100%;height:100%;object-fit:cover;opacity:.88;transition:opacity .3s,transform .6s}
-.vid:hover img{opacity:1;transform:scale(1.03)}
-.vid:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(20,15,32,.85))}
-.vid .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:66px;height:66px;border-radius:50%;background:rgba(247,241,232,.92);display:grid;place-items:center;z-index:1}
-.vid .play:before{content:"";border-left:18px solid var(--noche);border-top:11px solid transparent;border-bottom:11px solid transparent;margin-left:5px}
-.vid h3{position:absolute;left:22px;bottom:18px;z-index:1;color:#fff;font-size:20px}
-.vivo{display:flex;gap:14px;flex-wrap:wrap;margin-top:28px}
-.vivo a{display:inline-flex;align-items:center;gap:10px;padding:13px 22px;border-radius:999px;background:#fff;text-decoration:none;font-family:'Josefin Sans',sans-serif;font-size:14px;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 10px 26px -18px rgba(35,27,54,.6)}
-.vivo a:before{content:"";width:9px;height:9px;border-radius:50%;background:#E0453A;box-shadow:0 0 0 4px rgba(224,69,58,.18)}
-.spoti{margin-top:44px;border-radius:16px;overflow:hidden}
+    /* OPINIONES */
+    .opiniones{padding:72px 0;background:var(--cream-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .opiniones h2{font-size:clamp(34px,4vw,48px);margin:12px 0 8px}
+    .opiniones .sub{color:var(--muted);margin-bottom:36px}
+    .opiniones .sub a{color:var(--navy);font-weight:600;text-decoration:none;border-bottom:1px solid var(--navy)}
+    .op-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .op{background:var(--white);border-radius:8px;padding:26px 24px}
+    .op .stars{color:#E2A93B;letter-spacing:2px;font-size:14px;margin-bottom:10px}
+    .op q{display:block;font-style:italic;font-size:15px;line-height:1.65;color:#444;margin-bottom:16px;quotes:"\201C" "\201D"}
+    .op .who{font-size:13px;font-weight:700;color:var(--navy)}
+    .op .src{font-size:12px;color:var(--rose)}
+    .clientes-line{margin-top:36px;font-size:14px;color:var(--muted)}
+    .clientes-line b{color:var(--navy)}
 
-/* bio */
-.bio{background:linear-gradient(180deg,var(--crema),var(--lila2))}
-.discos{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:30px 0 26px}
-.disco{background:#fff;border-radius:14px;padding:18px 16px;text-align:center;box-shadow:0 14px 30px -24px rgba(35,27,54,.5)}
-.disco b{display:block;font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:30px;color:var(--ambar);letter-spacing:.06em}
-.disco span{font-family:'Josefin Sans',sans-serif;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;line-height:1.4;display:block;margin-top:6px}
+    /* CTA */
+    .cta{background:var(--rose-soft);padding:72px 0}
+    .cta h2{font-size:clamp(40px,5.6vw,72px);margin-bottom:12px}
+    .cta p{font-size:19px;margin-bottom:30px}
+    .cta-row{display:flex;align-items:center;gap:32px;flex-wrap:wrap}
 
-/* contacto */
-.contacto{background:var(--noche);color:#fff;padding-bottom:70px}
-.contacto .eti{color:var(--ambar2)}
-.redes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:30px 0}
-.redes a{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border:1px solid rgba(255,255,255,.18);border-radius:14px;text-decoration:none;font-family:'Josefin Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;font-size:14px;transition:background .2s}
-.redes a:hover{background:rgba(255,255,255,.07)}
-.redes a:after{content:"↗";color:var(--ambar2)}
-.mgr{padding:24px 26px;border-radius:16px;background:rgba(255,255,255,.05);margin-top:8px}
-.mgr p{margin:0;color:#DDD4EC;overflow-wrap:anywhere}
-.mgr b{font-weight:500;color:#fff}
-.pie{text-align:center;color:#8E86A1;font-size:13px;letter-spacing:.2em;text-transform:uppercase;font-family:'Josefin Sans',sans-serif;margin-top:70px}
+    footer{padding:34px 0}
+    footer .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;font-size:14px;color:var(--muted)}
+    footer a{color:var(--muted);text-decoration:none}
 
-@media (max-width:860px){
-  body{font-size:17px}
-  section{padding:76px 0}
-  .dos{grid-template-columns:1fr;gap:38px}
-  .tres,.expe{grid-template-columns:1fr}
-  .fmt{aspect-ratio:16/11}
-  .setgrid,.videos,.redes{grid-template-columns:1fr}
-  .discos{grid-template-columns:1fr 1fr}
-  .foto{max-width:420px;margin:0 auto}
-  .hero img{object-position:62% 20%}
-  .fest li{font-size:24px}
-}
-.fechas{background:var(--crema)}
-.fechas .lista{margin-top:34px;border-top:1px solid rgba(42,35,56,.14)}
-.fechas .fe{display:grid;grid-template-columns:92px 1fr auto;align-items:center;gap:26px;padding:24px 0;border-bottom:1px solid rgba(42,35,56,.14);text-decoration:none;color:inherit;transition:background .2s}
-.fechas a.fe:hover{background:rgba(233,161,91,.08)}
-.fechas .dia{display:flex;flex-direction:column;align-items:center;line-height:1}
-.fechas .dia b{font-family:'Josefin Sans',sans-serif;font-weight:200;font-size:40px;letter-spacing:.02em}
-.fechas .dia small{font-family:'Josefin Sans',sans-serif;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--ambar);margin-top:6px}
-.fechas .tit{font-size:21px;line-height:1.3}
-.fechas .tit small{display:block;font-size:14px;color:var(--gris);letter-spacing:.06em;margin-top:4px}
-.fechas .lnk{font-family:'Josefin Sans',sans-serif;font-size:13px;letter-spacing:.18em;text-transform:uppercase;font-weight:400;color:var(--ambar);white-space:nowrap}
-.fechas .nada{margin-top:34px;padding:28px 0;border-top:1px solid rgba(42,35,56,.14);border-bottom:1px solid rgba(42,35,56,.14);color:var(--gris);font-size:19px}
-@media(max-width:640px){.fechas .fe{grid-template-columns:64px 1fr;gap:16px;padding:18px 0}.fechas .dia b{font-size:32px}.fechas .tit{font-size:18px}.fechas .lnk{grid-column:2;font-size:12px}}
-</style>
+    @media (max-width:980px){
+      .hero .wrap,.ejes .wrap,.cards,.presenta .wrap{grid-template-columns:1fr}
+      .hero{padding:48px 0 40px}
+      .hero h1{white-space:normal;font-size:clamp(44px,11vw,64px)}
+      .hero-art{order:-1}
+      .ejes .wrap{gap:28px}
+      .ejes{padding:56px 0 40px}
+      .ejes .wrap{gap:20px}
+      .ejes-sub{display:block}
+      .eje{position:relative;border:1px solid var(--line);border-radius:14px;background:var(--cream);padding:28px 22px 26px;text-align:center}
+      .eje .n{position:absolute;left:22px;top:20px;font-size:18px;margin:0;text-align:left}
+      .eje .eje-tag{font-size:11px}
+      .eje img{height:150px;width:auto;max-width:78%;margin:4px auto 18px;object-fit:contain}
+      .eje h3{font-size:30px;margin-bottom:6px}
+      .eje p{font-size:17px}
+      .op-grid{grid-template-columns:1fr}
+      .nav-links{display:none}
+      .nav-cta{padding:10px 16px;font-size:14px}
+      .wrap{padding:0 22px}
+      footer .wrap{flex-direction:column;align-items:flex-start}
+    }
+  </style>
 </head>
 <body>
 
-<header class="hero" data-b="1">
-  <img src="img/hero.jpg" alt="Hernán Onírico" fetchpriority="high" data-e="1">
-  <nav class="nav" data-b="2"><b data-e="2">HERNÁN ONÍRICO</b><a href="#contacto" data-e="3">Contratar</a></nav>
-  <div class="wrap">
-    <p class="eti" data-e="4">Música de luz</p>
-    <h1 data-e="5">Hernán Onírico</h1>
-    <p class="poe" data-e="6">Canciones autorales para experimentar el poder sanador y transformador de la Música y las palabras.</p>
-    <div class="acciones">
-      <a class="btn pri" href="https://wa.me/5491155730260?text=Hola%20Marilen%2C%20quiero%20consultar%20por%20un%20concierto%20de%20Hern%C3%A1n%20On%C3%ADrico" target="_blank" rel="noopener" data-e="7">Contratar un concierto</a>
-      <a class="btn sec" href="#escuchar" data-e="8">Escuchar</a>
-    </div>
-  </div>
-</header>
-
-<section data-b="3">
-  <div class="wrap dos">
-    <div class="foto"><img src="img/propuesta.jpg" alt="Hernán Onírico en vivo con guitarra" loading="lazy" data-e="9"></div>
-    <div>
-      <p class="eti" data-e="10">La propuesta</p>
-      <h2 data-e="11">Un proyecto poético-musical</h2>
-      <p class="lead" data-e="12">Canciones autorales de carácter sensible y profundo, en su más alta vibración e intención.</p>
-      <p data-e="13">En distintos formatos —solista, dúo o banda— el concierto se adapta a las necesidades de cada encuentro. Propone dos climas sonoros: una primera parte con guitarra y voz, cálida, íntima e introspectiva, y una segunda en la que se suman pistas y samplers que, entretejidos con los instrumentos acústicos, invitan a danzar.</p>
-      <p data-e="14">También suma canciones a pedido: covers, mantras, canciones medicina y música instrumental.</p>
-    </div>
-  </div>
-</section>
-
-<section class="formatos" data-b="4">
-  <div class="wrap">
-    <p class="eti" data-e="15">Formatos</p>
-    <h2 data-e="16">Solista, dúo o banda</h2>
-    <p class="bajada" data-e="17">El mismo universo de canciones, en la escala que pida cada encuentro: desde una ceremonia íntima hasta un escenario de festival.</p>
-    <div class="tres">
-      <div class="fmt"><img src="img/solista.jpg" alt="Formato solista" loading="lazy" data-e="18"><div><span data-e="19">01</span><h3 data-e="20">Solista</h3></div></div>
-      <div class="fmt"><img src="img/duo.jpg" alt="Formato dúo" loading="lazy" style="object-position:30% 50%" data-e="21"><div><span data-e="22">02</span><h3 data-e="23">Dúo</h3></div></div>
-      <div class="fmt"><img src="img/banda.jpg" alt="Formato banda" loading="lazy" data-e="24"><div><span data-e="25">03</span><h3 data-e="26">Banda</h3></div></div>
-    </div>
-  </div>
-</section>
-
-<section class="sets" data-b="5">
-  <div class="wrap">
-    <p class="eti" data-e="27">Sets</p>
-    <h2 data-e="28">Dos climas sonoros</h2>
-    <div class="setgrid">
-      <article class="set" data-b="6">
-        <div class="fotos"><img src="img/acustico.jpg" alt="Set acústico" loading="lazy" data-e="29"><div class="col"><img src="img/acustico2.jpg" alt="" loading="lazy" data-e="30"><img src="img/propuesta.jpg" alt="" loading="lazy" style="object-position:50% 25%" data-e="31"></div></div>
-        <div class="txt"><p class="eti" data-e="32">Set 01</p><h3 data-e="33">Acústico</h3><p data-e="34">Un clima introspectivo, cálido e íntimo, que invita a la contemplación y a la reflexión.</p></div>
-      </article>
-      <article class="set elec" data-b="7">
-        <div class="fotos"><img src="img/electronico2.jpg" alt="Set electrónico" loading="lazy" data-e="35"><div class="col"><img src="img/electronico.jpg" alt="" loading="lazy" data-e="36"><img src="img/electronico3.jpg" alt="" loading="lazy" data-e="37"></div></div>
-        <div class="txt"><p class="eti" data-e="38">Set 02</p><h3 data-e="39">Electrónico</h3><p data-e="40">Los instrumentos acústicos se mezclan con pistas y sampler que tejen una textura electrónica: el mensaje de su poética llega a través del movimiento del cuerpo y la danza.</p></div>
-      </article>
-    </div>
-    <p class="nota poe" data-e="41">Ambos sets pueden ofrecerse por separado o integrados en un mismo concierto.</p>
-  </div>
-</section>
-
-<section data-b="8">
-  <div class="wrap">
-    <p class="eti" data-e="42">Experiencias</p>
-    <h2 data-e="43">Música para encuentros</h2>
-    <p class="bajada" style="color:var(--gris)" data-e="44">Propuestas propias y en colaboración con otr@s terapeutas.</p>
-    <div class="expe">
-      <div class="exp"><img src="img/cacao.jpg" alt="Experiencia ceremonial con cacao" loading="lazy" data-e="45"><div><h3 data-e="46">Ceremonia con cacao</h3></div></div>
-      <div class="exp"><img src="img/ecstatic.jpg" alt="Ecstatic Dance" loading="lazy" data-e="47"><div><h3 data-e="48">Ecstatic Dance</h3></div></div>
-      <div class="exp"><img src="img/biodanza.jpg" alt="Biodanza" loading="lazy" data-e="49"><div><h3 data-e="50">Biodanza</h3></div></div>
-    </div>
-    <div class="chips"><span class="chip" data-e="51">Constelaciones familiares</span><span class="chip" data-e="52">Sistema Milderman</span><span class="chip" data-e="53">Ceremonias de sanación</span><span class="chip" data-e="54">Eventos holísticos</span></div>
-  </div>
-</section>
-
-<section class="tray" data-b="9">
-  <div class="wrap dos" style="align-items:start">
-    <div>
-      <p class="eti" data-e="55">Trayectoria</p>
-      <h2 data-e="56">Festivales</h2>
-      <ul class="fest" data-b="10">
-        <li data-e="57">Moreno Zen</li>
-        <li data-e="58">Festival Encuentro del Cóndor y el Águila</li>
-        <li data-e="59">Festival Waka Wasi</li>
-        <li data-e="60">Warmichella Bs. As.</li>
-        <li data-e="61">BioFest</li>
-      </ul>
-    </div>
-    <div>
-      <div class="cita" style="margin-top:0">
-        <p class="poe" style="font-size:25px;line-height:1.35;color:#fff" data-e="62">Su obra fue reconocida por <b>Jesús Hidalgo</b>, uno de los máximos referentes internacionales de la música medicina.</p>
-        <p style="margin:0" data-e="63">Agrupaciones colaboradoras: <a href="https://www.instagram.com/nacion.quintosol/" target="_blank" rel="noopener" data-e="64">@nacion.quintosol</a> y <a href="https://www.instagram.com/frecuenciauritorco/" target="_blank" rel="noopener" data-e="65">@frecuenciauritorco</a>.</p>
+  <!-- NAV -->
+  <nav>
+    <div class="wrap">
+      <a href="/" class="logo">
+        <svg class="logo-icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><g stroke="#C97080" stroke-width="1.5"><line x1="22" y1="22" x2="4" y2="22"/><line x1="22" y1="22" x2="40" y2="22"/><line x1="22" y1="22" x2="22" y2="4"/><line x1="22" y1="22" x2="22" y2="40"/><line x1="22" y1="22" x2="8" y2="8"/><line x1="22" y1="22" x2="36" y2="36"/><line x1="22" y1="22" x2="36" y2="8"/><line x1="22" y1="22" x2="8" y2="36"/></g><path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/><line x1="22" y1="11" x2="22" y2="33" stroke="white" stroke-width="0.8" opacity="0.6"/><g fill="#C97080"><circle cx="4" cy="22" r="2.5"/><circle cx="40" cy="22" r="2.5"/><circle cx="22" cy="4" r="2.5"/><circle cx="22" cy="40" r="2.5"/><circle cx="8" cy="8" r="2.5"/><circle cx="36" cy="36" r="2.5"/><circle cx="36" cy="8" r="2.5"/><circle cx="8" cy="36" r="2.5"/></g></svg>
+        <span class="logo-text">SEMILLA <small>REDES</small></span>
+      </a>
+      <div class="nav-links">
+        <a href="#metodo">Método</a>
+        <a href="/formacion.html">Formación</a>
+        <a href="#servicios">Servicios</a>
       </div>
-      <p style="margin-top:28px;color:#D8CFE8" data-e="66">Se presentó en eventos holísticos, festivales, ceremonias de sanación y teatros de distintas provincias del país, Gran Buenos Aires y CABA.</p>
+      <a href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20vi%20tu%20landing%20de%20Semilla%20Redes%20y%20quiero%20saber%20m%C3%A1s" target="_blank" rel="noopener" class="nav-cta">Hablemos ↗</a>
     </div>
-  </div>
-</section>
+  </nav>
 
-<section id="escuchar" data-b="11">
-  <div class="wrap">
-    <p class="eti" data-e="67">Audiovisual</p>
-    <h2 data-e="68">Ver y escuchar</h2>
-    <div class="videos">
-      <a class="vid" href="https://www.youtube.com/watch?v=GieX-sxy1UU" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/GieX-sxy1UU/hqdefault.jpg" alt="" loading="lazy" data-e="69"><span class="play"></span><h3 data-e="70">Un destellar</h3></a>
-      <a class="vid" href="https://www.youtube.com/watch?v=gPMLYDmCCK8" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/gPMLYDmCCK8/hqdefault.jpg" alt="" loading="lazy" data-e="71"><span class="play"></span><h3 data-e="72">Celeste</h3></a>
-      <a class="vid" href="https://www.youtube.com/watch?v=kbwIHArZJU8" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/kbwIHArZJU8/hqdefault.jpg" alt="" loading="lazy" data-e="73"><span class="play"></span><h3 data-e="74">Constelar</h3></a>
-      <a class="vid" href="https://www.youtube.com/watch?v=p1Z_KggBa0g" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/p1Z_KggBa0g/hqdefault.jpg" alt="" loading="lazy" data-e="75"><span class="play"></span><h3 data-e="76">Viajeros solitarios</h3></a>
-    </div>
-    <div class="vivo">
-      <a href="https://www.youtube.com/shorts/AiXJb83FWt8" target="_blank" rel="noopener" data-e="77">En vivo en BioFest</a>
-      <a href="https://www.youtube.com/shorts/y03jOWAdcm0" target="_blank" rel="noopener" data-e="78">En vivo en Yatay</a>
-    </div>
-    <div class="spoti"><iframe title="Hernán Onírico en Spotify" src="https://open.spotify.com/embed/artist/0mUnpa3yDR9caLZcz7UV17?utm_source=generator&theme=0" width="100%" height="352" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="border:0;display:block"></iframe></div>
-  </div>
-</section>
-
-<section id="fechas" class="fechas" data-b="14">
-  <div class="wrap">
-    <p class="eti" data-e="110">Agenda</p>
-    <h2 data-e="111">Próximas fechas</h2>
-    <div id="sr-fechas" data-sr-fechas="hernan-onirico"><!-- sr-fechas -->
-<p class="nada">Pronto nuevas fechas.</p>
-<!-- /sr-fechas --></div>
-  </div>
-</section>
-
-<section class="bio" data-b="12">
-  <div class="wrap dos">
-    <div class="foto"><img src="img/bio.jpg" alt="Hernán Onírico" loading="lazy" data-e="79"></div>
-    <div>
-      <p class="eti" data-e="80">Biografía</p>
-      <h2 data-e="81">Músico, compositor y guitarrista</h2>
-      <p class="lead" style="margin-bottom:6px" data-e="82">Un artista en constante movimiento.</p>
-      <p data-e="83">Su música es un canal expresivo que reza por maximizar el potencial humano, soñar nuestra visión más elevada y manifestarla en nuestro hermoso planeta.</p>
-      <div class="discos">
-        <div class="disco"><b data-e="84">2015</b><span data-e="85">El llamado eterno</span></div>
-        <div class="disco"><b data-e="86">2020</b><span data-e="87">Entrelazándonos</span></div>
-        <div class="disco"><b data-e="88">2022</b><span data-e="89">Bajo este mismo cielo</span></div>
-        <div class="disco"><b data-e="90">2025</b><span data-e="91">Live Session</span></div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <p class="eyebrow">Estrategia digital para artistas</p>
+        <h1>Hacé crecer<br>tu proyecto<br><span class="mark">artístico.</span></h1>
+        <p>Estrategias probadas, contenidos de calidad y publicidad dirigida para conectar tu arte con más personas.</p>
+        <div class="hero-ctas">
+          <a href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20vi%20tu%20landing%20de%20Semilla%20Redes%20y%20quiero%20saber%20m%C3%A1s" target="_blank" rel="noopener" class="btn btn-wine">Hablemos de tu proyecto ↗</a>
+          <a href="#metodo" class="btn-link">Conocé el método →</a>
+        </div>
       </div>
-      <p class="poe" style="font-size:24px;color:var(--noche)" data-e="92">Crear juntxs un puente para conectarnos con lo divino.</p>
-    </div>
-  </div>
-</section>
-
-<section class="contacto" id="contacto" data-b="13">
-  <div class="wrap dos">
-    <div>
-      <p class="eti" data-e="93">Contacto</p>
-      <h2 data-e="94">Llevá esta música a tu encuentro</h2>
-      <div class="redes">
-        <a href="https://www.instagram.com/hernanonirico/" target="_blank" rel="noopener" data-e="95">Instagram</a>
-        <a href="https://open.spotify.com/artist/0mUnpa3yDR9caLZcz7UV17" target="_blank" rel="noopener" data-e="96">Spotify</a>
-        <a href="https://www.youtube.com/@hernanonirico6160" target="_blank" rel="noopener" data-e="97">YouTube</a>
-        <a href="https://www.facebook.com/HernanOnirico" target="_blank" rel="noopener" data-e="98">Facebook</a>
+      <div class="hero-art">
+        <img src="assets/home-hero.webp" width="820" height="637" alt="Collage: escultura clásica con micrófono, ojo, boca y vinilo" fetchpriority="high">
       </div>
-      <div class="mgr">
-        <p class="eti" style="margin-bottom:8px" data-e="99">Dirección artística y womanager</p>
-        <p data-e="100"><b>Marilen Ife</b> · <a href="https://wa.me/5491155730260" target="_blank" rel="noopener" data-e="101">+54 11 5573 0260</a></p>
-        <p data-e="102"><a href="https://www.instagram.com/marilenifeartista/" target="_blank" rel="noopener" data-e="103">@marilenifeartista</a> · <a href="mailto:sintoniamusicadelmundo@gmail.com" data-e="104">sintoniamusicadelmundo@gmail.com</a></p>
-      </div>
-      <p style="margin-top:18px;color:#D8CFE8" data-e="105">Hernán: <a href="https://wa.me/5491158072130" target="_blank" rel="noopener" data-e="106">+54 11 5807 2130</a></p>
-      <a class="btn pri" style="margin-top:18px" href="https://wa.me/5491155730260?text=Hola%20Marilen%2C%20quiero%20consultar%20por%20un%20concierto%20de%20Hern%C3%A1n%20On%C3%ADrico" target="_blank" rel="noopener" data-e="107">Escribir por WhatsApp</a>
     </div>
-    <div class="foto" style="border-radius:18px 18px 220px 220px"><img src="img/contacto.jpg" alt="Hernán Onírico tocando en el bosque" loading="lazy" data-e="108"></div>
-  </div>
-  <p class="pie" data-e="109">Hernán Onírico · Música de luz</p>
-</section>
+  </section>
 
+  <!-- TRES EJES -->
+  <section class="ejes" id="metodo">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">Método Semilla</p>
+        <h2>Tres ejes<br>para crecer.</h2>
+        <p class="ejes-sub">Una forma simple y efectiva de llevar tu proyecto más lejos.</p>
+      </div>
+      <div class="eje">
+        <img src="assets/home-eje-estrategia.webp" alt="" loading="lazy">
+        <div class="n">01 <span class="eje-tag">· Modelo de negocio</span></div>
+        <h3>Estrategia probada</h3>
+        <p>Un rumbo claro para tu proyecto.</p>
+      </div>
+      <div class="eje">
+        <img src="assets/home-eje-contenidos.webp" alt="" loading="lazy">
+        <div class="n">02 <span class="eje-tag">· Comunicación</span></div>
+        <h3>Contenidos de calidad</h3>
+        <p>Tu identidad, en cada publicación.</p>
+      </div>
+      <div class="eje">
+        <img src="assets/home-eje-publicidad.webp" alt="" loading="lazy">
+        <div class="n">03 <span class="eje-tag">· Publicidad</span></div>
+        <h3>Publicidad dirigida</h3>
+        <p>Tu arte, frente al público indicado.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOS CAMINOS -->
+  <section class="caminos" id="servicios">
+    <div class="wrap">
+      <p class="eyebrow rose">Cómo trabajamos</p>
+      <h2>Dos caminos para crecer.</h2>
+      <p class="sub">Elegí el acompañamiento que necesita tu proyecto.</p>
+      <div class="cards">
+        <div class="card">
+          <p class="eyebrow">Aprendé y aplicá</p>
+          <h3>Formación Semilla</h3>
+          <p class="desc">Aprendé a desarrollar tu estrategia, crear contenidos y gestionar tus anuncios.</p>
+          <ul class="checks">
+            <li><span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Clases y materiales</li>
+            <li><span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Encuentros en grupo</li>
+            <li><span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Aplicación a tu proyecto</li>
+          </ul>
+          <a href="/formacion.html" class="btn btn-wine">Conocé la formación →</a>
+        </div>
+        <div class="card">
+          <p class="eyebrow rose">Acompañamiento personalizado</p>
+          <h3>Servicios a medida</h3>
+          <ul class="serv">
+            <li><a class="it" href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20quiero%20saber%20m%C3%A1s%20sobre%20la%20Mentor%C3%ADa%20individual" target="_blank" rel="noopener"><span class="n">01</span><span><b>Mentoría individual</b><span>Estrategia y seguimiento para avanzar.</span></span><span class="go">→</span></a></li>
+            <li><a class="it" href="/setup.html"><span class="n">02</span><span><b>Setup inicial</b><span>Identidad, web y redes para empezar.</span></span><span class="go">→</span></a></li>
+            <li><a class="it" href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20quiero%20saber%20m%C3%A1s%20sobre%20Anuncios%20Avanzados" target="_blank" rel="noopener"><span class="n">03</span><span><b>Anuncios avanzados</b><span>Campañas dirigidas al público adecuado.</span></span><span class="go">→</span></a></li>
+          </ul>
+          <a href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20vi%20tu%20landing%20de%20Semilla%20Redes%20y%20quiero%20saber%20m%C3%A1s" target="_blank" rel="noopener" class="btn btn-wine">Hablemos de tu proyecto ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRESENTACION -->
+  <section class="presenta">
+    <div class="wrap">
+      <div>
+        <h2>Conocé cómo<br>trabajamos.</h2>
+        <p>Una mirada integral sobre tu proyecto artístico.</p>
+        <a href="#" class="btn-link" id="verPres">Ver presentación →</a>
+      </div>
+      <div class="video-card" id="videoCard" role="button" tabindex="0" aria-label="Reproducir: El método Semilla">
+        <img src="https://i.ytimg.com/vi/Kvkkzss40Ws/maxresdefault.jpg" alt="El método Semilla — presentación en video" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/Kvkkzss40Ws/hqdefault.jpg'">
+        <div class="vc-over"><div class="t">El método Semilla</div><div class="play"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OPINIONES -->
+  <section class="opiniones">
+    <div class="wrap">
+      <p class="eyebrow">Opiniones</p>
+      <h2>Lo que dicen en Google: 5,0 de 5</h2>
+      <p class="sub">13 reseñas de artistas y proyectos que trabajaron con Semilla. <a href="https://www.google.com/maps/search/semillaredes+agencia+de+marketing" target="_blank" rel="noopener">Ver todas en Google →</a></p>
+      <div class="op-grid">
+        <div class="op"><div class="stars">★★★★★</div><q>La formación ofrecida en Semilla Redes es una gran herramienta, una bajada a tierra para desarrollarnos como artistas en este nuevo mundo virtual en el que todos vivimos.</q><div class="who">Joaquin Bosisio</div><div class="src">Reseña en Google</div></div>
+        <div class="op"><div class="stars">★★★★★</div><q>Muy bueno lo que da Agus para artistas, me hizo ver mi proyecto desde otro lugar y al cambiar las perspectivas el proyecto artístico evoluciona y empecé a tener más claridad y obtener mejores resultados.</q><div class="who">Mayra Dómine</div><div class="src">Reseña en Google</div></div>
+        <div class="op"><div class="stars">★★★★★</div><q>Si sos artista, Semillaredes es el mejor lugar, te soluciona las redes y sus cursos son amenos y divertidos.</q><div class="who">Maria Laura Delgue</div><div class="src">Reseña en Google</div></div>
+      </div>
+      <p class="clientes-line"><b>Más de 150 artistas y proyectos:</b> Alan Sutton y las Criaturitas · Federico Andahazi · Lara Fichera · Luis Gamarra · María Marta Crespo · Manu Durañona · RÁU · Sin Fronteras Duo · Los Soplafortune y muchos más.</p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="wrap">
+      <h2>Tu próximo paso empieza acá.</h2>
+      <p>Contanos en qué momento está tu proyecto y pensemos cómo hacerlo crecer.</p>
+      <div class="cta-row">
+        <a href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20quiero%20saber%20m%C3%A1s%20sobre%20Semilla%20Redes" target="_blank" rel="noopener" class="btn btn-wine">Hablemos por WhatsApp ↗</a>
+        <a href="https://aguscalcagno.com/s/auditoria-inicial-con-agus" target="_blank" rel="noopener" class="btn-link">Agendá tu auditoría →</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <a href="/" class="logo"><svg class="logo-icon" viewBox="0 0 44 44" fill="none"><g stroke="#C97080" stroke-width="1.5"><line x1="22" y1="22" x2="4" y2="22"/><line x1="22" y1="22" x2="40" y2="22"/><line x1="22" y1="22" x2="22" y2="4"/><line x1="22" y1="22" x2="22" y2="40"/><line x1="22" y1="22" x2="8" y2="8"/><line x1="22" y1="22" x2="36" y2="36"/><line x1="22" y1="22" x2="36" y2="8"/><line x1="22" y1="22" x2="8" y2="36"/></g><path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7A8A42"/><g fill="#C97080"><circle cx="4" cy="22" r="2.5"/><circle cx="40" cy="22" r="2.5"/><circle cx="22" cy="4" r="2.5"/><circle cx="22" cy="40" r="2.5"/><circle cx="8" cy="8" r="2.5"/><circle cx="36" cy="36" r="2.5"/><circle cx="36" cy="8" r="2.5"/><circle cx="8" cy="36" r="2.5"/></g></svg><span class="logo-text">SEMILLA <small>REDES</small></span></a>
+      <a href="mailto:agus@semillaredes.com">agus@semillaredes.com</a>
+      <a href="https://instagram.com/semillaredes" target="_blank" rel="noopener">@semillaredes</a>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      var card=document.getElementById('videoCard'), link=document.getElementById('verPres');
+      function play(e){ if(e) e.preventDefault(); if(card.querySelector('iframe')) return;
+        card.innerHTML='<iframe src="https://www.youtube.com/embed/Kvkkzss40Ws?autoplay=1" title="El método Semilla" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+        card.scrollIntoView({behavior:'smooth',block:'center'}); }
+      card.addEventListener('click',play); link.addEventListener('click',play);
+      card.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' ') play(e); });
+    })();
+    document.addEventListener('click', function(e){
+      var a = e.target.closest && e.target.closest('a[href*="wa.me"], a[href*="whatsapp"]');
+      if(a && typeof fbq === 'function'){ fbq('track','Contact'); }
+    });
+  </script>
 <script src="https://vm.semillaredes.com/web/editor.js" defer></script>
 </body>
 </html>
