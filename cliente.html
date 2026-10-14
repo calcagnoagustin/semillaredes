@@ -1159,8 +1159,8 @@ function pintarVentas(d){
     if(!d.cliente.ventas[claveP(pe)]) d.cliente.ventas[claveP(pe)]={ingreso:pe.metricas.vta_ingreso, ventas:pe.metricas.vta_ventas}; }
   if(MG!=null&&u) h+=`<div id="cajaFact"></div>`+bloqueVentas(d, claveP(pe), Number(pe.metricas.vta_inversion||0), {titulo:`Lo que facturó la tienda del ${fecha(pe.desde)} al ${fecha(pe.hasta)}`, editable:true, abierto:PER_ABIERTO&&PER_SEL===claveP(pe),
       volver:pe!==u,
-      que:`Cargá lo facturado en el período. Las ventas salen del pixel y la ganancia se calcula sola: ${Math.round(MG*100)}% de lo facturado menos la inversión en la campaña.`,
-      sinVentas:true, nv:pe.metricas.vta_ventas, extra:pe.metricas._cuenta?`<p class="que" style="margin-top:8px">Ganancia neta: ${pe.metricas._cuenta}.</p>`:''});
+      que:`Cargá lo facturado y la cantidad de ventas del período. La ganancia se calcula sola: ${Math.round(MG*100)}% de lo facturado menos la inversión en la campaña. Si no cargás la cantidad, se usan las ventas que contó el píxel.`,
+      nv:pe.metricas.vta_ventas, lv:'Cantidad de ventas', extra:pe.metricas._cuenta?`<p class="que" style="margin-top:8px">Ganancia neta: ${pe.metricas._cuenta}.</p>`:''});
   else h+=bloqueVentas(d, m.vta_nombre||'Campaña de venta', Number((u&&u.metricas.vta_inversion)||0));
 
   if(R.filter(r=>r.metricas.vta_ventas!=null).length>1){
@@ -2515,7 +2515,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261014b';
+var SR_VER='20261014c';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
