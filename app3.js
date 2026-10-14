@@ -159,6 +159,12 @@
   #v3 details.todo #app{margin-top:10px}
   #v3 .vacio{padding:16px;font-size:14.5px;color:#8A8577}
   #v3 .scr{display:none}#v3 .scr.on{display:block}
+  #v3 .mesp{margin-top:16px;background:${NAVY};color:#F2EDE4;border-radius:20px;padding:18px 18px 16px}
+  #v3 .mesp .e{font:700 12px/1 Inter,sans-serif;letter-spacing:2px;text-transform:uppercase;opacity:.9}
+  #v3 .mesp .g{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;margin-top:14px}
+  #v3 .mesp .g b{display:block;font:600 26px/1.1 'Playfair Display',serif;font-variant-numeric:tabular-nums;white-space:nowrap}
+  #v3 .mesp .g span{display:block;font-size:13px;opacity:.85;margin-top:3px}
+  #v3 .mesp p{margin:14px 0 0;padding-top:10px;border-top:1px solid rgba(242,237,228,.18);font-size:12.5px;line-height:1.4;opacity:.75}
   #v3 .rph{position:relative;padding-top:6px;margin-bottom:6px}
   #v3 .rhoja{position:absolute;right:-8px;top:-6px;pointer-events:none;z-index:0}
   #v3 h1.rpt{position:relative;font-size:46px;letter-spacing:-.5px}
@@ -472,9 +478,32 @@
     const TKP=[1,2,3,4].map(i=>({nombre:um['tk_p'+i+'_nombre'],tickets:Number(um['tk_p'+i+'_tickets']||0),inversion:Number(um['tk_p'+i+'_inversion']||0),costo:um['tk_p'+i+'_costo'],roas:um['tk_p'+i+'_roas'],alcance:um['tk_p'+i+'_alcance'],inicio:um['tk_p'+i+'_inicio']})).filter(p=>p.nombre);
     const mini=(c)=>{ const v=val(c[0]), S=serie(c[0]); return `<div class="card"><div class="n">${v!=null&&v<0?'−':''}${c[2]?SIM:''}${nf(v!=null?Math.abs(v):v, (c[2]&&v!=null&&Math.abs(v)>=100)?0:c[4]!=null?c[4]:c[0]==='yt_horas'?1:(c[2]&&v!=null&&Math.abs(v)<100?2:0))}</div><div class="l">${c[1]}</div>${S.some(x=>x<0)?'':barras(S,c[3])}</div>`; };
     const imp=I&&I.hallazgos&&I.hallazgos.length?(typeof I.hallazgos[0]==='object'?I.hallazgos[0].t:I.hallazgos[0]):null;
+    // --- resumen del mes anterior cerrado: suma de los reportes, prorrateando por días los que cruzan de mes ---
+    const MESP=(()=>{ const ult=R[R.length-1]; if(!ult) return ''; const DD=x=>new Date(String(x).slice(0,10)+'T00:00:00Z'), dia=864e5;
+      const fu=DD(ult.hasta), ini=new Date(Date.UTC(fu.getUTCFullYear(),fu.getUTCMonth()-1,1)), fin=new Date(Date.UTC(fu.getUTCFullYear(),fu.getUTCMonth(),1));
+      const sum=fn=>{ let t=0,hay=false; R.forEach(r=>{ const v=fn(r.metricas||{}); if(v==null||isNaN(Number(v))) return; const d0=DD(r.desde); let d1=DD(r.hasta); if(Math.round((d1-d0)/dia)===6) d1=new Date(+d1+dia);
+        const tot=Math.max(1,(d1-d0)/dia), den=Math.max(0,(Math.min(d1,fin)-Math.max(d0,ini))/dia); if(den>0){ t+=Number(v)*den/tot; hay=true; } }); return hay?t:null; };
+      const mes=MESL[ini.getUTCMonth()], it=[];
+      const vV=sum(m=>m.vta_ventas), vF=sum(m=>m.vta_ingreso!=null?m.vta_ingreso:m.vta_ingreso_pixel), vG=sum(m=>m.vta_ganancia), vI=sum(m=>m.vta_inversion);
+      const mV=sum(m=>m.msj_conversiones), mF=sum(m=>m.msj_ingreso), tT=sum(m=>m.tk_tickets), sN=sum(m=>m.ig_followers_nuevos), mM=sum(m=>m.msj_mensajes);
+      const inv=sum(m=>{ let t=0,h=false; Object.keys(m).forEach(k=>{ if(/^(ig|msj|vta|tk|frm|stm|ld|tr)_inversion$/.test(k)&&m[k]!=null){ t+=Number(m[k]); h=true; } }); return h?t:null; });
+      if(vV!=null) it.push([nf(Math.round(vV)),'ventas']);
+      if(vF!=null) it.push([SIM+nf(Math.round(vF)),'facturado']);
+      if(vG!=null) it.push([SIM+nf(Math.round(vG)),'ganancia neta']);
+      if(mV!=null&&vV==null) it.push([nf(Math.round(mV)),'ventas por mensaje']);
+      if(mF!=null&&vF==null) it.push([SIM+nf(Math.round(mF)),'facturado por mensaje']);
+      if(tT!=null) it.push([nf(Math.round(tT)),'entradas vendidas']);
+      if(sN!=null) it.push(['+'+nf(Math.round(sN)),'seguidores nuevos']);
+      if(mM!=null&&mV==null) it.push([nf(Math.round(mM)),'consultas por mensaje']);
+      if(inv!=null) it.push([SIM+nf(Math.round(inv)),'invertido en publicidad']);
+      if(vF!=null&&vI) it.push([nf(vF/vI,1)+'x','retorno por '+UNI]);
+      else if(sN&&inv&&vV==null&&tT==null) it.push([SIM+nf(inv/sN,inv/sN<100?2:0),'por seguidor nuevo']);
+      if(it.length<2) return '';
+      return `<div class="mesp"><div class="e">Resumen de ${mes}</div><div class="g">${it.slice(0,6).map(([v,l])=>`<div><b>${v}</b><span>${l}</span></div>`).join('')}</div><p>La suma de todos los reportes de ${mes}. Si un período cruza de un mes a otro, se reparte por días.</p></div>`; })();
     const scrMet=`
       <div class="rep"><div><h1 class="v3t" style="font-size:31px">Tus métricas</h1><p class="bj">${I?`Del ${fd(I.desde)} al ${fd(I.hasta)}`:'Tus números, red por red'}</p></div>${I?`<button class="ir" id="v3rep" aria-label="Abrir reporte">${ico.flecha}</button>`:''}</div>
       ${imp?`<div class="card imp"><div>${ico.sol}</div><div><h4>Lo más importante</h4><p>${imp}</p></div></div>`:''}
+      ${MESP}
       <div class="red">${Object.keys(redes).map(k=>`<button class="${k===SUBRED?'on':''}" data-red="${k}">${redes[k].n}</button>`).join('')}</div>
       <div class="card big"><div><div style="display:flex;align-items:center;gap:10px">${ico[SUBRED]}<div class="n">${nf(val(RD.k),Number.isInteger(Number(val(RD.k)))?0:1)}</div></div><div class="l">${RD.l}</div><div class="d">${dK(RD.k)}<small>${RD.ex}</small></div></div>${RD.kpis?`<div class="kp">${RD.kpis.map(([k,l])=>{const v=Number(val(k));return `<div><div class="n">${v<0?'−':''}${SIM}${nf(Math.abs(v),0)}</div><div class="l">${l}</div></div>`;}).join('')}</div>`:`<div class="sp">${linea(serie(RD.k),RD.col)}</div>`}</div>
       <div class="dos">${mini(RD.a)}${mini(RD.b)}</div>
