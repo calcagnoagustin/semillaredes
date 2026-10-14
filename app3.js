@@ -497,7 +497,7 @@
       if(mM!=null&&mV==null) it.push([nf(Math.round(mM)),'consultas por mensaje']);
       if(inv!=null) it.push([SIM+nf(Math.round(inv)),'invertido en publicidad']);
       if(vF!=null&&vI) it.push([nf(vF/vI,1)+'x','retorno por '+UNI]);
-      else if(sN&&inv&&vV==null&&tT==null) it.push([SIM+nf(inv/sN,inv/sN<100?2:0),'por seguidor nuevo']);
+      else { const iI=sum(m=>m.ig_inversion); if(sN&&iI) it.push([SIM+nf(iI/sN,iI/sN<100?2:0),'costo por seguidor']); }
       if(it.length<2) return '';
       return `<div class="mesp"><div class="e">Resumen de ${mes}</div><div class="g">${it.slice(0,6).map(([v,l])=>`<div><b>${v}</b><span>${l}</span></div>`).join('')}</div><p>La suma de todos los reportes de ${mes}. Si un período cruza de un mes a otro, se reparte por días.</p></div>`; })();
     const scrMet=`
