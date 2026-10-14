@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contrabajismos · Marcos Cifuentes</title>
+<meta name="description" content="Contrabajismos: Marcos Cifuentes solo, con contrabajo y voz. Canciones propias, en vivo.">
+<meta property="og:title" content="Contrabajismos · Marcos Cifuentes">
+<meta property="og:description" content="Contrabajo solo y voz. Marcos Cifuentes en vivo.">
+<meta property="og:image" content="https://semillaredes.com/contrabajismoslanding/img/og.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--noche:#06110C;--noche2:#0C1B14;--hueso:#F2EFE8;--hueso2:#CFD6CF;--gris:#7F8C84;--verde:#5ED36A;--azul:#0F3B5F;--azul2:#1D5C8A;--lila:#D9C3E6;--linea:rgba(242,239,232,.15)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--noche);color:var(--hueso);font-family:'Montserrat',system-ui,sans-serif;font-weight:300;font-size:18px;line-height:1.65;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit}
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+h1,h2,h3{margin:0;line-height:1.08}
+h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(38px,5.4vw,64px);letter-spacing:-.01em}
+h2 i{color:var(--verde)}
+h3{font-size:19px;font-weight:500}
+.eti{font-size:12px;letter-spacing:.34em;text-transform:uppercase;font-weight:600;color:var(--verde);margin:0 0 18px}
+section{padding:120px 0;position:relative}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:54px;padding:0 28px;border-radius:999px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;text-decoration:none;transition:transform .2s,background .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.pri{background:var(--hueso);color:var(--noche)}
+.btn.pri:hover{background:var(--verde)}
+.btn.sec{border:1px solid rgba(242,239,232,.42)}
+.btn.sec:hover{background:rgba(242,239,232,.08)}
+
+/* hero */
+.hero{position:relative;min-height:100svh;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
+.hero .foto{position:relative;grid-column:2;grid-row:1}
+.hero .foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:40% 30%}
+.hero .foto:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,var(--noche) 0%,rgba(6,17,12,0) 38%),linear-gradient(0deg,var(--noche) 0%,rgba(6,17,12,0) 30%)}
+.hero .txt{grid-column:1;grid-row:1;position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center;padding:120px 0 90px max(24px,calc((100vw - 1140px)/2 + 24px))}
+.nav{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:24px 28px;font-size:12px;letter-spacing:.3em;text-transform:uppercase;font-weight:600}
+.nav a{text-decoration:none;border-bottom:1px solid rgba(242,239,232,.5);padding-bottom:3px}
+.nombre{font-size:clamp(15px,1.5vw,19px);font-weight:800;letter-spacing:.24em;text-transform:uppercase;margin:0 0 34px}
+/* el cruce "contrabajo" / "solo" del afiche, en CSS */
+.cruce{position:relative;display:grid;grid-template-columns:repeat(10,auto);justify-content:start;column-gap:clamp(10px,1.6vw,22px);font-size:clamp(34px,4.6vw,62px);font-weight:300;line-height:1;margin:0 0 6px}
+.cruce span{display:block;text-align:center;width:1em;position:relative;z-index:1}
+.cruce .col{grid-column:2;grid-row:1/span 4;background:linear-gradient(180deg,var(--azul2),var(--azul));margin:-.28em -.18em;border-radius:3px;z-index:0}
+.cruce .v{grid-column:2}
+.cruce .h{grid-row:2}
+.titulo{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;font-size:clamp(26px,2.8vw,36px);margin:34px 0 10px;color:var(--lila)}
+.bajada{font-size:clamp(17px,1.4vw,19px);max-width:470px;color:var(--hueso2);margin:0 0 34px}
+.acciones{display:flex;flex-wrap:wrap;gap:14px}
+
+/* videos */
+.cab{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap}
+.vids{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:52px}
+.vid{position:relative;display:block;width:100%;padding:0;border:0;background:#000;color:inherit;font:inherit;text-align:left;cursor:pointer;overflow:hidden;aspect-ratio:9/12}
+.vid img{width:100%;height:100%;object-fit:cover;opacity:.8;transition:transform .6s,opacity .3s}
+.vid:hover img{transform:scale(1.04);opacity:1}
+.vid .tx{position:absolute;left:0;right:0;bottom:0;padding:90px 24px 24px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.88))}
+.vid .num{display:block;font-size:12px;letter-spacing:.3em;font-weight:600;color:var(--verde);margin-bottom:10px}
+.vid h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:32px;line-height:1.05}
+.vid small{display:block;font-size:14px;color:var(--hueso2);margin-top:8px}
+.play{position:absolute;top:22px;right:22px;width:54px;height:54px;border-radius:50%;background:rgba(242,239,232,.94);display:grid;place-items:center;z-index:2;transition:background .2s}
+.vid:hover .play{background:var(--verde)}
+.play:after{content:"";margin-left:4px;border-left:15px solid var(--noche);border-top:9px solid transparent;border-bottom:9px solid transparent}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.escucha{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;margin-top:24px;padding:26px;background:var(--noche2);border:1px solid var(--linea)}
+.escucha .ic{width:64px;height:64px;border-radius:50%;background:var(--verde);display:grid;place-items:center}
+.escucha .ic svg{width:34px;height:34px}
+.escucha p{margin:0 0 12px;font-size:15px;color:var(--hueso2)}
+.escucha p b{color:var(--hueso);font-weight:600}
+
+/* bio */
+.bio{background:var(--hueso);color:var(--noche)}
+.bio .eti{color:#2E7D3A}
+.bio h2 i{color:var(--azul2)}
+.dos{display:grid;grid-template-columns:.85fr 1.15fr;gap:72px;align-items:center}
+.bio .ft{aspect-ratio:4/5;overflow:hidden}
+.bio .ft img{width:100%;height:100%;object-fit:cover;object-position:35% 40%}
+.bio p{font-size:17.5px;color:#2F3833;margin:22px 0 0}
+.datos{display:grid;grid-template-columns:1fr 1fr;gap:0 28px;margin-top:32px;border-top:1.5px solid var(--noche)}
+.datos div{padding:16px 0;border-bottom:1px solid rgba(6,17,12,.15)}
+.datos b{display:block;font-size:12px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:#2E7D3A;margin-bottom:4px}
+.datos span{font-size:16px;line-height:1.45}
+
+/* trío */
+.trio{padding:90px 0;background:var(--noche2)}
+.trio .wrap{display:flex;justify-content:space-between;align-items:center;gap:30px;flex-wrap:wrap}
+.trio h2{font-size:clamp(30px,3.8vw,46px)}
+.trio p{margin:10px 0 0;color:var(--hueso2);max-width:560px}
+
+/* fechas */
+.fechas .lista{margin-top:40px;border-top:1px solid var(--linea)}
+.fechas .fe{display:grid;grid-template-columns:92px 1fr auto;align-items:center;gap:26px;padding:24px 0;border-bottom:1px solid var(--linea);text-decoration:none;color:inherit;transition:background .2s}
+.fechas a.fe:hover{background:rgba(94,211,106,.07)}
+.fechas .dia{display:flex;flex-direction:column;align-items:center;line-height:1}
+.fechas .dia b{font-family:'Instrument Serif',serif;font-weight:400;font-size:46px}
+.fechas .dia small{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--verde);margin-top:6px;font-weight:600}
+.fechas .tit{font-size:21px;line-height:1.3;font-weight:400}
+.fechas .tit small{display:block;font-size:14px;color:var(--gris);margin-top:4px}
+.fechas .lnk{font-size:13px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--verde);white-space:nowrap}
+.fechas .nada{margin-top:40px;padding:28px 0;border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);color:var(--gris);font-size:19px}
+
+/* contacto */
+.contacto{text-align:center;background:var(--noche2)}
+.contacto h2{max-width:760px;margin:0 auto}
+.contacto .lead{max-width:600px;margin:22px auto 0;color:var(--hueso2);font-size:20px}
+.contacto .acciones{justify-content:center;margin-top:38px}
+.redes{display:flex;justify-content:center;flex-wrap:wrap;gap:12px 34px;margin-top:46px;padding-top:30px;border-top:1px solid var(--linea);font-size:15px}
+.redes a{text-decoration:none;color:var(--hueso2)}
+.redes a:hover{color:var(--verde)}
+.pie{margin:70px 0 0;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--gris)}
+
+@media(max-width:900px){
+  section{padding:88px 0}
+  .hero{grid-template-columns:minmax(0,1fr);grid-template-rows:62svh auto;min-height:0}
+  .cruce{font-size:min(32px,6.6vw);column-gap:min(14px,1.8vw)}
+  .hero .foto{grid-column:1;grid-row:1}
+  .hero .foto:before{background:linear-gradient(0deg,var(--noche) 0%,rgba(6,17,12,0) 45%)}
+  .hero .txt{grid-column:1;grid-row:2;padding:0 24px 80px;margin-top:-90px;min-width:0}
+  .vids{grid-template-columns:1fr;gap:20px}
+  .vid{aspect-ratio:4/5}
+  .dos{grid-template-columns:1fr;gap:48px}
+  .bio .ft{max-width:420px}
+}
+@media(max-width:640px){
+  body{font-size:17px}
+  .nav{padding:20px 18px}
+  .acciones .btn{flex:1 1 100%}
+  .escucha{grid-template-columns:1fr;gap:18px;padding:22px}
+  .datos{grid-template-columns:1fr}
+  .fechas .fe{grid-template-columns:64px 1fr;gap:16px;padding:18px 0}
+  .fechas .dia b{font-size:36px}
+  .fechas .tit{font-size:18px}
+  .fechas .lnk{grid-column:2;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<header class="hero" data-b="1">
+  <nav class="nav" data-b="2"><b data-e="1">Contrabajismos</b><a href="#contacto" data-e="2">Contratar</a></nav>
+  <div class="foto"><img src="img/marcos.jpg" alt="Marcos Cifuentes cantando con el contrabajo" fetchpriority="high" data-e="3"></div>
+  <div class="txt">
+    <p class="nombre" data-e="4">Marcos Cifuentes</p>
+    <h1 class="cruce" aria-label="Contrabajo solo">
+      <i class="col" aria-hidden="true"></i>
+      <span class="v" style="grid-row:1" aria-hidden="true">s</span>
+      <span class="h" style="grid-column:1" aria-hidden="true">c</span><span class="h v" aria-hidden="true">o</span><span class="h" style="grid-column:3" aria-hidden="true">n</span><span class="h" style="grid-column:4" aria-hidden="true">t</span><span class="h" style="grid-column:5" aria-hidden="true">r</span><span class="h" style="grid-column:6" aria-hidden="true">a</span><span class="h" style="grid-column:7" aria-hidden="true">b</span><span class="h" style="grid-column:8" aria-hidden="true">a</span><span class="h" style="grid-column:9" aria-hidden="true">j</span><span class="h" style="grid-column:10" aria-hidden="true">o</span>
+      <span class="v" style="grid-row:3" aria-hidden="true">l</span>
+      <span class="v" style="grid-row:4" aria-hidden="true">o</span>
+    </h1>
+    <p class="titulo" data-e="5">Contrabajismos</p>
+    <p class="bajada" data-e="6">Contrabajo y voz, solo en el escenario. Canciones propias y versiones que nacen del instrumento.</p>
+    <div class="acciones">
+      <a class="btn pri" href="https://wa.me/5491140860995?text=Hola%20Marcos%2C%20quiero%20consultar%20por%20Contrabajismos" target="_blank" rel="noopener" data-e="7">Contratar</a>
+      <a class="btn sec" href="#ver" data-e="8">Ver en vivo</a>
+    </div>
+  </div>
+</header>
+
+<section id="ver" data-b="3">
+  <div class="wrap">
+    <div class="cab">
+      <div>
+        <p class="eti" data-e="9">En vivo</p>
+        <h2 data-e="10">Ver y <i>escuchar</i></h2>
+      </div>
+      <a class="btn sec" href="https://www.youtube.com/@marcoscifuentes1623" target="_blank" rel="noopener" data-e="11">Canal de YouTube</a>
+    </div>
+    <div class="vids">
+      <button class="vid" data-yt="--t6fE3yP_E" aria-label="Reproducir Mi vidala"><img src="https://i.ytimg.com/vi/--t6fE3yP_E/maxresdefault.jpg" alt="" loading="lazy" data-e="12"><span class="play"></span><span class="tx"><span class="num" data-e="13">01</span><h3 data-e="14">Mi vidala</h3><small data-e="15">Contrabajo y voz</small></span></button>
+      <button class="vid" data-yt="QqgzetP6h_w" aria-label="Reproducir Sakura"><img src="https://i.ytimg.com/vi/QqgzetP6h_w/maxresdefault.jpg" alt="" loading="lazy" data-e="16"><span class="play"></span><span class="tx"><span class="num" data-e="17">02</span><h3 data-e="18">Sakura</h3><small data-e="19">Contrabajo solo, en vivo</small></span></button>
+      <button class="vid" data-yt="aeHwSTLMf-Y" aria-label="Reproducir Flor de tu agua en trío"><img src="https://i.ytimg.com/vi/aeHwSTLMf-Y/maxresdefault.jpg" alt="" loading="lazy" data-e="20"><span class="play"></span><span class="tx"><span class="num" data-e="21">03</span><h3 data-e="22">Formato trío</h3><small data-e="23">Flor de tu agua · vibráfono, contrabajo y batería</small></span></button>
+    </div>
+    <div class="escucha">
+      <div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#06110C"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm4.6 14.4a.62.62 0 0 1-.86.2c-2.35-1.43-5.3-1.76-8.79-.96a.62.62 0 1 1-.28-1.22c3.81-.87 7.08-.5 9.72 1.12.3.18.39.57.2.86Zm1.22-2.72a.78.78 0 0 1-1.07.26c-2.69-1.65-6.79-2.13-9.97-1.17a.78.78 0 1 1-.45-1.49c3.63-1.1 8.15-.57 11.24 1.33.37.23.48.71.25 1.07Zm.1-2.84C14.7 8.93 9.37 8.75 6.3 9.69a.94.94 0 1 1-.55-1.79c3.53-1.07 9.4-.86 13.1 1.34a.94.94 0 0 1-.96 1.6Z"/></svg></div>
+      <div>
+        <p><b data-e="24">Flor de tu agua</b> <span data-e="25">· en vivo, en Spotify</span></p>
+        <iframe title="Flor de tu agua en Spotify" src="https://open.spotify.com/embed/track/3i3hpck0WHjiy8ktDMLtkG?utm_source=generator&theme=0" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="border:0;display:block;border-radius:12px"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bio" data-b="4">
+  <div class="wrap dos">
+    <div class="ft"><img src="img/marcos.jpg" alt="Marcos Cifuentes" loading="lazy" data-e="26"></div>
+    <div>
+      <p class="eti" data-e="27">Biografía</p>
+      <h2 data-e="28">Contrabajista <i>y compositor</i></h2>
+      <p data-e="29">Reconocido como personalidad destacada de la cultura de Berazategui, su ciudad. Fue miembro fundador de la Orquesta Académica del Teatro Colón. Su primer disco, <i>Canciones de Contrabando</i>, fue seleccionado como disco del mes por el Club del Disco de Buenos Aires.</p>
+      <div class="datos">
+        <div><b data-e="30">Hoy</b><span data-e="31">Primer contrabajo de la Banda Sinfónica de la Ciudad de Buenos Aires</span></div>
+        <div><b data-e="32">Colaboró con</b><span data-e="33">Palo Pandolfo y Marta Gómez</span></div>
+        <div><b data-e="34">Disco</b><span data-e="35">Canciones de Contrabando</span></div>
+        <div><b data-e="36">Fundador</b><span data-e="37">Orquesta Académica del Teatro Colón</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="trio" data-b="5">
+  <div class="wrap">
+    <div>
+      <p class="eti" data-e="38">También en trío</p>
+      <h2 data-e="39">Marcos Cifuentes &amp; Marimbismos</h2>
+      <p data-e="40">Marimba, contrabajo, percusión y voces, con César Martinini y Mauro Caracotche.</p>
+    </div>
+    <a class="btn sec" href="https://semillaredes.com/marimbismoslanding/" data-e="41">Conocer Marimbismos</a>
+  </div>
+</section>
+
+<section id="fechas" class="fechas" data-b="6">
+  <div class="wrap">
+    <p class="eti" data-e="42">Agenda</p>
+    <h2 data-e="43">Próximas <i>fechas</i></h2>
+    <div id="sr-fechas" data-sr-fechas="marcos-cifuentes"><!-- sr-fechas -->
+<p class="nada">Pronto nuevas fechas.</p>
+<!-- /sr-fechas --></div>
+  </div>
+</section>
+
+<section class="contacto" id="contacto" data-b="7">
+  <div class="wrap">
+    <p class="eti" data-e="44">Contacto</p>
+    <h2 data-e="45">Un contrabajo, una voz, <i>tu escenario</i></h2>
+    <p class="lead" data-e="46">Ciclos, salas, centros culturales y encuentros íntimos.</p>
+    <div class="acciones">
+      <a class="btn pri" href="https://wa.me/5491140860995?text=Hola%20Marcos%2C%20quiero%20consultar%20por%20Contrabajismos" target="_blank" rel="noopener" data-e="47">Escribir por WhatsApp</a>
+      <a class="btn sec" href="mailto:marcoscifuentesmusic@gmail.com" data-e="48">Enviar un mail</a>
+    </div>
+    <div class="redes">
+      <a href="https://www.instagram.com/marcos.cifu/" target="_blank" rel="noopener" data-e="49">Instagram</a>
+      <a href="https://open.spotify.com/artist/2yBDsFsDd0BD3bwC8JbxYm" target="_blank" rel="noopener" data-e="50">Spotify</a>
+      <a href="https://www.youtube.com/@marcoscifuentes1623" target="_blank" rel="noopener" data-e="51">YouTube</a>
+      <a href="mailto:marcoscifuentesmusic@gmail.com" data-e="52">marcoscifuentesmusic@gmail.com</a>
+    </div>
+    <p class="pie" data-e="53">Contrabajismos · Marcos Cifuentes</p>
+  </div>
+</section>
+
+<script>
+document.querySelectorAll('.vid[data-yt]').forEach(b=>b.addEventListener('click',()=>{
+  if(document.body.classList.contains('sr-editando')) return;
+  const f=document.createElement('iframe');
+  f.src='https://www.youtube-nocookie.com/embed/'+b.dataset.yt+'?autoplay=1&rel=0';
+  f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen'; f.allowFullscreen=true; f.title=b.getAttribute('aria-label');
+  b.replaceChildren(f); b.style.cursor='default';
+}));
+</script>
+<script src="https://vm.semillaredes.com/web/editor.js" defer></script>
+</body>
+</html>
