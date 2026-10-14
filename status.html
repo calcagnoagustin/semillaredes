@@ -144,6 +144,7 @@ table{font-size:13px}
   <a href="#lanzamiento">17 · Lanzamiento Oct 26</a>
   <a href="#facturacion">18 · Facturación</a>
   <a href="#youtube">19 · YouTube</a>
+  <a href="#semillaia-app">20 · SemillaIA APP</a>
   <a href="#registro">14 · Registro</a>
 </nav>
 
@@ -683,11 +684,56 @@ table{font-size:13px}
 </table>
 </section>
 
+<!-- 20 -->
+<section id="semillaia-app">
+<h2>20 · SemillaIA APP</h2>
+<p>La app de cada cliente (estado al <b>14/10/2026</b>). Se entra por link privado <code>semillaredes.com/cliente.html?c=&lt;slug&gt;&amp;k=&lt;token&gt;</code>, sin usuario ni contraseña. Código: <code>app3.js</code> (se carga con <code>?v=Date.now()</code>) sobre <code>cliente.html</code> (versión <code>SR_VER</code> + <code>version.json</code>). Datos en Supabase; reportes, métricas y avisos los arma la VM Semillas.</p>
+
+<h3>Clientes con la app nueva (16)</h3>
+<p>Semilla Redes · Piku Yoga · Hernán Onírico · María Marta Crespo · Berco Estudio · Federico Andahazi · Felipe González (RÁU) · Spam Studios · Sin Fronteras · Abel Maldonado · Mavela · Animales del Rock · Lu Glass · Marcos Cifuentes. Se activa sumando el slug a la regex de <code>cliente.html</code>.</p>
+
+<h3>Pantallas</h3>
+<table>
+<tr><th>Pantalla</th><th>Qué tiene</th></tr>
+<tr><td><b>Hoy</b></td><td>Saludo con nombre, lo más importante del período (prioridad: ventas → ventas por mensaje → entradas → seguidores nuevos con su tasa de conversión → oyentes de Spotify → mensajes), tareas y próximos pasos, notificaciones.</td></tr>
+<tr><td><b>Proyecto</b></td><td>Hitos (el cliente puede <b>agregar y borrar</b>), Tus activos, <b>Tus notas</b>, Tu web (botón "Editá tu web"), <b>Cuenta publicitaria</b>: activa, campañas y <b>próximo cobro</b> (fecha aproximada, monto y tarjeta, o saldo a pagar).</td></tr>
+<tr><td><b>Actividades</b></td><td>Tareas con fecha, carga de ventas (moneda USD/ARS, cantidad de ventas e ingreso; si se deja vacío conserva el valor anterior).</td></tr>
+<tr><td><b>Métricas</b></td><td>Tus métricas → <b>Resumen del mes anterior</b> (tarjeta navy destacada: ventas, facturado, ganancia, entradas, seguidores, consultas, inversión, retorno por peso, costo por seguidor) → <b>Resumen del período · Del dd/mm al dd/mm</b> → pestañas por canal (Instagram, Spotify, YouTube, Tienda/Ventas, Formularios, Steam, Entradas con sus públicos, Mensajes con costo por venta y ganancia total) → recomendaciones → Ver todas las métricas.</td></tr>
+<tr><td><b>Reporte</b></td><td>Encabezado con hoja y fecha, destacado con mini barras y variación, "Lo principal" (hallazgos con título), "Qué hacer" (acciones con título, abren la sección correspondiente), reunión, <b>Descargar reporte en JPG</b> (en celular se comparte directo).</td></tr>
+<tr><td><b>Chat</b></td><td>Burbuja de SemillaIA (endpoint <code>/web/chat</code>).</td></tr>
+</table>
+
+<h3>Reglas de datos</h3>
+<table>
+<tr><td><b>Período</b></td><td>El "últimos 7 días" de Meta: de hoy−7 a ayer, ambos incluidos. Se guarda <code>hasta</code> = ayer.</td></tr>
+<tr><td><b>Seguidores</b></td><td>Solo los que cuenta Instagram. Los resultados de Meta (<code>post_net_like</code>) son interacciones, no seguidores.</td></tr>
+<tr><td><b>Tasa de conversión</b></td><td>Visitas al perfil → seguidores. Métrica fundamental: siempre se mira y se destaca (≥15% = muy alta).</td></tr>
+<tr><td><b>Spotify</b></td><td>"Oyentes mensuales" = número público del perfil (<code>sp_oyentes_perfil</code>); <code>sp_monthly</code> son oyentes activos.</td></tr>
+<tr><td><b>Ventas</b></td><td>Las carga el cliente; si no hay, se usan las del píxel con la aclaración "según el píxel de Meta". Si dan 0 o saltan, verificar que no falte carga.</td></tr>
+<tr><td><b>Steam</b></td><td>Spam Studios: wishlists cargadas a mano por período (último: 22/09–12/10, 16 wishlists, 2.577 impresiones). La API oficial necesita una clave financiera de Spam.</td></tr>
+<tr><td><b>Cobro de la cuenta</b></td><td>Meta no da umbral ni día de cobro por API: se cargan en <code>facturacion.json</code> en la VM (hoy solo María Marta: umbral $138.731, día 20).</td></tr>
+<tr><td><b>Textos</b></td><td>Nunca "semana": "período" o fechas. Nunca recomendar promocionar posteos de eventos pasados. Meta Ads solo en Instagram. Nunca pedir reinstalar la app.</td></tr>
+</table>
+
+<h3>Backend</h3>
+<p class="small"><b>Supabase</b> (<code>fdrxsjphlvvwwknnrjtx</code>): RPC <code>sub_get</code>, <code>meta_guardar</code>, <code>sub_reporte_borrar</code>, <code>sub_tarea_set/alta</code>, <code>sub_hito_cliente_alta/borrar</code>, <code>sub_nota_alta/borrar</code>, <code>sub_notif_alta</code>, <code>sub_venta_cliente2</code>; edge function <code>youtube-sync</code> v6. <b>VM Semillas</b> <code>status_clientes/</code>: <code>auto_status.py</code> (métricas del período, públicos de entradas), <code>informe.py</code> + <code>informe_datos.py</code> (reporte con Gemini), <code>cola.py</code> (cola, pedidos con fecha, publicar), <code>rehacer.py</code> (rehace reporte al cargar ventas), <code>titulos.py</code>, <code>push.py</code> (push + aviso en la app), <code>fotos.py</code> (foto de perfil desde Instagram). <code>semilla_webs/webs_srv.py</code>: <code>/web/venta</code>, <code>/web/cuenta</code>, <code>/web/chat</code>, <code>/web/estado</code>. YouTube del cliente: <code>oauth-youtube.html?c=&lt;slug&gt;&amp;k=&lt;token&gt;</code>. La clave de Gemini vive solo en la VM.</p>
+
+<h3>Pendiente</h3>
+<table>
+<tr><td>Umbral y día de cobro del resto de los clientes (captura de "Pagarás cuando")</td><td><span class="chip todo">Pendiente</span></td></tr>
+<tr><td>Definir si se muestran los 4 últimos dígitos de la tarjeta</td><td><span class="chip todo">Pendiente</span></td></tr>
+<tr><td>Clave de la API de Steam de Spam Studios</td><td><span class="chip todo">Pendiente</span></td></tr>
+<tr><td>María Marta: tarea "Iniciar campaña de YouTube" en el reporte del 27/10</td><td><span class="chip wip">Programado</span></td></tr>
+<tr><td>Login con mail (link mágico) y conectores para que el cliente conecte sus redes</td><td><span class="chip todo">Largo plazo</span></td></tr>
+</table>
+</section>
+
 <!-- 14 -->
 <section id="registro">
 <h2>14 · Registro de actualizaciones</h2>
 <table>
 <tr><th>Fecha</th><th>Cambio</th></tr>
+<tr><td><b>14/10/2026</b></td><td>Se agrega la sección <b>20 · SemillaIA APP</b> con el estado completo de la app de clientes: 16 clientes con la app nueva, pantallas (Hoy, Proyecto con hitos, notas y próximo cobro de la cuenta publicitaria, Actividades con carga de ventas, Métricas con resumen del mes anterior y del período, Reporte rediseñado con descarga en JPG), reglas de datos (período de 7 días inclusive, seguidores reales, tasa de conversión, oyentes de Spotify, ventas del píxel, Steam) y backend.</td></tr>
 <tr><td><b>13/10/2026</b></td><td><b>Alumnos y cobros de la Formación.</b> Se verificó que las 5 compras que Meta atribuye al anuncio "Abierta la Inscripción" son reales: semillaredes.com y aguscalcagno.com comparten el píxel 953367820005998 y Tiendup manda cada <code>Purchase</code> por API de Conversiones desde <code>aguscalcagno.com/order/…</code>. Se relevaron Tiendup (22 suscriptores, órdenes 70 a 149, cupones) y Mercado Pago (61 cobros aprobados, planes directos) y se armó la planilla <b>Alumnos Formación Semilla</b> en Google Sheets: 9 alumnos pagando ($720.000/mes, Alejandra Montero incluida porque paga por el plan "Grupo Semilla" de MP), 2 becados, 1 cursando sin pagar todavía (Ingrid), 3 bajas pendientes a fin de octubre y $3.510.000 cobrados desde el 25/06. Se agregó el bloque "Alumnos y cobros" en la sección 04.</td></tr>
 <tr><td><b>22/09/2026</b></td><td><b>Status de clientes — tanda del 18 al 22/09.</b> Se conectó la <b>API de Meta con un token propio</b> (anuncios + Instagram de las 100 cuentas, vence 17/11) y quedó armado el script de reportes, que por ahora <b>se corre a mano</b>: el único cron sigue siendo el del domingo con recomendaciones y alertas. Se verificaron las 25 cuentas publicitarias una por una y se corrigieron dos mal emparejadas (Andrea Guedella y Spam Studio). Se fija la <b>regla de origen de cada número</b>: seguidores, visitas y seguidores nuevos siempre de Business Manager; inversión y el resto del Administrador de anuncios; el costo por seguidor cruza las dos. Nuevos status: <b>Semilla Redes</b> (tipo propio, Seguidores + Formación), <b>Audova</b> con la marca de Sadhana y <b>Yamila Beraja</b>. Nuevas secciones: campaña a Spotify, campaña a YouTube, conjuntos dentro de Seguidores, Hypeddit con clics e interacción, y un bloque donde <b>el cliente carga lo que facturó y el ROAS se calcula solo</b>. Se agregó un <b>índice de secciones</b> con volver arriba en todos los status, y "En qué estamos" pasó a llamarse <b>"Tarea para el hogar"</b>. Umbral de alerta de costo subido a <b>+100%</b>. Backtest de costo por seguidor sobre 151 períodos: la relación más fuerte es el tamaño de cuenta (arriba de 8.000 seguidores el costo baja a la mitad) y los clientes más baratos son los que mejor convierten visita en seguidor.</td></tr>
 <tr><td><b>22/09/2026</b></td><td>Actualización mensual de la sección <b>08 · Números clave</b>: agosto cerró con <b>$9.360.000</b> facturados, <b>$8.185.830</b> de ganancia (margen 87,5%) y 25 clientes activos — el mejor mes del año hasta ahora. Acumulado enero–agosto: $47.915.000 facturados, $40.375.490 de ganancia, margen promedio 84,3%.</td></tr>
