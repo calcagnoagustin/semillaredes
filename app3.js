@@ -164,7 +164,7 @@
   #v3 .cj .nm{font:600 15px Inter,sans-serif;color:${NAVY};margin:0 0 10px}
   #v3 .cj .ks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
   #v3 .cj .ks div{background:#fff;border-radius:10px;padding:8px 10px}
-  #v3 .cj .ks b{display:block;font:600 17px Inter,sans-serif;color:${NAVY}}
+  #v3 .cj .ks b{display:block;font:600 15.5px Inter,sans-serif;color:${NAVY};white-space:nowrap}
   #v3 .cj .ks span{font-size:12px;color:#8A8577}
   #v3 .cj .gl{font-size:12px;color:#8A8577;margin:6px 0 0}
   #v3 .cj svg{display:block;width:100%;height:auto}
@@ -529,12 +529,12 @@
         return {f:r.hasta,v,iv,c:v&&iv?iv/v:null,sg}; } } return {f:r.hasta,v:null,iv:null,c:null,sg:null}; }));
       let i0=RR.findIndex((r,i)=>act.some(a=>a.p[i].v!=null||a.p[i].iv!=null)); if(i0<0) return ''; act.forEach(a=>a.p=a.p.slice(i0));
       const graf=(pts,k,col,fmt)=>{ const V=pts.map((p,i)=>[i,p[k]]).filter(x=>x[1]!=null); if(V.length<2) return ''; const W=320,H=128,n=pts.length-1||1,mn=Math.min(...V.map(x=>x[1])),mx=Math.max(...V.map(x=>x[1])),rg=(mx-mn)||1;
-        const X=i=>18+i*(W-36)/n, Y=v=>H-30-(v-mn)/rg*(H-58);
-        return `<svg viewBox="0 0 ${W} ${H}" role="img"><line x1="10" x2="${W-10}" y1="${H-22}" y2="${H-22}" stroke="#E1D9C9"/><path d="${V.map((p,j)=>(j?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ')}" fill="none" stroke="${col}" stroke-width="2.4" stroke-linejoin="round"/>${V.map(p=>`<circle cx="${X(p[0]).toFixed(1)}" cy="${Y(p[1]).toFixed(1)}" r="3.4" fill="${col}"/><text x="${X(p[0]).toFixed(1)}" y="${(Y(p[1])-8).toFixed(1)}" text-anchor="middle" font-size="10.5" font-family="Inter,sans-serif" fill="#3A3846">${fmt(p[1])}</text>`).join('')}${pts.map((p,i)=>`<text x="${X(i).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="10" font-family="Inter,sans-serif" fill="#8A8577">${fd(p.f)}</text>`).join('')}</svg>`; };
+        const X=i=>38+i*(W-76)/n, Y=v=>H-30-(v-mn)/rg*(H-58);
+        return `<svg viewBox="0 0 ${W} ${H}" role="img"><line x1="10" x2="${W-10}" y1="${H-22}" y2="${H-22}" stroke="#E1D9C9"/><path d="${V.map((p,j)=>(j?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ')}" fill="none" stroke="${col}" stroke-width="2.4" stroke-linejoin="round"/>${V.map(p=>`<circle cx="${X(p[0]).toFixed(1)}" cy="${Y(p[1]).toFixed(1)}" r="3.4" fill="${col}"/><text x="${X(p[0]).toFixed(1)}" y="${(Y(p[1])-8).toFixed(1)}" text-anchor="middle" font-size="10" font-family="Inter,sans-serif" fill="#3A3846">${fmt(p[1])}</text>`).join('')}${pts.map((p,i)=>`<text x="${X(i).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="10" font-family="Inter,sans-serif" fill="#8A8577">${fd(p.f)}</text>`).join('')}</svg>`; };
       const sim=SIM;
       return `<div class="cjs"><h3>Seguimiento por conjunto de anuncios</h3><p class="bjc">Campaña de seguidores, período por período. Meta da las visitas al perfil por conjunto; los seguidores nuevos solo los cuenta Instagram en total.</p>${act.map(a=>{ const u=a.p[a.p.length-1];
         return `<div class="cj"><p class="nm">${esc(a.n)}</p><div class="ks"><div><b>${nf(u.v)}</b><span>visitas al perfil</span></div><div><b>${u.c!=null?sim+nf(u.c,2):'—'}</b><span>costo por visita</span></div><div><b>${u.iv!=null?sim+nf(u.iv,u.iv<100?2:0):'—'}</b><span>inversión</span></div></div>
-          <p class="gl">Visitas al perfil</p>${graf(a.p,'v',VINO,v=>nf(v))}<p class="gl">Costo por visita</p>${graf(a.p,'c','#E2767C',v=>sim+nf(v,2))}${a.p.some(p=>p.sg!=null)?`<p class="gl">Seguidores (cargados de Ads Manager)</p>${graf(a.p,'sg',OLIVA,v=>nf(v))}`:''}</div>`; }).join('')}</div>`; })();
+          <p class="gl">Visitas al perfil</p>${graf(a.p,'v',VINO,v=>nf(v))}<p class="gl">Costo por visita</p>${graf(a.p,'c','#E2767C',v=>sim+nf(v,2))}${a.p.filter(p=>p.sg!=null).length>1?`<p class="gl">Seguidores (cargados de Ads Manager)</p>${graf(a.p,'sg',OLIVA,v=>nf(v))}`:''}</div>`; }).join('')}</div>`; })();
     const scrMet=`
       <div class="rep"><div><h1 class="v3t" style="font-size:31px">Tus métricas</h1><p class="bj">${I?`Del ${fd(I.desde)} al ${fd(I.hasta)}`:'Tus números, red por red'}</p></div>${I?`<button class="ir" id="v3rep" aria-label="Abrir reporte">${ico.flecha}</button>`:''}</div>
       ${imp?`<div class="card imp"><div>${ico.sol}</div><div><h4>Lo más importante</h4><p>${imp}</p></div></div>`:''}
