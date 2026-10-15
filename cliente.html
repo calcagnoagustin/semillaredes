@@ -788,15 +788,27 @@ function pintarTrafico(d){
       <p class="sub">Los números que ves no son en vivo: corresponden al último período cerrado.</p>
     </div>`;
 
+  // ===== Métricas desde el inicio (Audova, 15/10/2026): toda la cuenta publicitaria desde que arrancó la pauta =====
+  if(u && u.metricas.ini_desde){
+    const I=u.metricas, segIni=R.reduce((s,r)=>s+(Number(r.metricas.ig_followers_nuevos)||0),0);
+    h+=`<h2>Métricas desde el inicio</h2><p class="sub"><span>Toda la cuenta publicitaria desde el</span> <span>${fecha(I.ini_desde)}</span>.</p><div class="tarj">
+      ${I.ini_alcance!=null?card('Personas alcanzadas', fmt(I.ini_alcance), null,0,true):''}
+      ${I.ini_visitas!=null?card('Visitas al sitio web', fmt(I.ini_visitas), null,0):''}
+      ${I.ini_cpc!=null?card('Costo por clic', mon(I.ini_cpc,2), null,2):''}
+      ${I.ini_costo_visita!=null?card('Costo por visita', mon(I.ini_costo_visita,2), null,2):''}
+      ${card('Nuevos seguidores', fmt(segIni), null,0)}
+    </div>`;
+  }
+
   // ===== inversion (arriba de todo) =====
   {
     const cu=u?u.metricas:{}, ca=a?a.metricas:{};
     const n=x=>Number(x||0);
-    const trf=n(cu.tr_inversion)+n(cu.ld_inversion), trfA=n(ca.tr_inversion)+n(ca.ld_inversion);
+    const trf=n(cu.tr_inversion)+n(cu.ld_inversion)+n(cu.rg_inversion), trfA=n(ca.tr_inversion)+n(ca.ld_inversion)+n(ca.rg_inversion);
     const seg=n(cu.ig_inversion), segA=n(ca.ig_inversion);
     const tot=trf+seg, totA=trfA+segA;
-    const dia=n(cu.ld_inversion_diaria)+n(cu.tr_inversion_diaria)+n(cu.ig_inversion_diaria);
-    const diaA=n(ca.ld_inversion_diaria)+n(ca.tr_inversion_diaria)+n(ca.ig_inversion_diaria);
+    const dia=n(cu.ld_inversion_diaria)+n(cu.tr_inversion_diaria)+n(cu.ig_inversion_diaria)+n(cu.rg_inversion_diaria);
+    const diaA=n(ca.ld_inversion_diaria)+n(ca.tr_inversion_diaria)+n(ca.ig_inversion_diaria)+n(ca.rg_inversion_diaria);
     if(tot>0) h+=`<h2>Inversión en el período</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
       ${trf?card('Campañas de tráfico',mon(trf,2),trfA?[trf,trfA]:null,2):''}
       ${seg?card('Campañas de seguidores',mon(seg,2),segA?[seg,segA]:null,2):''}
@@ -832,6 +844,21 @@ function pintarTrafico(d){
     <div class="agregarW"><input id="wl_total" type="number" min="0" inputmode="numeric" placeholder="Total de registrados hoy"><button id="wl_add">Guardar</button></div>`;
     if(RA.length>1)
       h+=grafico('Registrados en la app','Total de usuarios registrados al cierre de cada período.',RA.map(r=>r.metricas.wl_total??null),RA.map(r=>fecha(r.hasta)),'#1A2456');
+  }
+
+  // ===== Campaña de registros en la app (Audova, arrancó el 15/10/2026): optimiza al evento CompleteRegistration =====
+  if(slug==='audova'){
+    const RG=R.filter(r=>r.metricas.rg_inversion!=null), ug=RG[RG.length-1]||null, ag=RG.length>1?RG[RG.length-2]:null;
+    h+=`<h2>Campaña de registros en la app</h2><p class="sub"><span>Arrancó el</span> <span>${fecha('2026-10-15')}</span>. <span>Los anuncios llevan directo a crear la cuenta en audova.live y Meta busca a la gente con más chances de registrarse. Cada registro llega desde el servidor de la app, sin píxel en la app.</span></p>`;
+    if(ug){ const G=ug.metricas, GA=ag?ag.metricas:{};
+      h+=`<div class="tarj">
+        ${card('Registros desde los anuncios', fmt(G.rg_registros||0), [G.rg_registros, GA.rg_registros],0,true)}
+        ${G.rg_costo!=null?card('Costo por registro', mon(G.rg_costo,2), [G.rg_costo, GA.rg_costo],2,false,true):''}
+        ${card('Invertido', mon(G.rg_inversion,2), [G.rg_inversion, GA.rg_inversion],2)}
+        ${G.rg_alcance!=null?card('Personas alcanzadas', fmt(G.rg_alcance), [G.rg_alcance, GA.rg_alcance]):''}
+        ${G.rg_clics!=null?card('Clics a la app', fmt(G.rg_clics), [G.rg_clics, GA.rg_clics]):''}
+      </div>`;
+    } else h+=`<p class="pista">Los primeros números de esta campaña aparecen en el próximo reporte.</p>`;
   }
 
   // ===== Campaña de registros a la waitlist: HISTÓRICO congelado (cerró cuando salió la app) =====
@@ -947,7 +974,7 @@ function pintarTrafico(d){
   // ===== Campañas desde el inicio (Audova): totales de todos los reportes =====
   if(['audova'].includes(slug) && R.length){
     const sum=f=>R.reduce((a,r)=>a+(Number(f(r.metricas))||0),0);
-    const invT=sum(x=>Object.keys(x).filter(k=>/^(ig|ld|tr|frm|msj|vta|stm)_inversion$/.test(k)).reduce((a,k)=>a+(Number(x[k])||0),0));
+    const invT=sum(x=>Object.keys(x).filter(k=>/^(ig|ld|tr|rg|frm|msj|vta|stm)_inversion$/.test(k)).reduce((a,k)=>a+(Number(x[k])||0),0));
     const segT=sum(x=>x.ig_followers_nuevos), wlT=sum(x=>x.ld_leads);
     const appT=[...R].reverse().find(r=>r.metricas.wl_total!=null && r.hasta>'2026-10-08');
     h+=`<h2>Campañas desde el inicio</h2><p class="sub">La suma de todo lo que trajeron las campañas desde que arrancaron.</p><div class="tarj">
@@ -2415,7 +2442,7 @@ const DICT={
 'Público':'Audience','Cómo rindió cada uno en la campaña de tráfico, antes de pausarla.':'How each one performed in the traffic campaign, before it was paused.','En registros':'On sign-ups','Todo lo que se puso en pauta en este período, sumando las campañas.':'Everything invested in ads this period, all campaigns combined.','Total de anotados al cierre de cada período.':'Total sign-ups at the close of each period.','@Total de anotados':'Total sign-ups','Guardar':'Save',
 'Nuevos en el período':'New this period','Costo por registro':'Cost per sign-up','Actualizar':'Update',
 'Todavía no hay un número cargado. Poné cuántos anotados hay hoy.':'No number entered yet. Enter how many sign-ups there are today.',
-'Anotados en la waitlist':'Waitlist sign-ups','Cómo viene creciendo la lista.':'How the list is growing.','@Anotados hoy':'Sign-ups today','@Escribí acá…':'Write here…','@Borrar':'Delete','@Borrar nota':'Delete note','@Secciones':'Sections'
+'Anotados en la waitlist':'Waitlist sign-ups','Métricas desde el inicio':'Metrics since launch','Toda la cuenta publicitaria desde el':'The whole ad account since','Visitas al sitio web':'Website visits','Costo por clic':'Cost per click','Nuevos seguidores':'New followers','Campaña de registros en la app':'App sign-up campaign','Arrancó el':'Started on','Los anuncios llevan directo a crear la cuenta en audova.live y Meta busca a la gente con más chances de registrarse. Cada registro llega desde el servidor de la app, sin píxel en la app.':'The ads lead straight to account creation on audova.live, and Meta looks for the people most likely to sign up. Each sign-up is reported from the app server, with no pixel in the app.','Registros desde los anuncios':'Sign-ups from ads','Clics a la app':'Clicks to the app','Los primeros números de esta campaña aparecen en el próximo reporte.':'This campaign\'s first numbers will show up in the next report.','Cómo viene creciendo la lista.':'How the list is growing.','@Anotados hoy':'Sign-ups today','@Escribí acá…':'Write here…','@Borrar':'Delete','@Borrar nota':'Delete note','@Secciones':'Sections'
 };
 const MES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
