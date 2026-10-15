@@ -39,9 +39,8 @@
     var hechos = [];
     document.querySelectorAll('[data-e]').forEach(function (el) {
       if (el.tagName === 'IMG') return;
-      if (!ORIG) {} // nada
-      var k = norm(el.getAttribute('data-sr-orig') || el.innerHTML);
-      if (!el.hasAttribute('data-sr-orig')) el.setAttribute('data-sr-orig', el.innerHTML);
+      if (!el.hasAttribute('data-sr-orig')) { el.setAttribute('data-sr-orig', el.innerHTML); el.setAttribute('data-sr-txt', norm(el.textContent)); }
+      var k = el.getAttribute('data-sr-txt');
       var t = T && T.el && T.el[k];
       el.innerHTML = t || el.getAttribute('data-sr-orig');
       hechos.push(el);
