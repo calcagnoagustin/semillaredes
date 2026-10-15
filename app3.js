@@ -333,7 +333,6 @@
   const CHAT=[]; let CHAT_ON=false, CHAT_ESP=false;
 
   window.V3=function(d){
-    if(!window.__SRE0){ window.__SRE0=1; setTimeout(()=>{ window.SRE&&window.SRE('pantalla',{p:TAB}); },1200); }
     try{ armar(d); }catch(e){ console.log('V3',e); }
   };
 
