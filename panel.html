@@ -112,15 +112,11 @@ async function entrar(){
   const t=$('tok').value.trim()||sessionStorage.getItem('sr_admin')||'';
   const r=await rpc('panel_clientes',{p_admin:t});
   if(r.error){ alert('Token incorrecto'); return; }
-  admin=t; sessionStorage.setItem('sr_admin',t);
+  admin=t; sessionStorage.setItem('sr_admin',t); try{ localStorage.setItem('sr_yo','1'); }catch(e){}
   datos=r;
   try{ const ra=await rpc('sub_alertas_admin',{p_admin:t}); datos.alertas=ra.alertas||[]; }catch(e){ datos.alertas=[]; }
   $('gate').classList.add('oculto'); $('app').classList.remove('oculto');
   pintarMenu(); verClientes();
-  rpc('playbook_ver',{p_admin:t,p_estado:'propuesto'}).then(r=>{
-    const n=(r.items||[]).length, el=document.getElementById('pbNuevos');
-    if(el && n) el.textContent=n+' sin leer';
-  }).catch(()=>{});
   rpc('playbook_ver',{p_admin:t,p_estado:'propuesto'}).then(r=>{
     const n=(r.items||[]).length, el=document.getElementById('pbNuevos');
     if(el && n) el.textContent=n+' sin leer';
@@ -134,6 +130,7 @@ function pintarMenu(){
     <button class="mb" data-s="setup">Briefings <span class="n">${datos.setup.length}</span></button>
     <button class="mb" data-s="reportes">Cargar semana</button>
     <button class="mb" data-s="patrones">Patrones</button>
+    <button class="mb" data-s="uso">Uso de la app</button>
     <button class="mb" data-s="playbook">Playbook <span class="n" id="pbNuevos"></span></button>
     <button class="mb" data-s="ranking">Ranking <span class="n">costo por seguidor ↗</span></button>`;
   document.querySelectorAll('.mb').forEach(b=>b.onclick=()=>{
@@ -142,6 +139,7 @@ function pintarMenu(){
     if(s==='clientes') verClientes();
     if(s==='setup') abrirPanel('https://semillaredes.com/panel-setup.html');
     if(s==='reportes') abrirPanel('https://semillaredes.com/panel-clientes.html');
+    if(s==='uso') abrirPanel('https://semillaredes.com/uso.html');
     if(s==='playbook') abrirPanel('https://semillaredes.com/playbook.html');
     if(s==='ranking'){ window.open('https://claude.ai/artifact/E35vcHbP5getYetxWxhzGd','_blank'); b.classList.remove('on'); document.querySelector('.mb[data-s="clientes"]').classList.add('on'); }
     if(s==='patrones') abrirPanel('https://semillaredes.com/panel-setup.html#patrones');

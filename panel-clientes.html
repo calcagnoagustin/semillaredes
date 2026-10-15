@@ -136,7 +136,7 @@ async function entrar(){
   const t=$('tok').value.trim()||sessionStorage.getItem('sr_admin')||'';
   const r=await rpc('sub_admin',{p_admin:t});
   if(r.error){ alert('Token incorrecto'); return; }
-  admin=t; sessionStorage.setItem('sr_admin',t);
+  admin=t; sessionStorage.setItem('sr_admin',t); try{ localStorage.setItem('sr_yo','1'); }catch(e){}
   clientes=r.clientes||[]; sel=sel||(clientes[0]||{}).slug;
   $('gate').classList.add('oculto'); $('app').classList.remove('oculto');
   pintarTabs(); pintar();

@@ -443,6 +443,28 @@ details.hist table{border:0;border-radius:0}
 @media(max-width:560px){ .despl>summary{padding:16px 14px 16px 16px;gap:8px} .despl>summary h2{font-size:19px} .despl .big b{font-size:21px} .despl .lbl{font-size:9.5px;letter-spacing:1.2px} }
 @media(max-width:560px){ .barras{gap:4px} .barras .val{font-size:12.5px} .barras .fec{font-size:11px} }
 </style>
+<script>
+/* SemillaIA · estadísticas internas de uso (tabla app_eventos, se ven en semillaredes.com/uso.html). No cuenta a Agus. */
+(function(){
+  var q=new URLSearchParams(location.search), c=q.get('c'), k=q.get('k');
+  if(q.get('yo')==='1'){ try{ localStorage.setItem('sr_yo','1'); }catch(e){} }
+  var yo=false; try{ yo=localStorage.getItem('sr_yo')==='1'; }catch(e){}
+  try{ if(window.top!==window && /panel|uso/.test(window.top.location.pathname)) yo=true; }catch(e){}
+  var tq=''; try{ tq=window.top.location.search||''; }catch(e){}
+  function ses(){ var s=null, now=Date.now(); try{ s=JSON.parse(localStorage.getItem('sr_ses')||'null'); }catch(e){}
+    if(!s||now-s.t>30*60000) s={id:now.toString(36)+Math.random().toString(36).slice(2,7)}; s.t=now;
+    try{ localStorage.setItem('sr_ses',JSON.stringify(s)); }catch(e){} return s.id; }
+  var ua=navigator.userAgent, disp=/iPhone|iPad|iPod/.test(ua)?'ios':(/Android/.test(ua)?'android':'compu');
+  function app(){ try{ return !!(window.top.navigator.standalone||window.top.matchMedia('(display-mode: standalone)').matches); }catch(e){ return false; } }
+  window.SRE=function(ev,det){ if(yo||!c||!k) return;
+    try{ fetch('https://fdrxsjphlvvwwknnrjtx.supabase.co/rest/v1/rpc/app_evento',{method:'POST',keepalive:true,
+      headers:{apikey:'sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17','Content-Type':'application/json'},
+      body:JSON.stringify({p_slug:c,p_k:k,p_evento:ev,p_detalle:det||{},p_sesion:ses(),p_disp:disp})}).catch(function(){}); }catch(e){} };
+  function abrir(){ window.SRE('abrir',{v3:window.V3?'1':'0',app:app()?'1':'0',push:/src=push/.test(location.search+tq)?'1':'0'}); }
+  window.addEventListener('load',function(){ setTimeout(abrir,900); });
+  var oculto=0; document.addEventListener('visibilitychange',function(){ if(document.hidden) oculto=Date.now(); else if(oculto&&Date.now()-oculto>30*60000) abrir(); });
+})();
+</script>
 <script>/* app nueva "Atelier": solo en perfiles de prueba */ if(/[?&]c=(hernan-onirico-2|piku-yoga|semilla-redes|animales-del-rock-2|maria-marta-crespo|berco-estudio|federico-andahazi|felipe-gonzalez|spam-studio|sin-fronteras-duo|abel-maldonado|mavela|animales-del-rock|hernan-onirico|lu-glass|marcos-cifuentes)(&|$)/.test(location.search)) document.write('<script src="/app3.js?v='+Date.now()+'"><\/script>');</script>
 </head>
 <body>
@@ -2515,7 +2537,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261014c';
+var SR_VER='20261014u';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){

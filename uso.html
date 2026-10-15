@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Uso de la app · Semilla</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--crema:#F2EDE4;--navy:#1A2456;--card:#212B60;--linea:#2E3970;--vino:#7A1F3A;--rosa:#E2767C;--oliva:#87863A;--verde:#9DB45A;--amar:#E3B55B;--mute:#B9B4C4}
+*{box-sizing:border-box}
+body{margin:0;background:var(--navy);color:var(--crema);font-family:Inter,system-ui,sans-serif;line-height:1.5;padding:24px 16px 80px}
+.wrap{max-width:1000px;margin:0 auto}
+h1{font-family:'Playfair Display',serif;font-size:30px;margin:0 0 2px}
+h2{font-family:'Playfair Display',serif;font-size:21px;margin:0 0 4px}
+.lede{color:var(--mute);font-size:14px;margin:0 0 20px}
+.sub{color:var(--mute);font-size:13px;margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--linea);border-radius:14px;padding:18px;margin:14px 0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.k{background:var(--card);border:1px solid var(--linea);border-radius:12px;padding:14px 15px}
+.k .l{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--oliva);font-weight:700}
+.k .v{font-size:28px;font-weight:700;margin-top:4px;line-height:1.1}
+.k .d{font-size:12.5px;color:var(--mute);margin-top:3px}
+.tabla{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:8px 8px;text-align:right;border-bottom:1px solid var(--linea);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--oliva);font-weight:700}
+td.n{font-variant-numeric:tabular-nums}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px;vertical-align:1px}
+.dot.v{background:var(--verde)}.dot.a{background:var(--amar)}.dot.r{background:var(--rosa)}.dot.g{background:#5A6497}
+.tag{font-size:10.5px;border:1px solid var(--linea);border-radius:999px;padding:1px 7px;color:var(--mute);margin-left:6px}
+.bar{display:grid;grid-template-columns:120px 1fr 44px;gap:10px;align-items:center;font-size:13px;margin:7px 0}
+.bar i{display:block;height:10px;border-radius:5px;background:var(--rosa)}
+.bar span:last-child{text-align:right;color:var(--mute);font-variant-numeric:tabular-nums}
+.vacio{color:var(--mute);font-size:13.5px}
+.nota{font-size:12.5px;color:var(--mute);margin-top:18px}
+#gate input{border:1px solid var(--linea);background:var(--navy);color:var(--crema);border-radius:10px;padding:11px 13px;font:inherit;max-width:260px}
+#gate button,.btn{border:0;background:var(--vino);color:#fff;font:inherit;font-weight:600;border-radius:10px;padding:10px 16px;cursor:pointer;margin-left:8px}
+.fila2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:720px){.fila2{grid-template-columns:1fr}.bar{grid-template-columns:96px 1fr 40px}}
+.oculto{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Uso de la app</h1>
+  <p class="lede">Quién entra a SemillaIA, cuánto vuelve y qué mira. No cuenta tus entradas ni los proyectos internos.</p>
+  <div id="gate" class="oculto"><input type="password" id="tok" placeholder="Token de admin"><button onclick="entrar()">Entrar</button></div>
+  <div id="vista"><p class="vacio">Cargando…</p></div>
+</div>
+<script>
+const API='https://fdrxsjphlvvwwknnrjtx.supabase.co';
+const KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
+const $=id=>document.getElementById(id);
+const rpc=(fn,a)=>fetch(`${API}/rest/v1/rpc/${fn}`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(a)}).then(r=>r.json());
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const PANT={hoy:'Hoy',proyecto:'Proyecto',actividades:'Actividades',metricas:'Métricas',ia:'Reporte'};
+const pct=(a,b)=>b?Math.round(a/b*100)+'%':'—';
+function hace(ts){ if(!ts) return 'nunca'; const m=(Date.now()-new Date(ts))/60000;
+  if(m<60) return 'hace '+Math.max(1,Math.round(m))+' min'; const h=m/60; if(h<24) return 'hace '+Math.round(h)+' h';
+  const d=Math.round(h/24); return d===1?'ayer':'hace '+d+' días'; }
+function estado(ts){ if(!ts) return 'g'; const d=(Date.now()-new Date(ts))/864e5; return d<=7?'v':d<=30?'a':'r'; }
+function fecha(s){ return new Date(s+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short'}); }
+
+async function entrar(){
+  const t=($('tok').value||'').trim()||sessionStorage.getItem('sr_admin')||'';
+  if(!t){ $('gate').classList.remove('oculto'); $('vista').innerHTML=''; return; }
+  const d=await rpc('app_uso',{p_admin:t});
+  if(!d||d.error){ $('gate').classList.remove('oculto'); $('vista').innerHTML='<p class="vacio">Token incorrecto.</p>'; return; }
+  sessionStorage.setItem('sr_admin',t); try{ localStorage.setItem('sr_yo','1'); }catch(e){}
+  $('gate').classList.add('oculto'); pintar(d);
+}
+
+function pintar(d){
+  const R=d.resumen||{}, C=(d.clientes||[]).filter(c=>!c.interno), A=d.alumnos||{};
+  const desde=d.desde?new Date(d.desde).toLocaleDateString('es-AR',{day:'numeric',month:'long'}):null;
+  const maduros=R.reportes_maduros||0;
+  const kpi=(l,v,dd)=>`<div class="k"><div class="l">${l}</div><div class="v">${v}</div><div class="d">${dd||''}</div></div>`;
+  let h=`<div class="kpis">
+    ${kpi('Activos hoy',R.activos_1d||0,`de ${R.proyectos||0} proyectos`)}
+    ${kpi('Activos 7 días',R.activos_7d||0,pct(R.activos_7d||0,R.proyectos||0)+' de los proyectos')}
+    ${kpi('Activos 30 días',R.activos_30d||0,pct(R.activos_30d||0,R.proyectos||0)+' de los proyectos')}
+    ${kpi('Sesiones 7 días',R.sesiones_7d||0,R.min_por_sesion!=null?R.min_por_sesion+' min por sesión':'')}
+    ${kpi('Apertura de reportes',maduros?pct(R.reportes_maduros_abiertos||0,maduros):'—',maduros?`${R.reportes_maduros_abiertos} de ${maduros}, abiertos en 7 días`:'Se mide a los 7 días del reporte')}
+    ${kpi('Chats con SemillaIA',R.chats_30d||0,'últimos 30 días')}
+    ${kpi('Reportes descargados',R.descargas_30d||0,'últimos 30 días')}
+    ${kpi('App instalada',R.en_app_instalada||0,`${R.con_push||0} con avisos activados`)}
+    ${kpi('Alumnos activos 7 días',A.activos_7d||0,`de ${A.total||0} con suscripción`)}
+  </div>`;
+
+  const filas=C.map(c=>`<tr>
+    <td><span class="dot ${estado(c.ultima)}"></span>${esc(c.nombre)}${c.app_nueva?'':'<span class="tag">clásica</span>'}</td>
+    <td>${hace(c.ultima)}</td>
+    <td class="n">${c.ses_7d||0}</td><td class="n">${c.ses_30d||0}</td>
+    <td class="n">${c.rep_30d?`${c.rep_abiertos}/${c.rep_30d}`:'—'}</td>
+    <td class="n">${c.chats_30d||0}</td><td class="n">${c.tareas_30d||0}</td><td class="n">${c.desc_30d||0}</td>
+    <td>${c.instalada?'sí':'—'}</td><td>${c.push?'sí':'—'}</td></tr>`).join('');
+  h+=`<div class="card"><h2>Por proyecto</h2><p class="sub"><span class="dot v"></span>entró en 7 días <span class="dot a" style="margin-left:12px"></span>en 30 días <span class="dot r" style="margin-left:12px"></span>más de 30 <span class="dot g" style="margin-left:12px"></span>nunca. Reportes = abiertos después de publicados / publicados en 30 días.</p>
+    <div class="tabla"><table><thead><tr><th>Proyecto</th><th>Última vez</th><th>Ses. 7d</th><th>Ses. 30d</th><th>Reportes</th><th>Chats</th><th>Tareas</th><th>JPG</th><th>Instalada</th><th>Avisos</th></tr></thead><tbody>${filas}</tbody></table></div></div>`;
+
+  const P=d.pantallas||[], maxP=Math.max(1,...P.map(p=>p.n));
+  const pant=P.length?P.map(p=>`<div class="bar"><span>${esc(PANT[p.p]||p.p)}</span><i style="width:${Math.max(3,p.n/maxP*100)}%"></i><span>${p.n}</span></div>`).join(''):'<p class="vacio">Todavía sin datos.</p>';
+  const S=d.semanas||[];
+  const sem=S.length?`<table><thead><tr><th>Semana</th><th>Activos</th><th>Sesiones</th></tr></thead><tbody>${S.slice().reverse().map(s=>`<tr><td>${fecha(s.semana)}</td><td class="n">${s.activos}</td><td class="n">${s.sesiones}</td></tr>`).join('')}</tbody></table>`:'<p class="vacio">Todavía sin datos.</p>';
+  h+=`<div class="fila2"><div class="card"><h2>Qué pantallas miran</h2><p class="sub">Visitas por pantalla, últimos 30 días</p>${pant}</div>
+    <div class="card"><h2>Activos por semana</h2><p class="sub">Proyectos distintos que entraron</p>${sem}</div></div>`;
+
+  const K=d.cohortes||[];
+  const coh=K.length?`<div class="tabla"><table><thead><tr><th>Primera semana</th><th>Proyectos</th><th>Volvieron sem. 1</th><th>Sem. 2</th><th>Sem. 4</th></tr></thead><tbody>${K.slice().reverse().map(k=>{
+    const lleg=n=>(Date.now()-new Date(k.semana+'T00:00:00'))/864e5>=n*7+7;
+    const c=(v,n)=>lleg(n)?`${pct(v,k.nuevos)} <span style="color:var(--mute)">(${v})</span>`:'<span style="color:var(--mute)">falta</span>';
+    return `<tr><td>${fecha(k.semana)}</td><td class="n">${k.nuevos}</td><td class="n">${c(k.s1,1)}</td><td class="n">${c(k.s2,2)}</td><td class="n">${c(k.s4,4)}</td></tr>`; }).join('')}</tbody></table></div>`:'<p class="vacio">Todavía sin datos.</p>';
+  h+=`<div class="card"><h2>Retención</h2><p class="sub">De los proyectos que entraron por primera vez cada semana, cuántos volvieron. La meta para presentar a inversores es 40% a la semana 4.</p>${coh}</div>`;
+
+  h+=`<p class="nota">${desde?`Se mide desde el ${desde}.`:'Todavía no hay entradas registradas.'} Una sesión es una visita; si pasan más de 30 minutos sin actividad, cuenta como otra. Tus entradas no se cuentan en este navegador; para excluir otro dispositivo abrí cualquier app con <b>&amp;yo=1</b> al final del link.</p>
+    <p><button class="btn" style="margin:0" onclick="entrar()">Actualizar</button></p>`;
+  $('vista').innerHTML=h;
+}
+entrar();
+</script>
+</body>
+</html>

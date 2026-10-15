@@ -465,5 +465,13 @@ cargar();
     else { pintar(0); setTimeout(function(){ document.body.classList.remove('ptr-vuelve'); },300); } });
 })();
 </script>
+<script>
+/* estadísticas internas de uso: cada entrada del alumno (se ven en semillaredes.com/uso.html) */
+setTimeout(function(){ try{ if(!TOK||localStorage.getItem('sr_yo')==='1') return;
+  var s=null,now=Date.now(); try{ s=JSON.parse(localStorage.getItem('sr_ses')||'null'); }catch(e){}
+  if(!s||now-s.t>30*60000) s={id:now.toString(36)+Math.random().toString(36).slice(2,7)}; s.t=now; localStorage.setItem('sr_ses',JSON.stringify(s));
+  var ua=navigator.userAgent; rpc('app_evento',{p_slug:SLUG,p_k:TOK,p_evento:'abrir',p_detalle:{},p_sesion:s.id,p_disp:/iPhone|iPad|iPod/.test(ua)?'ios':(/Android/.test(ua)?'android':'compu')}).catch(function(){});
+}catch(e){} },1500);
+</script>
 </body>
 </html>

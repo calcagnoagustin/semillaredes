@@ -333,6 +333,7 @@
   const CHAT=[]; let CHAT_ON=false, CHAT_ESP=false;
 
   window.V3=function(d){
+    if(!window.__SRE0){ window.__SRE0=1; setTimeout(()=>{ window.SRE&&window.SRE('pantalla',{p:TAB}); },1200); }
     try{ armar(d); }catch(e){ console.log('V3',e); }
   };
 
@@ -616,7 +617,7 @@
       const lista=WEBV.length?WEBV:[{titulo:'Tu web',url:''}];
       web.innerHTML='<div class="tit2"><h2>'+(lista.length>1?'Tus webs':'Tu web')+'</h2></div><p class="bj" style="margin:0 0 10px;font-size:14.5px">Tocá para verla. Con «Editá» la abrís en modo edición: cambiás textos y fotos, o le pedís cambios a SemillaIA. Nada se publica sin que lo apruebes.</p><div class="card lista webs">'+lista.map((w,n)=>'<div class="fila" style="grid-template-columns:1fr auto">'+(w.url?'<a class="tx" style="text-decoration:none" href="'+esc(w.url)+'" target="_blank" rel="noopener"><b style="color:'+NAVY+'">'+esc(w.titulo||'Tu web')+'</b><br><span style="color:#8A8577;font-size:13.5px">'+esc(String(w.url).replace(/^https?:\/\//,'').replace(/\/(index\.html)?$/,''))+'</span></a>':'<span class="tx"><b style="color:'+NAVY+'">Tu web</b></span>')+'<span class="ed" data-wed="'+n+'"></span></div>').join('')+'</div>';
       web.querySelectorAll('[data-wed]').forEach(x=>{ const i=+x.dataset.wed, a=eds[i], w=lista[i]; let c;
-        if(w&&w.url){ c=document.createElement('a'); c.href=w.url+(w.url.includes('?')?'&':'?')+'editar='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok); c.target='_blank'; c.rel='noopener'; c.addEventListener('click',ev=>{ if('ontouchstart' in window){ ev.preventDefault(); location.href=c.href+'&volver='+encodeURIComponent(location.href); } }); }
+        if(w&&w.url){ c=document.createElement('a'); c.href=w.url+(w.url.includes('?')?'&':'?')+'editar='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok); c.target='_blank'; c.rel='noopener'; c.addEventListener('click',ev=>{ window.SRE&&window.SRE('web_editar',{}); if('ontouchstart' in window){ ev.preventDefault(); location.href=c.href+'&volver='+encodeURIComponent(location.href); } }); }
         else if(a){ c=a.cloneNode(true); }
         if(!c) return; c.className='edt'; c.innerHTML='✎ Editá'; x.appendChild(c); }); }; ponerWeb();
     let nav=document.getElementById('v3nav');
@@ -657,13 +658,13 @@
     raiz.querySelectorAll('[data-red]').forEach(b=>b.onclick=()=>{ SUBRED=b.dataset.red; armar(window.__D); });
     raiz.querySelectorAll('[data-tab]').forEach(s=>s.onclick=()=>s.classList.toggle('ab'));
     const prevK=id=>'sr_tprev_'+id;
-    const estado=async(b,id,nuevo)=>{ b.disabled=true; const r=await rpc('sub_tarea_cliente',{p_slug:slug,p_k:tok,p_id:id,p_estado:nuevo}); if(r&&r.ok) recargar(); else b.disabled=false; };
+    const estado=async(b,id,nuevo)=>{ b.disabled=true; window.SRE&&window.SRE('tarea',{estado:nuevo}); const r=await rpc('sub_tarea_cliente',{p_slug:slug,p_k:tok,p_id:id,p_estado:nuevo}); if(r&&r.ok) recargar(); else b.disabled=false; };
     raiz.querySelectorAll('[data-tck]').forEach(b=>b.onclick=()=>{ const id=b.dataset.tck, e=b.dataset.est;
       if(e==='hecha'){ let pv='pendiente'; try{ pv=localStorage.getItem(prevK(id))||'pendiente'; }catch(x){} estado(b,id,pv); }
       else { try{ localStorage.setItem(prevK(id),e); }catch(x){} estado(b,id,'hecha'); } });
     raiz.querySelectorAll('[data-tcur]').forEach(b=>b.onclick=()=>estado(b,b.dataset.tcur,b.dataset.est==='en_curso'?'pendiente':'en_curso'));
     const ta=raiz.querySelector('#v3tadd'), ti=raiz.querySelector('#v3tarea');
-    const sumar=async()=>{ const t=ti.value.trim(); if(!t) return; ta.disabled=true; const r=await rpc('sub_tarea_cliente_alta',{p_slug:slug,p_k:tok,p_titulo:t}); if(r&&r.ok){ FILTRO='abiertas'; recargar(); } else ta.disabled=false; };
+    const sumar=async()=>{ const t=ti.value.trim(); if(!t) return; window.SRE&&window.SRE('tarea_nueva',{}); ta.disabled=true; const r=await rpc('sub_tarea_cliente_alta',{p_slug:slug,p_k:tok,p_titulo:t}); if(r&&r.ok){ FILTRO='abiertas'; recargar(); } else ta.disabled=false; };
     if(ta){ ta.onclick=sumar; ti.onkeydown=e=>{ if(e.key==='Enter') sumar(); }; }
     const nad=raiz.querySelector('#v3nadd'), ntx=raiz.querySelector('#v3nt');
     if(nad) nad.onclick=async()=>{ const t=ntx.value.trim(); if(!t){ ntx.focus(); return; } nad.disabled=true; nad.textContent='Guardando…'; const r=await rpc('sub_nota_alta',{p_slug:slug,p_k:tok,p_texto:t}); if(r&&r.ok) recargar(); else { nad.disabled=false; nad.textContent='Guardar nota'; alert('No se pudo guardar la nota. Probá de nuevo.'); } };
@@ -671,20 +672,20 @@
     const hn=raiz.querySelector('#v3hnuevo'); if(hn) hn.onclick=()=>{ HFORM=!HFORM; armar(window.__D); if(HFORM) setTimeout(()=>{ const o=document.getElementById('v3ho'); o&&o.scrollIntoView({block:'center'}); },60); };
     const ha=raiz.querySelector('#v3hadd'); if(ha) ha.onclick=async()=>{ const m=raiz.querySelector('#v3hm').value, o=parseFloat((raiz.querySelector('#v3ho').value||'').replace(/\./g,'').replace(',','.'));
       if(!o||o<=0){ alert('Poné a qué número querés llegar'); return; } ha.disabled=true; ha.textContent='Guardando…';
-      const r=await rpc('sub_hito_cliente_alta',{p_slug:slug,p_k:tok,p_metrica:m,p_objetivo:o,p_titulo:raiz.querySelector('#v3ht').value.trim()||null});
+      window.SRE&&window.SRE('hito_nuevo',{}); const r=await rpc('sub_hito_cliente_alta',{p_slug:slug,p_k:tok,p_metrica:m,p_objetivo:o,p_titulo:raiz.querySelector('#v3ht').value.trim()||null});
       if(r&&r.ok){ HFORM=false; recargar(); } else { ha.disabled=false; ha.textContent='Guardar hito'; alert(r&&r.error==='demasiados'?'Ya tenés 8 hitos: borrá alguno primero.':'No se pudo guardar el hito.'); } };
     raiz.querySelectorAll('[data-hdel]').forEach(b=>b.onclick=async()=>{ if(!confirm('¿Borrar este hito?')) return; b.disabled=true; const r=await rpc('sub_hito_cliente_borrar',{p_slug:slug,p_k:tok,p_id:b.dataset.hdel}); if(r&&r.ok) recargar(); else b.disabled=false; });
     const fn=raiz.querySelector('#v3fnueva'); if(fn) fn.onclick=()=>{ FFORM=!FFORM; armar(window.__D); };
     const fa=raiz.querySelector('#v3fadd'); if(fa) fa.onclick=async()=>{ const f=raiz.querySelector('#v3ff').value, t=raiz.querySelector('#v3ft').value.trim();
       if(!f||!t){ alert('Poné la fecha y el título'); return; } fa.disabled=true;
-      const r=await rpc('sub_fecha_guardar',{p_slug:slug,p_k:tok,p_fecha:f,p_titulo:t,p_url:raiz.querySelector('#v3fu').value.trim()||null}); if(r&&r.ok){ FFORM=false; recargar(); } else fa.disabled=false; };
+      window.SRE&&window.SRE('fecha_nueva',{}); const r=await rpc('sub_fecha_guardar',{p_slug:slug,p_k:tok,p_fecha:f,p_titulo:t,p_url:raiz.querySelector('#v3fu').value.trim()||null}); if(r&&r.ok){ FFORM=false; recargar(); } else fa.disabled=false; };
     raiz.querySelectorAll('[data-copia]').forEach(b=>b.onclick=async()=>{ let ok=false; try{ await navigator.clipboard.writeText(b.dataset.copia); ok=true; }catch(e){}
       b.textContent=ok?'Copiado':'No se pudo copiar'; setTimeout(()=>b.textContent='Copiar link de entradas',1600); });
   }
 
   // ---- Descargar el reporte (imagen JPG) ----
   const cargarJs=src=>new Promise((ok,mal)=>{ const sc=document.createElement('script'); sc.src=src; sc.onload=ok; sc.onerror=mal; document.head.appendChild(sc); });
-  async function descargarRep(bt, I){
+  async function descargarRep(bt, I){ window.SRE&&window.SRE('reporte_descarga',{hasta:I&&I.hasta});
     if(!I) return; const t0=bt.innerHTML; bt.disabled=true; bt.lastChild.textContent='Generando…';
     const raiz=document.getElementById('v3'), scr=raiz.querySelector('[data-scr="ia"]'), nom=(window.__D&&window.__D.cliente&&window.__D.cliente.nombre)||'';
     const w=document.createElement('div'); w.className='v3exp';
@@ -717,7 +718,7 @@
   function hoja(id,titulo,html){ let h=document.getElementById(id); if(!h){ h=document.createElement('div'); h.id=id; h.className='v3hoja'; document.body.appendChild(h); }
     h.innerHTML=`<div class="hh"><button class="vo" aria-label="Volver"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><h2>${titulo}</h2><span></span></div><div class="hc">${html}</div>`;
     h.querySelector('.vo').onclick=()=>h.classList.remove('on'); requestAnimationFrame(()=>h.classList.add('on')); return h; }
-  function notifAbrir(){
+  function notifAbrir(){ window.SRE&&window.SRE('notificaciones',{});
     const L=NOTIFS||[];
     const ic={reporte:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M6 19v-5M10 19V9M14 19v-7M18 19V6"/></svg>',
               aviso:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5h4"/></svg>'};
@@ -766,7 +767,7 @@
       document.getElementById('v3sg').innerHTML=CHAT.length<=1?sg.map(t=>`<button>${t}</button>`).join(''):'';
       document.querySelectorAll('#v3sg button').forEach(x=>x.onclick=()=>enviar(x.textContent));
       ms.scrollTop=ms.scrollHeight; };
-    const enviar=async(t)=>{ t=(t||'').trim(); if(!t||CHAT_ESP) return; CHAT.push({rol:'yo',texto:t}); CHAT_ESP=true; pintar();
+    const enviar=async(t)=>{ t=(t||'').trim(); if(!t||CHAT_ESP) return; CHAT.push({rol:'yo',texto:t}); CHAT_ESP=true; window.SRE&&window.SRE('chat',{n:CHAT.length}); pintar();
       let r=null; try{ r=await fetch('https://vm.semillaredes.com/web/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,mensajes:CHAT.slice(1)})}).then(x=>x.json()); }catch(e){}
       CHAT_ESP=false; CHAT.push({rol:'ia',texto:(r&&r.respuesta)||'Ahora no pude responder. Probá de nuevo en un ratito.'}); pintar(); };
     const abrir=on=>{ CHAT_ON=on; p.classList.toggle('on',on); b.classList.toggle('oc',on); if(on){ pintar(); setTimeout(()=>{ const i=document.getElementById('v3ci'); if(i&&!('ontouchstart' in window)) i.focus(); },80); } };
@@ -784,7 +785,7 @@
     else if(k==='tareas'){ ir('actividades',true); ve('#v3tarea'); }
     else if(k==='web'){ ir('proyecto',true); ve('#v3web'); }
   };
-  function ir(t,scroll){ TAB=t; SS('tab',t); if(scroll) SS('y','0');
+  function ir(t,scroll){ TAB=t; SS('tab',t); window.SRE&&window.SRE('pantalla',{p:t}); if(scroll) SS('y','0');
     document.querySelectorAll('#v3 .scr').forEach(s=>s.classList.toggle('on',s.dataset.scr===t));
     document.querySelectorAll('#v3nav button').forEach(b=>b.classList.toggle('on',b.dataset.ir===t));
     if(scroll) window.scrollTo(0,0); }
