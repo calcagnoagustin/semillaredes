@@ -107,6 +107,7 @@
   #v3 .fform input{border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:10px 12px;font:15px Inter,sans-serif;min-width:0}
   #v3 .fform .u{grid-column:1/-1}
   #v3 .hform select{grid-column:1/-1;border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:10px 12px;font:15px Inter,sans-serif;color:#24242C}
+  #v3 .lista .hx{width:28px;height:28px;border:0;border-radius:50%;background:none;color:#A9A190;font:400 20px/1 Inter,sans-serif;cursor:pointer;padding:0}
   #v3 .hito .hx{position:absolute;top:10px;right:10px;width:28px;height:28px;border:0;border-radius:50%;background:none;color:#A9A190;font:400 20px/1 Inter,sans-serif;cursor:pointer}
   #v3 .tkp .fila{grid-template-columns:1fr auto}
   #v3 .tkp .tx b{color:${NAVY};font-size:15.5px}#v3 .tkp .tx span{font-size:13.5px;color:#6F6B7C}
@@ -326,7 +327,7 @@
     return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${V.map((v,i)=>{const bh=Math.max(3,v/mx*h);return `<rect x="${(i*(bw+5)).toFixed(1)}" y="${(h-bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="2" fill="${color}" opacity="${(0.45+0.55*(i+1)/n).toFixed(2)}"/>`;}).join('')}</svg>`; };
 
   const SS=(k,v)=>{ try{ if(v===undefined) return sessionStorage.getItem('v3_'+k); sessionStorage.setItem('v3_'+k,v); }catch(e){ return null; } };
-  let TAB=SS('tab')||'hoy', SUBRED=SS('red')||'ig', FILTRO=SS('filtro')||'abiertas', FFORM=false, HFORM=false;
+  let TAB=SS('tab')||'hoy', SUBRED=SS('red')||'ig', FILTRO=SS('filtro')||'abiertas', FFORM=false, HFORM=false, AFORM=false;
   const Y0=+(SS('y')||0);   // al refrescar se vuelve a la misma sección y altura
   window.addEventListener('pagehide',()=>{ SS('y',String(Math.round(window.scrollY||0))); SS('red',SUBRED); SS('filtro',FILTRO); });
   window.addEventListener('beforeunload',()=>{ SS('y',String(Math.round(window.scrollY||0))); SS('red',SUBRED); SS('filtro',FILTRO); });
@@ -557,8 +558,9 @@
       <div class="tit2"><h2>Hitos</h2>${HDISP.length?`<button id="v3hnuevo">${HFORM?'Cerrar':'Agregar hito'}</button>`:''}</div>
       <div class="card">${HT.length?HT.map(x=>`<div class="hito" style="margin:0;border-top:1px solid #EDE6D8;grid-template-columns:38px 1fr;position:relative"><div>${ico.sol}</div><div><div class="v3t">${esc(HTIT(x.h))}</div><div class="tx">${x.v!=null&&Number(x.v)>=Number(x.h.objetivo)?'¡Logrado!':'En camino'}</div></div><div class="bar"><div class="b"><i style="width:${x.v==null?0:Math.min(100,x.v/x.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(x.v)} / ${nf(x.h.objetivo)}</span></div>${x.h.id&&!x.h.virtual?`<button class="hx" data-hdel="${x.h.id}" aria-label="Borrar hito">×</button>`:''}</div>`).join(''):'<div class="vacio">Todavía no hay hitos. Sumá una meta: por ejemplo, a cuántos seguidores querés llegar.</div>'}
         ${HFORM?`<div class="fform hform"><select id="v3hm">${HDISP.map(k=>`<option value="${k}">${HMET[k][0]}</option>`).join('')}</select><input id="v3ho" inputmode="decimal" placeholder="Meta (número)"><input id="v3ht" placeholder="Nombre (opcional)"><button id="v3hadd">Guardar hito</button></div>`:''}</div>
-      <div class="tit2"><h2>Tus activos</h2></div>
-      <div class="card lista">${A.length?A.map(a=>`<div class="fila" style="grid-template-columns:1fr 18px">${a.url?`<a class="tx" style="color:${NAVY};text-decoration:none" href="${esc(a.url)}" target="_blank" rel="noopener"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">${esc(a.descripcion||'')}</span></a>`:`<span class="tx"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">En preparación</span></span>`}<span class="ch">${ico.ch}</span></div>`).join(''):'<div class="vacio">Todavía no hay enlaces.</div>'}</div>
+      <div class="tit2"><h2>Tus activos</h2><button id="v3anuevo">${AFORM?'Cerrar':'Agregar activo'}</button></div>
+      <div class="card lista">${A.length?A.map(a=>`<div class="fila" style="grid-template-columns:1fr 18px${a.id?' 28px':''}">${a.url?`<a class="tx" style="color:${NAVY};text-decoration:none" href="${esc(a.url)}" target="_blank" rel="noopener"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">${esc(a.descripcion||'')}</span></a>`:`<span class="tx"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">En preparación</span></span>`}<span class="ch">${ico.ch}</span>${a.id?`<button class="hx" data-adel="${a.id}" aria-label="Borrar activo">×</button>`:''}</div>`).join(''):'<div class="vacio">Todavía no hay enlaces. Sumá tus links: tu web, tu Spotify, tu tienda, tu canal.</div>'}
+        ${AFORM?`<div class="fform"><input id="v3at" placeholder="Nombre. Por ejemplo: Mi Spotify"><input class="u" id="v3au" placeholder="Link (https://…)"><input id="v3ad" placeholder="Descripción (opcional)"><button id="v3aadd">Guardar activo</button></div>`:''}</div>
       <div class="tit2"><h2>Tus notas</h2></div>
       <p class="bj" style="margin:0 0 10px;font-size:14.5px">Dejanos lo que quieras que tengamos en cuenta: una idea, una duda, algo que pasó en estos días.</p>
       <div class="card notas3"><div class="nn"><textarea id="v3nt" rows="3" placeholder="Escribí acá…"></textarea><button id="v3nadd">Guardar nota</button></div>
@@ -673,6 +675,12 @@
       if(!o||o<=0){ alert('Poné a qué número querés llegar'); return; } ha.disabled=true; ha.textContent='Guardando…';
       window.SRE&&window.SRE('hito_nuevo',{}); const r=await rpc('sub_hito_cliente_alta',{p_slug:slug,p_k:tok,p_metrica:m,p_objetivo:o,p_titulo:raiz.querySelector('#v3ht').value.trim()||null});
       if(r&&r.ok){ HFORM=false; recargar(); } else { ha.disabled=false; ha.textContent='Guardar hito'; alert(r&&r.error==='demasiados'?'Ya tenés 8 hitos: borrá alguno primero.':'No se pudo guardar el hito.'); } };
+    const an=raiz.querySelector('#v3anuevo'); if(an) an.onclick=()=>{ AFORM=!AFORM; armar(window.__D); if(AFORM) setTimeout(()=>{ const o=document.getElementById('v3at'); o&&(o.scrollIntoView({block:'center'}),o.focus()); },60); };
+    const aa=raiz.querySelector('#v3aadd'); if(aa) aa.onclick=async()=>{ const t=raiz.querySelector('#v3at').value.trim(); let u=raiz.querySelector('#v3au').value.trim();
+      if(!t){ alert('Poné un nombre para el activo'); return; } if(u&&!/^https?:\/\//i.test(u)) u='https://'+u; aa.disabled=true; aa.textContent='Guardando…';
+      const r=await rpc('sub_activo_cliente_alta',{p_slug:slug,p_k:tok,p_titulo:t,p_url:u||null,p_descripcion:raiz.querySelector('#v3ad').value.trim()||null});
+      if(r&&r.ok){ AFORM=false; recargar(); } else { aa.disabled=false; aa.textContent='Guardar activo'; alert('No se pudo guardar el activo. Probá de nuevo.'); } };
+    raiz.querySelectorAll('[data-adel]').forEach(b=>b.onclick=async(ev)=>{ ev.preventDefault(); ev.stopPropagation(); if(!confirm('¿Borrar este activo?')) return; b.disabled=true; const r=await rpc('sub_activo_cliente_borrar',{p_slug:slug,p_k:tok,p_id:b.dataset.adel}); if(r&&r.ok) recargar(); else b.disabled=false; });
     raiz.querySelectorAll('[data-hdel]').forEach(b=>b.onclick=async()=>{ if(!confirm('¿Borrar este hito?')) return; b.disabled=true; const r=await rpc('sub_hito_cliente_borrar',{p_slug:slug,p_k:tok,p_id:b.dataset.hdel}); if(r&&r.ok) recargar(); else b.disabled=false; });
     const fn=raiz.querySelector('#v3fnueva'); if(fn) fn.onclick=()=>{ FFORM=!FFORM; armar(window.__D); };
     const fa=raiz.querySelector('#v3fadd'); if(fa) fa.onclick=async()=>{ const f=raiz.querySelector('#v3ff').value, t=raiz.querySelector('#v3ft').value.trim();
