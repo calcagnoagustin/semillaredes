@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Víveres · Serie fotográfica de Andrea Guedella</title>
+<meta name="description" content="Víveres: autorretratos intervenidos de Andrea Guedella. Transformaciones del cuerpo en alimento, con una pizca de humor negro.">
+<meta property="og:title" content="Víveres · Andrea Guedella">
+<meta property="og:description" content="Autorretratos intervenidos. Un cuerpo de obra, capaz de comerse a sí mismo.">
+<meta property="og:image" content="https://semillaredes.com/vivereslanding/img/og.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+:root{--papel:#FAF8F4;--tinta:#1C1A19;--gris:#7C766F;--rojo:#B5121B;--rojo2:#8E0E15;--linea:rgba(28,26,25,.14)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--papel);color:var(--tinta);font-family:'Inter',system-ui,sans-serif;font-weight:300;font-size:17.5px;line-height:1.7;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.eti{font-size:12px;letter-spacing:.32em;text-transform:uppercase;font-weight:500;color:var(--rojo);margin:0 0 16px}
+h2{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(36px,5vw,60px);line-height:1.05;margin:0;letter-spacing:-.01em}
+h2 i{color:var(--rojo)}
+section{padding:110px 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 28px;border-radius:999px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;text-decoration:none;transition:transform .2s,background .2s,color .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.pri{background:var(--rojo);color:#fff}
+.btn.pri:hover{background:var(--rojo2)}
+.btn.sec{border:1px solid var(--tinta)}
+.btn.sec:hover{background:var(--tinta);color:var(--papel)}
+
+/* portada */
+.nav{display:flex;justify-content:space-between;align-items:center;padding:24px 28px;font-size:12px;letter-spacing:.3em;text-transform:uppercase;font-weight:500}
+.nav a{text-decoration:none;border-bottom:1px solid var(--tinta);padding-bottom:3px}
+.portada>div{min-width:0}
+.portada{min-height:calc(100svh - 70px);display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:60px;padding:20px 24px 70px}
+.portada .logo{width:min(520px,100%)}
+.portada .por{font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--gris);margin:26px 0 0;font-weight:400}
+.portada .bajada{font-family:'Fraunces',serif;font-style:italic;font-size:clamp(22px,2.2vw,28px);line-height:1.35;margin:30px 0 34px;max-width:480px}
+.portada .acciones{display:flex;flex-wrap:wrap;gap:14px}
+.portada .foto{position:relative}
+.portada .foto img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 30%}
+.portada .foto span{position:absolute;left:0;bottom:-30px;font-size:13px;color:var(--gris);letter-spacing:.06em}
+
+/* texto */
+.texto{background:#fff;border-top:1px solid var(--linea);border-bottom:1px solid var(--linea)}
+.texto .col{max-width:720px;margin:0 auto}
+.texto p{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(20px,1.9vw,23px);line-height:1.6;margin:0 0 22px}
+.texto p.pregunta{font-style:italic;color:var(--rojo);font-size:clamp(24px,2.4vw,30px);margin-top:36px}
+.texto .firma{font-family:'Inter',sans-serif;font-size:13px;letter-spacing:.24em;text-transform:uppercase;font-weight:500;margin-top:30px}
+
+/* la carta */
+.carta .cab{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end}
+.carta .cab p{color:var(--gris);margin:0}
+.menu{list-style:none;margin:56px 0 0;padding:0;columns:2;column-gap:60px;border-top:1px solid var(--tinta)}
+.menu li{break-inside:avoid}
+.menu a{display:grid;grid-template-columns:34px 1fr;align-items:baseline;gap:12px;padding:16px 0;border-bottom:1px solid var(--linea);text-decoration:none;transition:color .2s}
+.menu a:hover{color:var(--rojo)}
+.menu b{font-size:12px;color:var(--rojo);font-weight:500;letter-spacing:.08em}
+.menu span{font-family:'Fraunces',serif;font-size:22px;font-weight:400}
+.menu em{font-style:normal;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gris)}
+
+/* obras */
+.obras{padding-top:40px}
+.grilla{display:flex;flex-direction:column;gap:44px}
+.fila{display:flex;gap:28px;align-items:flex-start}
+.obra{margin:0;scroll-margin-top:30px;flex-basis:0;min-width:0}
+.obra button{display:block;width:100%;padding:0;border:0;background:#EDE9E2;cursor:zoom-in}
+.obra img{width:100%;height:auto;transition:opacity .3s}
+.obra button:hover img{opacity:.92}
+.obra figcaption{display:flex;justify-content:space-between;align-items:baseline;gap:14px;margin-top:12px;font-size:13px;color:var(--gris);letter-spacing:.06em}
+.obra figcaption strong{font-family:'Fraunces',serif;font-size:20px;font-weight:400;color:var(--tinta);letter-spacing:0}
+
+
+/* contacto */
+.contacto{text-align:center}
+.contacto .logo{width:min(300px,70%);margin:0 auto 30px}
+.contacto h2{max-width:760px;margin:0 auto}
+.contacto .lead{color:var(--gris);max-width:560px;margin:20px auto 0}
+.contacto .acciones{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin-top:36px}
+.redes{display:flex;justify-content:center;flex-wrap:wrap;gap:12px 34px;margin-top:46px;padding-top:30px;border-top:1px solid var(--linea);font-size:15px}
+.redes a{text-decoration:none;color:var(--gris)}
+.redes a:hover{color:var(--rojo)}
+.pie{margin:60px 0 0;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--gris)}
+
+/* visor */
+.visor{position:fixed;inset:0;z-index:50;background:rgba(18,16,15,.94);display:none;align-items:center;justify-content:center;padding:60px 20px}
+.visor.on{display:flex}
+.visor img{max-width:100%;max-height:calc(100vh - 140px);object-fit:contain}
+.visor p{position:absolute;left:0;right:0;bottom:22px;text-align:center;color:#EDE9E2;font-family:'Fraunces',serif;font-size:22px;margin:0}
+.visor button{position:absolute;background:none;border:0;color:#EDE9E2;font-size:34px;line-height:1;cursor:pointer;padding:14px}
+.visor .x{top:10px;right:14px}.visor .ant{left:6px;top:50%;transform:translateY(-50%)}.visor .sig{right:6px;top:50%;transform:translateY(-50%)}
+
+@media(max-width:900px){
+  section{padding:84px 0}
+  .portada{grid-template-columns:1fr;gap:56px;min-height:0}
+  .carta .cab{grid-template-columns:1fr;gap:18px}
+  .menu{columns:1}
+  .fila{flex-direction:column;gap:44px}
+  .obra{flex-basis:auto;width:100%}
+  .v{max-width:420px}
+}
+@media(max-width:640px){
+  body{font-size:16.5px}
+  .nav{padding:20px 18px}
+  .acciones .btn{flex:1 1 100%}
+  .menu span{font-size:19px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" data-b="1"><b data-e="1">Andrea Guedella</b><a href="#contacto" data-e="2">Contacto</a></nav>
+
+<header class="wrap portada" data-b="2">
+  <div>
+    <h1 style="margin:0"><img class="logo" src="img/logo.png" alt="Víveres" data-e="3"></h1>
+    <p class="por" data-e="4">Serie fotográfica por Andrea Guedella</p>
+    <p class="bajada" data-e="5">Autorretratos intervenidos. Un cuerpo de obra, capaz de comerse a sí mismo.</p>
+    <div class="acciones">
+      <a class="btn pri" href="#carta" data-e="6">Ver la serie</a>
+      <a class="btn sec" href="#contacto" data-e="7">Contacto</a>
+    </div>
+  </div>
+  <div class="foto"><img src="img/cerda.jpg" alt="Cerda, de la serie Víveres" fetchpriority="high" data-e="8"><span data-e="9">Cerda</span></div>
+</header>
+
+<section class="texto" data-b="3">
+  <div class="wrap"><div class="col">
+    <p class="eti" data-e="10">La serie</p>
+    <p data-e="11">Desde niña, tenía fantasías sobre temas serios. Imaginaba que en cualquier situación de restricción extrema, emergencia, guerra, abandono o pobreza, yo no moriría. Sobre todo, no moriría de hambre porque recurriría a mí misma.</p>
+    <p data-e="12">Algo muy primitivo, de naturaleza antropofágica, que lejos de asustarme, lo aceptaba con la naturalidad de una niña. Con el paso del tiempo, la realidad, el cambio climático, la pandemia, las guerras y tanta miseria esos sentimientos y recuerdos regresaron.</p>
+    <p data-e="13">Decidí capturarlos con mi cámara. Explorarlos con mi cuerpo. Preparé mis víveres: autorretratos intervenidos. Transformaciones de mi cuerpo en alimento, en material de consumo. Tratar el cuerpo como objeto fotográfico y sujeto necesario para existir, resistir y sobrevivir. Ya que sin él, no hay vida.</p>
+    <p data-e="14">«Víveres» resulta un plato fuerte. Sazonado con una pizca de humor negro. Un cuerpo de obra, capaz de comerse a sí mismo.</p>
+    <p class="pregunta" data-e="15">Me pregunto también, ¿somos lo que comemos?</p>
+    <p class="firma" data-e="16">Andrea Guedella</p>
+  </div></div>
+</section>
+
+<section class="carta" id="carta" data-b="4">
+  <div class="wrap">
+    <div class="cab">
+      <div>
+        <p class="eti" data-e="17">La carta</p>
+        <h2 data-e="18">Quince <i>platos</i></h2>
+      </div>
+      <p data-e="19">Tocá un plato para verlo. Cada imagen es un autorretrato intervenido.</p>
+    </div>
+    <ol class="menu">
+      <li><a href="#o1"><b>01</b><span data-e="20">Docena de color</span></a></li>
+      <li><a href="#o2"><b>02</b><span data-e="21">Poché</span></a></li>
+      <li><a href="#o3"><b>03</b><span data-e="22">Choclo</span></a></li>
+      <li><a href="#o4"><b>04</b><span data-e="23">Desayuno continental</span></a></li>
+      <li><a href="#o5"><b>05</b><span data-e="24">Masa madre</span></a></li>
+      <li><a href="#o6"><b>06</b><span data-e="25">Corte fresco</span></a></li>
+      <li><a href="#o7"><b>07</b><span data-e="26">Poyo</span></a></li>
+      <li><a href="#o8"><b>08</b><span data-e="27">Manicure</span></a></li>
+      <li><a href="#o9"><b>09</b><span data-e="28">Olla popular</span></a></li>
+      <li><a href="#o10"><b>10</b><span data-e="29">Bloody</span></a></li>
+      <li><a href="#o11"><b>11</b><span data-e="30">Ojo de bife</span></a></li>
+      <li><a href="#o12"><b>12</b><span data-e="31">Cosa Nostra</span></a></li>
+      <li><a href="#o13"><b>13</b><span data-e="32">Cerda</span></a></li>
+      <li><a href="#o14"><b>14</b><span data-e="33">Bocadillo</span></a></li>
+      <li><a href="#o15"><b>15</b><span data-e="34">Ladyfingers</span></a></li>
+    </ol>
+  </div>
+</section>
+
+<section class="obras" data-b="5">
+  <div class="wrap grilla">
+    <div class="fila">
+      <figure class="obra h" id="o1" style="flex-grow:1.657"><button><img src="img/docena-de-color.jpg" alt="Docena de color" loading="lazy" data-e="35"></button><figcaption><strong data-e="36">Docena de color</strong><span>01</span></figcaption></figure>
+      <figure class="obra h" id="o2" style="flex-grow:1.657"><button><img src="img/poche.jpg" alt="Poché" loading="lazy" data-e="37"></button><figcaption><strong data-e="38">Poché</strong><span>02</span></figcaption></figure>
+    </div>
+    <div class="fila">
+      <figure class="obra h" id="o3" style="flex-grow:1.657"><button><img src="img/choclo.jpg" alt="Choclo" loading="lazy" data-e="39"></button><figcaption><strong data-e="40">Choclo</strong><span>03</span></figcaption></figure>
+      <figure class="obra h" id="o4" style="flex-grow:1.657"><button><img src="img/desayuno-continental.jpg" alt="Desayuno continental" loading="lazy" data-e="41"></button><figcaption><strong data-e="42">Desayuno continental</strong><span>04</span></figcaption></figure>
+    </div>
+    <div class="fila">
+      <figure class="obra h" id="o5" style="flex-grow:1.657"><button><img src="img/masa-madre.jpg" alt="Masa madre" loading="lazy" data-e="43"></button><figcaption><strong data-e="44">Masa madre</strong><span>05</span></figcaption></figure>
+      <figure class="obra v" id="o6" style="flex-grow:0.666"><button><img src="img/corte-fresco.jpg" alt="Corte fresco" loading="lazy" data-e="45"></button><figcaption><strong data-e="46">Corte fresco</strong><span>06</span></figcaption></figure>
+    </div>
+    <div class="fila">
+      <figure class="obra h" id="o7" style="flex-grow:1.657"><button><img src="img/poyo.jpg" alt="Poyo" loading="lazy" data-e="47"></button><figcaption><strong data-e="48">Poyo</strong><span>07</span></figcaption></figure>
+      <figure class="obra h" id="o8" style="flex-grow:1.745"><button><img src="img/manicure.jpg" alt="Manicure" loading="lazy" data-e="49"></button><figcaption><strong data-e="50">Manicure</strong><span>08</span></figcaption></figure>
+    </div>
+    <div class="fila">
+      <figure class="obra h" id="o9" style="flex-grow:1.657"><button><img src="img/olla-popular.jpg" alt="Olla popular" loading="lazy" data-e="51"></button><figcaption><strong data-e="52">Olla popular</strong><span>09</span></figcaption></figure>
+      <figure class="obra v" id="o10" style="flex-grow:0.667"><button><img src="img/bloody.jpg" alt="Bloody" loading="lazy" data-e="53"></button><figcaption><strong data-e="54">Bloody</strong><span>10</span></figcaption></figure>
+    </div>
+    <div class="fila">
+      <figure class="obra h" id="o11" style="flex-grow:1.657"><button><img src="img/ojo-de-bife.jpg" alt="Ojo de bife" loading="lazy" data-e="55"></button><figcaption><strong data-e="56">Ojo de bife</strong><span>11</span></figcaption></figure>
+      <figure class="obra h" id="o12" style="flex-grow:1.657"><button><img src="img/cosa-nostra.jpg" alt="Cosa Nostra" loading="lazy" data-e="57"></button><figcaption><strong data-e="58">Cosa Nostra</strong><span>12</span></figcaption></figure>
+    </div>
+    <div class="fila">
+      <figure class="obra h" id="o13" style="flex-grow:1.657"><button><img src="img/cerda.jpg" alt="Cerda" loading="lazy" data-e="59"></button><figcaption><strong data-e="60">Cerda</strong><span>13</span></figcaption></figure>
+    </div>
+    <div class="fila">
+      <figure class="obra h" id="o14" style="flex-grow:1.657"><button><img src="img/bocadillo.jpg" alt="Bocadillo" loading="lazy" data-e="61"></button><figcaption><strong data-e="62">Bocadillo</strong><span>14</span></figcaption></figure>
+      <figure class="obra h" id="o15" style="flex-grow:1.657"><button><img src="img/ladyfingers.jpg" alt="Ladyfingers" loading="lazy" data-e="63"></button><figcaption><strong data-e="64">Ladyfingers</strong><span>15</span></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section class="contacto" id="contacto" data-b="6">
+  <div class="wrap">
+    <img class="logo" src="img/logo.png" alt="Víveres" loading="lazy" data-e="65">
+    <p class="eti" data-e="66">Contacto</p>
+    <h2 data-e="67">Exhibiciones, prensa <i>y adquisición de obra</i></h2>
+    <p class="lead" data-e="68">Escribile a Andrea para llevar «Víveres» a una sala, una publicación o tu colección.</p>
+    <div class="acciones">
+      <a class="btn pri" href="https://ig.me/m/disparosaguedella" target="_blank" rel="noopener" data-e="69">Escribir por Instagram</a>
+      <a class="btn sec" href="https://www.instagram.com/disparosaguedella/" target="_blank" rel="noopener" data-e="70">Ver su Instagram</a>
+    </div>
+    <div class="redes">
+      <a href="https://www.instagram.com/disparosaguedella/" target="_blank" rel="noopener" data-e="71">@disparosaguedella</a>
+      <a href="https://www.instagram.com/espaciodisparos/" target="_blank" rel="noopener" data-e="72">Espacio Disparos</a>
+    </div>
+    <p class="pie" data-e="73">Víveres · Andrea Guedella</p>
+  </div>
+</section>
+
+<div class="visor" id="visor" aria-hidden="true"><button class="x" aria-label="Cerrar">×</button><button class="ant" aria-label="Anterior">‹</button><img alt=""><p></p><button class="sig" aria-label="Siguiente">›</button></div>
+<script>
+(function(){
+  var F=[].slice.call(document.querySelectorAll('.obra')), v=document.getElementById('visor'), im=v.querySelector('img'), tx=v.querySelector('p'), i=0;
+  function ver(n){ i=(n+F.length)%F.length; var f=F[i]; im.src=f.querySelector('img').src; im.alt=f.querySelector('img').alt; tx.textContent=f.querySelector('strong').textContent; v.classList.add('on'); }
+  F.forEach(function(f,n){ f.querySelector('button').addEventListener('click',function(){ if(document.getElementById('srBar')) return; ver(n); }); });
+  v.querySelector('.x').onclick=function(){ v.classList.remove('on'); };
+  v.querySelector('.ant').onclick=function(e){ e.stopPropagation(); ver(i-1); };
+  v.querySelector('.sig').onclick=function(e){ e.stopPropagation(); ver(i+1); };
+  v.addEventListener('click',function(e){ if(e.target===v) v.classList.remove('on'); });
+  document.addEventListener('keydown',function(e){ if(!v.classList.contains('on')) return; if(e.key==='Escape') v.classList.remove('on'); if(e.key==='ArrowLeft') ver(i-1); if(e.key==='ArrowRight') ver(i+1); });
+})();
+</script>
+<script src="https://vm.semillaredes.com/web/editor.js" defer></script>
+</body>
+</html>
