@@ -90,7 +90,7 @@ function pintar(d){
   </div>`;
 
   const filas=C.map(c=>`<tr>
-    <td><span class="dot ${estado(c.ultima)}"></span>${esc(c.nombre)}${c.app_nueva?'':'<span class="tag">clásica</span>'}</td>
+    <td><span class="dot ${estado(c.ultima)}"></span>${esc(c.nombre)}${c.app_nueva===false?'<span class="tag">app clásica</span>':''}</td>
     <td>${hace(c.ultima)}</td>
     <td class="n">${c.ses_7d||0}</td><td class="n">${c.ses_30d||0}</td>
     <td class="n">${c.rep_30d?`${c.rep_abiertos}/${c.rep_30d}`:'—'}</td>
