@@ -108,7 +108,7 @@
   #v3 .fform .u{grid-column:1/-1}
   #v3 .hform select{grid-column:1/-1;border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:10px 12px;font:15px Inter,sans-serif;color:#24242C}
   #v3 .lista .hx{width:28px;height:28px;border:0;border-radius:50%;background:none;color:#A9A190;font:400 20px/1 Inter,sans-serif;cursor:pointer;padding:0}
-  #v3 .dest{margin-top:18px;background:#FBF8F2;border:1.5px solid ${VINO};border-radius:18px;padding:18px 18px 16px}
+  #v3 .dest{margin-top:26px;background:#FBF8F2;border:1.5px solid ${VINO};border-radius:18px;padding:18px 18px 16px}
   #v3 .dest .de{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:${VINO}}
   #v3 .dest .de span{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:1px;color:#55525F}
   #v3 .dest .de span i{width:8px;height:8px;border-radius:50%;background:#A9A190}
@@ -466,8 +466,8 @@
         </div></div>`; }).join('')}</div>`; })();
     const scrHoy=`
       <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>
-      ${DEST}
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
+      ${DEST}
       ${GIRA}
       <div class="tit2"><h3>Métricas principales</h3><button data-ir="metricas">Ver todas</button></div>
       <div class="met">${MET.slice(0,3).map(m=>`<div class="card"><div class="ic">${ico[m.ic]}</div><div class="v ${m.k==='vta_costo_venta'?'ch':''}">${m.k==='ig_conv'?nf(val(m.k),1)+'%':m.k==='vta_costo_venta'?SIM.trim()+' '+nf(val(m.k),2):m.k==='vta_roas_pixel'?nf(val(m.k),1)+'x':nf(val(m.k),Number.isInteger(Number(val(m.k)))?0:1)}</div><div class="l">${Number(val(m.k))===1?m.l.replace(/^consultas$/,'consulta').replace(/^mensajes$/,'mensaje').replace(/^ventas$/,'venta').replace(/^seguidores$/,'seguidor'):m.l}</div><div class="d">${m.k==='ig_conv'?dPt(m.k):dK(m.k,m.k==='vta_costo_venta')}</div></div>`).join('')}</div>
