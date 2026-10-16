@@ -109,7 +109,7 @@
   #v3 .hform select{grid-column:1/-1;border:1px solid #DDD6C7;border-radius:10px;background:#fff;padding:10px 12px;font:15px Inter,sans-serif;color:#24242C}
   #v3 .lista .hx{width:28px;height:28px;border:0;border-radius:50%;background:none;color:#A9A190;font:400 20px/1 Inter,sans-serif;cursor:pointer;padding:0}
   #v3 .dest{margin-top:26px;background:#FBF8F2;border:1.5px solid ${VINO};border-radius:18px;padding:18px 18px 16px}
-  #v3 .dest .de{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:${VINO}}
+  #v3 .dest .de{display:flex;align-items:center;justify-content:space-between;gap:10px;white-space:nowrap;font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:${VINO}}
   #v3 .dest .de span{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:1px;color:#55525F}
   #v3 .dest .de span i{width:8px;height:8px;border-radius:50%;background:#A9A190}
   #v3 .dest .de span.on i{background:#2F7A4F}
@@ -448,7 +448,7 @@
       const fl=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
       const it=[]; if(M.visitas!=null) it.push([nf(M.visitas),M.resultado||'resultados']); if(M.alcance!=null) it.push([nf(M.alcance),'personas alcanzadas']);
       if(M.inversion!=null) it.push([SIM+nf(M.inversion),'invertidos']); if(M.costo_visita!=null) it.push([SIM+nf(M.costo_visita,2),'por '+String(M.resultado||'resultado').replace(/s(\s|$)/,'$1').replace(/es al /,' al ')]);
-      return `<div class="dest"><div class="de">Campaña destacada<span class="${on?'on':''}"><i></i>${on?'Activa':M.estado==='sin_circular'?'Sin circular todavía':'Terminada'}</span></div>
+      return `<div class="dest"><div class="de">Campaña destacada<span class="${on?'on':''}"><i></i>${on?'Activa':M.estado==='sin_circular'?'Sin circular':'Terminada'}</span></div>
         <h3>${esc(k.nombre)}</h3><div class="ds">${M.show?'Show el '+fl(M.show)+' · ':''}${M.desde?'Desde el '+fl(M.desde):''}${M.hasta?' hasta el '+fl(M.hasta):''}</div>
         ${it.length?`<div class="dg">${it.map(x=>`<div><b>${x[0]}</b><small>${esc(x[1])}</small></div>`).join('')}</div>`:'<div class="ds" style="margin-top:12px">Los números aparecen en la próxima actualización.</div>'}
         <div class="dp">${M.show?'Acumulado desde el '+fl(M.desde):'Acumulado de toda la campaña'}${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; }).join('');
