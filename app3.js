@@ -448,10 +448,10 @@
       const fl=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
       const it=[]; if(M.visitas!=null) it.push([nf(M.visitas),M.resultado||'resultados']); if(M.alcance!=null) it.push([nf(M.alcance),'personas alcanzadas']);
       if(M.inversion!=null) it.push([SIM+nf(M.inversion),'invertidos']); if(M.costo_visita!=null) it.push([SIM+nf(M.costo_visita,2),'por '+String(M.resultado||'resultado').replace(/s(\s|$)/,'$1').replace(/es al /,' al ')]);
-      return `<div class="dest"><div class="de">Campaña destacada<span class="${on?'on':''}"><i></i>${on?'Activa':'Terminada'}</span></div>
-        <h3>${esc(k.nombre)}</h3><div class="ds">${M.desde?'Desde el '+fl(M.desde):''}${M.hasta?' hasta el '+fl(M.hasta):''}</div>
+      return `<div class="dest"><div class="de">Campaña destacada<span class="${on?'on':''}"><i></i>${on?'Activa':M.estado==='sin_circular'?'Sin circular todavía':'Terminada'}</span></div>
+        <h3>${esc(k.nombre)}</h3><div class="ds">${M.show?'Show el '+fl(M.show)+' · ':''}${M.desde?'Desde el '+fl(M.desde):''}${M.hasta?' hasta el '+fl(M.hasta):''}</div>
         ${it.length?`<div class="dg">${it.map(x=>`<div><b>${x[0]}</b><small>${esc(x[1])}</small></div>`).join('')}</div>`:'<div class="ds" style="margin-top:12px">Los números aparecen en la próxima actualización.</div>'}
-        <div class="dp">Acumulado de toda la campaña${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; }).join('');
+        <div class="dp">${M.show?'Acumulado desde el '+fl(M.desde):'Acumulado de toda la campaña'}${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; }).join('');
     // --- Shows de la gira en Hoy (Koino): entradas vendidas según el píxel de Meta, una tarjeta por fecha que todavía no pasó ---
     const GIRA=(()=>{ const hoyI=new Date().toISOString().slice(0,10); const L=(um.fechas||[]).filter(f=>f&&f.fecha&&String(f.fecha).slice(0,10)>=hoyI).sort((a,b)=>a.fecha<b.fecha?-1:1);
       if(!L.length) return '';
