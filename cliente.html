@@ -465,7 +465,7 @@ details.hist table{border:0;border-radius:0}
   var oculto=0; document.addEventListener('visibilitychange',function(){ if(document.hidden) oculto=Date.now(); else if(oculto&&Date.now()-oculto>30*60000) abrir(); });
 })();
 </script>
-<script>/* app nueva "Atelier": solo en perfiles de prueba */ if(/[?&]c=(hernan-onirico-2|piku-yoga|semilla-redes|animales-del-rock-2|maria-marta-crespo|berco-estudio|federico-andahazi|felipe-gonzalez|spam-studio|sin-fronteras-duo|abel-maldonado|mavela|animales-del-rock|hernan-onirico|lu-glass|marcos-cifuentes|andrea-guedella|betsy-grinblat|cheche-beraja|jimena-mercedes)(&|$)/.test(location.search)) document.write('<script src="/app3.js?v='+Date.now()+'"><\/script>');</script>
+<script>/* app nueva "Atelier": solo en perfiles de prueba */ if(/[?&]c=(hernan-onirico-2|piku-yoga|semilla-redes|animales-del-rock-2|maria-marta-crespo|berco-estudio|federico-andahazi|felipe-gonzalez|spam-studio|sin-fronteras-duo|abel-maldonado|mavela|animales-del-rock|hernan-onirico|lu-glass|marcos-cifuentes|andrea-guedella|betsy-grinblat|cheche-beraja|jimena-mercedes|los-soplafortune|koino)(&|$)/.test(location.search)) document.write('<script src="/app3.js?v='+Date.now()+'"><\/script>');</script>
 </head>
 <body>
 <div class="wrap">
@@ -1617,8 +1617,8 @@ function pintarSteam(d){
 }
 
 // cuando se actualiza cada status (va arriba de todo, en el aviso)
-const ACTUALIZA={'alan-sutton':'todos los lunes a las 7 de la mañana','los-soplafortune':'todos los lunes a las 7 de la mañana','koino':'todos los jueves a las 7 de la mañana'};
-const ACTUALIZA_SUB={'koino':'Cada reporte es una semana, de jueves a jueves. Los números no son en vivo: corresponden a la última semana cerrada. Las fechas de la gira se ven siempre, aunque la campaña todavía no esté publicada.'};
+const ACTUALIZA={'alan-sutton':'todos los lunes a las 7 de la mañana','los-soplafortune':'todos los lunes a las 7 de la mañana','koino':'todos los martes a las 7 de la mañana'};
+const ACTUALIZA_SUB={'koino':'Cada reporte va de martes a martes. Los números no son en vivo: corresponden al último período cerrado. Las fechas de la gira se ven siempre, aunque la campaña todavía no esté publicada.'};
 // moneda de la cuenta publicitaria cuando la base todavia dice otra
 const MONEDA={'los-soplafortune':'ARS'};
 function pintar(d){ window.__D=d; if(MONEDA[slug]) d.cliente.moneda=MONEDA[slug];
@@ -1643,7 +1643,7 @@ function pintar(d){ window.__D=d; if(MONEDA[slug]) d.cliente.moneda=MONEDA[slug]
   <p class="periodo">${u?`${fecha(u.desde)} al ${fecha(u.hasta)}`:'Sin reportes cargados'}</p>${ACTUALIZA[slug]?`
   <div class="avisoActualiza">
     <div class="tit">Este informe se actualiza ${ACTUALIZA[slug]}.</div>
-    <p class="sub">${ACTUALIZA_SUB[slug]||'Cada reporte es una semana, de lunes a lunes. Los números no son en vivo: corresponden a la última semana cerrada.'}</p>
+    <p class="sub">${ACTUALIZA_SUB[slug]||'Cada reporte es una semana, de lunes a lunes. Los números no son en vivo: corresponden al último período cerrado.'}</p>
   </div>`:''}`;
   if(['mensajes','mixto','ventas','steam','trafico','semilla'].includes(d.cliente.tipo)){ return pintarResto(d,h); }
 
