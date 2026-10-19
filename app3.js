@@ -72,6 +72,7 @@
   #v3 .hito .bar .b{height:10px;border-radius:99px;background:#E6DFD0;overflow:hidden}
   #v3 .hito .bar .b i{display:block;height:100%;background:${OLIVA};border-radius:99px}
   #v3 .hito .bar span{font-size:13.5px;color:#55525F;font-variant-numeric:tabular-nums;white-space:nowrap}
+  #v3 #v3todo .hito{display:block;margin:0 0 10px;padding:16px 18px}   /* hitos del panel completo: su propio diseño, no la tarjeta de Hoy */
   #v3 .acc{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
   #v3 .acc button{background:#FBF8F2;border:1px solid #E8E1D3;border-radius:16px;padding:14px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;font:500 12.5px/1.25 Inter,sans-serif;color:#24242C;cursor:pointer;min-height:96px}
   #v3 .acc svg{color:${OLIVA}}
