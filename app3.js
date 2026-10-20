@@ -120,6 +120,13 @@
   #v3 .dest .dg b{display:block;font-size:22px;line-height:1.1;color:#24242C;font-weight:700}
   #v3 .dest .dg small{display:block;font-size:12.5px;color:#55525F;margin-top:3px}
   #v3 .dest .dp{font-size:12px;color:#8A8698;margin-top:12px}
+  #v3 .cjl{display:grid;gap:12px}
+  #v3 .cjl .card{padding:16px}
+  #v3 .cjl .ct{font-size:16px;font-weight:600;color:#24242C;line-height:1.25}
+  #v3 .cjl .cs{font-size:13px;color:#6B6878;margin-top:3px}
+  #v3 .cjl .cg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+  #v3 .cjl .cg b{display:block;font-size:20px;line-height:1.1;color:${NAVY};font-weight:700}
+  #v3 .cjl .cg small{display:block;font-size:12px;color:#55525F;margin-top:3px;line-height:1.3}
   #v3 .gira{display:grid;gap:12px}
   #v3 .gira .card{display:grid;grid-template-columns:76px 1fr;gap:14px;align-items:center;padding:14px}
   #v3 .gira img{width:76px;height:76px;border-radius:12px;object-fit:cover;display:block}
@@ -462,6 +469,7 @@
           <div class="gt">${esc(f.lugar||'')}${f.ciudad?' · '+esc(f.ciudad):''}</div>
           <div class="gs">${fl(f.fecha)} · ${dd===0?'es hoy':dd===1?'falta 1 día':'faltan '+dd+' días'}</div>
           <div class="gn"><b>${nf(e)}</b><span>${e===1?'entrada vendida':'entradas vendidas'}${ep?` · +${nf(ep)} en el período`:''}</span></div>
+          ${Number(f.inv_acum||0)>0?`<div class="gp">${e>0?`Costo por entrada: <b style="color:#24242C">${SIM}${nf(Number(f.inv_acum)/e,2)}</b> · `:''}Inversión: ${SIM}${nf(Number(f.inv_acum),2)}${e>0?'':' · todavía sin entradas'}</div>`:''}
           <div class="gp">Según el píxel de Meta${f.ticketera?' en '+esc(f.ticketera):''}${f.estado==='borrador'?' · la campaña todavía no está publicada':''}</div>
           ${f.tickets?`<a class="gl" href="${esc(f.tickets)}" target="_blank" rel="noopener">Ver entradas →</a>`:''}
         </div></div>`; }).join('')}</div>`; })();
@@ -472,6 +480,7 @@
       ${GIRA}
       <div class="tit2"><h3>Métricas principales</h3><button data-ir="metricas">Ver todas</button></div>
       <div class="met">${MET.slice(0,3).map(m=>`<div class="card"><div class="ic">${ico[m.ic]}</div><div class="v ${m.k==='vta_costo_venta'?'ch':''}">${m.k==='ig_conv'?nf(val(m.k),1)+'%':m.k==='vta_costo_venta'?SIM.trim()+' '+nf(val(m.k),2):m.k==='vta_roas_pixel'?nf(val(m.k),1)+'x':nf(val(m.k),Number.isInteger(Number(val(m.k)))?0:1)}</div><div class="l">${Number(val(m.k))===1?m.l.replace(/^consultas$/,'consulta').replace(/^mensajes$/,'mensaje').replace(/^ventas$/,'venta').replace(/^seguidores$/,'seguidor'):m.l}</div><div class="d">${m.k==='ig_conv'?dPt(m.k):dK(m.k,m.k==='vta_costo_venta')}</div></div>`).join('')}</div>
+      <div id="v3cj"></div>
       <div id="v3cta"></div>
       ${hito?`<div class="card hito"><div>${ico.sol}</div><div><div class="v3t">Tu próximo hito</div><div class="tx">${esc(HTIT(hito.h))}</div></div><button class="ir" data-ir="proyecto" aria-label="Ver hitos">${ico.flecha}</button>
         <div class="bar"><div class="b"><i style="width:${Math.min(100,hito.v/hito.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(hito.v)} / ${nf(hito.h.objetivo)}</span></div></div>`:''}
@@ -680,7 +689,12 @@
       const pg=P.saldo==null?'':`<div class="pg">${px?`<div class="r1"><span>Próximo cobro</span><b>${fch(px.fecha)} · ${pl(px.monto)}</b></div>`:`<div class="r1"><span>Saldo a pagar</span><b>${pl(P.saldo)}</b></div>`}
         <p>${px?`Se cobra solo${met?` a la <b>${esc(met)}</b>`:''} cuando el saldo llega a ${pl(P.umbral)}${P.fecha_ciclo?` o el ${fd(P.fecha_ciclo)}, lo que pase primero`:''}. Hoy el saldo es de ${pl(P.saldo)}${P.promedio_diario?` y se gastan unos ${pl(P.promedio_diario)} por día`:''}, por eso la fecha es aproximada.`
           :`${P.prepago?'Cuenta prepaga: se descuenta de los fondos cargados.':`Se cobra solo${met?` a la <b>${esc(met)}</b>`:''} cuando el saldo llega al umbral de Meta o a fin del ciclo de facturación.`}`}</p></div>`;
-      el.innerHTML=`<div class="cta"><span class="l">Cuenta publicitaria</span><span class="e ${c.activa?'on':''}"><i></i>${c.activa?'Activa':esc(c.estado.charAt(0).toUpperCase()+c.estado.slice(1))}</span><span class="n">${c.campanas} ${c.campanas===1?'campaña corriendo':'campañas corriendo'}</span>${pg}</div>`; };
+      const CJON=['yamila-beraja'].includes(slug), moneyC=v=>v==null?'—':usd?'USD '+nf(v,2):'$ '+nf(v,0);
+      const dia=CJON&&P.inversion_diaria!=null?`<div class="pg"><div class="r1"><span>Inversión diaria</span><b>${moneyC(P.inversion_diaria)}</b></div><p>Lo que está programado por día entre todos los conjuntos activos.</p></div>`:'';
+      const cjEl=document.getElementById('v3cj'), CJ=CJON?(c.conjuntos||[]):[];
+      if(cjEl) cjEl.innerHTML=CJ.length?`<div class="tit2"><h3>Conjuntos de anuncios</h3></div><div class="cjl">${CJ.map(z=>`<div class="card"><div class="ct">${esc(z.nombre)}</div><div class="cs">Desde el ${fd(z.inicio)}${z.diaria!=null?' · '+moneyC(z.diaria)+' por día':''}</div>
+        <div class="cg"><div><b>${nf(z.resultados)}</b><small>${esc(z.resultado)}</small></div><div><b>${nf(z.alcance)}</b><small>personas alcanzadas</small></div><div><b>${z.costo!=null?moneyC(z.costo).replace(/,00$/,',00'):'—'}</b><small>por visita</small></div></div></div>`).join('')}</div>`:'';
+      el.innerHTML=`<div class="cta"><span class="l">Cuenta publicitaria</span><span class="e ${c.activa?'on':''}"><i></i>${c.activa?'Activa':esc(c.estado.charAt(0).toUpperCase()+c.estado.slice(1))}</span><span class="n">${c.campanas} ${c.campanas===1?'campaña corriendo':'campañas corriendo'}</span>${dia}${pg}</div>`; };
     if(window.__V3CTA) pintaCta(window.__V3CTA);
     else fetch('https://vm.semillaredes.com/web/cuenta?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(c=>{ window.__V3CTA=c; pintaCta(c); }).catch(()=>{});
 
