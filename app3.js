@@ -101,6 +101,8 @@
   #v3 .ib:hover{background:#F1ECE1;color:${NAVY}}
   #v3 .ib[data-del2]:hover{color:${VINO}}
   #v3 .hacc{position:absolute;top:10px;right:8px}
+  #v3 .card > .hito{border:0;border-radius:0;background:none;box-shadow:none;border-top:1px solid #EDE6D8}
+  #v3 .card > .hito:first-child{border-top:0}
   #v3 .edf{display:grid;gap:8px;width:100%}
   #v3 .edf input,#v3 .edf textarea{width:100%;box-sizing:border-box;border:1px solid #E1D9C9;border-radius:12px;padding:10px 12px;font:500 15px/1.4 Inter,sans-serif;color:#24242C;background:#fff}
   #v3 .edf .alacc{display:flex;gap:8px}
@@ -546,7 +548,7 @@
         ${TT.length?TT.map(t=>{ const hecha=t.estado==='hecha', al=t.alarma&&!hecha?new Date(t.alarma):null, alOn=al&&!t.alarma_enviada;
           const alTxt=al?`${DS[al.getDay()].toLowerCase()} ${String(al.getDate()).padStart(2,'0')}/${String(al.getMonth()+1).padStart(2,'0')} · ${String(al.getHours()).padStart(2,'0')}:${String(al.getMinutes()).padStart(2,'0')}`:'';
           const loc=x=>{ const z=new Date(x.getTime()-x.getTimezoneOffset()*6e4); return z.toISOString().slice(0,16); };
-          return `<div class="fila tarea ${t.estado}"><button class="ck ${t.estado}" data-tck="${t.id}" data-est="${t.estado}" aria-label="Cambiar estado">${hecha?ico.tilde:''}</button><div class="tw">${EDon('tarea',t.id)?EDF([{v:t.titulo,ph:'Tarea'}]):`<span class="tx" data-tab="1">${esc(t.titulo)}</span>
+          return `<div class="fila tarea ${t.estado}"><button class="ck ${t.estado}" data-tck="${t.id}" data-est="${t.estado}" aria-label="Cambiar estado">${hecha?ico.tilde:''}</button><div class="tw">${EDon('tarea',t.id)?EDF([{v:t.titulo,ph:'Tarea',area:1}]):`<span class="tx" data-tab="1">${esc(t.titulo)}</span>
             <div class="tacc">${hecha?'':`<button class="est ${t.estado==='en_curso'?'on':''}" data-tcur="${t.id}" data-est="${t.estado}">En curso</button><button class="alb ${alOn?'on':''}" data-tal="${t.id}" aria-label="Poner alarma">${ico.alarma}</button>${al?`<small class="alt ${alOn?'on':''}">${alOn?alTxt:'Avisado · '+alTxt}</small>`:''}`}<span class="sp"></span>${IB('tarea',t.id)}</div>`}</div></div>
           ${ALFORM===t.id?`<div class="alform"><label>¿Cuándo te avisamos?</label><input type="datetime-local" id="v3alv" value="${al?loc(al):loc(new Date(Date.now()+864e5))}"><div class="alacc"><button id="v3alok" data-id="${t.id}">Guardar alarma</button>${al?`<button class="sec" id="v3alno" data-id="${t.id}">Quitar</button>`:''}</div><p>Te llega un aviso al celular a esa hora y queda en tus notificaciones.</p></div>`:''}`; }).join('')
           :`<div class="vacio">${FILTRO==='hecha'?'Todavía no hay tareas hechas.':'No hay tareas pendientes. ¡Buen trabajo!'}</div>`}
