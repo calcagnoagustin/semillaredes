@@ -90,6 +90,10 @@
   #v3 .lista .tx{font-size:15px;color:#24242C;line-height:1.35;cursor:pointer;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   #v3 .lista .tx.ab{white-space:normal}
   #v3 .lista .tw{min-width:0;display:flex;flex-direction:column;gap:3px}
+  #v3 .lista .fila.conal{align-items:start}
+  #v3 .lista .fila.conal .ck{margin-top:calc((20.25px - 24px)/2)}
+  #v3 .lista .fila.conal .alb{margin-top:calc((20.25px - 32px)/2)}
+  #v3 .lista .fila.conal .est{margin-top:calc((20.25px - 26px)/2)}
   #v3 .lista .alt{display:inline-flex;align-items:center;gap:5px;font:500 12.5px/1.2 Inter,sans-serif;color:#8A8577}
   #v3 .lista .alt.on{color:${VINO}}
   #v3 .lista .alt svg{width:13px;height:13px;flex:none}
@@ -524,7 +528,7 @@
         ${TT.length?TT.map(t=>{ const hecha=t.estado==='hecha', al=t.alarma&&!hecha?new Date(t.alarma):null, alOn=al&&!t.alarma_enviada;
           const alTxt=al?`${DS[al.getDay()].toLowerCase()} ${String(al.getDate()).padStart(2,'0')}/${String(al.getMonth()+1).padStart(2,'0')} · ${String(al.getHours()).padStart(2,'0')}:${String(al.getMinutes()).padStart(2,'0')}`:'';
           const loc=x=>{ const z=new Date(x.getTime()-x.getTimezoneOffset()*6e4); return z.toISOString().slice(0,16); };
-          return `<div class="fila ${t.estado}"${hecha?'':' style="grid-template-columns:28px 1fr 34px auto"'}><button class="ck ${t.estado}" data-tck="${t.id}" data-est="${t.estado}" aria-label="Cambiar estado">${hecha?ico.tilde:''}</button><span class="tw"><span class="tx" data-tab="1">${esc(t.titulo)}</span>${al?`<small class="alt ${alOn?'on':''}">${ico.alarma}${alOn?alTxt:'Avisado · '+alTxt}</small>`:''}</span>${hecha?'<span></span>':`<button class="alb ${alOn?'on':''}" data-tal="${t.id}" aria-label="Poner alarma">${ico.alarma}</button><button class="est ${t.estado==='en_curso'?'on':''}" data-tcur="${t.id}" data-est="${t.estado}">En curso</button>`}</div>
+          return `<div class="fila ${t.estado}${al?' conal':''}"${hecha?'':' style="grid-template-columns:28px 1fr 34px auto"'}><button class="ck ${t.estado}" data-tck="${t.id}" data-est="${t.estado}" aria-label="Cambiar estado">${hecha?ico.tilde:''}</button><span class="tw"><span class="tx" data-tab="1">${esc(t.titulo)}</span>${al?`<small class="alt ${alOn?'on':''}">${ico.alarma}${alOn?alTxt:'Avisado · '+alTxt}</small>`:''}</span>${hecha?'<span></span>':`<button class="alb ${alOn?'on':''}" data-tal="${t.id}" aria-label="Poner alarma">${ico.alarma}</button><button class="est ${t.estado==='en_curso'?'on':''}" data-tcur="${t.id}" data-est="${t.estado}">En curso</button>`}</div>
           ${ALFORM===t.id?`<div class="alform"><label>¿Cuándo te avisamos?</label><input type="datetime-local" id="v3alv" value="${al?loc(al):loc(new Date(Date.now()+864e5))}"><div class="alacc"><button id="v3alok" data-id="${t.id}">Guardar alarma</button>${al?`<button class="sec" id="v3alno" data-id="${t.id}">Quitar</button>`:''}</div><p>Te llega un aviso al celular a esa hora y queda en tus notificaciones.</p></div>`:''}`; }).join('')
           :`<div class="vacio">${FILTRO==='hecha'?'Todavía no hay tareas hechas.':'No hay tareas pendientes. ¡Buen trabajo!'}</div>`}
         <div class="add"><span class="mas">+</span><input id="v3tarea" placeholder="Agregar tarea"><button id="v3tadd">Sumar</button></div>
