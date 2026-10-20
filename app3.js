@@ -90,10 +90,23 @@
   #v3 .lista .tx{font-size:15px;color:#24242C;line-height:1.35;cursor:pointer;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   #v3 .lista .tx.ab{white-space:normal}
   #v3 .lista .tw{min-width:0;display:flex;flex-direction:column;gap:3px}
-  #v3 .lista .fila.conal{align-items:start}
-  #v3 .lista .fila.conal .ck{margin-top:calc((20.25px - 24px)/2)}
-  #v3 .lista .fila.conal .alb{margin-top:calc((20.25px - 32px)/2)}
-  #v3 .lista .fila.conal .est{margin-top:calc((20.25px - 26px)/2)}
+  #v3 .lista .fila.tarea{grid-template-columns:28px 1fr;align-items:start}
+  #v3 .lista .fila.tarea .ck{margin-top:calc((20.25px - 24px)/2)}
+  #v3 .lista .fila.tarea .tx{white-space:normal}
+  #v3 .lista .tacc{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
+  #v3 .lista .tacc .sp,#v3 .notas3 .cb .sp{flex:1}
+  #v3 .lista .tacc .alt{font:500 12.5px/1.2 Inter,sans-serif}
+  #v3 .ib2{display:inline-flex;align-items:center;gap:4px}
+  #v3 .ib{width:32px;height:32px;border-radius:50%;border:0;background:none;color:#8A8577;display:grid;place-items:center;cursor:pointer;padding:0}
+  #v3 .ib:hover{background:#F1ECE1;color:${NAVY}}
+  #v3 .ib[data-del2]:hover{color:${VINO}}
+  #v3 .hacc{position:absolute;top:10px;right:8px}
+  #v3 .edf{display:grid;gap:8px;width:100%}
+  #v3 .edf input,#v3 .edf textarea{width:100%;box-sizing:border-box;border:1px solid #E1D9C9;border-radius:12px;padding:10px 12px;font:500 15px/1.4 Inter,sans-serif;color:#24242C;background:#fff}
+  #v3 .edf .alacc{display:flex;gap:8px}
+  #v3 .edf button{border:0;background:${OLIVA};color:#fff;border-radius:999px;padding:10px 16px;font:600 13.5px Inter,sans-serif;cursor:pointer}
+  #v3 .edf button.sec{background:none;border:1px solid #CFC6B4;color:#55525F}
+
   #v3 .lista .alt{display:inline-flex;align-items:center;gap:5px;font:500 12.5px/1.2 Inter,sans-serif;color:#8A8577}
   #v3 .lista .alt.on{color:${VINO}}
   #v3 .lista .alt svg{width:13px;height:13px;flex:none}
@@ -343,6 +356,8 @@
   const MESL=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   const MES=['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
   const ico={
+    lapiz:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4"/></svg>',
+    tacho:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M4.5 7h15M9.5 7V4.8h5V7M6.5 7l.9 12.2a1.6 1.6 0 0 0 1.6 1.5h6a1.6 1.6 0 0 0 1.6-1.5L17.5 7M10 11v6M14 11v6"/></svg>',
     alarma:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z"/><path d="M10 19.5a2.2 2.2 0 0 0 4 0"/></svg>',
     ig:'<svg width="26" height="26" viewBox="0 0 24 24"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="url(#v3g)" stroke-width="2.2"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="url(#v3g)" stroke-width="2.2"/><circle cx="17.3" cy="6.7" r="1.3" fill="#E1306C"/></svg>',
     vta:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2F7A4F" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M5 8h14l-1.2 11.5a1 1 0 0 1-1 .9H7.2a1 1 0 0 1-1-.9z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></svg>',
@@ -376,7 +391,7 @@
     return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${V.map((v,i)=>{const bh=Math.max(3,v/mx*h);return `<rect x="${(i*(bw+5)).toFixed(1)}" y="${(h-bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="2" fill="${color}" opacity="${(0.45+0.55*(i+1)/n).toFixed(2)}"/>`;}).join('')}</svg>`; };
 
   const SS=(k,v)=>{ try{ if(v===undefined) return sessionStorage.getItem('v3_'+k); sessionStorage.setItem('v3_'+k,v); }catch(e){ return null; } };
-  let ALFORM=null; let TAB=SS('tab')||'hoy', SUBRED=SS('red')||'ig', FILTRO=SS('filtro')||'abiertas', FFORM=false, HFORM=false, AFORM=false;
+  let ALFORM=null, ED=null; let TAB=SS('tab')||'hoy', SUBRED=SS('red')||'ig', FILTRO=SS('filtro')||'abiertas', FFORM=false, HFORM=false, AFORM=false;
   const Y0=+(SS('y')||0);   // al refrescar se vuelve a la misma sección y altura
   window.addEventListener('pagehide',()=>{ SS('y',String(Math.round(window.scrollY||0))); SS('red',SUBRED); SS('filtro',FILTRO); });
   window.addEventListener('beforeunload',()=>{ SS('y',String(Math.round(window.scrollY||0))); SS('red',SUBRED); SS('filtro',FILTRO); });
@@ -520,6 +535,9 @@
     const TT=T.filter(t=>enG(t,FILTRO)).sort((a,b)=>(b.estado==='en_curso')-(a.estado==='en_curso'));
     const recs=(I&&I.recomendaciones)||((d.recomendaciones&&d.recomendaciones.recomendaciones)||[]).map(r=>r.texto||r.titulo);
     const idea=recs.length?recs[(hoy.getDate())%recs.length]:null;
+    const IB=(tipo,id)=>id?`<span class="ib2"><button class="ib" data-ed2="${tipo}" data-id="${id}" aria-label="Editar">${ico.lapiz}</button><button class="ib" data-del2="${tipo}" data-id="${id}" aria-label="Borrar">${ico.tacho}</button></span>`:'';
+    const EDon=(tipo,id)=>ED&&ED.tipo===tipo&&String(ED.id)===String(id);
+    const EDF=(campos)=>`<div class="edf">${campos.map((c,i)=>c.area?`<textarea id="v3e${i}" rows="3" placeholder="${esc(c.ph||'')}">${esc(c.v||'')}</textarea>`:`<input id="v3e${i}" type="${c.t||'text'}"${c.num?' inputmode="decimal"':''} placeholder="${esc(c.ph||'')}" value="${esc(c.v==null?'':c.v)}">`).join('')}<div class="alacc"><button id="v3eok">Guardar</button><button class="sec" id="v3eno">Cancelar</button></div></div>`;
     const scrAct=`
       <h1 class="v3t">Tarea para el hogar</h1>
       <p class="bj">${DS[hoy.getDay()]} ${String(hoy.getDate()).padStart(2,'0')}/${String(hoy.getMonth()+1).padStart(2,'0')} · Enfocate en lo importante.</p>
@@ -528,7 +546,8 @@
         ${TT.length?TT.map(t=>{ const hecha=t.estado==='hecha', al=t.alarma&&!hecha?new Date(t.alarma):null, alOn=al&&!t.alarma_enviada;
           const alTxt=al?`${DS[al.getDay()].toLowerCase()} ${String(al.getDate()).padStart(2,'0')}/${String(al.getMonth()+1).padStart(2,'0')} · ${String(al.getHours()).padStart(2,'0')}:${String(al.getMinutes()).padStart(2,'0')}`:'';
           const loc=x=>{ const z=new Date(x.getTime()-x.getTimezoneOffset()*6e4); return z.toISOString().slice(0,16); };
-          return `<div class="fila ${t.estado}${al?' conal':''}"${hecha?'':' style="grid-template-columns:28px 1fr 34px auto"'}><button class="ck ${t.estado}" data-tck="${t.id}" data-est="${t.estado}" aria-label="Cambiar estado">${hecha?ico.tilde:''}</button><span class="tw"><span class="tx" data-tab="1">${esc(t.titulo)}</span>${al?`<small class="alt ${alOn?'on':''}">${ico.alarma}${alOn?alTxt:'Avisado · '+alTxt}</small>`:''}</span>${hecha?'<span></span>':`<button class="alb ${alOn?'on':''}" data-tal="${t.id}" aria-label="Poner alarma">${ico.alarma}</button><button class="est ${t.estado==='en_curso'?'on':''}" data-tcur="${t.id}" data-est="${t.estado}">En curso</button>`}</div>
+          return `<div class="fila tarea ${t.estado}"><button class="ck ${t.estado}" data-tck="${t.id}" data-est="${t.estado}" aria-label="Cambiar estado">${hecha?ico.tilde:''}</button><div class="tw">${EDon('tarea',t.id)?EDF([{v:t.titulo,ph:'Tarea'}]):`<span class="tx" data-tab="1">${esc(t.titulo)}</span>
+            <div class="tacc">${hecha?'':`<button class="est ${t.estado==='en_curso'?'on':''}" data-tcur="${t.id}" data-est="${t.estado}">En curso</button><button class="alb ${alOn?'on':''}" data-tal="${t.id}" aria-label="Poner alarma">${ico.alarma}</button>${al?`<small class="alt ${alOn?'on':''}">${alOn?alTxt:'Avisado · '+alTxt}</small>`:''}`}<span class="sp"></span>${IB('tarea',t.id)}</div>`}</div></div>
           ${ALFORM===t.id?`<div class="alform"><label>¿Cuándo te avisamos?</label><input type="datetime-local" id="v3alv" value="${al?loc(al):loc(new Date(Date.now()+864e5))}"><div class="alacc"><button id="v3alok" data-id="${t.id}">Guardar alarma</button>${al?`<button class="sec" id="v3alno" data-id="${t.id}">Quitar</button>`:''}</div><p>Te llega un aviso al celular a esa hora y queda en tus notificaciones.</p></div>`:''}`; }).join('')
           :`<div class="vacio">${FILTRO==='hecha'?'Todavía no hay tareas hechas.':'No hay tareas pendientes. ¡Buen trabajo!'}</div>`}
         <div class="add"><span class="mas">+</span><input id="v3tarea" placeholder="Agregar tarea"><button id="v3tadd">Sumar</button></div>
@@ -536,7 +555,7 @@
       <p style="font-size:13px;color:#8A8577;margin:8px 2px 0">${FILTRO==='hecha'?'Tocá el círculo para devolver una tarea a pendientes.':'Tocá el círculo cuando esté hecha. Marcá «En curso» las que ya empezaste.'}</p>
       <div class="tit2"><h2>Próximas fechas</h2><button id="v3fnueva">${FFORM?'Cerrar':'Agregar fecha'}</button></div>
       <div class="card">
-        ${F.length?F.map(f=>{const p=String(f.fecha).slice(0,10).split('-');return `<div class="fe"><div class="dd"><b>${p[2]}</b><span>${MES[+p[1]-1]}</span></div><div><div class="v3t">${esc(f.titulo)}</div><div class="su">${f.url?`<button class="cp" data-copia="${esc(f.url)}">Copiar link de entradas</button>`:'Sin link de entradas'}</div></div><span class="ch" style="color:#A9A190">${ico.ch}</span></div>`;}).join('')
+        ${F.length?F.map(f=>{const p=String(f.fecha).slice(0,10).split('-');return EDon('fecha',f.id)?`<div class="fe" style="grid-template-columns:1fr">${EDF([{v:String(f.fecha).slice(0,10),t:'date'},{v:f.titulo,ph:'Título'},{v:f.url||'',ph:'Link a la ticketera (opcional)'}])}</div>`:`<div class="fe" style="grid-template-columns:52px 1fr auto"><div class="dd"><b>${p[2]}</b><span>${MES[+p[1]-1]}</span></div><div><div class="v3t">${esc(f.titulo)}</div><div class="su">${f.url?`<button class="cp" data-copia="${esc(f.url)}">Copiar link de entradas</button>`:'Sin link de entradas'}</div></div>${IB('fecha',f.id)}</div>`;}).join('')
           :`<div class="vacio">Poné aquí las próximas fechas y los links a la ticketera, de ser necesario.</div>`}
         ${FFORM?`<div class="fform"><input id="v3ff" type="date"><input id="v3ft" placeholder="Título. Por ejemplo: ${d.cliente.tipo==='musica'?'Show en La Tangente':'Inicio de la próxima cohorte'}"><input class="u" id="v3fu" placeholder="Link a la ticketera (opcional)"><button id="v3fadd">Guardar fecha</button></div>`:''}
       </div>
@@ -635,15 +654,15 @@
       <h1 class="v3t">Tu proyecto</h1><p class="bj">Tus metas, tus links y tu web.</p>
       <div id="v3cx"></div>
       <div class="tit2"><h2>Hitos</h2>${HDISP.length?`<button id="v3hnuevo">${HFORM?'Cerrar':'Agregar hito'}</button>`:''}</div>
-      <div class="card">${HT.length?HT.map(x=>`<div class="hito" style="margin:0;border-top:1px solid #EDE6D8;grid-template-columns:38px 1fr;position:relative"><div>${ico.sol}</div><div><div class="v3t">${esc(HTIT(x.h))}</div><div class="tx">${x.v!=null&&Number(x.v)>=Number(x.h.objetivo)?'¡Logrado!':'En camino'}</div></div><div class="bar"><div class="b"><i style="width:${x.v==null?0:Math.min(100,x.v/x.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(x.v)} / ${nf(x.h.objetivo)}</span></div>${x.h.id&&!x.h.virtual?`<button class="hx" data-hdel="${x.h.id}" aria-label="Borrar hito">×</button>`:''}</div>`).join(''):'<div class="vacio">Todavía no hay hitos. Sumá una meta: por ejemplo, a cuántos seguidores querés llegar.</div>'}
+      <div class="card">${HT.length?HT.map(x=>`<div class="hito" style="margin:0;border-top:1px solid #EDE6D8;grid-template-columns:38px 1fr;position:relative"><div>${ico.sol}</div><div style="${x.h.id&&!x.h.virtual?'padding-right:70px':''}"><div class="v3t">${esc(HTIT(x.h))}</div><div class="tx">${x.v!=null&&Number(x.v)>=Number(x.h.objetivo)?'¡Logrado!':'En camino'}</div></div><div class="bar"><div class="b"><i style="width:${x.v==null?0:Math.min(100,x.v/x.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(x.v)} / ${nf(x.h.objetivo)}</span></div>${x.h.id&&!x.h.virtual?`<span class="hacc">${IB('hito',x.h.id)}</span>`:''}${EDon('hito',x.h.id)?`<div style="grid-column:1/-1">${EDF([{v:x.h.titulo||'',ph:'Nombre (opcional)'},{v:x.h.objetivo,ph:'Meta (número)',num:1}])}</div>`:''}</div>`).join(''):'<div class="vacio">Todavía no hay hitos. Sumá una meta: por ejemplo, a cuántos seguidores querés llegar.</div>'}
         ${HFORM?`<div class="fform hform"><select id="v3hm">${HDISP.map(k=>`<option value="${k}">${HMET[k][0]}</option>`).join('')}</select><input id="v3ho" inputmode="decimal" placeholder="Meta (número)"><input id="v3ht" placeholder="Nombre (opcional)"><button id="v3hadd">Guardar hito</button></div>`:''}</div>
       <div class="tit2"><h2>Tus activos</h2><button id="v3anuevo">${AFORM?'Cerrar':'Agregar activo'}</button></div>
-      <div class="card lista">${A.length?A.map(a=>`<div class="fila" style="grid-template-columns:1fr 18px${a.id?' 28px':''}">${a.url?`<a class="tx" style="color:${NAVY};text-decoration:none" href="${esc(a.url)}" target="_blank" rel="noopener"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">${esc(a.descripcion||'')}</span></a>`:`<span class="tx"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">En preparación</span></span>`}<span class="ch">${ico.ch}</span>${a.id?`<button class="hx" data-adel="${a.id}" aria-label="Borrar activo">×</button>`:''}</div>`).join(''):'<div class="vacio">Todavía no hay enlaces. Sumá tus links: tu web, tu Spotify, tu tienda, tu canal.</div>'}
+      <div class="card lista">${A.length?A.map(a=>EDon('activo',a.id)?`<div class="fila" style="grid-template-columns:1fr">${EDF([{v:a.titulo,ph:'Nombre'},{v:a.url||'',ph:'Link (https://…)'},{v:a.descripcion||'',ph:'Descripción (opcional)'}])}</div>`:`<div class="fila" style="grid-template-columns:1fr${a.id?' auto':' 18px'}">${a.url?`<a class="tx" style="color:${NAVY};text-decoration:none" href="${esc(a.url)}" target="_blank" rel="noopener"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">${esc(a.descripcion||'')}</span></a>`:`<span class="tx"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">En preparación</span></span>`}${a.id?IB('activo',a.id):`<span class="ch">${ico.ch}</span>`}</div>`).join(''):'<div class="vacio">Todavía no hay enlaces. Sumá tus links: tu web, tu Spotify, tu tienda, tu canal.</div>'}
         ${AFORM?`<div class="fform"><input id="v3at" placeholder="Nombre. Por ejemplo: Mi Spotify"><input class="u" id="v3au" placeholder="Link (https://…)"><input id="v3ad" placeholder="Descripción (opcional)"><button id="v3aadd">Guardar activo</button></div>`:''}</div>
       <div class="tit2"><h2>Tus notas</h2></div>
       <p class="bj" style="margin:0 0 10px;font-size:14.5px">Dejanos lo que quieras que tengamos en cuenta: una idea, una duda, algo que pasó en estos días.</p>
       <div class="card notas3"><div class="nn"><textarea id="v3nt" rows="3" placeholder="Escribí acá…"></textarea><button id="v3nadd">Guardar nota</button></div>
-        ${NT.map(n=>`<div class="nt"><div class="cb"><b class="${n.autor==='semilla'?'sem':''}">${n.autor==='semilla'?'Semilla Redes':'Vos'}</b><small>${new Date(n.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</small>${n.autor==='semilla'?'':`<button class="nx" data-ndel="${n.id}" aria-label="Borrar nota">×</button>`}</div><p>${esc(String(n.texto||'').replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g,'')).replace(/\n/g,'<br>')}</p></div>`).join('')}</div>
+        ${NT.map(n=>`<div class="nt"><div class="cb"><b class="${n.autor==='semilla'?'sem':''}">${n.autor==='semilla'?'Semilla Redes':'Vos'}</b><small>${new Date(n.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</small>${n.autor==='semilla'?'':`<span class="sp"></span>${IB('nota',n.id)}`}</div>${EDon('nota',n.id)?EDF([{v:String(n.texto||'').replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g,''),area:1}]):`<p>${esc(String(n.texto||'').replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g,'')).replace(/\n/g,'<br>')}</p>`}</div>`).join('')}</div>
       <div id="v3web"></div>`;
 
     // --- SemillaIA ---
@@ -751,6 +770,16 @@
     raiz.querySelectorAll('[data-tck]').forEach(b=>b.onclick=()=>{ const id=b.dataset.tck, e=b.dataset.est;
       if(e==='hecha'){ let pv='pendiente'; try{ pv=localStorage.getItem(prevK(id))||'pendiente'; }catch(x){} estado(b,id,pv); }
       else { try{ localStorage.setItem(prevK(id),e); }catch(x){} estado(b,id,'hecha'); } });
+    raiz.querySelectorAll('[data-ed2]').forEach(b=>b.onclick=ev=>{ ev.preventDefault(); ev.stopPropagation(); ED=EDon(b.dataset.ed2,b.dataset.id)?null:{tipo:b.dataset.ed2,id:b.dataset.id}; ALFORM=null; armar(window.__D); setTimeout(()=>{ const i=document.getElementById('v3e0'); if(i){ i.scrollIntoView({block:'center'}); i.focus(); } },60); });
+    const BORRA={tarea:'sub_tarea_borrar',fecha:'sub_fecha_borrar',activo:'sub_activo_cliente_borrar',hito:'sub_hito_cliente_borrar',nota:'sub_nota_borrar'}, NOMB={tarea:'esta tarea',fecha:'esta fecha',activo:'este activo',hito:'este hito',nota:'esta nota'};
+    raiz.querySelectorAll('[data-del2]').forEach(b=>b.onclick=async ev=>{ ev.preventDefault(); ev.stopPropagation(); const t=b.dataset.del2; if(!confirm('¿Borrar '+NOMB[t]+'?')) return; b.disabled=true;
+      window.SRE&&window.SRE('borrar',{tipo:t}); const r=await rpc(BORRA[t],{p_slug:slug,p_k:tok,p_id:b.dataset.id}); if(r&&r.ok){ ED=null; recargar(); } else { b.disabled=false; alert('No se pudo borrar. Probá de nuevo.'); } });
+    const eno=raiz.querySelector('#v3eno'); if(eno) eno.onclick=()=>{ ED=null; armar(window.__D); };
+    const eok=raiz.querySelector('#v3eok'); if(eok) eok.onclick=async()=>{ const v=i=>{ const e=raiz.querySelector('#v3e'+i); return e?e.value.trim():''; }; const t=ED.tipo; let r;
+      if(t==='fecha'){ if(!v(0)||!v(1)){ alert('Poné la fecha y el título'); return; } eok.disabled=true; r=await rpc('sub_fecha_guardar',{p_slug:slug,p_k:tok,p_fecha:v(0),p_titulo:v(1),p_url:v(2)||null,p_id:ED.id}); }
+      else { const D=t==='tarea'?{titulo:v(0)}:t==='nota'?{texto:v(0)}:t==='activo'?{titulo:v(0),url:v(1),descripcion:v(2)}:{titulo:v(0),objetivo:String(parseFloat(v(1).replace(/\./g,'').replace(',','.'))||'')};
+        if((t==='tarea'||t==='nota'||t==='activo')&&!v(0)){ alert('No puede quedar vacío'); return; } eok.disabled=true; r=await rpc('sub_editar',{p_slug:slug,p_k:tok,p_tipo:t,p_id:ED.id,p_datos:D}); }
+      window.SRE&&window.SRE('editar',{tipo:t}); if(r&&r.ok){ ED=null; recargar(); } else { eok.disabled=false; alert('No se pudo guardar. Probá de nuevo.'); } };
     raiz.querySelectorAll('[data-tal]').forEach(b=>b.onclick=()=>{ ALFORM=ALFORM===b.dataset.tal?null:b.dataset.tal; armar(window.__D); setTimeout(()=>{ const i=document.getElementById('v3alv'); i&&i.scrollIntoView({block:'center'}); },60); });
     const alGuardar=async(b,valor)=>{ b.disabled=true; window.SRE&&window.SRE('tarea_alarma',{on:!!valor}); const r=await rpc('sub_tarea_alarma',{p_slug:slug,p_k:tok,p_id:b.dataset.id,p_alarma:valor});
       if(r&&r.ok){ ALFORM=null; recargar(); } else { b.disabled=false; alert('No se pudo guardar la alarma. Probá de nuevo.'); } };
