@@ -517,14 +517,14 @@
     const recs=(I&&I.recomendaciones)||((d.recomendaciones&&d.recomendaciones.recomendaciones)||[]).map(r=>r.texto||r.titulo);
     const idea=recs.length?recs[(hoy.getDate())%recs.length]:null;
     const scrAct=`
-      <div class="tit2" style="margin-top:0"><h1 class="v3t">Tarea para el hogar</h1><span style="font-size:15px;color:#55525F">${DS[hoy.getDay()]} ${String(hoy.getDate()).padStart(2,'0')}/${String(hoy.getMonth()+1).padStart(2,'0')}</span></div>
-      <p class="bj">Enfocate en lo importante.</p>
+      <h1 class="v3t">Tarea para el hogar</h1>
+      <p class="bj">${DS[hoy.getDay()]} ${String(hoy.getDate()).padStart(2,'0')}/${String(hoy.getMonth()+1).padStart(2,'0')} · Enfocate en lo importante.</p>
       <div class="pills">${Object.keys(lab).map(k=>`<button class="${k===FILTRO?'on':''}" data-filtro="${k}">${lab[k]} · ${T.filter(t=>enG(t,k)).length}</button>`).join('')}</div>
       <div class="card lista">
         ${TT.length?TT.map(t=>{ const hecha=t.estado==='hecha', al=t.alarma&&!hecha?new Date(t.alarma):null, alOn=al&&!t.alarma_enviada;
-          const alTxt=al?`${DS[al.getDay()]} ${String(al.getDate()).padStart(2,'0')}/${String(al.getMonth()+1).padStart(2,'0')} · ${String(al.getHours()).padStart(2,'0')}:${String(al.getMinutes()).padStart(2,'0')}`:'';
+          const alTxt=al?`${DS[al.getDay()].toLowerCase()} ${String(al.getDate()).padStart(2,'0')}/${String(al.getMonth()+1).padStart(2,'0')} · ${String(al.getHours()).padStart(2,'0')}:${String(al.getMinutes()).padStart(2,'0')}`:'';
           const loc=x=>{ const z=new Date(x.getTime()-x.getTimezoneOffset()*6e4); return z.toISOString().slice(0,16); };
-          return `<div class="fila ${t.estado}"${hecha?'':' style="grid-template-columns:28px 1fr 34px auto"'}><button class="ck ${t.estado}" data-tck="${t.id}" data-est="${t.estado}" aria-label="Cambiar estado">${hecha?ico.tilde:''}</button><span class="tw"><span class="tx" data-tab="1">${esc(t.titulo)}</span>${al?`<small class="alt ${alOn?'on':''}">${ico.alarma}${alOn?'Te avisamos el '+alTxt:'Avisado el '+alTxt}</small>`:''}</span>${hecha?'<span></span>':`<button class="alb ${alOn?'on':''}" data-tal="${t.id}" aria-label="Poner alarma">${ico.alarma}</button><button class="est ${t.estado==='en_curso'?'on':''}" data-tcur="${t.id}" data-est="${t.estado}">En curso</button>`}</div>
+          return `<div class="fila ${t.estado}"${hecha?'':' style="grid-template-columns:28px 1fr 34px auto"'}><button class="ck ${t.estado}" data-tck="${t.id}" data-est="${t.estado}" aria-label="Cambiar estado">${hecha?ico.tilde:''}</button><span class="tw"><span class="tx" data-tab="1">${esc(t.titulo)}</span>${al?`<small class="alt ${alOn?'on':''}">${ico.alarma}${alOn?alTxt:'Avisado · '+alTxt}</small>`:''}</span>${hecha?'<span></span>':`<button class="alb ${alOn?'on':''}" data-tal="${t.id}" aria-label="Poner alarma">${ico.alarma}</button><button class="est ${t.estado==='en_curso'?'on':''}" data-tcur="${t.id}" data-est="${t.estado}">En curso</button>`}</div>
           ${ALFORM===t.id?`<div class="alform"><label>¿Cuándo te avisamos?</label><input type="datetime-local" id="v3alv" value="${al?loc(al):loc(new Date(Date.now()+864e5))}"><div class="alacc"><button id="v3alok" data-id="${t.id}">Guardar alarma</button>${al?`<button class="sec" id="v3alno" data-id="${t.id}">Quitar</button>`:''}</div><p>Te llega un aviso al celular a esa hora y queda en tus notificaciones.</p></div>`:''}`; }).join('')
           :`<div class="vacio">${FILTRO==='hecha'?'Todavía no hay tareas hechas.':'No hay tareas pendientes. ¡Buen trabajo!'}</div>`}
         <div class="add"><span class="mas">+</span><input id="v3tarea" placeholder="Agregar tarea"><button id="v3tadd">Sumar</button></div>
