@@ -53,6 +53,7 @@
   function estadoTxt(f,c){
     var u=c.ultimo||{};
     if(f==='instagram') return '<span class="ok">✓</span> <b>@'+esc(c.valor)+'</b>'+(u.seguidores!=null?' · '+nf(u.seguidores)+' seguidores':'');
+    if(c.via==='semilla'&&!u.artista&&!u.canal&&!u.seguidores&&f!=='meta_ads'&&f!=='instagram') return '<span class="ok">✓</span> Conectado por Semilla';
     if(f==='spotify') return '<span class="ok">✓</span> <b>'+esc(u.artista||'Tu perfil')+'</b>'+(u.oyentes_mensuales!=null?' · '+nf(u.oyentes_mensuales)+' oyentes mensuales':'');
     if(f==='youtube') return '<span class="ok">✓</span> <b>'+esc(u.canal||'Tu canal')+'</b>'+(u.suscriptores!=null?' · '+nf(u.suscriptores)+' suscriptores':'');
     if(f==='meta_ads') return '<span class="ok">✓</span> <b>'+esc(u.nombre||'Cuenta publicitaria')+'</b>'+(c.via==='semilla'||!u.via?' · conectada por Semilla':'');
@@ -68,6 +69,7 @@
       var h='<details class="srcx"'+(st.abierto?' open':'')+'><summary><span class="fl">▸</span>Tus conexiones<span class="cnt">'+n+' de '+(FUENTES.length-1)+'</span></summary>'+
         (st.gestion?'<p class="bj">Tus redes las conecta Semilla por vos. Si querés sumar una, escribile a Agus.</p>':'')+'<p class="bj"'+(st.gestion?' style="display:none"':'')+'>Conectá tus redes una sola vez y SemillaIA trae tus números sola. Todo es de solo lectura: nunca publicamos ni tocamos nada. <a href="https://semillaredes.com/conectar-redes.html" target="_blank" rel="noopener" style="color:#7A1F3A;font-weight:600">Guía paso a paso</a></p>';
       FUENTES.forEach(function(F){
+        if(st.gestion&&F.id==='meta') return;   // a los clientes los conecta Semilla: no ven el botón de Meta
         var c=st.L[F.id], f=F.id, conectado=c&&c.estado==='conectado', semilla=c&&c.via==='semilla';
         h+='<div class="fila"><div class="ic" style="background:'+F.color+'">'+F.ic+'</div><div><div class="nm">'+F.nombre+'</div>';
         if(conectado){
