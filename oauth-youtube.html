@@ -40,6 +40,9 @@ const cuenta=P.get('state')||P.get('c')||P.get('cuenta')||'principal';
 const kCli=P.get('k')||(cuenta.includes('~')?cuenta.split('~')[1]:'');
 const slugCli=cuenta.split('~')[0];
 const errUrl=new URLSearchParams(location.search).get('error');
+// conexiones (20/10/2026): la app manda ?volver= para regresar sola despues de Google
+if(P.get('volver')){ try{ localStorage.setItem('sr_volver',P.get('volver')); }catch(e){} }
+const volverA=()=>{ let v=''; try{ v=localStorage.getItem('sr_volver')||''; localStorage.removeItem('sr_volver'); }catch(e){} return /^https:\/\/([a-z0-9-]+\.)?semillaredes\.com\//.test(v)?v:''; };
 const fn=(b)=>fetch(`${API}/functions/v1/youtube-sync`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(b)}).then(r=>r.json());
 
 function pedirToken(cb){
@@ -61,12 +64,12 @@ if(errUrl){
       $('tit').textContent='Listo';
       $('msg').innerHTML='<span class="ok">YouTube quedó conectado'+(kCli?'. ¡Gracias!':(cuenta!=='principal'?' para '+cuenta:''))+'.</span>'.replace('!.','!');
       const lista=(r.canales||[]).map(c=>`<li><b>${c.nombre}</b> · ${c.subs||0} subs<br><span style="font-size:12px;color:#8A8697">${c.id}</span></li>`).join('');
-      if(kCli){ $('extra').innerHTML='<p class="mini">Desde ahora las estadísticas de tu canal aparecen en tu app de SemillaIA. Ya podés cerrar esta pestaña.</p>'; return; }
+      if(kCli){ const v=volverA(); $('extra').innerHTML=v?'<p class="mini">Desde ahora las estadísticas de tu canal aparecen en tu app de SemillaIA.</p><button id="vol">Volver a mi app</button>':'<p class="mini">Desde ahora las estadísticas de tu canal aparecen en tu app de SemillaIA. Ya podés cerrar esta pestaña.</p>'; if(v){ $('vol').onclick=()=>location.href=v; setTimeout(()=>location.href=v,2500); } return; }
       $('extra').innerHTML=(lista?`<p class="mini">Canales visibles con esta cuenta:</p><ul style="font-size:14px">${lista}</ul>`:'')+'<p class="mini">Ya podés cerrar esta pestaña y volver al panel.</p>';
     } else {
       $('tit').textContent='No se pudo guardar';
       $('msg').innerHTML='<span class="err">'+(r.detalle||r.error||'Error')+'</span>';
-      $('extra').innerHTML='<p class="mini">Probá generar el link de nuevo desde el panel.</p>';
+      const v=kCli?volverA():''; $('extra').innerHTML=v?'<button id="vol">Volver a mi app</button>':'<p class="mini">Probá generar el link de nuevo desde el panel.</p>'; if(v) $('vol').onclick=()=>location.href=v;
     }
   });
 } else {

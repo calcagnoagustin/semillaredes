@@ -212,7 +212,8 @@ function pintar(){
     <p class="quien">${esc(A.nombre)}${u?` · Último período cargado: del ${ddmm(u.desde)} al ${ddmm(u.hasta)}`:''}</p></div>`;
 
   // --- cargar numeros ---
-  h+=`<h2>Cargá tus números</h2><p class="sub">Una vez cada 7 días, con lo que ves en Instagram y en tus campañas. Lo que no tengas, dejalo vacío.</p>
+  h+=`<h2>Conectá tus redes</h2><p class="sub">Conectalas una vez y tus números se cargan solos todos los domingos. Lo que no se pueda conectar, lo cargás abajo.</p><div id="srcx"></div>`;
+  h+=`<h2>Cargá tus números</h2><p class="sub">Lo que no traen tus conexiones (por ejemplo, lo invertido en publicidad), una vez cada 7 días. Lo que no tengas, dejalo vacío.</p>
   <div class="hoja" id="form">
     <div class="fechas"><div><label for="f_desde">Desde</label><input type="date" id="f_desde" value="${yaCargado?u.desde:desde}"></div>
       <div><label for="f_hasta">Hasta</label><input type="date" id="f_hasta" value="${yaCargado?u.hasta:hasta}"></div></div>
@@ -248,7 +249,7 @@ function pintar(){
     h+=`<div class="tarj">${card('Seguidores',nf(c.ig_total),c.ig_total,p.ig_total,{dest:true})}${card('Nuevos',nf(c.ig_nuevos),c.ig_nuevos,p.ig_nuevos)}${card('Costo por seguidor',din(c.ig_costo,2),c.ig_costo,p.ig_costo,{menosEsMejor:true})}${c.ig_visitas!=null?card('Visitas al perfil',nf(c.ig_visitas),c.ig_visitas,p.ig_visitas):''}${c.ig_conv!=null?card('Conversión de visitas a seguidores',nf(c.ig_conv,1)+'%',c.ig_conv,p.ig_conv):''}${c.ig_inversion!=null?card('Invertido',din(c.ig_inversion),c.ig_inversion,p.ig_inversion):''}</div>`;
     if(M.mensajes||c.msj_mensajes!=null) h+=`<div class="modulo"><h3>Campaña de mensajes</h3><div class="tarj">${card('Mensajes',nf(c.msj_mensajes),c.msj_mensajes,p.msj_mensajes)}${card('Costo por mensaje',din(c.msj_costo,2),c.msj_costo,p.msj_costo,{menosEsMejor:true})}${card('Ventas',nf(c.msj_ventas),c.msj_ventas,p.msj_ventas)}${card('Costo por venta',din(c.msj_costo_venta),c.msj_costo_venta,p.msj_costo_venta,{menosEsMejor:true})}${card('Facturación',din(c.msj_facturacion),c.msj_facturacion,p.msj_facturacion)}${card('ROAS',nf(c.msj_roas,2),c.msj_roas,p.msj_roas,{dest:true})}</div></div>`;
     if(M.ventas||c.vta_ventas!=null) h+=`<div class="modulo"><h3>Ventas online</h3><div class="tarj">${card('Ventas',nf(c.vta_ventas),c.vta_ventas,p.vta_ventas)}${card('Facturación',din(c.vta_facturacion),c.vta_facturacion,p.vta_facturacion)}${card('Costo por venta',din(c.vta_costo),c.vta_costo,p.vta_costo,{menosEsMejor:true})}${card('ROAS',nf(c.vta_roas,2),c.vta_roas,p.vta_roas,{dest:true})}</div></div>`;
-    if(M.spotify||c.sp_streams!=null) h+=`<div class="modulo"><h3>Spotify</h3><div class="tarj">${card('Oyentes mensuales',nf(c.sp_monthly),c.sp_monthly,p.sp_monthly,{dest:true})}${card('Oyentes',nf(c.sp_listeners),c.sp_listeners,p.sp_listeners)}${card('Streams',nf(c.sp_streams),c.sp_streams,p.sp_streams)}${card('Streams por oyente',nf(c.sp_sl,1),c.sp_sl,p.sp_sl)}${card('Guardados',nf(c.sp_guardados),c.sp_guardados,p.sp_guardados)}${card('Agregados a playlists',nf(c.sp_playlists),c.sp_playlists,p.sp_playlists)}${card('Seguidores',nf(c.sp_followers),c.sp_followers,p.sp_followers)}${c.sp_costo!=null?card('Costo por stream',din(c.sp_costo,2),c.sp_costo,p.sp_costo,{menosEsMejor:true}):''}</div></div>`;
+    if(M.spotify||c.sp_streams!=null||c.sp_oyentes_perfil!=null) h+=`<div class="modulo"><h3>Spotify</h3><div class="tarj">${card('Oyentes mensuales',nf(c.sp_oyentes_perfil??c.sp_monthly),c.sp_oyentes_perfil??c.sp_monthly,p.sp_oyentes_perfil??p.sp_monthly,{dest:true})}${card('Oyentes',nf(c.sp_listeners),c.sp_listeners,p.sp_listeners)}${card('Streams',nf(c.sp_streams),c.sp_streams,p.sp_streams)}${card('Streams por oyente',nf(c.sp_sl,1),c.sp_sl,p.sp_sl)}${card('Guardados',nf(c.sp_guardados),c.sp_guardados,p.sp_guardados)}${card('Agregados a playlists',nf(c.sp_playlists),c.sp_playlists,p.sp_playlists)}${card('Seguidores',nf(c.sp_followers),c.sp_followers,p.sp_followers)}${c.sp_costo!=null?card('Costo por stream',din(c.sp_costo,2),c.sp_costo,p.sp_costo,{menosEsMejor:true}):''}</div></div>`;
     if(M.youtube||c.yt_views!=null) h+=`<div class="modulo"><h3>YouTube</h3><div class="tarj">${card('Visualizaciones',nf(c.yt_views),c.yt_views,p.yt_views,{dest:true})}${card('Horas de visualización',nf(c.yt_horas,1),c.yt_horas,p.yt_horas)}${card('Usuarios únicos',nf(c.yt_unicos),c.yt_unicos,p.yt_unicos)}${card('Suscriptores',nf(c.yt_subs),c.yt_subs,p.yt_subs)}${card('Suscriptores nuevos',nf(c.yt_subs_nuevos),c.yt_subs_nuevos,p.yt_subs_nuevos)}</div></div>`;
     const S=k=>R.map(r=>({f:r.hasta,v:r.c[k]??null}));
     h+=linea('Seguidores','Cómo viene creciendo tu cuenta.',S('ig_total'),'#1A2456');
@@ -301,6 +302,7 @@ function pintar(){
   }
   h+=`<p style="text-align:center;margin-top:40px"><button class="btn sec" id="salir">Salir de este panel</button></p><footer>${ico}SEMILLA REDES</footer>`;
   $('app').innerHTML=h;
+  try{ if(window.SRConexiones&&TOK) window.SRConexiones.montar($('srcx'),{slug:SLUG,k:TOK,plegado:false,alConectar:()=>setTimeout(()=>location.reload(),900)}); }catch(e){}
 
   // precargar el formulario si el periodo ya existe
   if(yaCargado) for(const [k,v] of Object.entries(u.metricas||{})){ const el=$('m_'+k); if(el&&v!=null) el.value=String(v).replace('.',','); }
@@ -465,6 +467,7 @@ cargar();
     else { pintar(0); setTimeout(function(){ document.body.classList.remove('ptr-vuelve'); },300); } });
 })();
 </script>
+<script src="/conexiones.js?v=20261020"></script>
 <script>
 /* estadísticas internas de uso: cada entrada del alumno (se ven en semillaredes.com/uso.html) */
 setTimeout(function(){ try{ if(!TOK||localStorage.getItem('sr_yo')==='1') return;
