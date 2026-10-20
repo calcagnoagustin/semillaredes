@@ -89,6 +89,19 @@
   #v3 .lista .ck.en_curso{border-color:${OLIVA};background:radial-gradient(${OLIVA} 0 4px,#fff 5px)}
   #v3 .lista .tx{font-size:15px;color:#24242C;line-height:1.35;cursor:pointer;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   #v3 .lista .tx.ab{white-space:normal}
+  #v3 .lista .tw{min-width:0;display:flex;flex-direction:column;gap:3px}
+  #v3 .lista .alt{display:inline-flex;align-items:center;gap:5px;font:500 12.5px/1.2 Inter,sans-serif;color:#8A8577}
+  #v3 .lista .alt.on{color:${VINO}}
+  #v3 .lista .alt svg{width:13px;height:13px;flex:none}
+  #v3 .lista .alb{width:32px;height:32px;border-radius:50%;border:1px solid #E1D9C9;background:#FBF8F2;color:#8A8577;display:grid;place-items:center;cursor:pointer;padding:0}
+  #v3 .lista .alb.on{border-color:${VINO};color:${VINO};background:#F7EDEF}
+  #v3 .lista .alform{padding:4px 14px 14px 54px;border-top:0}
+  #v3 .lista .alform label{display:block;font:600 13px/1.3 Inter,sans-serif;color:#24242C;margin:0 0 8px}
+  #v3 .lista .alform input{width:100%;box-sizing:border-box;border:1px solid #E1D9C9;border-radius:12px;padding:10px 12px;font:500 15px Inter,sans-serif;color:#24242C;background:#fff}
+  #v3 .lista .alform .alacc{display:flex;gap:8px;margin-top:10px}
+  #v3 .lista .alform button{border:0;background:${OLIVA};color:#fff;border-radius:999px;padding:10px 16px;font:600 13.5px Inter,sans-serif;cursor:pointer}
+  #v3 .lista .alform button.sec{background:none;border:1px solid #CFC6B4;color:#55525F}
+  #v3 .lista .alform p{margin:8px 0 0;font-size:12.5px;color:#8A8577}
   #v3 .lista .fila.hecha .tx{color:#8A8577;text-decoration:line-through}
   #v3 .lista .ch{color:#A9A190}
   #v3 .lista .add{display:grid;grid-template-columns:28px 1fr auto;column-gap:12px;align-items:center;padding:10px 14px;border-top:1px solid #EDE6D8}
@@ -326,6 +339,7 @@
   const MESL=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   const MES=['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
   const ico={
+    alarma:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z"/><path d="M10 19.5a2.2 2.2 0 0 0 4 0"/></svg>',
     ig:'<svg width="26" height="26" viewBox="0 0 24 24"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="url(#v3g)" stroke-width="2.2"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="url(#v3g)" stroke-width="2.2"/><circle cx="17.3" cy="6.7" r="1.3" fill="#E1306C"/></svg>',
     vta:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2F7A4F" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M5 8h14l-1.2 11.5a1 1 0 0 1-1 .9H7.2a1 1 0 0 1-1-.9z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></svg>',
     frm:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2F7A4F" stroke-width="2" stroke-linejoin="round"><path d="M2.5 9 12 4.5 21.5 9 12 13.5z"/><path d="M6.5 11v4.5c1.6 1.6 3.4 2.4 5.5 2.4s3.9-.8 5.5-2.4V11M21.5 9v5" stroke-linecap="round"/></svg>',
@@ -358,7 +372,7 @@
     return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${V.map((v,i)=>{const bh=Math.max(3,v/mx*h);return `<rect x="${(i*(bw+5)).toFixed(1)}" y="${(h-bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="2" fill="${color}" opacity="${(0.45+0.55*(i+1)/n).toFixed(2)}"/>`;}).join('')}</svg>`; };
 
   const SS=(k,v)=>{ try{ if(v===undefined) return sessionStorage.getItem('v3_'+k); sessionStorage.setItem('v3_'+k,v); }catch(e){ return null; } };
-  let TAB=SS('tab')||'hoy', SUBRED=SS('red')||'ig', FILTRO=SS('filtro')||'abiertas', FFORM=false, HFORM=false, AFORM=false;
+  let ALFORM=null; let TAB=SS('tab')||'hoy', SUBRED=SS('red')||'ig', FILTRO=SS('filtro')||'abiertas', FFORM=false, HFORM=false, AFORM=false;
   const Y0=+(SS('y')||0);   // al refrescar se vuelve a la misma sección y altura
   window.addEventListener('pagehide',()=>{ SS('y',String(Math.round(window.scrollY||0))); SS('red',SUBRED); SS('filtro',FILTRO); });
   window.addEventListener('beforeunload',()=>{ SS('y',String(Math.round(window.scrollY||0))); SS('red',SUBRED); SS('filtro',FILTRO); });
@@ -503,11 +517,15 @@
     const recs=(I&&I.recomendaciones)||((d.recomendaciones&&d.recomendaciones.recomendaciones)||[]).map(r=>r.texto||r.titulo);
     const idea=recs.length?recs[(hoy.getDate())%recs.length]:null;
     const scrAct=`
-      <div class="tit2" style="margin-top:0"><h1 class="v3t">Tu plan</h1><span style="font-size:15px;color:#55525F">${DS[hoy.getDay()]} ${String(hoy.getDate()).padStart(2,'0')}/${String(hoy.getMonth()+1).padStart(2,'0')}</span></div>
+      <div class="tit2" style="margin-top:0"><h1 class="v3t">Tarea para el hogar</h1><span style="font-size:15px;color:#55525F">${DS[hoy.getDay()]} ${String(hoy.getDate()).padStart(2,'0')}/${String(hoy.getMonth()+1).padStart(2,'0')}</span></div>
       <p class="bj">Enfocate en lo importante.</p>
       <div class="pills">${Object.keys(lab).map(k=>`<button class="${k===FILTRO?'on':''}" data-filtro="${k}">${lab[k]} · ${T.filter(t=>enG(t,k)).length}</button>`).join('')}</div>
       <div class="card lista">
-        ${TT.length?TT.map(t=>`<div class="fila ${t.estado}"><button class="ck ${t.estado}" data-tck="${t.id}" data-est="${t.estado}" aria-label="Cambiar estado">${t.estado==='hecha'?ico.tilde:''}</button><span class="tx" data-tab="1">${esc(t.titulo)}</span>${t.estado==='hecha'?'<span></span>':`<button class="est ${t.estado==='en_curso'?'on':''}" data-tcur="${t.id}" data-est="${t.estado}">En curso</button>`}</div>`).join('')
+        ${TT.length?TT.map(t=>{ const hecha=t.estado==='hecha', al=t.alarma&&!hecha?new Date(t.alarma):null, alOn=al&&!t.alarma_enviada;
+          const alTxt=al?`${DS[al.getDay()]} ${String(al.getDate()).padStart(2,'0')}/${String(al.getMonth()+1).padStart(2,'0')} · ${String(al.getHours()).padStart(2,'0')}:${String(al.getMinutes()).padStart(2,'0')}`:'';
+          const loc=x=>{ const z=new Date(x.getTime()-x.getTimezoneOffset()*6e4); return z.toISOString().slice(0,16); };
+          return `<div class="fila ${t.estado}"${hecha?'':' style="grid-template-columns:28px 1fr 34px auto"'}><button class="ck ${t.estado}" data-tck="${t.id}" data-est="${t.estado}" aria-label="Cambiar estado">${hecha?ico.tilde:''}</button><span class="tw"><span class="tx" data-tab="1">${esc(t.titulo)}</span>${al?`<small class="alt ${alOn?'on':''}">${ico.alarma}${alOn?'Te avisamos el '+alTxt:'Avisado el '+alTxt}</small>`:''}</span>${hecha?'<span></span>':`<button class="alb ${alOn?'on':''}" data-tal="${t.id}" aria-label="Poner alarma">${ico.alarma}</button><button class="est ${t.estado==='en_curso'?'on':''}" data-tcur="${t.id}" data-est="${t.estado}">En curso</button>`}</div>
+          ${ALFORM===t.id?`<div class="alform"><label>¿Cuándo te avisamos?</label><input type="datetime-local" id="v3alv" value="${al?loc(al):loc(new Date(Date.now()+864e5))}"><div class="alacc"><button id="v3alok" data-id="${t.id}">Guardar alarma</button>${al?`<button class="sec" id="v3alno" data-id="${t.id}">Quitar</button>`:''}</div><p>Te llega un aviso al celular a esa hora y queda en tus notificaciones.</p></div>`:''}`; }).join('')
           :`<div class="vacio">${FILTRO==='hecha'?'Todavía no hay tareas hechas.':'No hay tareas pendientes. ¡Buen trabajo!'}</div>`}
         <div class="add"><span class="mas">+</span><input id="v3tarea" placeholder="Agregar tarea"><button id="v3tadd">Sumar</button></div>
       </div>
@@ -729,6 +747,11 @@
     raiz.querySelectorAll('[data-tck]').forEach(b=>b.onclick=()=>{ const id=b.dataset.tck, e=b.dataset.est;
       if(e==='hecha'){ let pv='pendiente'; try{ pv=localStorage.getItem(prevK(id))||'pendiente'; }catch(x){} estado(b,id,pv); }
       else { try{ localStorage.setItem(prevK(id),e); }catch(x){} estado(b,id,'hecha'); } });
+    raiz.querySelectorAll('[data-tal]').forEach(b=>b.onclick=()=>{ ALFORM=ALFORM===b.dataset.tal?null:b.dataset.tal; armar(window.__D); setTimeout(()=>{ const i=document.getElementById('v3alv'); i&&i.scrollIntoView({block:'center'}); },60); });
+    const alGuardar=async(b,valor)=>{ b.disabled=true; window.SRE&&window.SRE('tarea_alarma',{on:!!valor}); const r=await rpc('sub_tarea_alarma',{p_slug:slug,p_k:tok,p_id:b.dataset.id,p_alarma:valor});
+      if(r&&r.ok){ ALFORM=null; recargar(); } else { b.disabled=false; alert('No se pudo guardar la alarma. Probá de nuevo.'); } };
+    const alok=raiz.querySelector('#v3alok'); if(alok) alok.onclick=()=>{ const v=raiz.querySelector('#v3alv').value; if(!v){ alert('Elegí el día y la hora'); return; } const f=new Date(v); if(f<new Date()){ alert('Elegí un momento que todavía no pasó'); return; } alGuardar(alok,f.toISOString()); };
+    const alno=raiz.querySelector('#v3alno'); if(alno) alno.onclick=()=>alGuardar(alno,null);
     raiz.querySelectorAll('[data-tcur]').forEach(b=>b.onclick=()=>estado(b,b.dataset.tcur,b.dataset.est==='en_curso'?'pendiente':'en_curso'));
     const ta=raiz.querySelector('#v3tadd'), ti=raiz.querySelector('#v3tarea');
     const sumar=async()=>{ const t=ti.value.trim(); if(!t) return; window.SRE&&window.SRE('tarea_nueva',{}); ta.disabled=true; const r=await rpc('sub_tarea_cliente_alta',{p_slug:slug,p_k:tok,p_titulo:t}); if(r&&r.ok){ FILTRO='abiertas'; recargar(); } else ta.disabled=false; };
