@@ -654,7 +654,6 @@
     const NT=d.notas||[];
     const scrPro=`
       <h1 class="v3t">Tu proyecto</h1><p class="bj">Tus metas, tus links y tu web.</p>
-      <div id="v3cx"></div>
       <div class="tit2"><h2>Hitos</h2>${HDISP.length?`<button id="v3hnuevo">${HFORM?'Cerrar':'Agregar hito'}</button>`:''}</div>
       <div class="card">${HT.length?HT.map(x=>`<div class="hito" style="margin:0;border-top:1px solid #EDE6D8;grid-template-columns:38px 1fr;position:relative"><div>${ico.sol}</div><div style="${x.h.id&&!x.h.virtual?'padding-right:70px':''}"><div class="v3t">${esc(HTIT(x.h))}</div><div class="tx">${x.v!=null&&Number(x.v)>=Number(x.h.objetivo)?'¡Logrado!':'En camino'}</div></div><div class="bar"><div class="b"><i style="width:${x.v==null?0:Math.min(100,x.v/x.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(x.v)} / ${nf(x.h.objetivo)}</span></div>${x.h.id&&!x.h.virtual?`<span class="hacc">${IB('hito',x.h.id)}</span>`:''}${EDon('hito',x.h.id)?`<div style="grid-column:1/-1">${EDF([{v:x.h.titulo||'',ph:'Nombre (opcional)'},{v:x.h.objetivo,ph:'Meta (número)',num:1}])}</div>`:''}</div>`).join(''):'<div class="vacio">Todavía no hay hitos. Sumá una meta: por ejemplo, a cuántos seguidores querés llegar.</div>'}
         ${HFORM?`<div class="fform hform"><select id="v3hm">${HDISP.map(k=>`<option value="${k}">${HMET[k][0]}</option>`).join('')}</select><input id="v3ho" inputmode="decimal" placeholder="Meta (número)"><input id="v3ht" placeholder="Nombre (opcional)"><button id="v3hadd">Guardar hito</button></div>`:''}</div>
@@ -710,7 +709,7 @@
       <div class="scr" data-scr="hoy">${scrHoy}</div><div class="scr" data-scr="proyecto">${scrPro}</div><div class="scr" data-scr="actividades">${scrAct}</div><div class="scr" data-scr="metricas">${scrMet}</div><div class="scr" data-scr="ia">${scrIA}</div>`;
     const todo=raiz.querySelector('#v3todo'); if(app&&todo){ todo.appendChild(app); app.classList.remove('oculto'); }
     // conexiones para todos (20/10/2026): la misma pieza que usan los alumnos
-    const cxEl=raiz.querySelector('#v3cx');
+    const cxEl=null;
     if(cxEl){ const cxIr=()=>window.SRConexiones.montar(cxEl,{slug,k:tok,plegado:true});
       if(window.SRConexiones) cxIr(); else { const sc=document.createElement('script'); sc.src='/conexiones.js?v='+(window.SR_VER||Date.now()); sc.onload=cxIr; document.head.appendChild(sc); } }
     const web=raiz.querySelector('#v3web'); let intentos=0;
@@ -875,12 +874,16 @@
     const h=hoja('v3perfil','Tu perfil',`
       <div class="pf"><div class="ft">${esc((c.nombre||'?').trim()[0].toUpperCase())}<img src="/assets/avatars/${slug}.jpg?v=${new Date().toISOString().slice(0,10)}" alt="" onerror="this.remove()"></div>
         <h1 class="v3t">${esc(c.nombre||'')}</h1><p class="bj">${tipos[c.tipo]||'Proyecto'}${c.instagram?' · @'+esc(String(c.instagram).replace(/^@/,'')):''}</p></div>
-      <div class="tit2"><h2>Redes conectadas a SemillaIA</h2></div>
-      <div class="card lista">${redes.map(([n,dt,ok,ic2])=>`<div class="fila rd"><span class="ic">${ic2}</span><span class="tx"><b>${n}</b><br><span>${esc(dt)}</span></span><span class="st ${ok?'ok':''}">${ok?'Conectada':'Sin conectar'}</span></div>`).join('')}</div>
-      <p class="bj" style="font-size:13.5px;margin-top:10px">¿Querés sumar una red? Escribile a Agus y la conectamos.</p>
+      <div class="tit2"><h2>Tus conexiones</h2></div>
+      <div id="v3pcx"></div>
       <div class="tit2"><h2>Tu acceso</h2></div>
-      <div class="card" style="padding:16px"><p style="margin:0 0 12px;font-size:14.5px;line-height:1.45;color:#3A3846">Entrás a tu app con un link privado, sin contraseña. No lo compartas: quien lo tenga puede ver tu panel.</p><button class="cpL" id="v3cpl">Copiar mi link</button></div>`);
-    const b=h.querySelector('#v3cpl'); b.onclick=async()=>{ let ok=false; try{ await navigator.clipboard.writeText(link); ok=true; }catch(e){} b.textContent=ok?'Copiado':'No se pudo copiar'; setTimeout(()=>b.textContent='Copiar mi link',1600); };
+      <div class="card" style="padding:16px" id="v3acc">${(()=>{ let g=null; try{ g=JSON.parse(localStorage.getItem('sb-fdrxsjphlvvwwknnrjtx-auth-token')||'null'); }catch(e){}
+        const mail=g&&g.user&&g.user.email;
+        return mail
+          ? `<p style="margin:0 0 12px;font-size:14.5px;line-height:1.45;color:#3A3846">Entrás con tu cuenta de Google <b>${esc(mail)}</b>.</p><a class="cpL" href="/app.html?elegir=1" style="display:inline-block;text-decoration:none;margin-right:8px">Cambiar de proyecto</a><a class="cpL" href="/app.html?salir=1" style="display:inline-block;text-decoration:none;background:transparent;color:#7A1F3A">Cerrar sesión</a><button class="cpL oculto" id="v3cpl"></button>`
+          : `<p style="margin:0 0 12px;font-size:14.5px;line-height:1.45;color:#3A3846">Entrás con un link privado. Vinculalo a tu Gmail para entrar desde cualquier dispositivo con tu cuenta de Google.</p><a class="cpL" href="/app.html?c=${encodeURIComponent(slug)}&k=${encodeURIComponent(tok)}" style="display:inline-block;text-decoration:none;margin-right:8px">Entrar con Gmail</a><button class="cpL" id="v3cpl" style="background:transparent;color:#1A2456">Copiar mi link</button>`; })()}</div>`);
+    const pcx=h.querySelector('#v3pcx'); if(pcx){ const ir=()=>window.SRConexiones.montar(pcx,{slug,k:tok,plegado:false}); if(window.SRConexiones) ir(); else { const sc=document.createElement('script'); sc.src='/conexiones.js?v='+(window.SR_VER||Date.now()); sc.onload=ir; document.head.appendChild(sc); } }
+    const b=h.querySelector('#v3cpl'); if(b) b.onclick=async()=>{ let ok=false; try{ await navigator.clipboard.writeText(link); ok=true; }catch(e){} b.textContent=ok?'Copiado':'No se pudo copiar'; setTimeout(()=>b.textContent='Copiar mi link',1600); };
   }
 
   // ---- SemillaIA: burbuja de chat siempre visible ----

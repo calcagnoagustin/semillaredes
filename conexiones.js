@@ -62,22 +62,24 @@
 
   function montar(el,o){
     if(!el||!o||!o.slug||!o.k) return;
-    var st={tipo:null,L:{},err:{},ocupado:null,abierto:!o.plegado};
+    var st={tipo:null,origen:null,gestion:false,L:{},err:{},ocupado:null,abierto:!o.plegado};
     function pintar(){
       var n=FUENTES.filter(function(F){ return F.id!=='meta'&&st.L[F.id]&&st.L[F.id].estado==='conectado'; }).length;
       var h='<details class="srcx"'+(st.abierto?' open':'')+'><summary><span class="fl">▸</span>Tus conexiones<span class="cnt">'+n+' de '+(FUENTES.length-1)+'</span></summary>'+
-        '<p class="bj">Conectá tus redes una sola vez y SemillaIA trae tus números sola. Todo es de solo lectura: nunca publicamos ni tocamos nada. <a href="https://semillaredes.com/conectar-redes.html" target="_blank" rel="noopener" style="color:#7A1F3A;font-weight:600">Guía paso a paso</a></p>';
+        (st.gestion?'<p class="bj">Tus redes las conecta Semilla por vos. Si querés sumar una, escribile a Agus.</p>':'')+'<p class="bj"'+(st.gestion?' style="display:none"':'')+'>Conectá tus redes una sola vez y SemillaIA trae tus números sola. Todo es de solo lectura: nunca publicamos ni tocamos nada. <a href="https://semillaredes.com/conectar-redes.html" target="_blank" rel="noopener" style="color:#7A1F3A;font-weight:600">Guía paso a paso</a></p>';
       FUENTES.forEach(function(F){
         var c=st.L[F.id], f=F.id, conectado=c&&c.estado==='conectado', semilla=c&&c.via==='semilla';
         h+='<div class="fila"><div class="ic" style="background:'+F.color+'">'+F.ic+'</div><div><div class="nm">'+F.nombre+'</div>';
         if(conectado){
           h+='<div class="st">'+estadoTxt(f,c)+'</div>';
-          if(f==='meta') h+='<div><button class="lnk" data-meta="1">Volver a conectar</button></div>';
+          if(st.gestion){}
+          else if(f==='meta') h+='<div><button class="lnk" data-meta="1">Volver a conectar</button></div>';
           else if(!semilla&&f!=='meta_ads') h+='<div><button class="lnk" data-cambiar="'+f+'">Cambiar</button><button class="lnk" data-desc="'+f+'">Desconectar</button></div>';
         } else if(c&&c.estado==='error'){
           h+='<div class="st mute">Se cortó la conexión.</div><div class="err">'+esc(c.error||'Volvé a conectarla.')+'</div>';
         }
-        var mostrarForm=!conectado||st.cambiando===f;
+        var mostrarForm=(!conectado||st.cambiando===f)&&!st.gestion;
+        if(st.gestion&&!conectado&&f!=='meta'&&f!=='meta_ads') h+='<div class="st mute">La conecta Semilla.</div>';
         if(mostrarForm&&(f==='instagram'||f==='spotify')){
           h+='<div class="frm"><input data-in="'+f+'" placeholder="'+(f==='instagram'?'@tuusuario':'Link de tu perfil de artista')+'" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="pri" data-con="'+f+'"'+(st.ocupado===f?' disabled':'')+'>'+(st.ocupado===f?'Conectando…':'Conectar')+'</button></div>';
           if(st.err[f]) h+='<div class="err">'+esc(st.err[f])+'</div>';
@@ -86,8 +88,10 @@
           h+='<div class="frm"><button class="pri" data-yt="1">Conectar con Google</button></div><details class="ay"><summary>Cómo se hace</summary>'+AYUDA.youtube+'</details>';
         } else if(mostrarForm&&f==='meta'){
           h+='<div class="st mute">Trae visitas al perfil, alcance, seguidores nuevos y lo invertido en publicidad.</div><div class="frm"><button class="pri" data-meta="1" style="background:#1877F2">Continuar con Facebook</button></div><details class="ay"><summary>Cómo se hace</summary>'+AYUDA.meta+'</details>';
+        } else if(!conectado&&f==='meta'&&st.gestion){
+          h+='<div class="st mute">La conecta Semilla.</div>';
         } else if(!conectado&&f==='meta_ads'){
-          h+='<div class="st mute">Se conecta con el botón de Meta de arriba.</div>';
+          h+='<div class="st mute">'+(st.gestion?'La conecta Semilla.':'Se conecta con el botón de Meta de arriba.')+'</div>';
         }
         h+='</div></div>';
       });
@@ -101,7 +105,9 @@
       el.querySelectorAll('[data-meta]').forEach(function(b){ b.onclick=meta; });
     }
     function cargar(){
-      return rpc('con_get',{p_slug:o.slug,p_k:o.k}).then(function(r){ if(r&&!r.error){ st.tipo=r.tipo; st.L=r.conexiones||{}; } pintar(); }).catch(pintar);
+      return rpc('con_get',{p_slug:o.slug,p_k:o.k}).then(function(r){ if(r&&!r.error){ st.tipo=r.tipo; st.origen=r.origen||null; st.L=r.conexiones||{};
+        var sem=false; try{ sem=localStorage.getItem('sr_semilla')==='1'; }catch(e){}
+        st.gestion=(st.origen==='cliente'&&!sem); } pintar(); }).catch(pintar);
     }
     function conectar(f){
       var i=el.querySelector('[data-in="'+f+'"]'); var v=(i&&i.value||'').trim(); if(!v){ i&&i.focus(); return; }

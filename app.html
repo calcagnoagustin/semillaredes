@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F2EDE4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SemillaIA">
+<title>SemillaIA · Tu app</title>
+<link rel="icon" type="image/png" href="/assets/icono-semillaia.png">
+<link rel="apple-touch-icon" href="/assets/icono-semillaia.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--crema:#F2EDE4;--papel:#FBF8F2;--navy:#1A2456;--vino:#7A1F3A;--oliva:#87863A;--tinta:#24242C;--mute:#6B6878;--linea:#E1D9C9}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--crema);color:var(--tinta);font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.5}
+.wrap{max-width:480px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 34px) 20px 60px;min-height:100vh}
+.cab{display:flex;align-items:center;gap:12px;margin-bottom:34px}
+.cab img{width:44px;height:44px;border-radius:11px;display:block}
+.cab .m{font:600 21px/1 Inter,sans-serif;color:var(--navy)}.cab .m b{color:var(--oliva)}
+.cab .esp{flex:1}
+.cab .sal{border:0;background:none;color:var(--mute);font:500 13.5px/1 Inter,sans-serif;cursor:pointer;padding:8px 0}
+h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;color:var(--navy);font-size:34px;line-height:1.12;margin:0 0 10px}
+p.bj{font-size:16px;color:#3A3846;margin:0 0 24px}
+.g{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;border:1px solid #D9D1C0;background:#fff;color:#24242C;border-radius:12px;padding:14px 16px;font:600 16px/1 Inter,sans-serif;cursor:pointer}
+.g svg{width:20px;height:20px;flex:0 0 20px}
+.pri{display:block;width:100%;border:0;background:var(--navy);color:#fff;border-radius:12px;padding:15px 16px;font:600 16px/1 Inter,sans-serif;cursor:pointer;margin-top:18px}
+.pri[disabled]{opacity:.55;cursor:default}
+.mini{font-size:13.5px;color:var(--mute);margin:14px 0 0;text-align:center}
+.lista{display:flex;flex-direction:column;gap:10px}
+.pr{display:grid;grid-template-columns:44px 1fr auto;column-gap:14px;align-items:center;width:100%;text-align:left;background:var(--papel);border:1px solid var(--linea);border-radius:14px;padding:12px 14px;cursor:pointer;font:inherit;color:inherit}
+.pr .av{width:44px;height:44px;border-radius:50%;background:var(--navy);color:#F2EDE4;display:grid;place-items:center;font:700 17px/1 Inter,sans-serif;position:relative;overflow:hidden}
+.pr .av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pr .n{font-weight:700;color:var(--navy);font-size:16px;line-height:20px}
+.pr .o{font-size:13px;color:var(--mute);line-height:18px;margin-top:2px}
+.pr .fl{color:var(--oliva);font-size:20px;line-height:1}
+.buscar{width:100%;border:1px solid #D9D1C0;background:#fff;border-radius:12px;padding:12px 14px;font:inherit;margin:0 0 12px}
+.sec{font:700 11.5px/1 Inter,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:var(--oliva);margin:22px 0 10px}
+label{display:block;font-weight:600;color:var(--navy);font-size:15px;margin:18px 0 8px}
+input.t{width:100%;border:1px solid #D9D1C0;background:#fff;border-radius:12px;padding:13px 14px;font:inherit;font-size:16px}
+.ops{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.op{border:1px solid #D9D1C0;background:#fff;border-radius:12px;padding:12px;font:500 15px/1.2 Inter,sans-serif;cursor:pointer;color:var(--tinta);text-align:center}
+.op.on{border-color:var(--navy);background:var(--navy);color:#fff}
+.err{color:var(--vino);font-size:14px;margin-top:12px}
+.oculto{display:none}
+.cargando{text-align:center;color:var(--mute);padding-top:30vh}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><p class="cargando">Cargando…</p></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+<script>
+/* SemillaIA · APP ÚNICA (20/10/2026)
+   Entrada con Gmail (Supabase Auth). Cada persona ve sus proyectos; Semilla (Agus) ve todos.
+   Los links de siempre (cliente.html?c=&k=) siguen andando y acá se vinculan al Gmail.
+   La app de cada proyecto es la misma para todos: cliente.html + app3.js. */
+const SB_URL='https://fdrxsjphlvvwwknnrjtx.supabase.co', SB_KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
+const sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,flowType:'pkce'}});
+const $=id=>document.getElementById(id), A=$('app');
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const Q=new URLSearchParams(location.search);
+const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}},del:k=>{try{localStorage.removeItem(k)}catch(e){}}};
+const ORIGEN={cliente:'Cliente de Semilla',alumno:'Formación Semilla',independiente:'Proyecto propio'};
+const cab=(salir)=>`<div class="cab"><img src="/assets/icono-semillaia.png" alt=""><span class="m">semilla<b>IA</b></span><span class="esp"></span>${salir?'<button class="sal" id="salir">Salir</button>':''}</div>`;
+const G='<svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+
+function abrir(p){
+  ls.set('sr_app_ultimo',p.slug);
+  location.href='/cliente.html?c='+encodeURIComponent(p.slug)+'&k='+encodeURIComponent(p.k)+'&app=1';
+}
+
+function pantallaLogin(msg){
+  A.innerHTML=cab(false)+`<h1>Tu app de artista</h1>
+    <p class="bj">SemillaIA ordena tu proyecto con el Método Semilla: tus números, tus metas y qué conviene hacer ahora. Entrá con tu cuenta de Google.</p>
+    <button class="g" id="gg">${G}Continuar con Google</button>
+    ${msg?`<p class="err">${esc(msg)}</p>`:''}
+    <p class="mini">Al entrar aceptás las <a href="/terminos.html">condiciones</a> y la <a href="/privacidad.html">política de privacidad</a>.</p>`;
+  $('gg').onclick=async()=>{ $('gg').disabled=true;
+    const ret=location.origin+location.pathname+(Q.get('c')&&Q.get('k')?'?c='+encodeURIComponent(Q.get('c'))+'&k='+encodeURIComponent(Q.get('k')):'');
+    const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:ret,queryParams:{prompt:'select_account'}}});
+    if(error){ $('gg').disabled=false; pantallaLogin('No pudimos abrir Google. Probá de nuevo.'); } };
+}
+
+function pantallaAlta(email,hayOtros){
+  let tipo='musica', mon='ARS';
+  A.innerHTML=cab(true)+`<h1>Creá tu proyecto</h1>
+    <p class="bj">Es tu espacio en SemillaIA. Después conectás tus redes y empezás a ver tus números.</p>
+    <label for="nom">¿Cómo se llama tu proyecto?</label><input class="t" id="nom" maxlength="80" placeholder="Tu nombre artístico o el de tu proyecto" autocomplete="off">
+    <label>¿Qué hacés?</label><div class="ops" id="tip">
+      <button class="op on" data-v="musica">Música</button><button class="op" data-v="arte">Arte visual</button>
+      <button class="op" data-v="teatro">Teatro o danza</button><button class="op" data-v="mixto">Otro proyecto cultural</button></div>
+    <label>¿En qué moneda trabajás?</label><div class="ops" id="mon">
+      <button class="op on" data-v="ARS">Pesos</button><button class="op" data-v="USD">Dólares</button></div>
+    <button class="pri" id="crear">Crear mi proyecto</button><p class="err oculto" id="er"></p>
+    ${hayOtros?'<p class="mini"><a href="#" id="volv">Volver a mis proyectos</a></p>':''}
+    <p class="mini">Entraste como ${esc(email)}</p>`;
+  const grupo=(id,cb)=>$(id).querySelectorAll('.op').forEach(b=>b.onclick=()=>{ $(id).querySelectorAll('.op').forEach(x=>x.classList.toggle('on',x===b)); cb(b.dataset.v); });
+  grupo('tip',v=>tipo=v); grupo('mon',v=>mon=v);
+  $('salir').onclick=salir; const v=$('volv'); if(v) v.onclick=e=>{e.preventDefault(); inicio();};
+  $('crear').onclick=async()=>{ const n=$('nom').value.trim(); if(!n){ $('nom').focus(); return; }
+    $('crear').disabled=true; $('crear').textContent='Creando…';
+    const {data,error}=await sb.rpc('crear_proyecto',{p_nombre:n,p_tipo:tipo,p_moneda:mon});
+    if(error||!data||data.error){ $('crear').disabled=false; $('crear').textContent='Crear mi proyecto'; $('er').classList.remove('oculto');
+      $('er').textContent=(data&&data.error==='limite')?'Llegaste al máximo de proyectos propios.':'No se pudo crear. Probá de nuevo.'; return; }
+    try{ window.SRE_ALTA=1; }catch(e){}
+    abrir({slug:data.slug,k:data.k}); };
+}
+
+function pantallaLista(d){
+  const P=d.proyectos||[], mios=P.filter(p=>p.mio), otros=P.filter(p=>!p.mio);
+  const fila=p=>`<button class="pr" data-s="${esc(p.slug)}"><span class="av">${esc((p.nombre||'?').trim()[0].toUpperCase())}<img src="/assets/avatars/${esc(p.slug)}.jpg" alt="" onerror="this.remove()"></span><span><span class="n">${esc(p.nombre)}</span><br><span class="o">${ORIGEN[p.origen]||''}${p.interno?' · interno':''}</span></span><span class="fl">›</span></button>`;
+  A.innerHTML=cab(true)+`<h1>${d.semilla?'Proyectos':'Tus proyectos'}</h1>
+    <p class="bj">${d.semilla?'Entrás como Semilla: ves todos los proyectos y podés conectarles las redes.':'Elegí con cuál querés trabajar.'}</p>
+    ${P.length>6?'<input class="buscar" id="bus" placeholder="Buscar proyecto" autocomplete="off">':''}
+    ${mios.length&&otros.length?'<div class="sec">Tuyos</div>':''}<div class="lista">${mios.map(fila).join('')}</div>
+    ${otros.length?`${mios.length?'<div class="sec">Todos</div>':''}<div class="lista" id="todos">${otros.map(fila).join('')}</div>`:''}
+    <button class="pri" id="nuevo" style="background:transparent;color:var(--navy);border:1px solid var(--navy)">Crear otro proyecto</button>
+    <p class="mini">Entraste como ${esc(d.email)}</p>`;
+  A.querySelectorAll('.pr').forEach(b=>b.onclick=()=>abrir(P.find(p=>p.slug===b.dataset.s)));
+  $('nuevo').onclick=()=>pantallaAlta(d.email,true); $('salir').onclick=salir;
+  const bus=$('bus'); if(bus) bus.oninput=()=>{ const q=bus.value.toLowerCase(); A.querySelectorAll('.pr').forEach(b=>b.style.display=b.textContent.toLowerCase().includes(q)?'':'none'); };
+}
+
+async function salir(){ await sb.auth.signOut(); ls.del('sr_semilla'); ls.del('sr_app_ultimo'); location.href='/app.html'; }
+
+async function inicio(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){ pantallaLogin(); return; }
+  // venía con un link de siempre: lo vinculo a su Gmail
+  if(Q.get('c')&&Q.get('k')){ await sb.rpc('vincular_proyecto',{p_slug:Q.get('c'),p_k:Q.get('k')}); history.replaceState(null,'','/app.html'+(Q.get('elegir')?'?elegir=1':'')); }
+  const {data:d,error}=await sb.rpc('mis_proyectos');
+  if(error||!d||d.error){ pantallaLogin('No pudimos cargar tus proyectos. Probá de nuevo.'); return; }
+  if(d.semilla){ ls.set('sr_semilla','1'); ls.set('sr_yo','1'); } else ls.del('sr_semilla');
+  const P=d.proyectos||[];
+  if(!P.length){ pantallaAlta(d.email,false); return; }
+  const ult=ls.get('sr_app_ultimo'), u=P.find(p=>p.slug===ult);
+  if(!Q.get('elegir')&&!d.semilla&&P.filter(p=>p.mio).length===1){ abrir(P.find(p=>p.mio)); return; }
+  if(!Q.get('elegir')&&u&&!d.semilla){ abrir(u); return; }
+  pantallaLista(d);
+}
+if(Q.get('salir')) salir(); else inicio();
+</script>
+</body>
+</html>

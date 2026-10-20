@@ -465,7 +465,7 @@ details.hist table{border:0;border-radius:0}
   var oculto=0; document.addEventListener('visibilitychange',function(){ if(document.hidden) oculto=Date.now(); else if(oculto&&Date.now()-oculto>30*60000) abrir(); });
 })();
 </script>
-<script>/* app nueva "Atelier": solo en perfiles de prueba */ if(/[?&]c=(hernan-onirico-2|piku-yoga|semilla-redes|animales-del-rock-2|maria-marta-crespo|berco-estudio|federico-andahazi|felipe-gonzalez|spam-studio|sin-fronteras-duo|abel-maldonado|mavela|animales-del-rock|hernan-onirico|lu-glass|marcos-cifuentes|andrea-guedella|betsy-grinblat|cheche-beraja|jimena-mercedes|los-soplafortune|koino|lara-fichera|yamila-beraja)(&|$)/.test(location.search)) document.write('<script src="/app3.js?v='+Date.now()+'"><\/script>');</script>
+<script>/* app única: la app nueva para todos (salvo Audova, que va en inglés) */ if(!/[?&]c=audova(&|$)/.test(location.search)) document.write('<script src="/app3.js?v='+Date.now()+'"><\/script>');</script>
 </head>
 <body>
 <div class="wrap">
@@ -2582,7 +2582,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261020g';
+var SR_VER='20261020u';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
