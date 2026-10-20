@@ -137,6 +137,8 @@
   #v3 .gira .gn span{font-size:13px;color:#55525F}
   #v3 .gira .gl{display:inline-block;margin-top:8px;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${VINO};text-decoration:none}
   #v3 .gira .gp{font-size:12px;color:#8A8698;margin-top:4px}
+  #v3 .gira .gc{font-size:13.5px;color:#55525F;margin-top:6px}
+  #v3 .gira .gc b{color:#24242C;font-weight:700}
   #v3 .hito .hx{position:absolute;top:10px;right:10px;width:28px;height:28px;border:0;border-radius:50%;background:none;color:#A9A190;font:400 20px/1 Inter,sans-serif;cursor:pointer}
   #v3 .tkp .fila{grid-template-columns:1fr auto}
   #v3 .tkp .tx b{color:${NAVY};font-size:15.5px}#v3 .tkp .tx span{font-size:13.5px;color:#6F6B7C}
@@ -469,7 +471,7 @@
           <div class="gt">${esc(f.lugar||'')}${f.ciudad?' · '+esc(f.ciudad):''}</div>
           <div class="gs">${fl(f.fecha)} · ${dd===0?'es hoy':dd===1?'falta 1 día':'faltan '+dd+' días'}</div>
           <div class="gn"><b>${nf(e)}</b><span>${e===1?'entrada vendida':'entradas vendidas'}${ep?` · +${nf(ep)} en el período`:''}</span></div>
-          ${Number(f.inv_acum||0)>0?`<div class="gp">${e>0?`Costo por entrada: <b style="color:#24242C">${SIM}${nf(Number(f.inv_acum)/e,2)}</b> · `:''}Inversión: ${SIM}${nf(Number(f.inv_acum),2)}${e>0?'':' · todavía sin entradas'}</div>`:''}
+          ${Number(f.inv_acum||0)>0?`${e>0?`<div class="gc">Costo por entrada: <b>${SIM}${nf(Number(f.inv_acum)/e,2)}</b></div>`:''}<div class="gp">Inversión: ${SIM}${nf(Number(f.inv_acum),2)}${e>0?'':' · todavía sin entradas'}</div>`:''}
           <div class="gp">Según el píxel de Meta${f.ticketera?' en '+esc(f.ticketera):''}${f.estado==='borrador'?' · la campaña todavía no está publicada':''}</div>
           ${f.tickets?`<a class="gl" href="${esc(f.tickets)}" target="_blank" rel="noopener">Ver entradas →</a>`:''}
         </div></div>`; }).join('')}</div>`; })();
