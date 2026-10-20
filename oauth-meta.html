@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Conectar con Facebook · SemillaIA</title>
+<link rel="icon" type="image/png" href="/assets/icono-semillaia.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--crema:#F2EDE4;--navy:#1A2456;--vino:#7A1F3A;--oliva:#87863A;--tinta:#24242C;--mute:#6B6878}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--crema);color:var(--tinta);font-family:Inter,system-ui,sans-serif;padding:24px}
+.caja{max-width:440px;width:100%;background:#FBF8F2;border:1px solid #E1D9C9;border-radius:18px;padding:28px 24px;text-align:center}
+img{width:64px;height:64px;border-radius:14px;margin-bottom:14px}
+h1{font-family:'Playfair Display',serif;font-weight:600;color:var(--navy);font-size:28px;margin:0 0 8px}
+p{font-size:15.5px;line-height:1.5;margin:8px 0;color:var(--tinta)}
+.mini{font-size:13.5px;color:var(--mute)}
+.ok{color:#5E7A1E;font-weight:700}.err{color:var(--vino)}
+button,a.btn{display:inline-block;border:0;background:#1877F2;color:#fff;font:600 15px/1 Inter,sans-serif;border-radius:10px;padding:13px 18px;cursor:pointer;text-decoration:none;margin-top:12px}
+button.sec{background:var(--navy)}
+ul{list-style:none;padding:0;margin:12px 0;text-align:left}
+li{background:#fff;border:1px solid #E1D9C9;border-radius:10px;padding:10px 12px;margin:6px 0;font-size:14.5px}
+select{width:100%;border:1px solid #D9D1C0;border-radius:10px;padding:10px;font:inherit;margin-top:6px;background:#fff}
+label{display:block;text-align:left;font-size:13px;color:var(--mute);margin-top:12px}
+</style>
+</head>
+<body>
+<div class="caja">
+  <img src="/assets/icono-semillaia.png" alt="">
+  <h1 id="tit">Conectar con Facebook</h1>
+  <p id="msg">Un momento…</p>
+  <div id="extra"></div>
+</div>
+<script>
+const API='https://fdrxsjphlvvwwknnrjtx.supabase.co', KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
+const $=id=>document.getElementById(id);
+const P=new URLSearchParams(location.search);
+const fn=b=>fetch(API+'/functions/v1/meta-conectar',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(b)}).then(r=>r.json()).catch(()=>({error:'red'}));
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const nf=v=>v==null?'':Number(v).toLocaleString('es-AR');
+if(P.get('volver')){ try{ localStorage.setItem('sr_volver_meta',P.get('volver')); }catch(e){} }
+const volver=()=>{ let v=''; try{ v=localStorage.getItem('sr_volver_meta')||''; }catch(e){} return /^https:\/\/([a-z0-9-]+\.)?semillaredes\.com\//.test(v)?v:''; };
+const btnVolver=()=>{ const v=volver(); return v?`<button class="sec" onclick="try{localStorage.removeItem('sr_volver_meta')}catch(e){};location.href='${esc(v)}'">Volver a mi app</button>`:'<p class="mini">Ya podés cerrar esta pestaña y volver a tu app.</p>'; };
+
+const code=P.get('code'), state=P.get('state')||'', err=P.get('error')||P.get('error_reason');
+if(err){
+  $('tit').textContent='No se conectó'; $('msg').innerHTML='<span class="err">Cancelaste o Facebook no dio el permiso.</span>'; $('extra').innerHTML=btnVolver();
+} else if(code){
+  $('msg').textContent='Guardando el permiso…';
+  fn({accion:'canje',cuenta:state,code}).then(r=>{
+    if(!r||!r.ok){ $('tit').textContent='No se pudo conectar'; $('msg').innerHTML='<span class="err">'+esc((r&&r.detalle)||'Probá de nuevo en un rato.')+'</span>'; $('extra').innerHTML=btnVolver(); return; }
+    $('tit').textContent='¡Listo!';
+    const ig=(r.ig||[]), ads=(r.ads||[]);
+    let h='<p class="ok">Tu cuenta de Meta quedó conectada.</p>';
+    if(ig.length>1||ads.length>1){
+      h+='<p class="mini">Tenés más de una cuenta. Elegí cuáles mira SemillaIA:</p>';
+      if(ig.length>1) h+='<label>Instagram</label><select id="sig">'+ig.map(x=>`<option value="${esc(x.id)}"${x.id===r.ig_id?' selected':''}>@${esc(x.usuario)} · ${nf(x.seguidores)} seguidores</option>`).join('')+'</select>';
+      if(ads.length>1) h+='<label>Cuenta publicitaria</label><select id="sad">'+ads.map(x=>`<option value="${esc(x.id)}"${x.id===r.ad_id?' selected':''}>${esc(x.nombre)}${x.activa?'':' (inactiva)'}</option>`).join('')+'</select>';
+      h+='<button class="sec" id="guardar">Guardar y volver</button>';
+    } else {
+      h+='<ul>'+(ig[0]?`<li>Instagram: <b>@${esc(ig[0].usuario)}</b> · ${nf(ig[0].seguidores)} seguidores</li>`:'<li>No encontramos un Instagram profesional vinculado a tus páginas.</li>')+(ads[0]?`<li>Publicidad: <b>${esc(ads[0].nombre)}</b></li>`:'<li>Sin cuenta publicitaria.</li>')+'</ul>'+btnVolver();
+    }
+    $('msg').innerHTML=''; $('extra').innerHTML=h;
+    const g=$('guardar'); if(g) g.onclick=async()=>{ g.disabled=true; g.textContent='Guardando…';
+      await fn({accion:'elegir',cuenta:state,ig_id:($('sig')||{}).value,ad_id:($('sad')||{}).value});
+      const v=volver(); try{localStorage.removeItem('sr_volver_meta')}catch(e){}; if(v) location.href=v; else { $('extra').innerHTML='<p class="ok">Guardado.</p><p class="mini">Ya podés cerrar esta pestaña.</p>'; } };
+  });
+} else {
+  const c=P.get('c'), k=P.get('k');
+  if(!c||!k){ $('msg').textContent='Entrá desde tu app de SemillaIA → Tus conexiones.'; }
+  else {
+    $('msg').innerHTML='SemillaIA va a leer las estadísticas de tu Instagram profesional y de tu cuenta publicitaria. <b>Solo lectura:</b> nunca publicamos ni tocamos tus anuncios.';
+    fn({accion:'url',cuenta:c,k}).then(r=>{
+      if(r&&r.url){ $('extra').innerHTML='<button id="ir">Continuar con Facebook</button><p class="mini">Elegí tu página y tu cuenta publicitaria cuando Facebook te las muestre.</p>'; $('ir').onclick=()=>location.href=r.url; }
+      else $('msg').innerHTML='<span class="err">Link no válido. Entrá de nuevo desde tu app.</span>';
+    });
+  }
+}
+</script>
+</body>
+</html>
