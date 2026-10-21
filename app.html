@@ -66,7 +66,7 @@ body.portada .wrap{max-width:none;padding:0}
 .pt{position:relative;overflow:hidden;min-height:100vh;padding:calc(env(safe-area-inset-top,0px) + 26px) 20px 40px}
 .pt .lock{position:relative;z-index:3}
 .pt .arte{position:absolute;z-index:1;top:78px;right:-36px;width:270px}
-.pt .arte img{-webkit-mask-image:radial-gradient(ellipse 58% 56% at 56% 50%,#000 50%,transparent 100%);mask-image:radial-gradient(ellipse 58% 56% at 56% 50%,#000 50%,transparent 100%)}
+.pt .arte img{-webkit-mask-image:radial-gradient(ellipse 56% 50% at 56% 56%,#000 52%,transparent 100%);mask-image:radial-gradient(ellipse 56% 50% at 56% 56%,#000 52%,transparent 100%)}
 .pt .arte img{display:block;width:100%;height:auto}
 .pt .hero{position:relative;z-index:2;max-width:560px}
 .pt h1.big{font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:58px;line-height:.98;letter-spacing:-1.5px;color:var(--navy);margin:150px 0 18px}
@@ -169,11 +169,12 @@ function pantallaLogin(msg){
     ${LOCK}
     <div class="arte"><img src="/assets/arte-estatua.webp" alt="">
       <div class="tel" aria-hidden="true"><div class="fr"><div class="sc"><span class="nt"></span>
-        <div class="ho">Hola, Agus ✨</div><div class="ss">Seguimos haciendo crecer tu proyecto.</div>
+        <div class="ho">Hola, Agus <svg viewBox="0 0 24 24" style="width:16px;height:16px;vertical-align:-1px"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z" fill="#E8B84A"/></svg></div><div class="ss">Seguimos haciendo crecer tu proyecto.</div>
         <div class="bx"><div class="k">Crecimiento esta semana</div><div class="num">${IC.ig}<span><b>+474</b><small>seguidores</small></span><span class="bars"><i style="height:30%"></i><i style="height:45%"></i><i style="height:60%"></i><i style="height:80%"></i><i style="height:100%"></i></span></div></div>
         <div class="rh">Todas tus redes <span>Ver todas →</span></div>
         <div class="rd"><div>${IC.ig}Instagram<b>31.1K</b></div><div>${IC.sp}Spotify<b>30.4K</b></div><div>${IC.yt}YouTube<b>7.5K</b></div><div>${IC.ads}Anuncios<b>$12K</b></div></div>
         <div class="bx"><div class="k" style="color:var(--navy);font-weight:600;font-size:11px">Tareas de esta semana</div><div class="k">3/5 completadas</div><div class="pb"><i></i></div></div>
+        <div class="bx"><div class="k" style="color:var(--navy);font-weight:600;font-size:11px">Recomendación de la semana</div><div class="k">Publicá un reel mostrando tu proceso: es lo que más te funcionó.</div></div>
         <div class="nav"><span>Inicio</span><span>Estrategia</span><span>Contenido</span><span>Anuncios</span><span>Más</span></div>
       </div></div></div>
     </div>
