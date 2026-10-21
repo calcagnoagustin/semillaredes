@@ -151,6 +151,7 @@
   #v3 .dest .dg{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 12px;margin-top:14px}
   #v3 .dest .dg b{display:block;font-size:22px;line-height:1.1;color:#24242C;font-weight:700}
   #v3 .dest .dg small{display:block;font-size:12.5px;color:#55525F;margin-top:3px}
+  #v3 .aviso-act{margin:10px 0 0;display:inline-block;padding:7px 12px;border-radius:999px;background:#EFE9DC;font:500 13px/1.3 Inter,sans-serif;color:#55525F}
   #v3 .dest .dp{font-size:12px;color:#8A8698;margin-top:12px}
   #v3 .cjl{display:grid;gap:12px}
   #v3 .cjl .card{padding:16px}
@@ -502,12 +503,13 @@
     // --- Campaña destacada (sub_campanas con tipo 'destacada'): arriba de todo en Hoy, con sus números acumulados ---
     const DEST=(d.campanas||[]).filter(k=>(k.metricas||{}).tipo==='destacada').map(k=>{ const M=k.metricas||{}, on=M.estado==='activa';
       const fl=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
-      const it=[]; if(M.visitas!=null) it.push([nf(M.visitas),M.resultado||'resultados']); if(M.alcance!=null) it.push([nf(M.alcance),'personas alcanzadas']);
-      if(M.inversion!=null) it.push([SIM+nf(M.inversion),'invertidos']); if(M.costo_visita!=null) it.push([SIM+nf(M.costo_visita,2),'por '+String(M.resultado||'resultado').replace(/s(\s|$)/,'$1').replace(/es al /,' al ')]);
+      const it=[]; if(M.ventas!=null){ it.push([nf(M.ventas),M.ventas===1?'venta':'ventas']); it.push([M.ingreso?SIM+nf(M.ingreso,2):'—','facturados']); it.push([M.roas!=null?nf(M.roas,2)+'x':'—','retorno (ROAS)']); it.push([M.costo_venta!=null?SIM+nf(M.costo_venta,2):'—','por venta']); it.push([SIM+nf(M.inversion,2),'invertidos']); it.push([nf(M.carritos||0),'carritos']); }
+      else { if(M.visitas!=null) it.push([nf(M.visitas),M.resultado||'resultados']); if(M.alcance!=null) it.push([nf(M.alcance),'personas alcanzadas']);
+      if(M.inversion!=null) it.push([SIM+nf(M.inversion),'invertidos']); if(M.costo_visita!=null) it.push([SIM+nf(M.costo_visita,2),'por '+String(M.resultado||'resultado').replace(/s(\s|$)/,'$1').replace(/es al /,' al ')]); }
       return `<div class="dest"><div class="de">Campaña destacada<span class="${on?'on':''}"><i></i>${on?'Activa':M.estado==='sin_circular'?'Sin circular':'Terminada'}</span></div>
-        <h3>${esc(k.nombre)}</h3><div class="ds">${M.show?'Show el '+fl(M.show)+' · ':''}${M.desde?'Desde el '+fl(M.desde):''}${M.hasta?' hasta el '+fl(M.hasta):''}</div>
+        <h3>${esc(k.nombre)}</h3><div class="ds">${M.show?'Show el '+fl(M.show)+' · ':''}${M.desde?'Desde el '+fl(M.desde):''}${M.hasta?' hasta el '+fl(M.hasta):''}${M.diaria?' · '+SIM+nf(M.diaria)+' por día':''}</div>
         ${it.length?`<div class="dg">${it.map(x=>`<div><b>${x[0]}</b><small>${esc(x[1])}</small></div>`).join('')}</div>`:'<div class="ds" style="margin-top:12px">Los números aparecen en la próxima actualización.</div>'}
-        <div class="dp">${M.show?'Acumulado desde el '+fl(M.desde):'Acumulado de toda la campaña'}${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; }).join('');
+        <div class="dp">${M.show?'Acumulado desde el '+fl(M.desde):'Acumulado de toda la campaña'}${M.ventas!=null?' · según el píxel de la tienda':''}${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; }).join('');
     // --- Shows de la gira en Hoy (Koino): entradas vendidas según el píxel de Meta, una tarjeta por fecha que todavía no pasó ---
     const GIRA=(()=>{ const hoyI=new Date().toISOString().slice(0,10); const L=(um.fechas||[]).filter(f=>f&&f.fecha&&String(f.fecha).slice(0,10)>=hoyI).sort((a,b)=>a.fecha<b.fecha?-1:1);
       if(!L.length) return '';
@@ -522,7 +524,7 @@
           ${f.tickets?`<a class="gl" href="${esc(f.tickets)}" target="_blank" rel="noopener">Ver entradas →</a>`:''}
         </div></div>`; }).join('')}</div>`; })();
     const scrHoy=`
-      <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>
+      <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>${({'alan-sutton':'Tu reporte se actualiza todos los jueves a las 7 de la mañana.'})[slug]?`<p class="aviso-act">${({'alan-sutton':'Tu reporte se actualiza todos los jueves a las 7 de la mañana.'})[slug]}</p>`:''}
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
       ${DEST}
       ${GIRA}
