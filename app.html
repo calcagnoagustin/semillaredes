@@ -4,31 +4,38 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#F2EDE4">
+<meta name="theme-color" content="#F6EEE2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="SemillaIA">
-<title>SemillaIA · Tu app</title>
-<link rel="icon" type="image/png" href="/assets/icono-semillaia.png?v=2">
-<link rel="apple-touch-icon" href="/assets/icono-semillaia-180.png">
+<title>SemillaIA · Tu app de artista</title>
+<link rel="icon" type="image/png" href="/assets/favicon-semillaia.png">
+<link rel="apple-touch-icon" href="/assets/icono-semillaia-180.png?v=3">
 <link rel="manifest" href="/app-manifest.json">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300&family=Playfair+Display:wght@600;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--crema:#F2EDE4;--papel:#FBF8F2;--navy:#1A2456;--vino:#7A1F3A;--oliva:#87863A;--tinta:#24242C;--mute:#6B6878;--linea:#E1D9C9}
+:root{--crema:#F6EEE2;--papel:#FBF7F0;--navy:#101A48;--vino:#5F0B24;--oliva:#7A743A;--coral:#F07C70;--rosa:#F6DCD6;--olivaclaro:#E8E3CC;--tinta:#22232E;--mute:#6B6878;--linea:#E4D9C8}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--crema);color:var(--tinta);font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.5}
-.wrap{max-width:480px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 34px) 20px 60px;min-height:100vh}
-.cab{display:flex;align-items:center;gap:12px;margin-bottom:34px}
-.cab img{width:44px;height:44px;border-radius:11px;display:block}
-.cab .m{font:600 21px/1 Inter,sans-serif;color:var(--navy)}.cab .m b{color:var(--oliva)}
+.wrap{max-width:480px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 30px) 20px 60px;min-height:100vh}
+/* logo: marca + SEMILLA REDES | semillaIA */
+.lock{display:flex;align-items:center;gap:12px}
+.lock .mk{width:44px;height:44px;display:block}
+.lock .sr{display:flex;flex-direction:column;justify-content:center;gap:3px}
+.lock .sr b{font:400 22px/20px Anton,Impact,sans-serif;color:var(--navy);letter-spacing:.3px}
+.lock .sr i{font:300 13px/12px Oswald,sans-serif;font-style:normal;color:var(--navy);letter-spacing:5.4px}
+.lock .dv{width:1px;height:36px;background:#BDB4A3;margin:0 4px}
+.lock .ia{font:800 23px/1 Inter,sans-serif;color:var(--navy);letter-spacing:-.4px}.lock .ia b,.ia b{color:var(--oliva);font-weight:800}
+.cab{display:flex;align-items:center;gap:12px;margin-bottom:30px}
 .cab .esp{flex:1}
 .cab .sal{border:0;background:none;color:var(--mute);font:500 13.5px/1 Inter,sans-serif;cursor:pointer;padding:8px 0}
-h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;color:var(--navy);font-size:34px;line-height:1.12;margin:0 0 10px}
+h1{font-family:'Playfair Display',Georgia,serif;font-weight:800;color:var(--navy);font-size:34px;line-height:1.1;margin:0 0 10px;letter-spacing:-.3px}
 p.bj{font-size:16px;color:#3A3846;margin:0 0 24px}
-.g{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;border:1px solid #D9D1C0;background:#fff;color:#24242C;border-radius:12px;padding:14px 16px;font:600 16px/1 Inter,sans-serif;cursor:pointer}
+.g{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;border:1px solid var(--linea);background:#fff;color:var(--tinta);border-radius:12px;height:52px;padding:0 16px;font:600 16px/1 Inter,sans-serif;cursor:pointer}
 .g svg{width:20px;height:20px;flex:0 0 20px}
-.pri{display:block;width:100%;border:0;background:var(--navy);color:#fff;border-radius:12px;padding:15px 16px;font:600 16px/1 Inter,sans-serif;cursor:pointer;margin-top:18px}
+.pri{display:block;position:relative;width:100%;border:0;background:var(--navy);color:#fff;border-radius:12px;height:54px;padding:0 48px;font:600 16px/54px Inter,sans-serif;cursor:pointer;margin-top:14px;text-align:center}
+.pri .fl{position:absolute;right:18px;top:50%;width:20px;height:20px;margin-top:-10px}
 .pri[disabled]{opacity:.55;cursor:default}
-.mini{font-size:13.5px;color:var(--mute);margin:14px 0 0;text-align:center}
+.mini{font-size:13.5px;color:var(--mute);margin:16px 0 0;text-align:center}
 .mini a{color:var(--navy)}
 .lista{display:flex;flex-direction:column;gap:10px}
 .pr{display:grid;grid-template-columns:44px 1fr auto;column-gap:14px;align-items:center;width:100%;text-align:left;background:var(--papel);border:1px solid var(--linea);border-radius:14px;padding:12px 14px;cursor:pointer;font:inherit;color:inherit}
@@ -37,19 +44,81 @@ p.bj{font-size:16px;color:#3A3846;margin:0 0 24px}
 .pr .n{font-weight:700;color:var(--navy);font-size:16px;line-height:20px}
 .pr .o{font-size:13px;color:var(--mute);line-height:18px;margin-top:2px}
 .pr .fl{color:var(--oliva);font-size:20px;line-height:1}
-.buscar{width:100%;border:1px solid #D9D1C0;background:#fff;border-radius:12px;padding:12px 14px;font:inherit;margin:0 0 12px}
+.buscar{width:100%;border:1px solid var(--linea);background:#fff;border-radius:12px;padding:12px 14px;font:inherit;margin:0 0 12px}
 .sec{font:700 11.5px/1 Inter,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:var(--oliva);margin:22px 0 10px}
 label{display:block;font-weight:600;color:var(--navy);font-size:15px;margin:18px 0 8px}
-input.t{width:100%;border:1px solid #D9D1C0;background:#fff;border-radius:12px;padding:13px 14px;font:inherit;font-size:16px}
+input.t{width:100%;border:1px solid var(--linea);background:#fff;border-radius:12px;height:52px;padding:0 14px;font:inherit;font-size:16px;color:var(--tinta)}
+.campo{position:relative}
+.campo svg{position:absolute;left:16px;top:50%;width:20px;height:20px;margin-top:-10px;pointer-events:none}
+.campo input.t{padding-left:46px}
 .ops{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.op{border:1px solid #D9D1C0;background:#fff;border-radius:12px;padding:12px;font:500 15px/1.2 Inter,sans-serif;cursor:pointer;color:var(--tinta);text-align:center}
+.op{border:1px solid var(--linea);background:#fff;border-radius:12px;padding:12px;font:500 15px/1.2 Inter,sans-serif;cursor:pointer;color:var(--tinta);text-align:center}
 .op.on{border-color:var(--navy);background:var(--navy);color:#fff}
-.o-sep{display:flex;align-items:center;gap:12px;color:var(--mute);font-size:13.5px;margin:20px 0 4px}.o-sep:before,.o-sep:after{content:"";flex:1;height:1px;background:var(--linea)}
+.o-sep{display:flex;align-items:center;gap:12px;color:var(--mute);font-size:13.5px;line-height:18px;margin:18px 0}.o-sep:before,.o-sep:after{content:"";flex:1;height:1px;background:var(--linea)}
 .codigo{letter-spacing:8px;text-align:center;font-weight:600;font-size:22px!important}
 .link{border:0;background:none;color:var(--navy);font:600 14px/1 Inter,sans-serif;text-decoration:underline;cursor:pointer;padding:0}
 .err{color:var(--vino);font-size:14px;margin-top:12px}
 .oculto{display:none}
 .cargando{text-align:center;color:var(--mute);padding-top:30vh}
+
+/* ===== PORTADA (pantalla de entrada) ===== */
+body.portada .wrap{max-width:none;padding:0}
+.pt{position:relative;overflow:hidden;min-height:100vh;padding:calc(env(safe-area-inset-top,0px) + 26px) 20px 40px}
+.pt .lock{position:relative;z-index:3}
+.pt .arte{position:absolute;z-index:1;top:78px;right:-36px;width:270px}
+.pt .arte img{-webkit-mask-image:radial-gradient(ellipse 58% 56% at 56% 50%,#000 50%,transparent 100%);mask-image:radial-gradient(ellipse 58% 56% at 56% 50%,#000 50%,transparent 100%)}
+.pt .arte img{display:block;width:100%;height:auto}
+.pt .hero{position:relative;z-index:2;max-width:560px}
+.pt h1.big{font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:58px;line-height:.98;letter-spacing:-1.5px;color:var(--navy);margin:150px 0 18px}
+.pt h1.big em{display:block;font-style:normal;color:var(--vino)}
+.pt .lead{font-size:18px;line-height:1.45;color:#2E2F3C;margin:0 0 26px;max-width:470px}
+.pt .lead b{font-weight:700;color:var(--navy)}
+.feat{list-style:none;margin:0 0 30px;padding:0;display:flex;flex-direction:column;gap:16px}
+.feat li{display:grid;grid-template-columns:52px 1fr;column-gap:16px;align-items:center}
+.feat .fi{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--rosa)}
+.feat .fi.o{background:var(--olivaclaro)}
+.feat .fi svg{width:24px;height:24px;display:block}
+.feat .tx b{display:block;font-weight:500;font-size:16px;line-height:21px;color:var(--navy)}
+.feat .tx small{display:block;font-size:13.5px;line-height:18px;color:var(--mute);margin-top:2px}
+.card{position:relative;z-index:2;background:var(--papel);border:1px solid var(--linea);border-radius:24px;padding:30px 24px 24px;box-shadow:0 18px 50px -24px rgba(16,26,72,.28);max-width:460px}
+.card .lock{display:none;justify-content:center;margin:0 0 22px}
+.card h2{font-family:'Playfair Display',Georgia,serif;font-weight:800;color:var(--navy);font-size:32px;line-height:1.1;letter-spacing:-.5px;margin:0 0 8px;text-align:center}
+.card h2 .ia{font-family:Inter,sans-serif;font-weight:800;letter-spacing:-.8px}
+.card p.bj{text-align:center;color:#55525E;font-size:15.5px;margin:0 0 22px}
+.tel{display:none}
+@media (min-width:980px){
+  .pt{display:grid;grid-template-columns:minmax(0,1fr) 300px 430px;column-gap:40px;align-items:center;padding:32px 56px 48px;max-width:1440px;margin:0 auto}
+  .pt>.lock{position:absolute;top:34px;left:56px}
+  .pt .hero{grid-column:1;padding-top:90px}
+  .pt h1.big{font-size:84px;margin-top:0}
+  .pt .arte{position:relative;grid-column:2;grid-row:1;top:auto;right:auto;width:440px;margin-left:-70px;align-self:start;margin-top:40px;-webkit-mask-image:none;mask-image:none}
+  .card .lock{display:flex}
+  .tel{display:block;position:absolute;left:30px;top:250px;z-index:2;transform:rotate(-6deg)}
+  .pt .card{grid-column:3;grid-row:1}
+}
+/* teléfono de muestra (solo compu) */
+.tel .fr{width:262px;height:480px;border-radius:42px;background:#111;padding:9px;box-shadow:0 30px 60px -20px rgba(16,26,72,.45)}
+.tel .sc{width:100%;height:100%;border-radius:34px;background:#F8F3EA;overflow:hidden;position:relative;padding:34px 14px 0}
+.tel .nt{position:absolute;top:0;left:50%;width:110px;height:24px;margin-left:-55px;background:#111;border-radius:0 0 16px 16px}
+.tel .ho{font:600 20px/1.1 'Playfair Display',serif;color:var(--navy)}
+.tel .ss{font-size:11px;line-height:14px;color:var(--mute);margin:4px 0 12px}
+.tel .bx{background:#fff;border-radius:14px;padding:10px 12px;margin:0 0 10px;box-shadow:0 1px 0 var(--linea)}
+.tel .k{font-size:10px;line-height:12px;color:var(--mute)}
+.tel .num{display:flex;align-items:center;gap:10px;margin-top:6px}
+.tel .num svg{width:26px;height:26px;flex:0 0 26px}
+.tel .num b{font:800 22px/1 Inter,sans-serif;color:var(--navy)}
+.tel .num small{display:block;font-size:10px;line-height:12px;color:var(--mute)}
+.tel .bars{margin-left:auto;display:flex;align-items:flex-end;gap:3px;height:34px}
+.tel .bars i{display:block;width:8px;background:#C9D0A6;border-radius:2px}
+.tel .rh{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;line-height:14px;color:var(--navy);font-weight:600;margin:4px 2px 6px}
+.tel .rh span{font-weight:500;color:var(--mute);font-size:9.5px}
+.tel .rd{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.tel .rd div{background:#fff;border-radius:10px;padding:7px 0 6px;text-align:center;font-size:8.5px;line-height:11px;color:var(--mute)}
+.tel .rd svg{width:20px;height:20px;display:block;margin:0 auto 3px}
+.tel .rd b{display:block;color:var(--navy);font-size:10px}
+.tel .pb{height:5px;border-radius:3px;background:#E8E2D4;margin-top:7px;overflow:hidden}.tel .pb i{display:block;height:100%;width:60%;background:#5F6B3A}
+.tel .nav{position:absolute;left:0;right:0;bottom:0;height:52px;background:#fff;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;text-align:center;font-size:8px;color:var(--mute)}
+.tel .nav span:first-child{color:var(--navy);font-weight:700}
 </style>
 </head>
 <body>
@@ -67,7 +136,21 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;',
 const Q=new URLSearchParams(location.search);
 const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}},del:k=>{try{localStorage.removeItem(k)}catch(e){}}};
 const ORIGEN={cliente:'Cliente de Semilla',alumno:'Formación Semilla',independiente:'Proyecto propio'};
-const cab=(salir)=>`<div class="cab"><img src="/assets/icono-semillaia.png?v=2" alt=""><span class="m">semilla<b>IA</b></span><span class="esp"></span>${salir?'<button class="sal" id="salir">Salir</button>':''}</div>`;
+const LOCK=`<div class="lock"><img class="mk" src="/assets/marca-semilla-oliva.png" alt=""><span class="sr"><b>SEMILLA</b><i>REDES</i></span><span class="dv"></span><span class="ia">semilla<b>IA</b></span></div>`;
+const cab=(salir)=>{ document.body.classList.remove('portada'); return `<div class="cab">${LOCK}<span class="esp"></span>${salir?'<button class="sal" id="salir">Salir</button>':''}</div>`; };
+const IC={
+  redes:'<svg viewBox="0 0 24 24" fill="none" stroke="#5F0B24" stroke-width="2" stroke-linecap="round"><path d="M5 20v-5M10 20V9M15 20v-8M20 20V5"/></svg>',
+  idea:'<svg viewBox="0 0 24 24" fill="none" stroke="#7A743A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg>',
+  meta:'<svg viewBox="0 0 24 24" fill="none" stroke="#5F0B24" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12l7-7M16 5h3v3"/></svg>',
+  alerta:'<svg viewBox="0 0 24 24" fill="none" stroke="#7A743A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 21h4"/></svg>',
+  anuncio:'<svg viewBox="0 0 24 24" fill="none" stroke="#5F0B24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h3l7 4V6L7 10z"/><path d="M18 9.5a3.5 3.5 0 0 1 0 5"/><path d="M8 14l1 5"/></svg>',
+  mail:'<svg viewBox="0 0 24 24" fill="none" stroke="#6B6878" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></svg>',
+  flecha:'<svg class="fl" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg>',
+  ig:'<svg viewBox="0 0 24 24"><defs><linearGradient id="igg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#FEDA75"/><stop offset=".45" stop-color="#E1306C"/><stop offset="1" stop-color="#7B3FE4"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="6" fill="url(#igg)"/><circle cx="12" cy="12" r="4.4" fill="none" stroke="#fff" stroke-width="2"/><circle cx="17.3" cy="6.7" r="1.3" fill="#fff"/></svg>',
+  sp:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#1DB954"/><path d="M7 9.5c3.5-1 7.5-.6 10.5 1M7.6 12.6c3-.8 6-.4 8.6 1M8.2 15.5c2.4-.6 4.7-.3 6.7.8" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  yt:'<svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="4" fill="#FF0000"/><path d="M10 9v6l5.2-3z" fill="#fff"/></svg>',
+  ads:'<svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="6" fill="#101A48"/><path d="M7 10.5v3h2l5 3v-9l-5 3z" fill="#fff"/><path d="M16.5 10a2.4 2.4 0 0 1 0 4" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>'
+};
 const G='<svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
 
 function abrir(p){
@@ -76,21 +159,48 @@ function abrir(p){
 }
 
 function pantallaLogin(msg){
-  A.innerHTML=cab(false)+`<h1>Tu app de artista</h1>
-    <p class="bj">SemillaIA ordena tu proyecto con el Método Semilla: tus números, tus metas y qué conviene hacer ahora. Entrá con Google o con tu mail.</p>
-    <button class="g" id="gg">${G}Continuar con Google</button>
-    <div class="o-sep">o con tu mail</div>
-    <input class="t" id="em" type="email" inputmode="email" autocomplete="email" placeholder="tu@mail.com">
-    <button class="pri" id="emb">Recibir código por mail</button>
-    ${msg?`<p class="err">${esc(msg)}</p>`:''}
-    <p class="mini">Al entrar aceptás las <a href="/terminos.html">condiciones</a> y la <a href="/privacidad.html">política de privacidad</a>.</p>`;
+  document.body.classList.add('portada');
+  const F=[['redes','','Todas tus redes en un mismo lugar.','Conectá Instagram, Spotify, YouTube y tu publicidad.'],
+           ['idea','o','Consejos y recomendaciones personalizadas.','Basadas en tu proyecto y tus objetivos.'],
+           ['meta','','Creá metas, objetivos y hacé seguimiento.','Convertí tu arte en un proyecto sostenible.'],
+           ['alerta','o','Alertas semanales para no perder el ritmo.','Oportunidades, recordatorios y próximos pasos.'],
+           ['anuncio','','Analizá tus campañas de anuncios.','Resultados claros y sugerencias para mejorar.']];
+  A.innerHTML=`<div class="pt">
+    ${LOCK}
+    <div class="arte"><img src="/assets/arte-estatua.webp" alt="">
+      <div class="tel" aria-hidden="true"><div class="fr"><div class="sc"><span class="nt"></span>
+        <div class="ho">Hola, Agus ✨</div><div class="ss">Seguimos haciendo crecer tu proyecto.</div>
+        <div class="bx"><div class="k">Crecimiento esta semana</div><div class="num">${IC.ig}<span><b>+474</b><small>seguidores</small></span><span class="bars"><i style="height:30%"></i><i style="height:45%"></i><i style="height:60%"></i><i style="height:80%"></i><i style="height:100%"></i></span></div></div>
+        <div class="rh">Todas tus redes <span>Ver todas →</span></div>
+        <div class="rd"><div>${IC.ig}Instagram<b>31.1K</b></div><div>${IC.sp}Spotify<b>30.4K</b></div><div>${IC.yt}YouTube<b>7.5K</b></div><div>${IC.ads}Anuncios<b>$12K</b></div></div>
+        <div class="bx"><div class="k" style="color:var(--navy);font-weight:600;font-size:11px">Tareas de esta semana</div><div class="k">3/5 completadas</div><div class="pb"><i></i></div></div>
+        <div class="nav"><span>Inicio</span><span>Estrategia</span><span>Contenido</span><span>Anuncios</span><span>Más</span></div>
+      </div></div></div>
+    </div>
+    <section class="hero">
+      <h1 class="big">Tu app <em>de artista</em></h1>
+      <p class="lead">Semilla<b>IA</b> ordena tu proyecto artístico con la inteligencia colectiva y la experiencia de cientos de artistas.</p>
+      <ul class="feat">${F.map(f=>`<li><span class="fi ${f[1]}">${IC[f[0]]}</span><span class="tx"><b>${f[2]}</b><small>${f[3]}</small></span></li>`).join('')}</ul>
+    </section>
+    <section class="card">
+      ${LOCK}
+      <h2>Entrá a <span class="ia">semilla<b>IA</b></span></h2>
+      <p class="bj">Gestioná, analizá y hacé crecer tu proyecto artístico en un solo lugar.</p>
+      <button class="g" id="gg">${G}Continuar con Google</button>
+      <div class="o-sep">o con tu mail</div>
+      <div class="campo">${IC.mail}<input class="t" id="em" type="email" inputmode="email" autocomplete="email" placeholder="tu@mail.com"></div>
+      <button class="pri" id="emb"><span id="embt">Recibir código por mail</span>${IC.flecha}</button>
+      ${msg?`<p class="err">${esc(msg)}</p>`:''}
+      <p class="mini">Al entrar aceptás las <a href="/terminos.html">condiciones</a> y la <a href="/privacidad.html">política de privacidad</a>.</p>
+    </section>
+  </div>`;
   $('gg').onclick=async()=>{ $('gg').disabled=true;
     const ret=location.origin+location.pathname+(Q.get('c')&&Q.get('k')?'?c='+encodeURIComponent(Q.get('c'))+'&k='+encodeURIComponent(Q.get('k')):'');
     const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:ret,queryParams:{prompt:'select_account'}}});
     if(error){ $('gg').disabled=false; pantallaLogin('No pudimos abrir Google. Probá de nuevo.'); } };
   const pedir=async()=>{ const em=($('em').value||'').trim().toLowerCase();
     if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(em)){ pantallaLogin('Revisá el mail: parece que le falta algo.'); return; }
-    $('emb').disabled=true; $('emb').textContent='Enviando…';
+    $('emb').disabled=true; $('embt').textContent='Enviando…';
     const {error}=await sb.auth.signInWithOtp({email:em,options:{shouldCreateUser:true}});
     if(error){ pantallaLogin(/rate|seconds/i.test(error.message)?'Ya te mandamos un código hace un momento. Esperá un minuto y probá de nuevo.':'No pudimos mandar el mail. Probá de nuevo en un rato.'); return; }
     pantallaCodigo(em); };

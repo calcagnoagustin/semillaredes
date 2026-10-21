@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#F2EDE4">
+<meta name="theme-color" content="#F6EEE2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="SemillaIA">
 <title>SemillaIA</title>
@@ -12,18 +12,27 @@
 <meta property="og:description" content="Tu app de artista: tus números, tus metas y qué conviene hacer ahora.">
 <meta property="og:image" content="https://semillaredes.com/assets/icono-semillaia-512.png">
 <link rel="manifest" href="/app-manifest.json">
-<link rel="icon" type="image/png" href="/assets/icono-semillaia-192.png">
-<link rel="apple-touch-icon" href="/assets/icono-semillaia-180.png">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="/assets/favicon-semillaia.png">
+<link rel="apple-touch-icon" href="/assets/icono-semillaia-180.png?v=3">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300&family=Playfair+Display:wght@800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--crema:#F2EDE4;--papel:#FBF8F2;--navy:#1A2456;--oliva:#87863A;--tinta:#24242C;--mute:#6B6878;--linea:#E1D9C9;--azul:#0A84FF}
+:root{--crema:#F6EEE2;--papel:#FBF7F0;--navy:#101A48;--vino:#5F0B24;--oliva:#7A743A;--tinta:#22232E;--mute:#6B6878;--linea:#E4D9C8;--azul:#0A84FF}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--crema);color:var(--tinta);font-family:Inter,system-ui,sans-serif}
+html,body{margin:0;background:var(--crema);color:var(--tinta);font-family:Inter,system-ui,sans-serif;overflow-x:hidden}
 main{max-width:440px;margin:0 auto;padding:calc(36px + env(safe-area-inset-top)) 22px calc(120px + env(safe-area-inset-bottom))}
-.marca{display:flex;align-items:center;gap:14px;margin:0 0 28px}
-.marca img{width:56px;height:56px;border-radius:13px;display:block}
-.marca span{font:600 24px/1 Inter,sans-serif;color:var(--navy)}.marca b{color:var(--oliva)}
-h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;color:var(--navy);font-size:31px;line-height:1.15;margin:0 0 8px}
+.lock{display:flex;align-items:center;gap:12px;position:relative;z-index:2;margin:0 0 20px}
+.lock .mk{width:44px;height:44px;display:block}
+.lock .sr{display:flex;flex-direction:column;justify-content:center;gap:3px}
+.lock .sr b{font:400 22px/20px Anton,Impact,sans-serif;color:var(--navy);letter-spacing:.3px}
+.lock .sr i{font:300 13px/12px Oswald,sans-serif;font-style:normal;color:var(--navy);letter-spacing:5.4px}
+.lock .dv{width:1px;height:36px;background:#BDB4A3;margin:0 4px}
+.lock .ia{font:800 23px/1 Inter,sans-serif;color:var(--navy);letter-spacing:-.4px}.lock .ia b{color:var(--oliva)}
+main{position:relative}
+.arte{position:absolute;top:calc(84px + env(safe-area-inset-top));right:-56px;width:250px;z-index:0;pointer-events:none}
+.arte img{display:block;width:100%;-webkit-mask-image:radial-gradient(ellipse 58% 56% at 56% 50%,#000 50%,transparent 100%);mask-image:radial-gradient(ellipse 58% 56% at 56% 50%,#000 50%,transparent 100%)}
+section{position:relative;z-index:1}
+h1 em{display:block;font-style:normal;color:var(--vino)}
+h1{font-family:'Playfair Display',Georgia,serif;font-weight:800;color:var(--navy);font-size:40px;line-height:1.02;letter-spacing:-.8px;margin:130px 0 12px}
 p.sub{font-size:17px;line-height:1.45;margin:0 0 24px;color:#4A4756}
 .btn{display:block;width:100%;background:var(--navy);color:#fff;border:0;border-radius:14px;padding:18px;font:700 18px/1 Inter,system-ui,sans-serif;text-decoration:none;text-align:center;cursor:pointer}
 .oculto{display:none!important}
@@ -44,11 +53,12 @@ p.sub{font-size:17px;line-height:1.45;margin:0 0 24px;color:#4A4756}
 </head>
 <body>
 <main>
-  <div class="marca"><img src="/assets/icono-semillaia-512.png" alt=""><span>semilla<b>IA</b></span></div>
+  <div class="lock"><img class="mk" src="/assets/marca-semilla-oliva.png" alt=""><span class="sr"><b>SEMILLA</b><i>REDES</i></span><span class="dv"></span><span class="ia">semilla<b>IA</b></span></div>
+  <div class="arte"><img src="/assets/arte-estatua.webp" alt=""></div>
 
   <!-- iPhone en Safari -->
   <section id="vIOS" class="oculto">
-    <h1>Instalala en tu iPhone</h1>
+    <h1>Instalala <em>en tu iPhone</em></h1>
     <p class="sub">Son 3 toques. Queda en tu pantalla de inicio como cualquier app.</p>
     <div class="paso"><span class="ic"><svg viewBox="0 0 28 28" fill="none" stroke="#0A84FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v15"/><path d="M8.5 8.5 14 3l5.5 5.5"/><path d="M9 12H6.5A1.5 1.5 0 0 0 5 13.5v10A1.5 1.5 0 0 0 6.5 25h15a1.5 1.5 0 0 0 1.5-1.5v-10a1.5 1.5 0 0 0-1.5-1.5H19"/></svg></span>
       <span class="t">Tocá <b>Compartir</b><small>En la barra de abajo de Safari.</small></span></div>
@@ -61,7 +71,7 @@ p.sub{font-size:17px;line-height:1.45;margin:0 0 24px;color:#4A4756}
 
   <!-- iPhone fuera de Safari -->
   <section id="vIOSotro" class="oculto">
-    <h1>Abrila en Safari</h1>
+    <h1>Abrila <em>en Safari</em></h1>
     <p class="sub">En el iPhone las apps como SemillaIA se instalan desde Safari. Copiá el link, abrí Safari y pegalo arriba.</p>
     <button class="btn" id="copiar">Copiar el link</button>
     <p class="ok oculto" id="copiado">Copiado. Ahora abrí Safari y pegalo.</p>
@@ -69,7 +79,7 @@ p.sub{font-size:17px;line-height:1.45;margin:0 0 24px;color:#4A4756}
 
   <!-- Android -->
   <section id="vAndroid" class="oculto">
-    <h1>Tu app de artista</h1>
+    <h1>Tu app <em>de artista</em></h1>
     <p class="sub">Tus números, tus metas y qué conviene hacer ahora.</p>
     <button class="btn" id="instalar">Instalar SemillaIA</button>
     <p class="ok oculto" id="andAyuda">Tocá los tres puntitos de arriba a la derecha y elegí <b>Instalar app</b>.</p>
@@ -77,7 +87,7 @@ p.sub{font-size:17px;line-height:1.45;margin:0 0 24px;color:#4A4756}
 
   <!-- Computadora -->
   <section id="vPC" class="oculto">
-    <h1>Tu app de artista</h1>
+    <h1>Tu app <em>de artista</em></h1>
     <p class="sub">Abrí <b>semillaia.com/descargar</b> desde tu celular para instalarla. En la computadora la usás directo.</p>
     <a class="btn" href="/app.html">Entrar a SemillaIA</a>
   </section>
