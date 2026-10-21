@@ -292,7 +292,18 @@
   #v3 .rbt button:disabled{opacity:.7}
   #v3 .v3exp{position:fixed;left:-10000px;top:0;width:560px;padding:26px 24px 30px;background:#F2EDE4;box-sizing:border-box}
   #v3 .v3exp .cab .nm{font:600 14px/1.2 Inter,sans-serif;color:${NAVY};text-align:right;max-width:200px}
-  #v3 .v3exp .pie{margin-top:22px;text-align:center;font:500 12px/1 Inter,sans-serif;letter-spacing:1.5px;color:#8A8577}
+  #v3 .v3exp .tsec{margin:16px 2px 8px;font:700 12px/1 Inter,sans-serif;letter-spacing:1.6px;text-transform:uppercase;color:#6F6B7C}
+  .v3exp .tlis{padding:0}
+  .v3exp .tfi{display:grid;grid-template-columns:24px 1fr;column-gap:12px;align-items:start;padding:12px 14px;border-top:1px solid #EDE6D8}
+  .v3exp .tfi:first-child{border-top:0}
+  .v3exp .tck{width:20px;height:20px;border-radius:50%;border:2px solid #CFC6B4;box-sizing:border-box;display:grid;place-items:center;font:700 12px/1 Inter,sans-serif;color:#fff;margin-top:calc((20.25px - 20px)/2)}
+  .v3exp .tfi.hecha .tck{background:#4E8B3A;border-color:#4E8B3A}
+  .v3exp .tfi.en_curso .tck{border-color:${OLIVA}}
+  .v3exp .ttx{font:400 15px/1.35 Inter,sans-serif;color:#24242C}
+  .v3exp .tfi.hecha .ttx{color:#8A8577;text-decoration:line-through}
+  .v3exp .tec{display:inline-block;margin-top:6px;margin-right:8px;border:1px solid ${OLIVA};background:#F1EEDB;border-radius:999px;padding:4px 9px;font:500 11.5px/1 Inter,sans-serif;color:#55525F}
+  .v3exp .tal{display:inline-block;margin-top:6px;font:500 12px/1.2 Inter,sans-serif;color:${VINO}}
+  .v3exp .pie{margin-top:22px;text-align:center;font:500 12px/1 Inter,sans-serif;letter-spacing:1.5px;color:#8A8577}
   .v3hoja{position:fixed;inset:0;z-index:80;background:#F2EDE4;overflow-y:auto;transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);font-family:Inter,system-ui,sans-serif;color:#24242C;-webkit-overflow-scrolling:touch}
   .v3hoja.on{transform:none}
   .v3hoja .hh{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;padding:calc(env(safe-area-inset-top,0px) + 10px) 10px 10px;background:rgba(242,237,228,.96);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid #E1D9C9}
@@ -555,6 +566,7 @@
         <div class="add"><span class="mas">+</span><input id="v3tarea" placeholder="Agregar tarea"><button id="v3tadd">Sumar</button></div>
       </div>
       <p style="font-size:13px;color:#8A8577;margin:8px 2px 0">${FILTRO==='hecha'?'Tocá el círculo para devolver una tarea a pendientes.':'Tocá el círculo cuando esté hecha. Marcá «En curso» las que ya empezaste.'}</p>
+      ${T.length?`<div class="rbt" style="margin-top:14px"><button id="v3tpdf" class="sec"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></svg>Descargar tareas</button></div>`:''}
       <div class="tit2"><h2>Próximas fechas</h2><button id="v3fnueva">${FFORM?'Cerrar':'Agregar fecha'}</button></div>
       <div class="card">
         ${F.length?F.map(f=>{const p=String(f.fecha).slice(0,10).split('-');return EDon('fecha',f.id)?`<div class="fe" style="grid-template-columns:1fr">${EDF([{v:String(f.fecha).slice(0,10),t:'date'},{v:f.titulo,ph:'Título'},{v:f.url||'',ph:'Link a la ticketera (opcional)'}])}</div>`:`<div class="fe" style="grid-template-columns:52px 1fr auto"><div class="dd"><b>${p[2]}</b><span>${MES[+p[1]-1]}</span></div><div><div class="v3t">${esc(f.titulo)}</div><div class="su">${f.url?`<button class="cp" data-copia="${esc(f.url)}">Copiar link de entradas</button>`:'Sin link de entradas'}</div></div>${IB('fecha',f.id)}</div>`;}).join('')
@@ -756,6 +768,7 @@
     const r1=raiz.querySelector('#v3rep'); if(r1){ r1.onclick=()=>ir('ia',true); r1.setAttribute('aria-label','Ir al reporte'); }
     const r2=raiz.querySelector('#v3rep2'); if(r2) r2.onclick=()=>ir('metricas',true);
     const pd=raiz.querySelector('#v3pdf'); if(pd) pd.onclick=()=>descargarRep(pd, I);
+    const tpd=raiz.querySelector('#v3tpdf'); if(tpd) tpd.onclick=()=>descargarTareas(tpd, d.tareas||[]);
     raiz.querySelectorAll('.rq.con').forEach(c=>c.onkeydown=e=>{ if(e.key==='Enter') c.click(); });
     raiz.querySelectorAll('[data-acc]').forEach(b=>b.onclick=()=>{ const a=b.dataset.acc;
       if(a==='rep') ir('ia',true);
@@ -814,6 +827,36 @@
       b.textContent=ok?'Copiado':'No se pudo copiar'; setTimeout(()=>b.textContent='Copiar link de entradas',1600); });
   }
 
+  // ---- Descargar las tareas (imagen JPG, mismo formato que el reporte) ----
+  async function descargarTareas(bt, T){ window.SRE&&window.SRE('tareas_descarga',{n:T.length});
+    const t0=bt.innerHTML; bt.disabled=true; bt.lastChild.textContent='Generando…';
+    const raiz=document.getElementById('v3'), nom=(window.__D&&window.__D.cliente&&window.__D.cliente.nombre)||'', hoy=new Date();
+    const DS=['dom','lun','mar','mié','jue','vie','sáb'], f2=x=>String(x).padStart(2,'0');
+    const alt=t=>{ if(!t.alarma||t.estado==='hecha') return ''; const a=new Date(t.alarma); return `<span class="tal">Recordatorio: ${DS[a.getDay()]} ${f2(a.getDate())}/${f2(a.getMonth()+1)} · ${f2(a.getHours())}:${f2(a.getMinutes())}</span>`; };
+    const fila=t=>`<div class="tfi ${t.estado}"><span class="tck">${t.estado==='hecha'?'✓':''}</span><div><div class="ttx">${esc(t.titulo)}</div>${t.estado==='en_curso'?'<span class="tec">En curso</span>':''}${alt(t)}</div></div>`;
+    const P=T.filter(t=>t.estado!=='hecha').sort((a,b)=>(b.estado==='en_curso')-(a.estado==='en_curso')), H=T.filter(t=>t.estado==='hecha');
+    const w=document.createElement('div'); w.className='v3exp';
+    w.innerHTML=`<div class="cab"><img src="/assets/semilla-redes-oliva.png" alt=""><span class="sep"></span><span class="ia">semilla<b>IA</b></span><span class="esp"></span><span class="nm">${esc(nom)}</span></div>
+      <h1 class="v3t" style="margin:18px 0 4px">Tarea para el hogar</h1><p class="bj" style="margin:0 0 16px">${DS[hoy.getDay()]} ${f2(hoy.getDate())}/${f2(hoy.getMonth()+1)}/${hoy.getFullYear()}</p>
+      <div class="tsec">Pendientes · ${P.length}</div><div class="card tlis">${P.length?P.map(fila).join(''):'<div class="tfi"><div class="ttx" style="color:#8A8577">No hay tareas pendientes.</div></div>'}</div>
+      ${H.length?`<div class="tsec">Hechas · ${H.length}</div><div class="card tlis">${H.map(fila).join('')}</div>`:''}
+      <div class="pie">semillaredes.com</div>`;
+    raiz.appendChild(w);
+    try{
+      if(!window.html2canvas) await cargarJs('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+      await Promise.all([...w.querySelectorAll('img')].map(im=>im.complete?1:new Promise(r=>{ im.onload=im.onerror=r; })));
+      const cv=await html2canvas(w,{scale:2,backgroundColor:'#F2EDE4',useCORS:true});
+      const archivo=`tareas-${slug}-${hoy.getFullYear()}-${f2(hoy.getMonth()+1)}-${f2(hoy.getDate())}.jpg`;
+      const blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',0.92));
+      const f=new File([blob],archivo,{type:'image/jpeg'});
+      if(/iPhone|iPad|iPod|Android/.test(navigator.userAgent)&&navigator.canShare&&navigator.canShare({files:[f]})){
+        try{ await navigator.share({files:[f],title:'Tarea para el hogar'}); }catch(e){ if(e&&e.name!=='AbortError') throw e; }
+      } else {
+        const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=archivo; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+      }
+    }catch(e){ console.log('descargar tareas',e); alert('No se pudo generar la imagen. Probá de nuevo.'); }
+    w.remove(); bt.innerHTML=t0; bt.disabled=false;
+  }
   // ---- Descargar el reporte (imagen JPG) ----
   const cargarJs=src=>new Promise((ok,mal)=>{ const sc=document.createElement('script'); sc.src=src; sc.onload=ok; sc.onerror=mal; document.head.appendChild(sc); });
   async function descargarRep(bt, I){ window.SRE&&window.SRE('reporte_descarga',{hasta:I&&I.hasta});
