@@ -38,7 +38,8 @@ section{padding:104px 0}
 
 /* nav */
 .nav{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:22px 24px;max-width:1140px;margin:0 auto}
-.nav b{font-family:'Syne',sans-serif;font-weight:800;letter-spacing:.22em;font-size:13px}
+.nav b{font-family:'Syne',sans-serif;font-weight:800;letter-spacing:.22em;font-size:13px;white-space:nowrap}
+@media(max-width:420px){.nav b{letter-spacing:.14em;font-size:12px}}
 .nav .links{display:flex;gap:26px;align-items:center}
 .nav .links a{font-family:'Syne',sans-serif;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;font-weight:700;opacity:.85}
 .nav .links a.cta{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);padding:10px 16px;border-radius:999px;opacity:1}
