@@ -133,7 +133,30 @@ function pantallaAlta(email,hayOtros){
     if(error||!data||data.error){ $('crear').disabled=false; $('crear').textContent='Crear mi proyecto'; $('er').classList.remove('oculto');
       $('er').textContent=(data&&data.error==='limite')?'Llegaste al máximo de proyectos propios.':'No se pudo crear. Probá de nuevo.'; return; }
     try{ window.SRE_ALTA=1; }catch(e){}
-    abrir({slug:data.slug,k:data.k}); };
+    pantallaBienvenida({slug:data.slug,k:data.k},n); };
+}
+
+/* Bienvenida: primer paso después de crear el proyecto. Meta trae Instagram y la cuenta publicitaria;
+   el @usuario es la alternativa que anda para cualquiera (Meta está en revisión). */
+function pantallaBienvenida(p,nombre,msg){
+  const app=location.origin+'/cliente.html?c='+encodeURIComponent(p.slug)+'&k='+encodeURIComponent(p.k)+'&app=1';
+  const meta='/oauth-meta.html?c='+encodeURIComponent(p.slug)+'&k='+encodeURIComponent(p.k)+'&volver='+encodeURIComponent(app);
+  A.innerHTML=cab(false)+`<h1>¡Listo, ${esc(nombre)}!</h1>
+    <p class="bj">Conectá tu Instagram y tu publicidad para que SemillaIA lea tus números solo, todas las semanas. Solo lectura: nunca publicamos ni cambiamos nada.</p>
+    <a class="pri" id="mt" href="${meta}" style="text-align:center;text-decoration:none;margin-top:0">Conectar con Meta</a>
+    <p class="mini" style="text-align:left;margin-top:10px">Trae tu Instagram profesional y tu cuenta publicitaria. Te pide entrar con tu Facebook.</p>
+    <div class="o-sep">o solo tu Instagram</div>
+    <input class="t" id="ig" placeholder="@tuusuario" autocomplete="off" autocapitalize="off">
+    <button class="g" id="igb" style="margin-top:10px">Conectar mi Instagram</button>
+    ${msg?`<p class="err">${esc(msg)}</p>`:''}
+    <p class="mini"><button class="link" id="desp">Después</button></p>`;
+  $('mt').onclick=()=>{ ls.set('sr_app_ultimo',p.slug); };
+  $('desp').onclick=()=>abrir(p);
+  const ig=async()=>{ const v=($('ig').value||'').trim(); if(!v){ $('ig').focus(); return; }
+    $('igb').disabled=true; $('igb').textContent='Conectando…';
+    let r=null; try{ r=await fetch('https://vm.semillaredes.com/web/conexion',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:p.slug,k:p.k,fuente:'instagram',valor:v})}).then(x=>x.json()); }catch(e){}
+    if(r&&r.ok) abrir(p); else pantallaBienvenida(p,nombre,(r&&r.error)||'No pudimos conectar ese Instagram. Probá de nuevo.'); };
+  $('igb').onclick=ig; $('ig').onkeydown=e=>{ if(e.key==='Enter') ig(); };
 }
 
 function pantallaLista(d){
