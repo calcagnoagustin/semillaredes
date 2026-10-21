@@ -34,7 +34,7 @@ p.sub{font-size:17px;line-height:1.45;margin:0 0 24px;color:#4A4756}
 .paso .t{font-size:17px;line-height:23px;color:var(--tinta)}
 .paso .t b{color:var(--navy)}
 .paso .t small{display:block;font-size:14px;line-height:19px;color:var(--mute);margin-top:2px}
-.flecha{position:fixed;left:50%;bottom:calc(74px + env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--navy);font:600 14px/1 Inter,sans-serif;animation:sube 1.2s ease-in-out infinite;pointer-events:none}
+.flecha{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--navy);font:600 14px/1 Inter,sans-serif;animation:sube 1.2s ease-in-out infinite;pointer-events:none}
 .flecha svg{width:30px;height:30px}
 @keyframes sube{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
 .nota{font-size:14.5px;color:var(--mute);margin-top:22px;text-align:center}
@@ -51,11 +51,11 @@ p.sub{font-size:17px;line-height:1.45;margin:0 0 24px;color:#4A4756}
     <h1>Instalala en tu iPhone</h1>
     <p class="sub">Son 3 toques. Queda en tu pantalla de inicio como cualquier app.</p>
     <div class="paso"><span class="ic"><svg viewBox="0 0 28 28" fill="none" stroke="#0A84FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v15"/><path d="M8.5 8.5 14 3l5.5 5.5"/><path d="M9 12H6.5A1.5 1.5 0 0 0 5 13.5v10A1.5 1.5 0 0 0 6.5 25h15a1.5 1.5 0 0 0 1.5-1.5v-10a1.5 1.5 0 0 0-1.5-1.5H19"/></svg></span>
-      <span class="t">Tocá <b>Compartir</b><small>Es este ícono, en la barra de abajo de Safari.</small></span></div>
+      <span class="t">Tocá <b>Compartir</b><small>En la barra de abajo de Safari.</small></span></div>
     <div class="paso"><span class="ic"><svg viewBox="0 0 28 28" fill="none" stroke="#24242C" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="4" width="20" height="20" rx="5"/><path d="M14 9v10M9 14h10"/></svg></span>
-      <span class="t">Elegí <b>Agregar a inicio</b><small>Si no lo ves, deslizá la lista hacia arriba.</small></span></div>
+      <span class="t">Elegí <b>Agregar a inicio</b><small>Si no aparece, deslizá la lista.</small></span></div>
     <div class="paso"><span class="ic"><svg viewBox="0 0 28 28" fill="none" stroke="#0A84FF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14.5l5.5 5.5L22 8.5"/></svg></span>
-      <span class="t">Tocá <b>Agregar</b><small>Listo: abrila desde tu pantalla de inicio.</small></span></div>
+      <span class="t">Tocá <b>Agregar</b><small>Ya la tenés en tu inicio.</small></span></div>
     <div class="flecha"><span>Compartir</span><svg viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4v21"/><path d="M7 17l8 8 8-8"/></svg></div>
   </section>
 
@@ -94,7 +94,7 @@ const safariIOS=ios&&!inApp&&!otroIOS&&/Version\/[\d.]+.*Safari/i.test(ua);
 const instalada=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
 const ver=id=>document.getElementById(id).classList.remove('oculto');
 if(instalada){ location.replace('/app.html'); }
-else if(ios&&safariIOS){ ver('vIOS'); }
+else if(ios&&safariIOS){ ver('vIOS'); document.getElementById('nota').classList.add('oculto'); }
 else if(ios){
   ver('vIOSotro');
   try{ location.href='x-safari-https://semillaredes.com/descargar/'; }catch(e){}
