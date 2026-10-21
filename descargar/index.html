@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F2EDE4">
+<title>Descargá SemillaIA</title>
+<meta name="description" content="SemillaIA, tu app de artista: tus números, tus metas y qué conviene hacer ahora.">
+<meta property="og:title" content="Descargá SemillaIA">
+<meta property="og:description" content="Tu app de artista: tus números, tus metas y qué conviene hacer ahora.">
+<meta property="og:image" content="https://semillaredes.com/assets/icono-semillaia-512.png">
+<link rel="manifest" href="/app-manifest.json">
+<link rel="icon" type="image/png" href="/assets/icono-semillaia-192.png">
+<link rel="apple-touch-icon" href="/assets/icono-semillaia-180.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--crema:#F2EDE4;--navy:#1A2456;--vino:#7A1F3A;--oliva:#87863A;--tinta:#24242C;--mute:#6B6878}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--crema);color:var(--tinta);font-family:Inter,system-ui,sans-serif}
+main{max-width:440px;margin:0 auto;padding:calc(48px + env(safe-area-inset-top)) 24px calc(40px + env(safe-area-inset-bottom));text-align:center}
+.ico{width:96px;height:96px;border-radius:22px;display:block;margin:0 auto 22px;box-shadow:0 2px 12px rgba(26,36,86,.16)}
+.kick{font-weight:700;font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--oliva);margin:0 0 10px}
+h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;color:var(--navy);font-size:32px;line-height:1.15;margin:0 0 12px}
+p.sub{font-size:17px;line-height:1.5;margin:0 0 28px;color:#55525E}
+.btn{display:block;width:100%;background:var(--navy);color:#fff;border:0;border-radius:14px;padding:18px;font:700 18px/1 Inter,system-ui,sans-serif;text-decoration:none;cursor:pointer}
+.btn:active{opacity:.85}
+.pasos{list-style:none;margin:26px 0 0;padding:0;text-align:left}
+.pasos li{display:grid;grid-template-columns:28px 1fr;column-gap:12px;align-items:start;font-size:15.5px;line-height:22px;color:#3A3846;margin:0 0 14px}
+.pasos .n{width:28px;height:28px;border-radius:50%;background:#fff;color:var(--navy);font:700 14px/28px Inter,sans-serif;text-align:center;margin-top:-3px}
+.pasos b{color:var(--navy)}
+.paso{display:none;text-align:left;background:#fff;border-radius:14px;padding:18px 20px;margin-top:18px;font-size:16px;line-height:1.55}
+.paso b{color:var(--navy)}
+.paso ol{margin:6px 0 0;padding-left:20px}
+.nota{font-size:14px;color:#8A8577;margin-top:24px}
+.nota a{color:var(--navy)}
+</style>
+</head>
+<body>
+<main>
+  <img class="ico" src="/assets/icono-semillaia-512.png" alt="">
+  <p class="kick">SemillaIA</p>
+  <h1>Tu app de artista</h1>
+  <p class="sub" id="sub">Tus números, tus metas y qué conviene hacer ahora, con el Método Semilla.</p>
+  <a class="btn" id="btn" href="/app.html">Descargar la app</a>
+  <div class="paso" id="pasoIOS"><b>Último paso:</b><ol><li>Abrí <b>Ajustes</b>.</li><li>Tocá <b>Perfil descargado</b>, arriba de todo.</li><li>Tocá <b>Instalar</b> y listo: SemillaIA queda en tu pantalla de inicio.</li></ol></div>
+  <div class="paso" id="pasoAndroid"><b>Si no apareció el aviso:</b> tocá los tres puntitos de arriba a la derecha y elegí <b>Instalar app</b> (o <b>Agregar a la pantalla principal</b>).</div>
+  <ol class="pasos">
+    <li><span class="n">1</span><span><b>Descargá</b> la app.</span></li>
+    <li><span class="n">2</span><span><b>Entrá</b> con Google o con tu mail.</span></li>
+    <li><span class="n">3</span><span><b>Conectá</b> tu Instagram y tu publicidad. SemillaIA solo lee: nunca publica ni cambia nada.</span></li>
+  </ol>
+  <p class="nota" id="nota">¿Preferís no descargar nada? <a href="/app.html">Usala desde el navegador</a>.</p>
+</main>
+<script>
+const ua=navigator.userAgent;
+const ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const android=/android/i.test(ua);
+const inApp=/Instagram|FBAN|FBAV|FB_IAB|WhatsApp|Line\/|Twitter|TikTok|; wv\)/i.test(ua);
+const instalada=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+const btn=document.getElementById('btn'), sub=document.getElementById('sub');
+if(instalada){ location.replace('/app.html'); }
+else if(android && inApp){ location.href='intent://semillaredes.com/descargar/#Intent;scheme=https;package=com.android.chrome;end'; }
+else if(ios && inApp){ location.href='x-safari-https://semillaredes.com/descargar/'; }
+if(ios){
+  btn.href='https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/perfil-ios?c=descargar';
+  btn.textContent='Descargar en el iPhone';
+  btn.addEventListener('click',()=>{ setTimeout(()=>{ document.getElementById('pasoIOS').style.display='block'; sub.textContent='Si te pregunta, tocá Permitir.'; },600); });
+}else if(android){
+  let ev=null;
+  btn.textContent='Descargar en el celular';
+  window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); ev=e; });
+  window.addEventListener('appinstalled',()=>{ sub.textContent='Listo. Abrila desde tu pantalla de inicio.'; btn.textContent='Abrir SemillaIA'; btn.href='/app.html'; });
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  btn.addEventListener('click',async e=>{
+    if(!ev){ if(btn.textContent==='Abrir SemillaIA') return; e.preventDefault(); document.getElementById('pasoAndroid').style.display='block'; return; }
+    e.preventDefault(); ev.prompt(); const r=await ev.userChoice;
+    if(r.outcome==='accepted'){ sub.textContent='Listo. Abrila desde tu pantalla de inicio.'; btn.textContent='Abrir SemillaIA'; btn.href='/app.html'; ev=null; }
+  });
+}else{
+  sub.textContent='Abrí este link desde tu celular para descargarla. En la computadora la podés usar directo.';
+  btn.textContent='Usar SemillaIA en la compu'; document.getElementById('nota').style.display='none';
+}
+</script>
+</body>
+</html>

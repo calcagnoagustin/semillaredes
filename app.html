@@ -9,7 +9,8 @@
 <meta name="apple-mobile-web-app-title" content="SemillaIA">
 <title>SemillaIA · Tu app</title>
 <link rel="icon" type="image/png" href="/assets/icono-semillaia.png?v=2">
-<link rel="apple-touch-icon" href="/assets/icono-semillaia.png?v=2">
+<link rel="apple-touch-icon" href="/assets/icono-semillaia-180.png">
+<link rel="manifest" href="/app-manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--crema:#F2EDE4;--papel:#FBF8F2;--navy:#1A2456;--vino:#7A1F3A;--oliva:#87863A;--tinta:#24242C;--mute:#6B6878;--linea:#E1D9C9}
@@ -193,6 +194,7 @@ async function inicio(){
   pantallaLista(d);
 }
 if(Q.get('salir')) salir(); else inicio();
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
 </script>
 </body>
 </html>
