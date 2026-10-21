@@ -357,6 +357,8 @@ details.hist table{border:0;border-radius:0}
 .repCaja .cmp .ct h4{margin:0;font-size:12.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--vino)}
 .repCaja .cmp .ct .dia{font-size:12.5px;color:#8A8577;white-space:nowrap}
 .repCaja .cmp .nt{font-size:12.5px;color:#8A8577;margin:3px 0 0}
+.cmp.dest{border:2px solid var(--vino);background:#FCF6F3}
+.cmp .dtag{display:block;font-size:11px;line-height:1;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;color:var(--vino);margin:0 0 8px}
 .repCaja .kp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
 .repCaja .kp>div{background:#FAF7F1;border-radius:12px;padding:11px 12px 10px;min-width:0}
 .repCaja .kp .l{font-size:12px;color:#8A8577;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -647,15 +649,16 @@ const conjIG=(u)=>{ if(!u) return ''; const x=u.metricas, L=[]; // igcN_visitas 
 const card=(lab,val,ant,dec,dest,inv)=>`<div class="t ${dest?'destacada':''}"><div class="lab">${lab}</div><div class="val">${val}</div>${delta(ant?.[0],ant?.[1],inv)}</div>`;
 
 const CAMPS=[
+  {p:'fog', tit:'POP UP: FOGÓN', que:'Evento puntual. Va adentro de Calificadas: se muestra aparte para verlo solo.', dest:true, dentro:true},
   {p:'ej', tit:'Reservas Ejecutivo', que:'Campaña para el público ejecutivo.'},
-  {p:'cal', tit:'Reservas Calificadas', que:'La campaña principal: incluye famosos y general.', dest:true},
+  {p:'cal', tit:'Reservas Calificadas', que:'La campaña principal: incluye famosos y general.'},
   {p:'fam', tit:'Famosos', que:'Va adentro de Calificadas. Se muestra aparte para verlo solo.', dentro:true},
   {p:'cata', tit:'Cata', que:'Degustación. Va adentro de Calificadas. Se muestra aparte para verlo solo.', dentro:true},
   {p:'esp', tit:'Campaña especial', que:'Acción puntual por fecha.'}
 ];
 
 // costo por mensaje de General = lo que queda de Calificadas sin Famosos ni Cata
-const costoGeneral=x=>{ const i=Number(x.cal_inversion||0)-Number(x.fam_inversion||0)-Number(x.cata_inversion||0), n=Number(x.cal_mensajes||0)-Number(x.fam_mensajes||0)-Number(x.cata_mensajes||0);
+const costoGeneral=x=>{ const i=Number(x.cal_inversion||0)-Number(x.fam_inversion||0)-Number(x.cata_inversion||0)-Number(x.fog_inversion||0), n=Number(x.cal_mensajes||0)-Number(x.fam_mensajes||0)-Number(x.cata_mensajes||0)-Number(x.fog_mensajes||0);
   return (x.cal_mensajes!=null&&x.fam_mensajes!=null&&n>0&&i>0)?Math.round(i/n*100)/100:null; };
 function multiCamp(R,et,costo){
   if(costo&&R.length>8){ R=R.slice(-8); et=et.slice(-8); }   // las ultimas 8 mediciones, para que se lean los numeros
@@ -1517,7 +1520,7 @@ function pintarMensajes(d){
     ${card('Costo por mensaje', mon(inv(m)/(tot(m)||1),2), [inv(m)/(tot(m)||1), a?inv(ma)/(tot(ma)||1):null],2,false,true)}
     ${card('Personas alcanzadas', fmt(Number(m.ej_alcance||0)+Number(m.cal_alcance||0)+Number(m.esp_alcance||0)), null)}
   </div>`;
-  if(u){ const x=u.metricas, P=[['Ejecutivo','ej'],['General','cal'],['Famosos','fam'],['Cata','cata'],[x.esp_nombre||'Especial','esp']].map(([n,k])=>[n,Number(x[k+'_inv_diaria']||0)]).filter(z=>z[1]>0);
+  if(u){ const x=u.metricas, P=[['Ejecutivo','ej'],['General','cal'],['Famosos','fam'],['Cata','cata'],[x.fog_nombre||'Fogón','fog'],[x.esp_nombre||'Especial','esp']].map(([n,k])=>[n,Number(x[k+'_inv_diaria']||0)]).filter(z=>z[1]>0);
     const dia=P.reduce((a,z)=>a+z[1],0);
     if(dia>0) h+=`<div class="proy"><div class="l">Inversión proyectada para la próxima semana</div><div class="v">${mon(dia*7,0)}</div><div class="d">${mon(dia,0)} por día × 7 días · ${P.map(z=>`${z[0]} ${fmt(z[1])}`).join(' + ')}</div></div>`; }
 
@@ -1528,7 +1531,7 @@ function pintarMensajes(d){
   CAMPS.forEach(c=>{
     const men=m[c.p+'_mensajes'], costo=m[c.p+'_costo_mensaje'], alc=m[c.p+'_alcance'], invc=m[c.p+'_inversion'];
     if(men==null && invc==null) return;
-    const titulo = (c.p==='esp' && m.esp_nombre) ? m.esp_nombre : c.tit;
+    const titulo = (c.p==='esp' && m.esp_nombre) ? m.esp_nombre : (c.p==='fog' && m.fog_nombre) ? m.fog_nombre : c.tit;
     h+=`<div class="camp ${c.dest?'destacada':''} ${c.dentro?'dentro':''}"><h3>${titulo}</h3><p class="que">${c.que}</p>
       <div class="nums">
         <div class="n"><div class="l">Mensajes</div><div class="v">${fmt(men)}</div><div class="d">${delta(men, ma[c.p+'_mensajes'])||''}</div></div>
@@ -2303,7 +2306,7 @@ function graficoBarras(titulo, leyenda, vals, etiquetas, color, dec){
 const pintaBlq=(B,hijo)=>{ const usd=v=>String(v).replace(/^USD /,'<small>USD</small>');
       const dl=k=>{ if(k.d==null||Math.abs(k.d)<5||!k.bien) return '<div class="d"></div>'; const mej=(k.d>0)===(k.bien>0); return `<div class="d ${mej?'si':'no'}">${k.d>0?'▲':'▼'} ${Math.abs(k.d)}%</div>`; };
       const P=(B.alcance&&B.alcance.partes)||[], tp=P.reduce((x,y)=>x+Number(y[1]||0),0)||1, nf=v=>Number(v).toLocaleString('es-AR');
-      return `<div class="${hijo?'hijo':'cmp'}"><div class="ct"><h4>${B.titulo}</h4></div>${B.nota?`<p class="nt">${B.nota}</p>`:''}
+      return `<div class="${hijo?'hijo':'cmp'}${B.destacado?' dest':''}">${B.destacado?'<span class="dtag">Destacado</span>':''}<div class="ct"><h4>${B.titulo}</h4></div>${B.nota?`<p class="nt">${B.nota}</p>`:''}
         <div class="kp">${(B.kpis||[]).map(k=>`<div><div class="l">${k.l}</div><div class="v">${usd(k.v)}</div>${dl(k)}</div>`).join('')}</div>
         ${B.alcance?`<div class="alc"><div class="at"><span>Personas alcanzadas</span><b>${B.alcance.total}</b></div><div class="bar">${P.map(x=>`<i style="width:${(Number(x[1]||0)/tp*100).toFixed(1)}%"></i>`).join('')}</div><div class="lg">${P.map(x=>`<span>${x[0]} ${nf(x[1])}</span>`).join('')}</div></div>`:''}
         ${(B.inversion||B.diaria)?`<div class="ft">${B.inversion?`<div><span>Inversión total</span><b>${B.inversion}</b></div>`:''}${B.diaria?`<div><span>Inversión diaria</span><b>${B.diaria}</b></div>`:''}</div>`:''}
