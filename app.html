@@ -42,6 +42,9 @@ input.t{width:100%;border:1px solid #D9D1C0;background:#fff;border-radius:12px;p
 .ops{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .op{border:1px solid #D9D1C0;background:#fff;border-radius:12px;padding:12px;font:500 15px/1.2 Inter,sans-serif;cursor:pointer;color:var(--tinta);text-align:center}
 .op.on{border-color:var(--navy);background:var(--navy);color:#fff}
+.o-sep{display:flex;align-items:center;gap:12px;color:var(--mute);font-size:13.5px;margin:20px 0 4px}.o-sep:before,.o-sep:after{content:"";flex:1;height:1px;background:var(--linea)}
+.codigo{letter-spacing:8px;text-align:center;font-weight:600;font-size:22px!important}
+.link{border:0;background:none;color:var(--navy);font:600 14px/1 Inter,sans-serif;text-decoration:underline;cursor:pointer;padding:0}
 .err{color:var(--vino);font-size:14px;margin-top:12px}
 .oculto{display:none}
 .cargando{text-align:center;color:var(--mute);padding-top:30vh}
@@ -72,14 +75,40 @@ function abrir(p){
 
 function pantallaLogin(msg){
   A.innerHTML=cab(false)+`<h1>Tu app de artista</h1>
-    <p class="bj">SemillaIA ordena tu proyecto con el Método Semilla: tus números, tus metas y qué conviene hacer ahora. Entrá con tu cuenta de Google.</p>
+    <p class="bj">SemillaIA ordena tu proyecto con el Método Semilla: tus números, tus metas y qué conviene hacer ahora. Entrá con Google o con tu mail.</p>
     <button class="g" id="gg">${G}Continuar con Google</button>
+    <div class="o-sep">o con tu mail</div>
+    <input class="t" id="em" type="email" inputmode="email" autocomplete="email" placeholder="tu@mail.com">
+    <button class="pri" id="emb">Recibir código por mail</button>
     ${msg?`<p class="err">${esc(msg)}</p>`:''}
     <p class="mini">Al entrar aceptás las <a href="/terminos.html">condiciones</a> y la <a href="/privacidad.html">política de privacidad</a>.</p>`;
   $('gg').onclick=async()=>{ $('gg').disabled=true;
     const ret=location.origin+location.pathname+(Q.get('c')&&Q.get('k')?'?c='+encodeURIComponent(Q.get('c'))+'&k='+encodeURIComponent(Q.get('k')):'');
     const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:ret,queryParams:{prompt:'select_account'}}});
     if(error){ $('gg').disabled=false; pantallaLogin('No pudimos abrir Google. Probá de nuevo.'); } };
+  const pedir=async()=>{ const em=($('em').value||'').trim().toLowerCase();
+    if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(em)){ pantallaLogin('Revisá el mail: parece que le falta algo.'); return; }
+    $('emb').disabled=true; $('emb').textContent='Enviando…';
+    const {error}=await sb.auth.signInWithOtp({email:em,options:{shouldCreateUser:true}});
+    if(error){ pantallaLogin(/rate|seconds/i.test(error.message)?'Ya te mandamos un código hace un momento. Esperá un minuto y probá de nuevo.':'No pudimos mandar el mail. Probá de nuevo en un rato.'); return; }
+    pantallaCodigo(em); };
+  $('emb').onclick=pedir; $('em').onkeydown=e=>{ if(e.key==='Enter') pedir(); };
+}
+
+function pantallaCodigo(em,msg){
+  A.innerHTML=cab(false)+`<h1>Revisá tu mail</h1>
+    <p class="bj">Te mandamos un código a <b>${esc(em)}</b>. Escribilo acá para entrar. Si no lo ves, buscá en spam o promociones.</p>
+    <input class="t codigo" id="cod" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="······">
+    <button class="pri" id="cb">Entrar</button>
+    ${msg?`<p class="err">${esc(msg)}</p>`:''}
+    <p class="mini"><button class="link" id="otro">Usar otro mail</button></p>`;
+  const ir=async()=>{ const t=($('cod').value||'').replace(/\D/g,''); if(t.length<6){ pantallaCodigo(em,'El código tiene 6 números.'); return; }
+    $('cb').disabled=true; $('cb').textContent='Entrando…';
+    const {error}=await sb.auth.verifyOtp({email:em,token:t,type:'email'});
+    if(error){ pantallaCodigo(em,'Ese código no es válido o ya venció. Revisá el último mail o pedí uno nuevo.'); return; }
+    inicio(); };
+  $('cb').onclick=ir; $('cod').oninput=()=>{ if(($('cod').value||'').replace(/\D/g,'').length===6) ir(); };
+  $('otro').onclick=()=>pantallaLogin(); setTimeout(()=>$('cod').focus(),50);
 }
 
 function pantallaAlta(email,hayOtros){
