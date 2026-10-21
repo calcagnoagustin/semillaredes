@@ -2624,8 +2624,11 @@ function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.n
     var rr=rueda.querySelectorAll('.r'); for(var j=0;j<rr.length;j++) rr[j].style.opacity=(cargando||k>=(j+1)/8)?1:0.15; }
   var diag=0; window.addEventListener('error',function(ev){ log('err_'+encodeURIComponent(String(ev.message).slice(0,120))); });
   document.addEventListener('touchstart',function(e){ if(diag<3){ diag++; var se=document.scrollingElement||document.documentElement; log('ts_'+[arriba()?1:0,Math.round(window.scrollY),Math.round(se.scrollTop),e.touches.length,(e.target&&e.target.tagName)||'?',window.innerHeight,se.scrollHeight].join('_')); } },{passive:true,capture:true});
-  window.addEventListener('touchstart',function(e){ if(!cargando&&arriba()&&e.touches.length===1&&!e.target.closest('input,textarea,select,[contenteditable],.repFondo:not(.oculto),#edvelo.on')){ y0=e.touches[0].clientY; d=0; document.body.classList.remove('ptr-vuelve'); } else y0=null; },{passive:true});
-  window.addEventListener('touchmove',function(e){ if(y0==null) return; d=e.touches[0].clientY-y0; if(d<=0||!arriba()){ pintar(0); return; }
+  // 21/10: también anda con el reporte abierto (la ventana que aparece al entrar), si está arriba de todo
+  var caja=null, tope=function(){ return caja?caja.scrollTop<=0:arriba(); };
+  window.addEventListener('touchstart',function(e){ caja=e.target.closest&&e.target.closest('.repFondo:not(.oculto)');
+    if(!cargando&&tope()&&e.touches.length===1&&!e.target.closest('input,textarea,select,[contenteditable],#edvelo.on,#v3chat.on,.v3hoja.on')){ y0=e.touches[0].clientY; d=0; document.body.classList.remove('ptr-vuelve'); } else y0=null; },{passive:true});
+  window.addEventListener('touchmove',function(e){ if(y0==null) return; d=e.touches[0].clientY-y0; if(d<=0||!tope()){ pintar(0); return; }
     if(!avisado){ avisado=true; log('tira_'+(e.cancelable?1:0)); } if(e.cancelable) e.preventDefault(); pintar(Math.min(MAX, d*0.5)); },{passive:false});
   window.addEventListener('touchcancel',function(){ if(y0==null) return; y0=null; d=0; document.body.classList.add('ptr-vuelve'); pintar(0); });
   window.addEventListener('touchend',function(){ if(y0==null) return; y0=null; var h=Math.min(MAX,d*0.5); d=0; document.body.classList.add('ptr-vuelve');
