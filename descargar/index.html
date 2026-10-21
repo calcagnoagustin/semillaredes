@@ -4,7 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F2EDE4">
-<title>Descargá SemillaIA</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SemillaIA">
+<title>SemillaIA</title>
 <meta name="description" content="SemillaIA, tu app de artista: tus números, tus metas y qué conviene hacer ahora.">
 <meta property="og:title" content="Descargá SemillaIA">
 <meta property="og:description" content="Tu app de artista: tus números, tus metas y qué conviene hacer ahora.">
@@ -12,44 +14,75 @@
 <link rel="manifest" href="/app-manifest.json">
 <link rel="icon" type="image/png" href="/assets/icono-semillaia-192.png">
 <link rel="apple-touch-icon" href="/assets/icono-semillaia-180.png">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--crema:#F2EDE4;--navy:#1A2456;--vino:#7A1F3A;--oliva:#87863A;--tinta:#24242C;--mute:#6B6878}
+:root{--crema:#F2EDE4;--papel:#FBF8F2;--navy:#1A2456;--oliva:#87863A;--tinta:#24242C;--mute:#6B6878;--linea:#E1D9C9;--azul:#0A84FF}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--crema);color:var(--tinta);font-family:Inter,system-ui,sans-serif}
-main{max-width:440px;margin:0 auto;padding:calc(48px + env(safe-area-inset-top)) 24px calc(40px + env(safe-area-inset-bottom));text-align:center}
-.ico{width:96px;height:96px;border-radius:22px;display:block;margin:0 auto 22px;box-shadow:0 2px 12px rgba(26,36,86,.16)}
-.kick{font-weight:700;font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--oliva);margin:0 0 10px}
-h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;color:var(--navy);font-size:32px;line-height:1.15;margin:0 0 12px}
-p.sub{font-size:17px;line-height:1.5;margin:0 0 28px;color:#55525E}
-.btn{display:block;width:100%;background:var(--navy);color:#fff;border:0;border-radius:14px;padding:18px;font:700 18px/1 Inter,system-ui,sans-serif;text-decoration:none;cursor:pointer}
-.btn:active{opacity:.85}
-.pasos{list-style:none;margin:26px 0 0;padding:0;text-align:left}
-.pasos li{display:grid;grid-template-columns:28px 1fr;column-gap:12px;align-items:start;font-size:15.5px;line-height:22px;color:#3A3846;margin:0 0 14px}
-.pasos .n{width:28px;height:28px;border-radius:50%;background:#fff;color:var(--navy);font:700 14px/28px Inter,sans-serif;text-align:center;margin-top:-3px}
-.pasos b{color:var(--navy)}
-.paso{display:none;text-align:left;background:#fff;border-radius:14px;padding:18px 20px;margin-top:18px;font-size:16px;line-height:1.55}
-.paso b{color:var(--navy)}
-.paso ol{margin:6px 0 0;padding-left:20px}
-.nota{font-size:14px;color:#8A8577;margin-top:24px}
+main{max-width:440px;margin:0 auto;padding:calc(36px + env(safe-area-inset-top)) 22px calc(120px + env(safe-area-inset-bottom))}
+.marca{display:flex;align-items:center;gap:14px;margin:0 0 28px}
+.marca img{width:56px;height:56px;border-radius:13px;display:block}
+.marca span{font:600 24px/1 Inter,sans-serif;color:var(--navy)}.marca b{color:var(--oliva)}
+h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;color:var(--navy);font-size:31px;line-height:1.15;margin:0 0 8px}
+p.sub{font-size:17px;line-height:1.45;margin:0 0 24px;color:#4A4756}
+.btn{display:block;width:100%;background:var(--navy);color:#fff;border:0;border-radius:14px;padding:18px;font:700 18px/1 Inter,system-ui,sans-serif;text-decoration:none;text-align:center;cursor:pointer}
+.oculto{display:none!important}
+/* pasos del iPhone */
+.paso{display:grid;grid-template-columns:52px 1fr;column-gap:14px;align-items:center;background:var(--papel);border:1px solid var(--linea);border-radius:16px;padding:14px 16px;margin:0 0 10px}
+.paso .ic{width:52px;height:52px;border-radius:12px;background:#fff;border:1px solid var(--linea);display:grid;place-items:center}
+.paso .ic svg{width:28px;height:28px;display:block}
+.paso .t{font-size:17px;line-height:23px;color:var(--tinta)}
+.paso .t b{color:var(--navy)}
+.paso .t small{display:block;font-size:14px;line-height:19px;color:var(--mute);margin-top:2px}
+.flecha{position:fixed;left:50%;bottom:calc(74px + env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--navy);font:600 14px/1 Inter,sans-serif;animation:sube 1.2s ease-in-out infinite;pointer-events:none}
+.flecha svg{width:30px;height:30px}
+@keyframes sube{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+.nota{font-size:14.5px;color:var(--mute);margin-top:22px;text-align:center}
 .nota a{color:var(--navy)}
+.ok{font-size:15px;color:var(--navy);margin-top:12px;text-align:center}
 </style>
 </head>
 <body>
 <main>
-  <img class="ico" src="/assets/icono-semillaia-512.png" alt="">
-  <p class="kick">SemillaIA</p>
-  <h1>Tu app de artista</h1>
-  <p class="sub" id="sub">Tus números, tus metas y qué conviene hacer ahora, con el Método Semilla.</p>
-  <a class="btn" id="btn" href="/app.html">Descargar la app</a>
-  <div class="paso" id="pasoIOS"><b>Último paso:</b><ol><li>Abrí <b>Ajustes</b>.</li><li>Tocá <b>Perfil descargado</b>, arriba de todo.</li><li>Tocá <b>Instalar</b> y listo: SemillaIA queda en tu pantalla de inicio.</li></ol></div>
-  <div class="paso" id="pasoAndroid"><b>Si no apareció el aviso:</b> tocá los tres puntitos de arriba a la derecha y elegí <b>Instalar app</b> (o <b>Agregar a la pantalla principal</b>).</div>
-  <ol class="pasos">
-    <li><span class="n">1</span><span><b>Descargá</b> la app.</span></li>
-    <li><span class="n">2</span><span><b>Entrá</b> con Google o con tu mail.</span></li>
-    <li><span class="n">3</span><span><b>Conectá</b> tu Instagram y tu publicidad. SemillaIA solo lee: nunca publica ni cambia nada.</span></li>
-  </ol>
-  <p class="nota" id="nota">¿Preferís no descargar nada? <a href="/app.html">Usala desde el navegador</a>.</p>
+  <div class="marca"><img src="/assets/icono-semillaia-512.png" alt=""><span>semilla<b>IA</b></span></div>
+
+  <!-- iPhone en Safari -->
+  <section id="vIOS" class="oculto">
+    <h1>Instalala en tu iPhone</h1>
+    <p class="sub">Son 3 toques. Queda en tu pantalla de inicio como cualquier app.</p>
+    <div class="paso"><span class="ic"><svg viewBox="0 0 28 28" fill="none" stroke="#0A84FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v15"/><path d="M8.5 8.5 14 3l5.5 5.5"/><path d="M9 12H6.5A1.5 1.5 0 0 0 5 13.5v10A1.5 1.5 0 0 0 6.5 25h15a1.5 1.5 0 0 0 1.5-1.5v-10a1.5 1.5 0 0 0-1.5-1.5H19"/></svg></span>
+      <span class="t">Tocá <b>Compartir</b><small>Es este ícono, en la barra de abajo de Safari.</small></span></div>
+    <div class="paso"><span class="ic"><svg viewBox="0 0 28 28" fill="none" stroke="#24242C" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="4" width="20" height="20" rx="5"/><path d="M14 9v10M9 14h10"/></svg></span>
+      <span class="t">Elegí <b>Agregar a inicio</b><small>Si no lo ves, deslizá la lista hacia arriba.</small></span></div>
+    <div class="paso"><span class="ic"><svg viewBox="0 0 28 28" fill="none" stroke="#0A84FF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14.5l5.5 5.5L22 8.5"/></svg></span>
+      <span class="t">Tocá <b>Agregar</b><small>Listo: abrila desde tu pantalla de inicio.</small></span></div>
+    <div class="flecha"><span>Compartir</span><svg viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4v21"/><path d="M7 17l8 8 8-8"/></svg></div>
+  </section>
+
+  <!-- iPhone fuera de Safari -->
+  <section id="vIOSotro" class="oculto">
+    <h1>Abrila en Safari</h1>
+    <p class="sub">En el iPhone las apps como SemillaIA se instalan desde Safari. Copiá el link, abrí Safari y pegalo arriba.</p>
+    <button class="btn" id="copiar">Copiar el link</button>
+    <p class="ok oculto" id="copiado">Copiado. Ahora abrí Safari y pegalo.</p>
+  </section>
+
+  <!-- Android -->
+  <section id="vAndroid" class="oculto">
+    <h1>Tu app de artista</h1>
+    <p class="sub">Tus números, tus metas y qué conviene hacer ahora.</p>
+    <button class="btn" id="instalar">Instalar SemillaIA</button>
+    <p class="ok oculto" id="andAyuda">Tocá los tres puntitos de arriba a la derecha y elegí <b>Instalar app</b>.</p>
+  </section>
+
+  <!-- Computadora -->
+  <section id="vPC" class="oculto">
+    <h1>Tu app de artista</h1>
+    <p class="sub">Abrí <b>semillaia.com/descargar</b> desde tu celular para instalarla. En la computadora la usás directo.</p>
+    <a class="btn" href="/app.html">Entrar a SemillaIA</a>
+  </section>
+
+  <p class="nota" id="nota">¿Preferís no instalar nada? <a href="/app.html">Usala desde el navegador</a>.</p>
 </main>
 <script>
 const ua=navigator.userAgent;
@@ -59,36 +92,24 @@ const inApp=/Instagram|FBAN|FBAV|FB_IAB|WhatsApp|Line\/|Twitter|TikTok|; wv\)/i.
 const otroIOS=/CriOS|FxiOS|EdgiOS|OPiOS|GSA\/|DuckDuckGo|YaBrowser/i.test(ua);
 const safariIOS=ios&&!inApp&&!otroIOS&&/Version\/[\d.]+.*Safari/i.test(ua);
 const instalada=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
-const btn=document.getElementById('btn'), sub=document.getElementById('sub');
+const ver=id=>document.getElementById(id).classList.remove('oculto');
 if(instalada){ location.replace('/app.html'); }
-else if(android && inApp){ location.href='intent://semillaredes.com/descargar/#Intent;scheme=https;package=com.android.chrome;end'; }
-else if(ios && !safariIOS){ location.href='x-safari-https://semillaredes.com/descargar/'; }
-if(ios && !safariIOS){
-  // El iPhone solo instala desde Safari: en Chrome, WhatsApp o Instagram el archivo se abre como texto.
-  sub.innerHTML='En el iPhone se instala desde <b>Safari</b>. Copiá el link y pegalo en Safari.';
-  btn.textContent='Copiar el link'; btn.href='#';
-  btn.addEventListener('click',async e=>{ e.preventDefault(); let ok=false;
-    try{ await navigator.clipboard.writeText('https://semillaia.com/descargar'); ok=true; }catch(err){}
-    btn.textContent=ok?'Copiado: abrí Safari y pegalo':'semillaia.com/descargar'; });
-}else if(ios){
-  btn.href='https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/perfil-ios?c=descargar';
-  btn.textContent='Descargar en el iPhone';
-  btn.addEventListener('click',()=>{ setTimeout(()=>{ document.getElementById('pasoIOS').style.display='block'; sub.textContent='Si te pregunta, tocá Permitir.'; },600); });
-}else if(android){
-  let ev=null;
-  btn.textContent='Descargar en el celular';
-  window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); ev=e; });
-  window.addEventListener('appinstalled',()=>{ sub.textContent='Listo. Abrila desde tu pantalla de inicio.'; btn.textContent='Abrir SemillaIA'; btn.href='/app.html'; });
-  if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
-  btn.addEventListener('click',async e=>{
-    if(!ev){ if(btn.textContent==='Abrir SemillaIA') return; e.preventDefault(); document.getElementById('pasoAndroid').style.display='block'; return; }
-    e.preventDefault(); ev.prompt(); const r=await ev.userChoice;
-    if(r.outcome==='accepted'){ sub.textContent='Listo. Abrila desde tu pantalla de inicio.'; btn.textContent='Abrir SemillaIA'; btn.href='/app.html'; ev=null; }
-  });
-}else{
-  sub.textContent='Abrí este link desde tu celular para descargarla. En la computadora la podés usar directo.';
-  btn.textContent='Usar SemillaIA en la compu'; document.getElementById('nota').style.display='none';
+else if(ios&&safariIOS){ ver('vIOS'); }
+else if(ios){
+  ver('vIOSotro');
+  try{ location.href='x-safari-https://semillaredes.com/descargar/'; }catch(e){}
+  document.getElementById('copiar').onclick=async()=>{ try{ await navigator.clipboard.writeText('https://semillaia.com/descargar'); }catch(e){} ver('copiado'); };
 }
+else if(android){
+  if(inApp) location.href='intent://semillaredes.com/descargar/#Intent;scheme=https;package=com.android.chrome;end';
+  ver('vAndroid');
+  let ev=null; const b=document.getElementById('instalar');
+  window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); ev=e; });
+  window.addEventListener('appinstalled',()=>{ b.textContent='Listo: abrila desde tu inicio'; });
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  b.onclick=async()=>{ if(!ev){ ver('andAyuda'); return; } ev.prompt(); const r=await ev.userChoice; if(r.outcome==='accepted'){ b.textContent='Listo: abrila desde tu inicio'; ev=null; } };
+}
+else { ver('vPC'); document.getElementById('nota').classList.add('oculto'); }
 </script>
 </body>
 </html>
