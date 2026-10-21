@@ -94,7 +94,11 @@ const safariIOS=ios&&!inApp&&!otroIOS&&/Version\/[\d.]+.*Safari/i.test(ua);
 const instalada=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
 const ver=id=>document.getElementById(id).classList.remove('oculto');
 if(instalada){ location.replace('/app.html'); }
-else if(ios&&safariIOS){ ver('vIOS'); document.getElementById('nota').classList.add('oculto'); }
+else if(ios&&safariIOS){ ver('vIOS'); document.getElementById('nota').classList.add('oculto');
+  // la flecha solo si no tapa los pasos (pantallas chicas)
+  const fl=document.querySelector('.flecha'), ul=[...document.querySelectorAll('.paso')].pop();
+  const chequear=()=>{ fl.style.visibility=(ul.getBoundingClientRect().bottom+8<fl.getBoundingClientRect().top)?'visible':'hidden'; };
+  chequear(); addEventListener('scroll',chequear,{passive:true}); addEventListener('resize',chequear); }
 else if(ios){
   ver('vIOSotro');
   try{ location.href='x-safari-https://semillaredes.com/descargar/'; }catch(e){}
