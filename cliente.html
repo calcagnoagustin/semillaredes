@@ -1521,8 +1521,9 @@ function pintarMensajes(d){
     ${card('Personas alcanzadas', fmt(Number(m.ej_alcance||0)+Number(m.cal_alcance||0)+Number(m.esp_alcance||0)), null)}
   </div>`;
   if(u){ const x=u.metricas, P=[['Ejecutivo','ej'],['General','cal'],['Famosos','fam'],['Cata','cata'],[x.fog_nombre||'Fogón','fog'],[x.esp_nombre||'Especial','esp']].map(([n,k])=>[n,Number(x[k+'_inv_diaria']||0)]).filter(z=>z[1]>0);
-    const dia=P.reduce((a,z)=>a+z[1],0);
-    if(dia>0) h+=`<div class="proy"><div class="l">Inversión proyectada para la próxima semana</div><div class="v">${mon(dia*7,0)}</div><div class="d">${mon(dia,0)} por día × 7 días · ${P.map(z=>`${z[0]} ${fmt(z[1])}`).join(' + ')}</div></div>`; }
+    const dia=P.reduce((a,z)=>a+z[1],0), fN=x.fog_nombre||'Fogón';
+    const dF=x.fog_fin?Math.max(0,Math.min(7,Math.round((new Date(x.fog_fin+'T12:00:00')-new Date(new Date().toDateString()+' 12:00'))/864e5)+1)):7, dd=n=>n===fN?dF:7;
+    if(dia>0) h+=`<div class="proy"><div class="l">Inversión proyectada para la próxima semana</div><div class="v">${mon(P.reduce((a,z)=>a+z[1]*dd(z[0]),0),0)}</div><div class="d">${dF<7?P.map(z=>`${z[0]} ${fmt(z[1])} × ${dd(z[0])} días`).join(' + ')+` (el pop up termina el ${fecha(x.fog_fin)})`:`${mon(dia,0)} por día × 7 días · ${P.map(z=>`${z[0]} ${fmt(z[1])}`).join(' + ')}`}</div></div>`; }
 
   h+=multiCamp(R,et);
   h+=multiCamp(R,et,true)||grafico('Costo por mensaje','Cuánto cuesta cada consulta. Mientras más baja la línea, mejor.',R.map(r=>{const x=r.metricas;return Math.round(inv(x)/(tot(x)||1)*100)/100;}),et,'#87863A',true);
