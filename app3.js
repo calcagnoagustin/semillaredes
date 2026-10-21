@@ -772,15 +772,16 @@
       if(e==='hecha'){ let pv='pendiente'; try{ pv=localStorage.getItem(prevK(id))||'pendiente'; }catch(x){} estado(b,id,pv); }
       else { try{ localStorage.setItem(prevK(id),e); }catch(x){} estado(b,id,'hecha'); } });
     raiz.querySelectorAll('[data-ed2]').forEach(b=>b.onclick=ev=>{ ev.preventDefault(); ev.stopPropagation(); ED=EDon(b.dataset.ed2,b.dataset.id)?null:{tipo:b.dataset.ed2,id:b.dataset.id}; ALFORM=null; armar(window.__D); setTimeout(()=>{ const i=document.getElementById('v3e0'); if(i){ i.scrollIntoView({block:'center'}); i.focus(); } },60); });
+    const webFechas=()=>{ try{ fetch('https://vm.semillaredes.com/web/fechas',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok})}).catch(()=>{}); }catch(e){} };   // la web se actualiza sola al tocar una fecha
     const BORRA={tarea:'sub_tarea_borrar',fecha:'sub_fecha_borrar',activo:'sub_activo_cliente_borrar',hito:'sub_hito_cliente_borrar',nota:'sub_nota_borrar'}, NOMB={tarea:'esta tarea',fecha:'esta fecha',activo:'este activo',hito:'este hito',nota:'esta nota'};
     raiz.querySelectorAll('[data-del2]').forEach(b=>b.onclick=async ev=>{ ev.preventDefault(); ev.stopPropagation(); const t=b.dataset.del2; if(!confirm('¿Borrar '+NOMB[t]+'?')) return; b.disabled=true;
-      window.SRE&&window.SRE('borrar',{tipo:t}); const r=await rpc(BORRA[t],{p_slug:slug,p_k:tok,p_id:b.dataset.id}); if(r&&r.ok){ ED=null; recargar(); } else { b.disabled=false; alert('No se pudo borrar. Probá de nuevo.'); } });
+      window.SRE&&window.SRE('borrar',{tipo:t}); const r=await rpc(BORRA[t],{p_slug:slug,p_k:tok,p_id:b.dataset.id}); if(r&&r.ok){ if(t==='fecha') webFechas(); ED=null; recargar(); } else { b.disabled=false; alert('No se pudo borrar. Probá de nuevo.'); } });
     const eno=raiz.querySelector('#v3eno'); if(eno) eno.onclick=()=>{ ED=null; armar(window.__D); };
     const eok=raiz.querySelector('#v3eok'); if(eok) eok.onclick=async()=>{ const v=i=>{ const e=raiz.querySelector('#v3e'+i); return e?e.value.trim():''; }; const t=ED.tipo; let r;
       if(t==='fecha'){ if(!v(0)||!v(1)){ alert('Poné la fecha y el título'); return; } eok.disabled=true; r=await rpc('sub_fecha_guardar',{p_slug:slug,p_k:tok,p_fecha:v(0),p_titulo:v(1),p_url:v(2)||null,p_id:ED.id}); }
       else { const D=t==='tarea'?{titulo:v(0)}:t==='nota'?{texto:v(0)}:t==='activo'?{titulo:v(0),url:v(1),descripcion:v(2)}:{titulo:v(0),objetivo:String(parseFloat(v(1).replace(/\./g,'').replace(',','.'))||'')};
         if((t==='tarea'||t==='nota'||t==='activo')&&!v(0)){ alert('No puede quedar vacío'); return; } eok.disabled=true; r=await rpc('sub_editar',{p_slug:slug,p_k:tok,p_tipo:t,p_id:ED.id,p_datos:D}); }
-      window.SRE&&window.SRE('editar',{tipo:t}); if(r&&r.ok){ ED=null; recargar(); } else { eok.disabled=false; alert('No se pudo guardar. Probá de nuevo.'); } };
+      window.SRE&&window.SRE('editar',{tipo:t}); if(r&&r.ok){ if(t==='fecha') webFechas(); ED=null; recargar(); } else { eok.disabled=false; alert('No se pudo guardar. Probá de nuevo.'); } };
     raiz.querySelectorAll('[data-tal]').forEach(b=>b.onclick=()=>{ ALFORM=ALFORM===b.dataset.tal?null:b.dataset.tal; armar(window.__D); setTimeout(()=>{ const i=document.getElementById('v3alv'); i&&i.scrollIntoView({block:'center'}); },60); });
     const alGuardar=async(b,valor)=>{ b.disabled=true; window.SRE&&window.SRE('tarea_alarma',{on:!!valor}); const r=await rpc('sub_tarea_alarma',{p_slug:slug,p_k:tok,p_id:b.dataset.id,p_alarma:valor});
       if(r&&r.ok){ ALFORM=null; recargar(); } else { b.disabled=false; alert('No se pudo guardar la alarma. Probá de nuevo.'); } };
@@ -808,7 +809,7 @@
     const fn=raiz.querySelector('#v3fnueva'); if(fn) fn.onclick=()=>{ FFORM=!FFORM; armar(window.__D); };
     const fa=raiz.querySelector('#v3fadd'); if(fa) fa.onclick=async()=>{ const f=raiz.querySelector('#v3ff').value, t=raiz.querySelector('#v3ft').value.trim();
       if(!f||!t){ alert('Poné la fecha y el título'); return; } fa.disabled=true;
-      window.SRE&&window.SRE('fecha_nueva',{}); const r=await rpc('sub_fecha_guardar',{p_slug:slug,p_k:tok,p_fecha:f,p_titulo:t,p_url:raiz.querySelector('#v3fu').value.trim()||null}); if(r&&r.ok){ FFORM=false; recargar(); } else fa.disabled=false; };
+      window.SRE&&window.SRE('fecha_nueva',{}); const r=await rpc('sub_fecha_guardar',{p_slug:slug,p_k:tok,p_fecha:f,p_titulo:t,p_url:raiz.querySelector('#v3fu').value.trim()||null}); if(r&&r.ok){ webFechas(); FFORM=false; recargar(); } else fa.disabled=false; };
     raiz.querySelectorAll('[data-copia]').forEach(b=>b.onclick=async()=>{ let ok=false; try{ await navigator.clipboard.writeText(b.dataset.copia); ok=true; }catch(e){}
       b.textContent=ok?'Copiado':'No se pudo copiar'; setTimeout(()=>b.textContent='Copiar link de entradas',1600); });
   }
