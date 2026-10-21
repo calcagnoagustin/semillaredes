@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PARÁ Bodegón · Carlos Casares</title>
+<meta name="description" content="PARÁ Bodegón, en Vicente López 21, Carlos Casares. Cocina de bodegón de jueves a domingo, menú de mediodía de lunes a viernes, tapeos, after office y festejos. Reservas por WhatsApp.">
+<meta property="og:title" content="PARÁ Bodegón · Carlos Casares">
+<meta property="og:description" content="Cocina de bodegón de jueves a domingo. Menú de mediodía de lunes a viernes. Vte. López 21, Casares.">
+<meta property="og:image" content="https://semillaredes.com/paralanding/img/post08.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231C1A17'/%3E%3Ctext x='16' y='22' font-family='Arial Black,Arial' font-weight='900' font-size='15' fill='%23F4EFE6' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--crema:#F4EFE6;--crema2:#EAE2D4;--madera:#D9CDB8;--negro:#1C1A17;--tinta:#2B2724;--gris:#6E675E;--vino:#8E2C2C;--vino2:#A63A3A;--verde:#4F6B3A;--sol:#E9B949;--blanco:#FFFDF9;--linea:rgba(28,26,23,.14)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--crema);color:var(--tinta);font-family:'Inter',system-ui,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit}
+h1,h2,h3{font-family:'Bebas Neue','Inter',sans-serif;font-weight:400;line-height:.95;margin:0;letter-spacing:.02em}
+h1{font-size:clamp(64px,11vw,140px)}
+h2{font-size:clamp(44px,6vw,76px)}
+h3{font-size:30px}
+p{margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+section{padding:96px 0}
+.eti{font-family:'Caveat',cursive;font-weight:600;font-size:26px;color:var(--vino);margin:0 0 10px;line-height:1}
+.bajada{max-width:620px;color:var(--gris);margin-top:16px;font-size:18px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:16px 26px;border-radius:999px;font-family:'Bebas Neue',sans-serif;font-size:21px;letter-spacing:.06em;text-decoration:none;transition:transform .2s,background .2s,border-color .2s;line-height:1}
+.btn:hover{transform:translateY(-2px)}
+.btn.pri{background:var(--vino);color:#fff}
+.btn.pri:hover{background:var(--vino2)}
+.btn.sec{border:2px solid var(--negro);color:var(--negro)}
+.btn.sec.claro{border-color:rgba(255,255,255,.7);color:#fff}
+.btn.sec.claro:hover{border-color:#fff}
+.btn svg{width:20px;height:20px}
+
+/* nav */
+.nav{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:20px 24px;max-width:1120px;margin:0 auto;color:#fff}
+.nav b{font-family:'Bebas Neue',sans-serif;font-weight:400;letter-spacing:.14em;font-size:24px;line-height:1}
+.nav b small{display:block;font-size:11px;letter-spacing:.42em;margin-top:2px;opacity:.9}
+.nav .links{display:flex;gap:24px;align-items:center}
+.nav .links a{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.12em;text-decoration:none;opacity:.9}
+.nav .links a.cta{background:var(--vino);padding:10px 16px;border-radius:999px;opacity:1}
+@media(max-width:720px){.nav .links a:not(.cta){display:none}}
+
+/* hero */
+.hero{position:relative;min-height:88vh;display:flex;align-items:flex-end;padding:140px 0 72px;overflow:hidden;color:#fff;background:var(--negro)}
+.hero img.fondo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,26,23,.35) 0%,rgba(28,26,23,.25) 40%,rgba(28,26,23,.92) 100%)}
+.hero .wrap{position:relative;z-index:2}
+.hero .eti{color:var(--sol)}
+.hero h1{max-width:900px}
+.hero h1 span{display:block;font-size:.42em;letter-spacing:.3em;color:var(--sol);margin-top:4px}
+.hero .bajada{color:#EDE6DA;max-width:560px;font-size:19px}
+.hero .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.datos{display:flex;flex-wrap:wrap;gap:0;margin-top:44px;border-top:1px solid rgba(255,255,255,.25)}
+.datos div{flex:1 1 220px;padding:18px 20px 0 0;font-size:15px;color:#EDE6DA}
+.datos div b{display:block;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.3em;color:var(--sol);margin-bottom:4px;font-weight:400}
+
+/* el bode */
+.bode .dos{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center}
+.bode .fotos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bode .fotos img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:14px}
+.bode .fotos img:first-child{grid-column:1/-1;aspect-ratio:16/10}
+.bode p.lead{font-size:21px;margin-top:18px;line-height:1.45}
+.bode p.cuerpo{margin-top:16px;color:var(--gris)}
+.bode .firma{margin-top:26px;font-family:'Caveat',cursive;font-size:30px;color:var(--vino);line-height:1}
+@media(max-width:860px){.bode .dos{grid-template-columns:1fr;gap:34px}}
+
+/* semana */
+.semana{background:var(--negro);color:var(--crema)}
+.semana .eti{color:var(--sol)}
+.semana .bajada{color:#C9C0B2}
+.dias{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:44px}
+.dia{background:#262320;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:24px 20px 26px;min-height:230px;display:flex;flex-direction:column}
+.dia .d{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.32em;color:var(--sol)}
+.dia h3{font-size:34px;margin-top:10px;color:#fff}
+.dia p{margin-top:12px;color:#C9C0B2;font-size:15.5px;line-height:1.5}
+@media(max-width:1000px){.dias{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:640px){.dias{grid-template-columns:1fr 1fr;gap:12px}.dia{min-height:0;padding:20px 18px}}
+@media(max-width:400px){.dias{grid-template-columns:1fr}}
+
+/* platos */
+.platos .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
+.plato{background:var(--blanco);border:1px solid var(--linea);border-radius:18px;overflow:hidden}
+.plato img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.plato div{padding:20px 22px 24px}
+.plato h3{font-size:28px}
+.plato p{margin-top:8px;color:var(--gris);font-size:15.5px}
+.platos .nota{margin-top:26px;font-size:15px;color:var(--gris)}
+@media(max-width:860px){.platos .grid{grid-template-columns:1fr}}
+
+/* festejos */
+.festejos{background:var(--crema2)}
+.festejos .dos{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.festejos img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:18px}
+.festejos ul{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:10px}
+.festejos li{padding-left:26px;position:relative;font-size:17px}
+.festejos li::before{content:"";position:absolute;left:0;top:11px;width:12px;height:12px;border-radius:50%;background:var(--sol)}
+.festejos .ctas{margin-top:30px}
+@media(max-width:860px){.festejos .dos{grid-template-columns:1fr;gap:30px}.festejos img{aspect-ratio:16/11}}
+
+/* fechas */
+.fechas{background:var(--crema)}
+.fechas .lista{margin-top:34px;border-top:1px solid var(--linea)}
+.fechas .fe{display:grid;grid-template-columns:92px 1fr auto;align-items:center;gap:26px;padding:22px 0;border-bottom:1px solid var(--linea);text-decoration:none;color:inherit;transition:background .2s}
+.fechas a.fe:hover{background:rgba(142,44,44,.06)}
+.fechas .dia2{display:flex;flex-direction:column;align-items:center;line-height:1}
+.fechas .dia2 b{font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:46px}
+.fechas .dia2 small{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.3em;color:var(--vino);margin-top:4px}
+.fechas .tit{font-size:21px;line-height:1.3;font-weight:600}
+.fechas .tit small{display:block;font-size:14px;color:var(--gris);margin-top:4px;font-weight:400}
+.fechas .lnk{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.1em;color:var(--vino);white-space:nowrap}
+.fechas .nada{margin-top:34px;padding:28px 0;border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);color:var(--gris);font-size:19px}
+@media(max-width:640px){.fechas .fe{grid-template-columns:64px 1fr;gap:16px;padding:18px 0}.fechas .dia2 b{font-size:36px}.fechas .tit{font-size:18px}.fechas .lnk{grid-column:2}}
+
+/* contacto */
+.contacto{background:var(--negro);color:var(--crema);padding-bottom:0}
+.contacto .eti{color:var(--sol)}
+.contacto .dos{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.contacto .item{padding:18px 0;border-top:1px solid rgba(255,255,255,.14)}
+.contacto .item b{display:block;font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:14px;letter-spacing:.3em;color:var(--sol);margin-bottom:6px}
+.contacto .item a{text-decoration:none;border-bottom:1px solid rgba(255,255,255,.35)}
+.contacto .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.contacto .mapa{border-radius:18px;overflow:hidden;aspect-ratio:4/3;background:#2a2622}
+.contacto .mapa iframe{width:100%;height:100%;border:0;display:block;filter:saturate(.85)}
+.contacto .pie{margin-top:72px;padding:22px 0;border-top:1px solid rgba(255,255,255,.14);font-size:13.5px;color:#A8A094;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.contacto .pie a{color:#A8A094;text-decoration:none}
+@media(max-width:860px){.contacto .dos{grid-template-columns:1fr;gap:34px}}
+
+/* botón flotante de WhatsApp */
+#wa{position:fixed;right:18px;bottom:18px;z-index:50;width:60px;height:60px;border-radius:50%;background:#25D366;color:#fff;display:grid;place-items:center;box-shadow:0 10px 26px rgba(0,0,0,.28);text-decoration:none}
+#wa svg{width:32px;height:32px}
+</style>
+</head>
+<body>
+
+<header class="hero" data-b="1">
+  <img class="fondo" src="img/post08.jpg" alt="El salón de PARÁ Bodegón lleno, con sus manteles a cuadros" data-e="1">
+  <nav class="nav" data-b="2"><b data-e="2">PARÁ<small>BODEGÓN</small></b><div class="links"><a href="#semana" data-e="3">La semana</a><a href="#platos" data-e="4">Platos</a><a href="#festejos" data-e="5">Festejos</a><a class="cta" href="https://wa.me/5491128805355?text=Hola!%20Quiero%20reservar%20una%20mesa%20en%20PAR%C3%81" target="_blank" rel="noopener" data-e="6">Reservar</a></div></nav>
+  <div class="wrap">
+    <p class="eti" data-e="7">Carlos Casares</p>
+    <h1 data-e="8">Cocina de bodegón <span>de jueves a domingo</span></h1>
+    <p class="bajada" data-e="9">Cazuelas, pastas, empanadas y una copa de vino en un salón con manteles a cuadros. Todo hecho acá, para venir en familia, con amigos o después del trabajo.</p>
+    <div class="ctas"><a class="btn pri" href="https://wa.me/5491128805355?text=Hola!%20Quiero%20reservar%20una%20mesa%20en%20PAR%C3%81" target="_blank" rel="noopener" data-e="10"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 2.9 2.9 0 0 0-.9 2.1 5 5 0 0 0 1 2.7 11.4 11.4 0 0 0 4.4 3.9c1.6.7 2.3.8 3.1.6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .2-1.2c-.1-.1-.3-.2-.5-.3z"/></svg>Reservar por WhatsApp</a><a class="btn sec claro" href="https://maps.app.goo.gl/j81fABkdZTGHuqQ3A" target="_blank" rel="noopener" data-e="11">Cómo llegar</a></div>
+    <div class="datos">
+      <div><b data-e="12">Dónde</b>Vicente López 21, Carlos Casares</div>
+      <div><b data-e="13">Cuándo</b>Jueves a domingo · Menú de mediodía de lunes a viernes</div>
+      <div><b data-e="14">Reservas</b>11 2880 5355</div>
+    </div>
+  </div>
+</header>
+
+<section class="bode" id="bode" data-b="3">
+  <div class="wrap dos">
+    <div class="fotos">
+      <img src="img/post07.jpg" alt="El cartel de madera de PARÁ Bodegón" loading="lazy" data-e="15">
+      <img src="img/post03.jpg" alt="Cazuela recién salida del horno" loading="lazy" data-e="16">
+      <img src="img/post02.jpg" alt="Una cazuela llegando a la mesa" loading="lazy" data-e="17">
+    </div>
+    <div>
+      <p class="eti" data-e="18">El Bode</p>
+      <h2 data-e="19">Un bodegón de pueblo, como tiene que ser</h2>
+      <p class="lead" data-e="20">Cinco años cocinando para Casares. Platos abundantes, recetas de siempre y un salón donde la mesa se arma sola.</p>
+      <p class="cuerpo" data-e="21">Cazuelas de barro que llegan burbujeando, pastas caseras los domingos, empanadas fritas y locro cuando el calendario lo pide. Una carta corta que cambia con la semana y una barra para quedarse después de comer.</p>
+      <p class="firma" data-e="22">Te esperamos en el Bode 💛</p>
+    </div>
+  </div>
+</section>
+
+<section class="semana" id="semana" data-b="4">
+  <div class="wrap">
+    <p class="eti" data-e="23">Toda la semana</p>
+    <h2 data-e="24">¿Qué hacemos cada día?</h2>
+    <p class="bajada" data-e="25">Si este finde no tenés planes, es porque no querés.</p>
+    <div class="dias">
+      <div class="dia"><p class="d" data-e="26">Lunes a viernes</p><h3 data-e="27">Menú de mediodía</h3><p data-e="28">Plato del día, abundante y rápido, para cortar la jornada bien comido.</p></div>
+      <div class="dia"><p class="d" data-e="29">Jueves</p><h3 data-e="30">Tapeos con amigas</h3><p data-e="31">Tapeo + copa de vino o trago. La noche de la semana para juntarse.</p></div>
+      <div class="dia"><p class="d" data-e="32">Viernes</p><h3 data-e="33">After office</h3><p data-e="34">Picadas, tragos y vino para arrancar el finde apenas termina la semana.</p></div>
+      <div class="dia"><p class="d" data-e="35">Sábado</p><h3 data-e="36">El clásico</h3><p data-e="37">Noche de bodegón: cazuelas, milanesas y los platos que nos hicieron conocidos.</p></div>
+      <div class="dia"><p class="d" data-e="38">Domingo</p><h3 data-e="39">Pastas en familia</h3><p data-e="40">Empanada, fuente de tallarines y copa de vino. Mesa larga, sobremesa larga.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="platos" id="platos" data-b="5">
+  <div class="wrap">
+    <p class="eti" data-e="41">Platos del Bode</p>
+    <h2 data-e="42">Lo que vas a querer volver a comer</h2>
+    <div class="grid">
+      <article class="plato" data-b="6"><img src="img/post03.jpg" alt="Cazuela gratinada" loading="lazy" data-e="43"><div><h3 data-e="44">Cazuelas de barro</h3><p data-e="45">Llegan a la mesa burbujeando, con queso gratinado y pan para no dejar nada.</p></div></article>
+      <article class="plato" data-b="7"><img src="img/post05.jpg" alt="Lasagna de PARÁ Bodegón" loading="lazy" data-e="46"><div><h3 data-e="47">Lasagna y pastas caseras</h3><p data-e="48">La lasagna de la casa y la fuente de tallarines de los domingos.</p></div></article>
+      <article class="plato" data-b="8"><img src="img/post04.jpg" alt="Locro y empanadas fritas" loading="lazy" data-e="49"><div><h3 data-e="50">Locro y empanadas</h3><p data-e="51">En cada fecha patria, el locro tradicional y las empanadas fritas, para comer en el salón o retirar.</p></div></article>
+    </div>
+    <p class="nota" data-e="52">La carta completa, con precios del día, te la mandamos por WhatsApp.</p>
+  </div>
+</section>
+
+<section class="festejos" id="festejos" data-b="9">
+  <div class="wrap dos">
+    <div>
+      <p class="eti" data-e="53">Festejá en el Bode</p>
+      <h2 data-e="54">Cumpleaños, quince y mesas largas</h2>
+      <p class="bajada" data-e="55">Almuerzos y cenas para grupos, con menú armado a medida y el salón listo para la ocasión.</p>
+      <ul data-b="10">
+        <li data-e="56">Cumpleaños y aniversarios</li>
+        <li data-e="57">Fiestas de quince y egresados</li>
+        <li data-e="58">Despedidas, Día del Maestro, encuentros de empresa</li>
+        <li data-e="59">Degustaciones de vinos con bodegas invitadas</li>
+      </ul>
+      <div class="ctas"><a class="btn pri" href="https://wa.me/5491128805355?text=Hola!%20Quiero%20consultar%20por%20un%20festejo%20en%20PAR%C3%81" target="_blank" rel="noopener" data-e="60">Consultar por un festejo</a></div>
+    </div>
+    <img src="img/post08.jpg" alt="Una mesa larga en el salón de PARÁ" loading="lazy" data-e="61">
+  </div>
+</section>
+
+<section class="fechas" id="fechas" data-b="11">
+  <div class="wrap">
+    <p class="eti" data-e="62">Agenda</p>
+    <h2 data-e="63">Próximas fechas</h2>
+    <p class="bajada" data-e="64">Degustaciones, noches especiales y fechas patrias.</p>
+    <div id="sr-fechas" data-sr-fechas="bodegonpara"><!-- sr-fechas -->
+<p class="nada">Pronto nuevas fechas.</p>
+<!-- /sr-fechas --></div>
+  </div>
+</section>
+
+<section class="contacto" id="contacto" data-b="12">
+  <div class="wrap">
+    <div class="dos">
+      <div>
+        <p class="eti" data-e="65">Vení</p>
+        <h2 data-e="66">Vicente López 21, Casares</h2>
+        <div class="item" style="margin-top:28px"><b data-e="67">Horarios</b>Jueves a domingo, noche · Menú de mediodía de lunes a viernes</div>
+        <div class="item"><b data-e="68">Reservas y pedidos</b><a href="https://wa.me/5491128805355" target="_blank" rel="noopener" data-e="69">11 2880 5355</a></div>
+        <div class="item"><b data-e="70">Instagram</b><a href="https://www.instagram.com/bodegonpara" target="_blank" rel="noopener" data-e="71">@bodegonpara</a></div>
+        <div class="ctas"><a class="btn pri" href="https://wa.me/5491128805355?text=Hola!%20Quiero%20reservar%20una%20mesa%20en%20PAR%C3%81" target="_blank" rel="noopener" data-e="72">Reservar por WhatsApp</a><a class="btn sec claro" href="https://maps.app.goo.gl/j81fABkdZTGHuqQ3A" target="_blank" rel="noopener" data-e="73">Abrir en Maps</a></div>
+      </div>
+      <div class="mapa"><iframe title="Mapa de PARÁ Bodegón" src="https://www.google.com/maps?q=Vicente+L%C3%B3pez+21,+Carlos+Casares,+Buenos+Aires&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
+    </div>
+    <div class="pie"><span data-e="74">© 2026 PARÁ Bodegón · Carlos Casares · De @gonzafuentesc</span><span><a href="https://www.instagram.com/bodegonpara" target="_blank" rel="noopener" data-e="75">Instagram</a></span></div>
+  </div>
+</section>
+
+<a id="wa" href="https://wa.me/5491128805355?text=Hola!%20Quiero%20reservar%20una%20mesa%20en%20PAR%C3%81" target="_blank" rel="noopener" aria-label="Reservar por WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 2.9 2.9 0 0 0-.9 2.1 5 5 0 0 0 1 2.7 11.4 11.4 0 0 0 4.4 3.9c1.6.7 2.3.8 3.1.6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .2-1.2c-.1-.1-.3-.2-.5-.3z"/></svg></a>
+
+<script src="https://semillaredes.com/assets/idioma.js" defer></script>
+<script src="https://vm.semillaredes.com/web/editor.js" defer></script>
+</body>
+</html>
