@@ -32,8 +32,8 @@ h1{font-family:'Playfair Display',Georgia,serif;font-weight:800;color:var(--navy
 p.bj{font-size:16px;color:#3A3846;margin:0 0 24px}
 .g{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;border:1px solid var(--linea);background:#fff;color:var(--tinta);border-radius:12px;height:52px;padding:0 16px;font:600 16px/1 Inter,sans-serif;cursor:pointer}
 .g svg{width:20px;height:20px;flex:0 0 20px}
-.pri{display:block;position:relative;width:100%;border:0;background:var(--navy);color:#fff;border-radius:12px;height:54px;padding:0 48px;font:600 16px/54px Inter,sans-serif;cursor:pointer;margin-top:14px;text-align:center}
-.pri .fl{position:absolute;right:18px;top:50%;width:20px;height:20px;margin-top:-10px}
+.pri{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;background:var(--navy);color:#fff;border-radius:12px;height:54px;padding:0 20px;font:600 16px/1 Inter,sans-serif;cursor:pointer;margin-top:14px;text-align:center}
+.pri .fl{width:20px;height:20px;flex:0 0 20px}
 .pri[disabled]{opacity:.55;cursor:default}
 .mini{font-size:13.5px;color:var(--mute);margin:16px 0 0;text-align:center}
 .mini a{color:var(--navy)}
@@ -86,6 +86,22 @@ body.portada .wrap{max-width:none;padding:0}
 .card h2 .ia{font-family:Inter,sans-serif;font-weight:800;letter-spacing:-.8px}
 .card p.bj{text-align:center;color:#55525E;font-size:15.5px;margin:0 0 22px}
 .tel{display:none}
+@media (max-width:979px){
+  .pt{padding:calc(env(safe-area-inset-top,0px) + 20px) 22px 24px}
+  .pt .lock .mk{width:40px;height:40px}
+  .pt .arte{top:calc(env(safe-area-inset-top,0px) + 84px);right:-14px;width:214px}
+  .pt h1.big{font-size:50px;line-height:.98;letter-spacing:-1.4px;margin:40px 0 14px}
+  .pt .lead{font-size:16.5px;line-height:1.42;margin:0 0 18px}
+  .feat{gap:10px;margin:0 0 18px}
+  .feat li{grid-template-columns:44px 1fr;column-gap:16px}
+  .feat .fi{width:44px;height:44px}.feat .fi svg{width:21px;height:21px}
+  .feat .tx b{font-weight:600;font-size:15.5px;line-height:20px}
+  .feat .tx small{font-size:13px;line-height:18px;margin-top:1px;letter-spacing:-.1px}
+  .card{padding:18px 16px 14px;border-radius:22px;max-width:none}
+  .card h2,.card p.bj{display:none}
+  .card .o-sep{margin:14px 0}
+  .card .mini{margin-top:12px;font-size:12.5px}
+}
 @media (min-width:980px){
   .pt{display:grid;grid-template-columns:minmax(0,1fr) 300px 430px;column-gap:40px;align-items:center;padding:32px 56px 48px;max-width:1440px;margin:0 auto}
   .pt>.lock{position:absolute;top:34px;left:56px}
@@ -160,11 +176,9 @@ function abrir(p){
 
 function pantallaLogin(msg){
   document.body.classList.add('portada');
-  const F=[['redes','','Todas tus redes en un mismo lugar.','Conectá Instagram, Spotify, YouTube y tu publicidad.'],
-           ['idea','o','Consejos y recomendaciones personalizadas.','Basadas en tu proyecto y tus objetivos.'],
-           ['meta','','Creá metas, objetivos y hacé seguimiento.','Convertí tu arte en un proyecto sostenible.'],
-           ['alerta','o','Alertas semanales para no perder el ritmo.','Oportunidades, recordatorios y próximos pasos.'],
-           ['anuncio','','Analizá tus campañas de anuncios.','Resultados claros y sugerencias para mejorar.']];
+  const F=[['redes','','Todas tus redes en un mismo lugar','Instagram, Spotify, YouTube y publicidad.'],
+           ['idea','o','Metas, consejos y seguimiento','Recomendaciones, objetivos y próximos pasos.'],
+           ['meta','','Analizá tus campañas','Resultados claros para decidir mejor.']];
   A.innerHTML=`<div class="pt">
     ${LOCK}
     <div class="arte"><img src="/assets/arte-estatua.webp" alt="">
