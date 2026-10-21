@@ -16,7 +16,7 @@
   #v3 .cab{display:flex;align-items:center;gap:12px;margin-bottom:18px}
   #v3 .cab img{height:34px;display:block}
   #v3 .cab .sep{width:1px;height:28px;background:#CFC6B4}
-  #v3 .cab .ia{font:600 21px/1 Inter,system-ui,sans-serif;color:${NAVY};letter-spacing:-.3px}
+  #v3 .cab .ia{font:800 21px/1 Inter,system-ui,sans-serif;color:${NAVY};letter-spacing:-.3px}
   #v3 .cab .ia b{color:${OLIVA};font-weight:700}
   #v3 .cab .esp{flex:1}
   #v3 .cab .camp{position:relative;border:0;background:none;padding:6px;cursor:pointer;color:${VINO}}
@@ -705,7 +705,7 @@
     const app=document.getElementById('app');
     if(!raiz){ raiz=document.createElement('div'); raiz.id='v3'; document.querySelector('.wrap').prepend(raiz); }
     if(app&&app.parentNode!==document.body) document.body.appendChild(app);   // sacarlo antes de reescribir
-    raiz.innerHTML=`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="v3g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#F9A43A"/><stop offset=".5" stop-color="#E1306C"/><stop offset="1" stop-color="#7B3FE4"/></linearGradient></defs></svg><div class="cab"><img src="https://raw.githubusercontent.com/calcagnoagustin/semillaredes/main/assets/semilla-logo-horizontal.png" alt="Semilla Redes"><span class="sep"></span><span class="ia">semilla<b>IA</b></span><span class="esp"></span><button class="camp" id="v3camp" aria-label="Notificaciones">${ico.camp}<b id="v3nn"></b></button><button class="av" id="v3av" aria-label="Tu perfil">${ini}<img src="/assets/avatars/${slug}.jpg?v=${new Date().toISOString().slice(0,10)}" alt="" onerror="this.remove()"></button></div>
+    raiz.innerHTML=`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="v3g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#F9A43A"/><stop offset=".5" stop-color="#E1306C"/><stop offset="1" stop-color="#7B3FE4"/></linearGradient></defs></svg><div class="cab"><img src="/assets/semilla-redes-oliva.png" alt="Semilla Redes"><span class="sep"></span><span class="ia">semilla<b>IA</b></span><span class="esp"></span><button class="camp" id="v3camp" aria-label="Notificaciones">${ico.camp}<b id="v3nn"></b></button><button class="av" id="v3av" aria-label="Tu perfil">${ini}<img src="/assets/avatars/${slug}.jpg?v=${new Date().toISOString().slice(0,10)}" alt="" onerror="this.remove()"></button></div>
       <div class="scr" data-scr="hoy">${scrHoy}</div><div class="scr" data-scr="proyecto">${scrPro}</div><div class="scr" data-scr="actividades">${scrAct}</div><div class="scr" data-scr="metricas">${scrMet}</div><div class="scr" data-scr="ia">${scrIA}</div>`;
     const todo=raiz.querySelector('#v3todo'); if(app&&todo){ todo.appendChild(app); app.classList.remove('oculto'); }
     // conexiones para todos (20/10/2026): la misma pieza que usan los alumnos
@@ -819,7 +819,7 @@
     if(!I) return; const t0=bt.innerHTML; bt.disabled=true; bt.lastChild.textContent='Generando…';
     const raiz=document.getElementById('v3'), scr=raiz.querySelector('[data-scr="ia"]'), nom=(window.__D&&window.__D.cliente&&window.__D.cliente.nombre)||'';
     const w=document.createElement('div'); w.className='v3exp';
-    w.innerHTML=`<div class="cab"><img src="/assets/semilla-logo-horizontal.png" alt=""><span class="sep"></span><span class="ia">semilla<b>IA</b></span><span class="esp"></span><span class="nm">${esc(nom)}</span></div>`+scr.innerHTML+`<div class="pie">semillaredes.com</div>`;
+    w.innerHTML=`<div class="cab"><img src="/assets/semilla-redes-oliva.png" alt=""><span class="sep"></span><span class="ia">semilla<b>IA</b></span><span class="esp"></span><span class="nm">${esc(nom)}</span></div>`+scr.innerHTML+`<div class="pie">semillaredes.com</div>`;
     w.querySelectorAll('.rbt,.ch').forEach(x=>x.remove());
     raiz.appendChild(w);
     try{
