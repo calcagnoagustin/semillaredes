@@ -56,12 +56,21 @@ const ua=navigator.userAgent;
 const ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 const android=/android/i.test(ua);
 const inApp=/Instagram|FBAN|FBAV|FB_IAB|WhatsApp|Line\/|Twitter|TikTok|; wv\)/i.test(ua);
+const otroIOS=/CriOS|FxiOS|EdgiOS|OPiOS|GSA\/|DuckDuckGo|YaBrowser/i.test(ua);
+const safariIOS=ios&&!inApp&&!otroIOS&&/Version\/[\d.]+.*Safari/i.test(ua);
 const instalada=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
 const btn=document.getElementById('btn'), sub=document.getElementById('sub');
 if(instalada){ location.replace('/app.html'); }
 else if(android && inApp){ location.href='intent://semillaredes.com/descargar/#Intent;scheme=https;package=com.android.chrome;end'; }
-else if(ios && inApp){ location.href='x-safari-https://semillaredes.com/descargar/'; }
-if(ios){
+else if(ios && !safariIOS){ location.href='x-safari-https://semillaredes.com/descargar/'; }
+if(ios && !safariIOS){
+  // El iPhone solo instala desde Safari: en Chrome, WhatsApp o Instagram el archivo se abre como texto.
+  sub.innerHTML='En el iPhone se instala desde <b>Safari</b>. Copiá el link y pegalo en Safari.';
+  btn.textContent='Copiar el link'; btn.href='#';
+  btn.addEventListener('click',async e=>{ e.preventDefault(); let ok=false;
+    try{ await navigator.clipboard.writeText('https://semillaia.com/descargar'); ok=true; }catch(err){}
+    btn.textContent=ok?'Copiado: abrí Safari y pegalo':'semillaia.com/descargar'; });
+}else if(ios){
   btn.href='https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/perfil-ios?c=descargar';
   btn.textContent='Descargar en el iPhone';
   btn.addEventListener('click',()=>{ setTimeout(()=>{ document.getElementById('pasoIOS').style.display='block'; sub.textContent='Si te pregunta, tocá Permitir.'; },600); });
