@@ -738,7 +738,7 @@ function fechasHTML(L,u){
   });
   return h;
 }
-function contenidosHTML(L){
+function contenidosHTML(L,per){
   if(!L||!L.length) return '';
   const camps=[...new Set(L.map(x=>x.c))];
   let h=`<h2>Ranking de contenidos</h2><p class="sub">Los anuncios activos de cada campaña, ordenados por lo que trajo cada uno en este período.</p>`;
@@ -759,7 +759,7 @@ function contenidosHTML(L){
     cols.push([lab,x=>`<span class="v">${fmt(res(x))}</span>`,'70px']);
     if(conCosto) cols.push(['Costo c/u',x=>`<span class="c">${res(x)?mon(x.inv/res(x),2):'—'}</span>`,'76px']);
     const gc=`style="grid-template-columns:18px 1fr ${cols.map(z=>z[2]).join(' ')};column-gap:9px"`;
-    h+=`<div class="desglose"><h3>${c}</h3>
+    h+=`<div class="desglose"><h3>${c}${per?` <small style="display:block;font:500 13px/1.4 inherit;color:#8A8577;margin-top:3px"><span>Del</span> ${per[0]} <span>al</span> ${per[1]}</small>`:''}</h3>
       <div class="fila2 cab2 conj" ${gc}><span>#</span><span>Contenido</span>${cols.map(z=>`<span style="text-align:right">${z[0]}</span>`).join('')}</div>
       ${X.map((x,k)=>`<div class="fila2 conj" ${gc}><span class="c">${k+1}</span><span class="nom">${x.url?`<a href="${x.url}" target="_blank" rel="noopener" style="color:inherit">${x.n}</a>`:x.n}${variosP&&x.p?`<small style="display:block;color:#8A8577;font-size:12px;font-weight:400">${x.p}</small>`:''}</span>${x.inv>0
         ?cols.map(z=>z[1](x)).join('')
@@ -802,6 +802,9 @@ function pintarTrafico(d){
       ${I.ini_cpc!=null?card('Costo por clic', mon(I.ini_cpc,2), null,2):''}
       ${I.ini_costo_visita!=null?card('Costo por visita', mon(I.ini_costo_visita,2), null,2):''}
       ${card('Nuevos seguidores', fmt(segIni), null,0)}
+      ${I.ini_inversion!=null?card('Inversión desde el inicio', mon(I.ini_inversion,0), null,0):''}
+      ${m.app_total!=null?card('Registros desde el inicio', fmt(m.app_total), null,0):''}
+      ${(()=>{ const n=x=>Number(x||0), t=n(I.tr_inversion)+n(I.ld_inversion)+n(I.rg_inversion)+n(I.ig_inversion); return t>0?card('Inversión de los últimos 7 días', mon(t,0), null,0):''; })()}
     </div>`;
   }
 
@@ -993,7 +996,7 @@ function pintarTrafico(d){
     }
   }
 
-  if(u) h+=contenidosHTML(u.metricas.contenidos);
+  if(u) h+=contenidosHTML(u.metricas.contenidos,[fecha(u.metricas.cont_desde||u.desde),fecha(u.metricas.cont_hasta||u.hasta)]);
 
   // ===== Campañas desde el inicio (Audova): totales de todos los reportes =====
   if(['audova'].includes(slug) && R.length){
@@ -1547,7 +1550,7 @@ function pintarMensajes(d){
       <div class="zona"><span>PBA <b>${fmt(m[c.p+'_pba'])}</b></span><span>·</span><span>CABA <b>${fmt(m[c.p+'_caba'])}</b></span></div>
     </div>`;
   });
-  if(u) h+=contenidosHTML(u.metricas.contenidos);
+  if(u) h+=contenidosHTML(u.metricas.contenidos,[fecha(u.metricas.cont_desde||u.desde),fecha(u.metricas.cont_hasta||u.hasta)]);
 
   if(R.length>1){
     h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
@@ -2468,7 +2471,7 @@ const DICT={
 'Público':'Audience','Cómo rindió cada uno en la campaña de tráfico, antes de pausarla.':'How each one performed in the traffic campaign, before it was paused.','En registros':'On sign-ups','Todo lo que se puso en pauta en este período, sumando las campañas.':'Everything invested in ads this period, all campaigns combined.','Total de anotados al cierre de cada período.':'Total sign-ups at the close of each period.','@Total de anotados':'Total sign-ups','Guardar':'Save',
 'Nuevos en el período':'New this period','Costo por registro':'Cost per sign-up','Actualizar':'Update',
 'Todavía no hay un número cargado. Poné cuántos anotados hay hoy.':'No number entered yet. Enter how many sign-ups there are today.',
-'Anotados en la waitlist':'Waitlist sign-ups','Métricas desde el inicio':'Metrics since launch','Estado de la cuenta':'Account status','Lo que tiene que estar conectado para medir bien los registros.':'What needs to be connected to track sign-ups correctly.','listos.':'done.','Listo':'Done','Pendiente':'Pending','Registrados':'Registered users','Cuánta gente creó su cuenta en la app. La app se lo informa a Meta en cada registro y acá se actualiza solo, todos los jueves. Contamos desde el':'How many people created an account in the app. The app reports each sign-up to Meta and this updates automatically every Thursday. Counting since','cuando quedó conectada.':'when it was connected.','Píxel de Meta en audova.org':'Meta pixel on audova.org','Conversions API conectada en audova.live (los registros llegan desde el servidor de la app)':'Conversions API connected on audova.live (sign-ups are sent from the app server)','Probada el 13/10':'Tested on 10/13','Campaña de registros en la app':'App sign-up campaign','Activa desde el 15/10':'Active since 10/15','Primer registro real informado desde la app en producción':'First real sign-up reported from the live app','Dominio audova.live verificado en Meta':'audova.live domain verified in Meta','Dominio audova.org verificado en Meta':'audova.org domain verified in Meta','Falta cargar el registro TXT en el DNS':'TXT record still needs to be added to the DNS','Botones de audova.org que pasan fbclid y _fbp a audova.live':'audova.org buttons passing fbclid and _fbp to audova.live','Pendiente en la web':'Pending on the website','Toda la cuenta publicitaria desde el':'The whole ad account since','Visitas al sitio web':'Website visits','Costo por clic':'Cost per click','Nuevos seguidores':'New followers','Campaña de registros en la app':'App sign-up campaign','Arrancó el':'Started on','Los anuncios llevan directo a crear la cuenta en audova.live y Meta busca a la gente con más chances de registrarse. Cada registro llega desde el servidor de la app, sin píxel en la app.':'The ads lead straight to account creation on audova.live, and Meta looks for the people most likely to sign up. Each sign-up is reported from the app server, with no pixel in the app.','Registros desde los anuncios':'Sign-ups from ads','Clics a la app':'Clicks to the app','Los primeros números de esta campaña aparecen en el próximo reporte.':'This campaign\'s first numbers will show up in the next report.','Cómo viene creciendo la lista.':'How the list is growing.','@Anotados hoy':'Sign-ups today','@Escribí acá…':'Write here…','@Borrar':'Delete','@Borrar nota':'Delete note','@Secciones':'Sections'
+'Anotados en la waitlist':'Waitlist sign-ups','Métricas desde el inicio':'Metrics since launch','Inversión desde el inicio':'Spend since launch','Registros desde el inicio':'Sign-ups since launch','Inversión de los últimos 7 días':'Spend in the last 7 days','Del':'From','al':'to','Estado de la cuenta':'Account status','Lo que tiene que estar conectado para medir bien los registros.':'What needs to be connected to track sign-ups correctly.','listos.':'done.','Listo':'Done','Pendiente':'Pending','Registrados':'Registered users','Cuánta gente creó su cuenta en la app. La app se lo informa a Meta en cada registro y acá se actualiza solo, todos los jueves. Contamos desde el':'How many people created an account in the app. The app reports each sign-up to Meta and this updates automatically every Thursday. Counting since','cuando quedó conectada.':'when it was connected.','Píxel de Meta en audova.org':'Meta pixel on audova.org','Conversions API conectada en audova.live (los registros llegan desde el servidor de la app)':'Conversions API connected on audova.live (sign-ups are sent from the app server)','Probada el 13/10':'Tested on 10/13','Campaña de registros en la app':'App sign-up campaign','Activa desde el 15/10':'Active since 10/15','Primer registro real informado desde la app en producción':'First real sign-up reported from the live app','Dominio audova.live verificado en Meta':'audova.live domain verified in Meta','Dominio audova.org verificado en Meta':'audova.org domain verified in Meta','Falta cargar el registro TXT en el DNS':'TXT record still needs to be added to the DNS','Botones de audova.org que pasan fbclid y _fbp a audova.live':'audova.org buttons passing fbclid and _fbp to audova.live','Pendiente en la web':'Pending on the website','Toda la cuenta publicitaria desde el':'The whole ad account since','Visitas al sitio web':'Website visits','Costo por clic':'Cost per click','Nuevos seguidores':'New followers','Campaña de registros en la app':'App sign-up campaign','Arrancó el':'Started on','Los anuncios llevan directo a crear la cuenta en audova.live y Meta busca a la gente con más chances de registrarse. Cada registro llega desde el servidor de la app, sin píxel en la app.':'The ads lead straight to account creation on audova.live, and Meta looks for the people most likely to sign up. Each sign-up is reported from the app server, with no pixel in the app.','Registros desde los anuncios':'Sign-ups from ads','Clics a la app':'Clicks to the app','Los primeros números de esta campaña aparecen en el próximo reporte.':'This campaign\'s first numbers will show up in the next report.','Cómo viene creciendo la lista.':'How the list is growing.','@Anotados hoy':'Sign-ups today','@Escribí acá…':'Write here…','@Borrar':'Delete','@Borrar nota':'Delete note','@Secciones':'Sections'
 };
 const MES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
