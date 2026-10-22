@@ -337,6 +337,7 @@ details.hist table{border:0;border-radius:0}
 .repCaja .iniG>div.d{background:#5B8CB0;border-color:#5B8CB0}.repCaja .iniG>div.d small,.repCaja .iniG>div.d b{color:#fff}
 .repCaja .iniG small{display:block;font-size:10.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:#5B8CB0;line-height:1.35;min-height:28px}
 .repCaja .iniG b{display:block;font-size:24px;line-height:1.15;margin-top:6px;color:var(--navy)}
+h2 .perT{display:block;font-size:14px;font-weight:600;color:var(--mute,#8A8697);margin-top:4px;letter-spacing:0}
 .repCaja .bajada{font-size:14.5px;color:#55525F;margin:0 0 6px;line-height:1.5}
 .repCaja h3{font-size:12.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--vino);margin:22px 0 10px}
 .repCaja ol{margin:0;padding:0;list-style:none;counter-reset:r}
@@ -746,7 +747,7 @@ function fechasHTML(L,u){
 function contenidosHTML(L,per){
   if(!L||!L.length) return '';
   const camps=[...new Set(L.map(x=>x.c))];
-  let h=`<h2>Ranking de contenidos</h2><p class="sub">Los anuncios activos de cada campaña, ordenados por lo que trajo cada uno en este período.</p>`;
+  let h=`<h2>Ranking de contenidos${per?` <small class="perT"><span>Del</span> ${per[0]} <span>al</span> ${per[1]}</small>`:''}</h2><p class="sub">Los anuncios activos de cada campaña, ordenados por lo que trajo cada uno en este período.</p>`;
   camps.forEach(c=>{
     const X=L.filter(x=>x.c===c);
     if(!X.some(x=>x.inv>0)) return;   // campaña sin gasto en el período: no suma al ranking
@@ -785,6 +786,9 @@ function pintarTrafico(d){
   const m=new Proxy({},{get:(_,k)=>ultimo(k)}), ma=new Proxy({},{get:(_,k)=>previo(k)});
   const et=R.map(r=>fecha(r.hasta));
   const hay=(k)=>R.some(r=>r.metricas[k]!=null);
+  // 22/10: cada titulo dice de que periodo habla
+  const P0=u?(u.metricas.cont_desde||u.desde):null, P1=u?(u.metricas.cont_hasta||u.hasta):null;
+  const perT=(x,y)=>x&&y?` <small class="perT"><span>Del</span> ${fecha(x)} <span>al</span> ${fecha(y)}</small>`:'';
 
   const AUD=[
     {p:'a1', tit:'1. Decisores institucionales', sub:'Estados Unidos', color:'#518BAF'},
@@ -802,7 +806,7 @@ function pintarTrafico(d){
   // ===== Métricas desde el inicio (Audova, 15/10/2026): toda la cuenta publicitaria desde que arrancó la pauta =====
   if(u && u.metricas.ini_desde){
     const I=u.metricas, segIni=R.reduce((s,r)=>s+(Number(r.metricas.ig_followers_nuevos)||0),0);
-    h+=`<h2>Métricas desde el inicio</h2><p class="sub"><span>Toda la cuenta publicitaria desde el</span> <span>${fecha(I.ini_desde)}</span>.</p><div class="tarj">
+    h+=`<h2>Métricas desde el inicio${perT(I.ini_desde,P1)}</h2><p class="sub"><span>Toda la cuenta publicitaria desde el</span> <span>${fecha(I.ini_desde)}</span>.</p><div class="tarj">
       ${I.ini_alcance!=null?card('Personas alcanzadas', fmt(I.ini_alcance), null,0,true):''}
       ${I.ini_visitas!=null?card('Visitas al sitio web', fmt(I.ini_visitas), null,0):''}
       ${I.ini_cpc!=null?card('Costo por clic', mon(I.ini_cpc,2), null,2):''}
@@ -831,7 +835,7 @@ function pintarTrafico(d){
     const tot=trf+seg, totA=trfA+segA;
     const dia=n(cu.ld_inversion_diaria)+n(cu.tr_inversion_diaria)+n(cu.ig_inversion_diaria)+n(cu.rg_inversion_diaria);
     const diaA=n(ca.ld_inversion_diaria)+n(ca.tr_inversion_diaria)+n(ca.ig_inversion_diaria)+n(ca.rg_inversion_diaria);
-    if(tot>0) h+=`<h2>Inversión en el período</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
+    if(tot>0) h+=`<h2>Inversión en el período${perT(P0,P1)}</h2><p class="sub">Lo que se puso en pauta en este período.</p><div class="tarj">
       ${trf?card('Campañas de tráfico',mon(trf,2),trfA?[trf,trfA]:null,2):''}
       ${seg?card('Campañas de seguidores',mon(seg,2),segA?[seg,segA]:null,2):''}
       ${dia?card('Inversión diaria',mon(dia,2),diaA?[dia,diaA]:null,2):''}
@@ -847,7 +851,7 @@ function pintarTrafico(d){
   if(slug==='audova'){
     const RA=R.filter(r=>r.metricas.app_total!=null), ua=RA[RA.length-1]||null, aa=RA.length>1?RA[RA.length-2]:null;
     const uw=ua?ua.metricas:{}, aw=aa?aa.metricas:{};
-    h+=`<h2>Registros en la app</h2><p class="sub"><span>Cuánta gente creó su cuenta en la app. La app se lo informa a Meta en cada registro y acá se actualiza solo, todos los jueves. Contamos desde el</span> <span>${fecha('2026-10-14')}</span>, <span>cuando quedó conectada.</span></p><div class="tarj">
+    h+=`<h2>Registros en la app${perT('2026-10-14',P1)}</h2><p class="sub"><span>Cuánta gente creó su cuenta en la app. La app se lo informa a Meta en cada registro y acá se actualiza solo, todos los jueves. Contamos desde el</span> <span>${fecha('2026-10-14')}</span>, <span>cuando quedó conectada.</span></p><div class="tarj">
       ${card('Registrados', ua?fmt(uw.app_total):'—', ua?[uw.app_total, aw.app_total]:null,0,true)}
       ${card('Nuevos en el período', ua?fmt(uw.app_nuevos):'—', ua?[uw.app_nuevos, aw.app_nuevos]:null)}
       ${card('Costo por registro', uw.app_costo!=null?mon(uw.app_costo,2):'—', uw.app_costo!=null?[uw.app_costo, aw.app_costo]:null,2,false,true)}
@@ -882,7 +886,7 @@ function pintarTrafico(d){
   // ===== Campaña de registros en la app (Audova, arrancó el 15/10/2026): optimiza al evento CompleteRegistration =====
   if(slug==='audova'){
     const RG=R.filter(r=>r.metricas.rg_inversion!=null), ug=RG[RG.length-1]||null, ag=RG.length>1?RG[RG.length-2]:null;
-    h+=`<h2>Campaña de registros en la app</h2><p class="sub"><span>Arrancó el</span> <span>${fecha('2026-10-15')}</span>. <span>Los anuncios llevan directo a crear la cuenta en audova.live y Meta busca a la gente con más chances de registrarse. Cada registro llega desde el servidor de la app, sin píxel en la app.</span></p>`;
+    h+=`<h2>Campaña de registros en la app${perT(P0,P1)}</h2><p class="sub"><span>Arrancó el</span> <span>${fecha('2026-10-15')}</span>. <span>Los anuncios llevan directo a crear la cuenta en audova.live y Meta busca a la gente con más chances de registrarse. Cada registro llega desde el servidor de la app, sin píxel en la app.</span></p>`;
     if(ug){ const G=ug.metricas, GA=ag?ag.metricas:{};
       h+=`<div class="tarj">
         ${card('Registros desde los anuncios', fmt(G.rg_registros||0), [G.rg_registros, GA.rg_registros],0,true)}
@@ -984,7 +988,7 @@ function pintarTrafico(d){
 
   // ===== 2. SEGUIDORES =====
   if(hay('ig_followers_total')||hay('ig_followers_nuevos')){
-    h+=`<h2>Seguidores</h2><p class="sub">Crecimiento de la cuenta.</p><div class="tarj">
+    h+=`<h2>Seguidores${perT(P0,P1)}</h2><p class="sub">Crecimiento de la cuenta.</p><div class="tarj">
       ${card('Seguidores', fmt(m.ig_followers_total), [m.ig_followers_total, ma.ig_followers_total])}
       ${card('Nuevos en el período', fmt(m.ig_followers_nuevos), [m.ig_followers_nuevos, ma.ig_followers_nuevos])}
       ${hay('ig_visitas')?card('Visitas al perfil', fmt(m.ig_visitas), [m.ig_visitas, ma.ig_visitas]):''}
@@ -1010,7 +1014,7 @@ function pintarTrafico(d){
     const invT=sum(x=>Object.keys(x).filter(k=>/^(ig|ld|tr|rg|frm|msj|vta|stm)_inversion$/.test(k)).reduce((a,k)=>a+(Number(x[k])||0),0));
     const segT=sum(x=>x.ig_followers_nuevos), wlT=sum(x=>x.ld_leads);
     const appT=[...R].reverse().find(r=>r.metricas.wl_total!=null && r.hasta>'2026-10-08');
-    h+=`<h2>Campañas desde el inicio</h2><p class="sub">La suma de todo lo que trajeron las campañas desde que arrancaron.</p><div class="tarj">
+    h+=`<h2>Campañas desde el inicio${perT((u&&u.metricas.ini_desde)||(R[0]&&R[0].desde),P1)}</h2><p class="sub">La suma de todo lo que trajeron las campañas desde que arrancaron.</p><div class="tarj">
       ${card('Inversión total', mon(invT,2), null,2,true)}
       ${card('Nuevos seguidores', fmt(segT), null,0)}
       ${(()=>{ const t=[...R].reverse().find(r=>r.metricas.app_total!=null); return t?card('Registrados en la app', fmt(t.metricas.app_total), null,0):''; })()}
@@ -1967,7 +1971,7 @@ function pintarResto(d,h){
     <div class="agregarF"><input id="f_fecha" type="date" aria-label="Fecha"><input id="f_tit" placeholder="Título. Por ejemplo: Show en La Tangente"><input id="f_url" placeholder="Link a la ticketera (opcional)"><button id="f_add">Agregar</button></div>`;
   }
 
-  const T=d.tareas||[];
+  const T=d.tareas||[]; const tAbajo=['audova'].includes(slug), h0=h; h='';   // 22/10: en Audova las tareas van abajo de todo
   {
     h+=`<h2>Tarea para el hogar</h2><p class="sub">Lo que ya está hecho y lo que sigue.</p>
     ${T.length?'':'<p class="pista">Todavía no hay tareas. Sumá la primera acá abajo.</p>'}<div class="tar">
@@ -1976,6 +1980,7 @@ function pintarResto(d,h){
     <div class="agregarT"><input id="t_nueva" placeholder="Agregar algo que quieras hacer o pedirnos"><button id="t_add">Agregar</button></div>
     <p class="pista">Tocá el círculo para cambiarle el estado: pendiente, en curso o hecha. Tocá el texto para leerla completa. La × la borra.</p>`;
   }
+  const hTar=h; h=h0+(tAbajo?'':hTar);
 
   const A=d.activos||[];
   {
@@ -2012,6 +2017,7 @@ function pintarResto(d,h){
       </div>`;
   }
 
+  if(tAbajo) h+=hTar;
   h+=`<p class="pie">Cualquier duda sobre estos números, escribile a Agus.</p>`;
   // las alertas se ven solo en el panel de Agus, no en la pagina del cliente
   $('app').innerHTML=h;
@@ -2177,7 +2183,7 @@ function armarIndice(){
   const corto={'Próximas fechas':'Fechas','Consejos de la Inteligencia colectiva':'Consejos','Tarea para el hogar':'Tareas','Ventas':'Ventas','Tus activos':'Activos','Tus notas':'Notas'};
   const nav=document.createElement('nav'); nav.className='indice'; nav.id='indice'; nav.setAttribute('aria-label','Secciones');
   nav.innerHTML='<div class="fila">'+hs.map((h,i)=>{
-    const t=h.textContent.trim(); h.id='sec-'+t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); if(hs.some((o,j)=>j<i&&o.id===h.id)) h.id+='-'+i;
+    const t=[...h.childNodes].filter(n=>!(n.classList&&n.classList.contains('perT'))).map(n=>n.textContent).join('').trim(); h.id='sec-'+t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); if(hs.some((o,j)=>j<i&&o.id===h.id)) h.id+='-'+i;
     return `<a href="#${h.id}" data-i="${i}">${corto[t]||t}</a>`;
   }).join('')+'</div>';
   const primero=app.querySelector('.periodo')||app.querySelector('h1');
