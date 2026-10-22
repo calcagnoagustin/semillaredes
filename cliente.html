@@ -758,7 +758,7 @@ function contenidosHTML(L,per){
     if(conVis) cols.push(['Visitas',x=>`<span class="v">${fmt(x.vis||0)}</span>`,'56px']);
     cols.push([lab,x=>`<span class="v">${fmt(res(x))}</span>`,'92px']);
     if(conCosto) cols.push(['Costo c/u',x=>`<span class="c">${res(x)?mon(x.inv/res(x),2):'—'}</span>`,'76px']);
-    const gc=`style="grid-template-columns:18px 1fr ${cols.map(z=>z[2]).join(' ')};column-gap:9px"`;
+    const gc=`style="grid-template-columns:18px minmax(0,1fr) ${cols.map(z=>innerWidth<600?'auto':z[2]).join(' ')};column-gap:${innerWidth<600?8:9}px"`;
     h+=`<div class="desglose"><h3>${c}${per?` <small style="display:block;font:500 13px/1.4 inherit;color:#8A8577;margin-top:3px"><span>Del</span> ${per[0]} <span>al</span> ${per[1]}</small>`:''}</h3>
       <div class="fila2 cab2 conj" ${gc}><span>#</span><span>Contenido</span>${cols.map(z=>`<span style="text-align:right">${z[0]}</span>`).join('')}</div>
       ${X.map((x,k)=>`<div class="fila2 conj" ${gc}><span class="c">${k+1}</span><span class="nom">${x.url?`<a href="${x.url}" target="_blank" rel="noopener" style="color:inherit">${x.n}</a>`:x.n}${variosP&&x.p?`<small style="display:block;color:#8A8577;font-size:12px;font-weight:400">${x.p}</small>`:''}</span>${x.inv>0
