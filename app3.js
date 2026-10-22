@@ -246,7 +246,7 @@
   #v3 .cj svg{display:block;width:100%;height:auto}
   #v3 .vacio{padding:16px;font-size:14.5px;color:#8A8577}
   #v3 .scr{display:none}#v3 .scr.on{display:block}
-  #v3 .ult-act{margin:-4px 0 14px;font:500 13px/1.4 Inter,sans-serif;color:#6F6B7C}
+  #v3 .ult-act{margin:6px 0 0;font:500 13px/1.4 Inter,sans-serif;color:#6F6B7C}
   #v3 .perh{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 2px 0}
   #v3 .perh h3{margin:0;font-family:'Playfair Display',serif;font-size:23px;font-weight:600;color:${NAVY}}
   #v3 .perh span{font:600 12px/1 Inter,sans-serif;letter-spacing:1.6px;text-transform:uppercase;color:#55525F;white-space:nowrap}
