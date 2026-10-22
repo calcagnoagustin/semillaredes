@@ -102,7 +102,7 @@ th{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ol
   background:#fff;border:1px solid var(--linea);border-radius:99px;padding:6px 12px;white-space:nowrap;transition:all .15s}
 .indice a:hover{border-color:var(--oliva);color:var(--oliva)}
 @media(max-width:560px){ .indice .fila{gap:5px} .indice a{font-size:11.5px;padding:5px 10px} }
-h2[id]{scroll-margin-top:calc(16px + env(safe-area-inset-top,0px));display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+h2[id]{scroll-margin-top:calc(16px + env(safe-area-inset-top,0px));display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;column-gap:12px;row-gap:0}
 h2 .volver{font-family:Inter,system-ui,sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.3px;color:var(--mute);
   text-decoration:none;white-space:nowrap;padding:3px 9px;border:1px solid var(--linea);border-radius:99px;background:rgba(255,255,255,.6);flex:0 0 auto}
 h2 .volver:hover{color:var(--oliva);border-color:var(--oliva)}
@@ -337,7 +337,8 @@ details.hist table{border:0;border-radius:0}
 .repCaja .iniG>div.d{background:#5B8CB0;border-color:#5B8CB0}.repCaja .iniG>div.d small,.repCaja .iniG>div.d b{color:#fff}
 .repCaja .iniG small{display:block;font-size:10.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:#5B8CB0;line-height:1.35;min-height:28px}
 .repCaja .iniG b{display:block;font-size:24px;line-height:1.15;margin-top:6px;color:var(--navy)}
-h2 .perT{display:block;font-size:14px;font-weight:600;color:var(--mute,#8A8697);margin-top:4px;letter-spacing:0}
+h2 .perT{display:block;order:3;flex-basis:100%;font-family:Inter,system-ui,sans-serif;font-size:14px;font-weight:600;color:var(--mute,#8A8697);margin-top:4px;letter-spacing:0}
+body.sadhana h2 .perT{font-family:Barlow,system-ui,sans-serif}
 .repCaja .bajada{font-size:14.5px;color:#55525F;margin:0 0 6px;line-height:1.5}
 .repCaja h3{font-size:12.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--vino);margin:22px 0 10px}
 .repCaja ol{margin:0;padding:0;list-style:none;counter-reset:r}
