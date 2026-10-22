@@ -649,10 +649,10 @@ const conjIG=(u)=>{ if(!u) return ''; const x=u.metricas, L=[]; // igcN_visitas 
 const card=(lab,val,ant,dec,dest,inv)=>`<div class="t ${dest?'destacada':''}"><div class="lab">${lab}</div><div class="val">${val}</div>${delta(ant?.[0],ant?.[1],inv)}</div>`;
 
 const CAMPS=[
-  {p:'fog', tit:'POP UP: FOGÓN', que:'Evento puntual. Va adentro de Calificadas: se muestra aparte para verlo solo.', dest:true, dentro:true},
   {p:'ej', tit:'Reservas Ejecutivo', que:'Campaña para el público ejecutivo.'},
   {p:'cal', tit:'Reservas Calificadas', que:'La campaña principal: incluye famosos y general.'},
   {p:'fam', tit:'Famosos', que:'Va adentro de Calificadas. Se muestra aparte para verlo solo.', dentro:true},
+  {p:'fog', tit:'Fogón', que:'Evento puntual. Va adentro de Calificadas. Se muestra aparte para verlo solo.', dentro:true},
   {p:'esp', tit:'Campaña especial', que:'Acción puntual por fecha.'}
 ];
 
@@ -1535,7 +1535,8 @@ function pintarMensajes(d){
   CAMPS.forEach(c=>{
     const men=m[c.p+'_mensajes'], costo=m[c.p+'_costo_mensaje'], alc=m[c.p+'_alcance'], invc=m[c.p+'_inversion'];
     if(men==null && invc==null) return;
-    const titulo = (c.p==='esp' && m.esp_nombre) ? m.esp_nombre : (c.p==='fog' && m.fog_nombre) ? m.fog_nombre : c.tit;
+    if(c.p==='fog' && (!u || u.metricas.fog_mensajes==null)) return;   // el Fogón solo mientras esté en el último reporte
+    const titulo = (c.p==='esp' && m.esp_nombre) ? m.esp_nombre : c.tit;
     h+=`<div class="camp ${c.dest?'destacada':''} ${c.dentro?'dentro':''}"><h3>${titulo}</h3><p class="que">${c.que}</p>
       <div class="nums">
         <div class="n"><div class="l">Mensajes</div><div class="v">${fmt(men)}</div><div class="d">${delta(men, ma[c.p+'_mensajes'])||''}</div></div>
