@@ -339,6 +339,7 @@ details.hist table{border:0;border-radius:0}
 .repCaja .iniG b{display:block;font-size:24px;line-height:1.15;margin-top:6px;color:var(--navy)}
 h2 .perT{display:block;order:3;flex-basis:100%;font-family:Inter,system-ui,sans-serif;font-size:14px;font-weight:600;color:var(--mute,#8A8697);margin-top:4px;letter-spacing:0}
 body.sadhana h2 .perT{font-family:Barlow,system-ui,sans-serif}
+.audA .t .lab{min-height:2.75em}
 details.masA{margin:12px 0 4px}
 details.masA>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--navy);padding:9px 16px;border:1px solid var(--linea);border-radius:99px;background:#fff}
 details.masA>summary::-webkit-details-marker{display:none}
@@ -791,7 +792,10 @@ function contenidosHTML(L,per,opt){
 }
 // ===== AUDOVA (22/10): panel simple con 3 secciones; lo complejo se despliega. El reporte usa las mismas 3 secciones =====
 const masA=(t,inner)=>inner?`<details class="masA"><summary><span>${t}</span><span class="fl">▸</span></summary><div class="masIn">${inner}</div></details>`:'';
+const sinSolapar=R=>{ const out=[]; const D=x=>new Date(String(x).slice(0,10)+'T00:00:00Z');   // un reporte que se pisa 3 dias o mas con el siguiente ya fue reemplazado: no se cuenta dos veces
+  for(let i=R.length-1;i>=0;i--){ const r=R[i], sig=out[0]; if(sig && (D(r.hasta)-D(sig.desde))/864e5>=2) continue; out.unshift(r); } return out; };
 function audovaSecciones(R,panel){
+  R=sinSolapar(R||[]);
   const u=R[R.length-1]; if(!u) return '';
   const x=u.metricas, pv=R.length>1?R[R.length-2].metricas:{}, n=v=>Number(v||0);
   const P0=x.cont_desde||u.desde, P1=x.cont_hasta||u.hasta;
@@ -799,7 +803,7 @@ function audovaSecciones(R,panel){
   const H=(t,a,b)=>panel?`<h2>${t} <small class="perT">${per(a,b)}</small></h2>`:`<h3 class="secA">${t}<small>${per(a,b)}</small></h3>`;
   const appT=[...R].reverse().map(r=>r.metricas.app_total).find(v=>v!=null);
   const nuevos=n(x.app_nuevos), deCamp=n(x.rg_registros), otros=Math.max(0,nuevos-deCamp);
-  let h='';
+  let h='<div class="audA">';
   // 1. Registros en la app (unifica registros + campaña de registros)
   h+=H('Registros en la app',P0,P1)+`<div class="tarj">
     ${card('Registrados en la app', appT!=null?fmt(appT):'—', null,0,true)}
@@ -858,7 +862,7 @@ function audovaSecciones(R,panel){
     if(panel && R.length>1) h+=masA('Ver todos los reportes', `<table class="histA"><tr><th>Período</th><th>Registros nuevos</th><th>Seguidores nuevos</th><th>Inversión</th></tr>
       ${R.slice().reverse().map(r=>{const z=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td><td>${z.app_nuevos!=null?fmt(z.app_nuevos):'—'}</td><td>${z.ig_followers_nuevos!=null?fmt(z.ig_followers_nuevos):'—'}</td><td>${mon(n(z.ig_inversion)+n(z.tr_inversion)+n(z.ld_inversion)+n(z.rg_inversion),2)}</td></tr>`}).join('')}</table>`);
   }
-  return h;
+  return h+'</div>';
 }
 function pintarAudova(d){
   const R=d.reportes||[], u=R[R.length-1]||null;
