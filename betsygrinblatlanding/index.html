@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Betsy Grinblat · Arte contemporáneo</title>
+<meta name="description" content="Obra sobre papel o tela, objetos y piezas únicas de Betsy Grinblat. Tinta, gesto y materia, inspirados en el sumi-e y la caligrafía gestual. Venta de obra e interiorismo.">
+<meta property="og:title" content="Betsy Grinblat · Arte contemporáneo">
+<meta property="og:description" content="Obra sobre papel o tela, objetos y piezas únicas. Venta de obra e interiorismo.">
+<meta property="og:image" content="https://semillaredes.com/betsygrinblatlanding/img/og.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#F7F4EF;--paper-2:#EFEBE4;--ink:#1C1B19;--grey:#6B675F;--line:#DDD7CD;--warm:#8C7A62}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',sans-serif;font-weight:300;background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+  img,video{display:block;max-width:100%;height:auto}
+  a{color:inherit}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 32px}
+  .eb{font-size:11px;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:var(--warm)}
+  h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:500;line-height:1.05;letter-spacing:-.01em}
+  h2{font-size:clamp(34px,4.2vw,54px);margin:14px 0 18px}
+  .btn{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--paper);text-decoration:none;font-size:14px;font-weight:500;letter-spacing:.06em;padding:16px 26px;border-radius:2px;transition:background .2s}
+  .btn:hover{background:#3a3833}
+  .lnk{font-size:14px;font-weight:500;letter-spacing:.04em;text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:2px}
+
+  header.top{position:sticky;top:0;z-index:20;background:rgba(247,244,239,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .marca{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;letter-spacing:.02em;text-decoration:none}
+  .menu{display:flex;gap:34px;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+  .menu a{text-decoration:none;color:var(--grey)}
+  .menu a:hover{color:var(--ink)}
+
+  .hero{padding:64px 0 80px}
+  .hero .wrap{display:grid;grid-template-columns:.85fr 1.15fr;gap:64px;align-items:center}
+  .hero h1{font-size:clamp(52px,6.6vw,96px);margin:16px 0 22px}
+  .hero h1 em{font-style:italic;color:var(--warm)}
+  .hero p{font-size:18px;color:var(--grey);max-width:440px;margin-bottom:34px}
+  .hero-img img{width:100%;aspect-ratio:1/1;object-fit:cover}
+  .hero-ctas{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+
+  .ofrece{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--paper-2)}
+  .ofrece ul{list-style:none;display:grid;grid-template-columns:repeat(3,1fr)}
+  .ofrece li{padding:34px 32px;border-left:1px solid var(--line)}
+  .ofrece li:first-child{border-left:0;padding-left:0}
+  .ofrece h3{font-size:26px;margin-bottom:6px}
+  .ofrece p{font-size:15px;color:var(--grey)}
+
+  .series{padding:96px 0 40px}
+  .serie{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;margin-bottom:96px}
+  .serie.inv .s-img{order:2}
+  .s-img img,.s-img video{width:100%;height:auto}
+  .s-img video{aspect-ratio:9/16;max-height:640px;width:auto;margin:0 auto;object-fit:cover;background:#ddd}
+  .s-txt p{font-size:17px;color:var(--grey);max-width:460px;margin-bottom:12px}
+  .s-txt .meta{font-size:13px;letter-spacing:.06em;color:var(--warm);margin:20px 0 26px}
+
+  .espacios{background:var(--ink);color:var(--paper);padding:96px 0}
+  .espacios .wrap{display:grid;grid-template-columns:.95fr 1.05fr;gap:72px;align-items:center}
+  .espacios .eb{color:#C8B79C}
+  .espacios p{font-size:17px;color:#CFCAC0;max-width:480px;margin-bottom:14px}
+  .espacios .btn{background:var(--paper);color:var(--ink);margin-top:18px}
+  .espacios .btn:hover{background:#fff}
+  .esp-imgs{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .esp-imgs img{width:100%;aspect-ratio:4/5;object-fit:cover}
+
+  .bio{padding:96px 0}
+  .bio .wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:72px;align-items:start}
+  .bio img{width:100%;aspect-ratio:1/1;object-fit:cover;object-position:center 30%}
+  .bio p{font-size:17px;color:var(--grey);margin-bottom:16px;max-width:560px}
+  .bio .refs{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:21px;color:var(--ink);line-height:1.4;margin:26px 0}
+
+  .agenda{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:44px 0}
+  .agenda .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .agenda h3{font-size:30px}
+  .agenda p{color:var(--grey);font-size:15px}
+
+  .cta{padding:110px 0;text-align:center}
+  .cta h2{font-size:clamp(38px,5vw,64px)}
+  .cta p{font-size:18px;color:var(--grey);max-width:520px;margin:0 auto 34px}
+
+  footer{border-top:1px solid var(--line);padding:30px 0;font-size:13px;color:var(--grey)}
+  footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  footer a{text-decoration:none}
+
+  @media (max-width:900px){
+    .wrap{padding:0 22px}
+    .menu{display:none}
+    .hero{padding:28px 0 56px}
+    .hero .wrap,.serie,.espacios .wrap,.bio .wrap{grid-template-columns:1fr;gap:32px}
+    .hero-img{order:-1}
+    .hero p{font-size:17px}
+    .ofrece ul{grid-template-columns:1fr}
+    .ofrece li{border-left:0;border-top:1px solid var(--line);padding:24px 0}
+    .ofrece li:first-child{border-top:0}
+    .series{padding:64px 0 8px}
+    .serie{margin-bottom:64px}
+    .serie.inv .s-img{order:0}
+    .s-img video{max-height:520px}
+    .espacios,.bio{padding:64px 0}
+    .cta{padding:72px 0}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a href="#" class="marca">Betsy Grinblat</a>
+    <nav class="menu"><a href="#obra">Obra</a><a href="#espacios">Espacios</a><a href="#sobre">Sobre mí</a><a href="#contacto">Contacto</a></nav>
+    <a href="https://ig.me/m/betsygrinblat.arte" target="_blank" rel="noopener" class="lnk">Consultar</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eb">Artista visual · Buenos Aires</span>
+      <h1>Tinta, gesto <em>y materia.</em></h1>
+      <p>Obra sobre papel o tela, objetos y piezas únicas, nacidas del sumi-e y la caligrafía gestual. Obras pensadas para habitar el espacio y transformar la mirada.</p>
+      <div class="hero-ctas">
+        <a href="https://ig.me/m/betsygrinblat.arte" target="_blank" rel="noopener" class="btn">Consultar por una obra →</a>
+        <a href="#obra" class="lnk">Ver la obra</a>
+      </div>
+    </div>
+    <div class="hero-img"><img src="img/arboles-interior.webp" width="1600" height="1600" alt="Obra de la Serie Árboles en un living"></div>
+  </div>
+</section>
+
+<section class="ofrece">
+  <div class="wrap">
+    <ul>
+      <li><h3>Obra original</h3><p>Sobre papel o tela, objetos y piezas únicas.</p></li>
+      <li><h3>Venta de obra</h3><p>Consultá disponibilidad, medidas y precio de cada pieza.</p></li>
+      <li><h3>Interiorismo</h3><p>Obra para casas, estudios y proyectos de diseño.</p></li>
+    </ul>
+  </div>
+</section>
+
+<section class="series" id="obra">
+  <div class="wrap">
+    <div class="serie">
+      <div class="s-img"><img src="img/arboles.webp" width="960" height="1200" alt="Serie Árboles, Betsy Grinblat"></div>
+      <div class="s-txt">
+        <span class="eb">Serie</span>
+        <h2>Árboles</h2>
+        <p>Fragmentos, ritmo y gesto construyen un paisaje que aparece y desaparece entre líneas.</p>
+        <p>Líneas, ritmo y materia que cambian según la distancia desde la que se mira.</p>
+        <div class="meta">Tinta y técnica mixta sobre papel</div>
+        <a href="https://ig.me/m/betsygrinblat.arte" target="_blank" rel="noopener" class="lnk">Consultar por esta serie →</a>
+      </div>
+    </div>
+    <div class="serie inv">
+      <div class="s-img"><img src="img/gestos.webp" width="960" height="1200" alt="Composición gestual en tinta, Betsy Grinblat"></div>
+      <div class="s-txt">
+        <span class="eb">Caligrafía gestual</span>
+        <h2>Gestos y contrastes</h2>
+        <p>Gestos, capas y contrastes que se encuentran en una composición donde la materia y el trazo construyen su propio paisaje.</p>
+        <p>Entre el gesto, la tinta y el vacío, la obra encuentra su propio ritmo.</p>
+        <div class="meta">Tinta sobre papel · Sumi-e</div>
+        <a href="https://ig.me/m/betsygrinblat.arte" target="_blank" rel="noopener" class="lnk">Consultar por esta obra →</a>
+      </div>
+    </div>
+    <div class="serie">
+      <div class="s-img"><video src="img/armonias.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Detalle de una obra de la serie Armonías"></video></div>
+      <div class="s-txt">
+        <span class="eb">Serie</span>
+        <h2>Armonías</h2>
+        <p>Círculos de papel que se superponen como un relieve. Los fragmentos son recortes de otras obras a las que les di una nueva vida.</p>
+        <div class="meta">Collage de papel · Pieza única</div>
+        <a href="https://ig.me/m/betsygrinblat.arte" target="_blank" rel="noopener" class="lnk">Consultar por esta serie →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="espacios" id="espacios">
+  <div class="wrap">
+    <div>
+      <span class="eb">Arte para espacios</span>
+      <h2>La obra habita el espacio.</h2>
+      <p>Mi obra formó parte de Casa FOA 2026, en el espacio diseñado por Mico Estudio: una pieza en diálogo con la luz, las texturas y la calma del lugar.</p>
+      <p>Trabajo con arquitectos, interioristas y particulares que buscan una obra única para su casa o su proyecto.</p>
+      <a href="https://ig.me/m/betsygrinblat.arte" target="_blank" rel="noopener" class="btn">Quiero una obra para mi espacio →</a>
+    </div>
+    <div class="esp-imgs">
+      <img src="img/casafoa.webp" width="1086" height="1086" alt="Betsy Grinblat junto a su obra en Casa FOA">
+      <video src="img/sumie.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Proceso de una obra en tinta" style="width:100%;aspect-ratio:4/5;object-fit:cover"></video>
+    </div>
+  </div>
+</section>
+
+<section class="bio" id="sobre">
+  <div class="wrap">
+    <img src="img/betsy.webp" width="1300" height="1261" alt="Betsy Grinblat junto a obras de la serie Armonías">
+    <div>
+      <span class="eb">Sobre mí</span>
+      <h2>Betsy Grinblat</h2>
+      <p>Soy artista visual y Lic. en psicología. Nací en Buenos Aires en 1960. El ser creativo es mi esencia, pero la curiosidad por la mente humana inclinó en un principio la balanza hacia la psicología.</p>
+      <p>Empecé a pintar en un taller rodeada de paisaje, atardeceres y árboles, y desde entonces no dejé de hacerlo. Me formé en talleres de distintos artistas y en la escuela de Guillermo Roux. El estudio del sumi-e y de la caligrafía artística y gestual, con tintas, terminó de consolidar mi identidad como artista.</p>
+      <p class="refs">Kline, Soulages, Zao Wou-Ki, Motherwell, Tōkō Shinoda, Fabienne Verdier.</p>
+      <p>Participé en exposiciones colectivas y ferias de arte en Argentina y Estados Unidos, y en la realización colectiva de un mural para la ciudad de Buenos Aires, en Palermo. Hoy mis obras están en galerías locales e internacionales.</p>
+    </div>
+  </div>
+</section>
+
+<section class="agenda">
+  <div class="wrap">
+    <div><span class="eb">Próxima muestra</span><h3>Feria de Arte Solidario ArteLamroth</h3></div>
+    <p>28 de octubre</p>
+  </div>
+</section>
+
+<section class="cta" id="contacto">
+  <div class="wrap">
+    <span class="eb">Contacto</span>
+    <h2>¿Te interesa una obra?</h2>
+    <p>Escribime por mensaje directo y te paso disponibilidad, medidas y precio. También podés pedirme fotos de la obra en tu espacio.</p>
+    <a href="https://ig.me/m/betsygrinblat.arte" target="_blank" rel="noopener" class="btn">Escribirme por Instagram →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© Betsy Grinblat · Arte contemporáneo</span>
+    <a href="https://instagram.com/betsygrinblat.arte" target="_blank" rel="noopener">@betsygrinblat.arte</a>
+  </div>
+</footer>
+
+<script src="https://vm.semillaredes.com/web/editor.js" defer></script>
+</body>
+</html>
