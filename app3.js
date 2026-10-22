@@ -758,18 +758,17 @@
     if(!window.__V3WEBS){ window.__V3WEBS=[]; fetch('https://vm.semillaredes.com/web/estado?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(j=>{ if(j) window.__V3WEBINFO=j; if(j&&j.webs&&j.webs.length){ window.__V3WEBS=j.webs; WEBV=j.webs; intentos=0; ponerWeb(); } else if(j&&j.puede_crear){ intentos=0; ponerWeb(); } }).catch(()=>{}); }
     /* CREÁ TU LANDING (beta): arma la landing desde el Instagram del artista */
     const crearLanding=()=>{ const I=window.__V3WEBINFO||{}, L=I.landing||{}, armando=L.estado==='armando';
-      web.innerHTML='<div class="tit2"><h2>Tu web</h2></div><p class="bj" style="margin:0 0 12px;font-size:14.5px">SemillaIA arma tu landing con lo que ya tenés en Instagram: tus fotos, tu bio y lo que contás en tus publicaciones. Después la editás cuando quieras.</p>'
+      web.innerHTML='<div class="tit2"><h2>Tu web</h2></div><p class="bj" style="margin:0 0 12px;font-size:14.5px">SemillaIA arma tu landing con todo lo que ya conectaste: tu Instagram, tu Spotify, tu YouTube, tus links y tus fechas. Después la editás cuando quieras.</p>'
        +'<div class="card" style="padding:16px">'
        +(armando?'<p style="margin:0;font-size:15px;color:'+NAVY+';font-weight:600">Armando tu landing…</p><p style="margin:4px 0 0;font-size:13.5px;color:#6B6878">'+esc(L.paso||'')+'. Tarda alrededor de un minuto.</p>'
-        :'<input id="v3lig" placeholder="@tuusuario de Instagram" autocomplete="off" autocapitalize="off" value="'+esc(L.instagram?'@'+L.instagram:'')+'" style="width:100%;height:48px;border:1px solid #E1D9C9;border-radius:12px;padding:0 14px;font:inherit;font-size:16px;margin:0 0 10px;background:#fff">'
-         +'<button id="v3lbt" style="display:block;width:100%;height:52px;border:0;border-radius:12px;background:'+NAVY+';color:#fff;font:700 15px/1 Inter,sans-serif;letter-spacing:.6px;cursor:pointer">CREÁ TU LANDING</button>'
+        :'<button id="v3lbt" style="display:block;width:100%;height:52px;border:0;border-radius:12px;background:'+NAVY+';color:#fff;font:700 15px/1 Inter,sans-serif;letter-spacing:.6px;cursor:pointer">CREÁ TU LANDING</button>'
          +(L.estado==='error'?'<p style="margin:10px 0 0;font-size:13.5px;color:#7A1F3A">'+esc(L.error||'')+'</p>':''))
        +'</div>';
-      const b=web.querySelector('#v3lbt'); if(b) b.onclick=async()=>{ const ig=(web.querySelector('#v3lig').value||'').trim(); b.disabled=true; b.textContent='Arrancando…';
+      const b=web.querySelector('#v3lbt'); if(b) b.onclick=async()=>{ b.disabled=true; b.textContent='Arrancando…';
         window.SRE&&window.SRE('landing_crear',{});
-        let r=null; try{ r=await fetch('https://vm.semillaredes.com/web/crear-landing',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,instagram:ig})}).then(x=>x.json()); }catch(e){}
+        let r=null; try{ r=await fetch('https://vm.semillaredes.com/web/crear-landing',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok})}).then(x=>x.json()); }catch(e){}
         if(r&&r.ok){ I.landing=r.landing||{estado:'armando'}; crearLanding(); seguir(); }
-        else { I.landing={estado:'error',error:(r&&r.error==='falta_ig')?'Escribí tu usuario de Instagram.':((r&&r.error)||'No pudimos arrancar. Probá de nuevo.')}; crearLanding(); } };
+        else { I.landing={estado:'error',error:(r&&r.error)||'No pudimos arrancar. Probá de nuevo.'}; crearLanding(); } };
       if(armando) seguir(); };
     let siguiendo=false;
     const seguir=()=>{ if(siguiendo) return; siguiendo=true; const t=setInterval(()=>{ fetch('https://vm.semillaredes.com/web/estado?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(j=>{ if(!j) return; window.__V3WEBINFO=j;
