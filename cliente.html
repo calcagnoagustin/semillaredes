@@ -339,6 +339,17 @@ details.hist table{border:0;border-radius:0}
 .repCaja .iniG b{display:block;font-size:24px;line-height:1.15;margin-top:6px;color:var(--navy)}
 h2 .perT{display:block;order:3;flex-basis:100%;font-family:Inter,system-ui,sans-serif;font-size:14px;font-weight:600;color:var(--mute,#8A8697);margin-top:4px;letter-spacing:0}
 body.sadhana h2 .perT{font-family:Barlow,system-ui,sans-serif}
+details.masA{margin:12px 0 4px}
+details.masA>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--navy);padding:9px 16px;border:1px solid var(--linea);border-radius:99px;background:#fff}
+details.masA>summary::-webkit-details-marker{display:none}
+details.masA .fl{font-size:12px;color:var(--mute);transition:transform .2s}
+details.masA[open] .fl{transform:rotate(90deg)}
+details.masA .masIn{margin-top:12px}
+table.histA{width:100%;border-collapse:collapse;font-size:14px;background:#fff;border:1px solid var(--linea);border-radius:13px;overflow:hidden}
+table.histA th,table.histA td{padding:9px 12px;text-align:right;border-top:1px solid var(--linea)}table.histA th:first-child,table.histA td:first-child{text-align:left}
+table.histA th{font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--oliva);border-top:0}
+.repCaja h3.secA{margin:22px 0 10px;font-size:13px}.repCaja h3.secA small{display:block;margin-top:3px;font-size:12.5px;letter-spacing:0;text-transform:none;font-weight:600;color:var(--mute)}
+.repCaja .tarj{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.repCaja .t .val{font-size:25px}
 .repCaja .bajada{font-size:14.5px;color:#55525F;margin:0 0 6px;line-height:1.5}
 .repCaja h3{font-size:12.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--vino);margin:22px 0 10px}
 .repCaja ol{margin:0;padding:0;list-style:none;counter-reset:r}
@@ -745,10 +756,11 @@ function fechasHTML(L,u){
   });
   return h;
 }
-function contenidosHTML(L,per){
+function contenidosHTML(L,per,opt){
+  opt=opt||{}; if(L&&opt.filtro) L=L.filter(x=>opt.filtro(x.c));
   if(!L||!L.length) return '';
   const camps=[...new Set(L.map(x=>x.c))];
-  let h=`<h2>Ranking de contenidos${per?` <small class="perT"><span>Del</span> ${per[0]} <span>al</span> ${per[1]}</small>`:''}</h2><p class="sub">Los anuncios activos de cada campaña, ordenados por lo que trajo cada uno en este período.</p>`;
+  let h=opt.sinT?'':`<h2>Ranking de contenidos${per?` <small class="perT"><span>Del</span> ${per[0]} <span>al</span> ${per[1]}</small>`:''}</h2><p class="sub">Los anuncios activos de cada campaña, ordenados por lo que trajo cada uno en este período.</p>`;
   camps.forEach(c=>{
     const X=L.filter(x=>x.c===c);
     if(!X.some(x=>x.inv>0)) return;   // campaña sin gasto en el período: no suma al ranking
@@ -777,9 +789,85 @@ function contenidosHTML(L,per){
   });
   return h;
 }
+// ===== AUDOVA (22/10): panel simple con 3 secciones; lo complejo se despliega. El reporte usa las mismas 3 secciones =====
+const masA=(t,inner)=>inner?`<details class="masA"><summary><span>${t}</span><span class="fl">▸</span></summary><div class="masIn">${inner}</div></details>`:'';
+function audovaSecciones(R,panel){
+  const u=R[R.length-1]; if(!u) return '';
+  const x=u.metricas, pv=R.length>1?R[R.length-2].metricas:{}, n=v=>Number(v||0);
+  const P0=x.cont_desde||u.desde, P1=x.cont_hasta||u.hasta;
+  const per=(a,b)=>`<span>Del</span> ${fecha(a)} <span>al</span> ${fecha(b)}`;
+  const H=(t,a,b)=>panel?`<h2>${t} <small class="perT">${per(a,b)}</small></h2>`:`<h3 class="secA">${t}<small>${per(a,b)}</small></h3>`;
+  const appT=[...R].reverse().map(r=>r.metricas.app_total).find(v=>v!=null);
+  const nuevos=n(x.app_nuevos), deCamp=n(x.rg_registros), otros=Math.max(0,nuevos-deCamp);
+  let h='';
+  // 1. Registros en la app (unifica registros + campaña de registros)
+  h+=H('Registros en la app',P0,P1)+`<div class="tarj">
+    ${card('Registrados en la app', appT!=null?fmt(appT):'—', null,0,true)}
+    ${card('Nuevos en el período', fmt(nuevos), x.app_nuevos!=null&&pv.app_nuevos!=null?[x.app_nuevos,pv.app_nuevos]:null,0)}
+    ${card('Desde la campaña', fmt(deCamp), null,0)}
+    ${card('Por otros medios', fmt(otros), null,0)}
+  </div>`;
+  if(panel){
+    const RA=R.filter(r=>r.metricas.app_total!=null), E=Array.isArray(x.estado)?x.estado:[];
+    h+=masA('Ver la campaña de registros', `<div class="tarj">
+        ${x.rg_inversion!=null?card('Invertido', mon(x.rg_inversion,2), pv.rg_inversion!=null?[x.rg_inversion,pv.rg_inversion]:null,2):''}
+        ${x.rg_alcance!=null?card('Personas alcanzadas', fmt(x.rg_alcance), pv.rg_alcance!=null?[x.rg_alcance,pv.rg_alcance]:null):''}
+        ${x.rg_clics!=null?card('Clics a la app', fmt(x.rg_clics), pv.rg_clics!=null?[x.rg_clics,pv.rg_clics]:null):''}
+        ${x.app_costo!=null?card('Costo por registro', mon(x.app_costo,2), null,2):''}
+      </div>
+      ${RA.length>1?grafico('Registrados en la app','Total de usuarios registrados al cierre de cada período.',RA.map(r=>r.metricas.app_total),RA.map(r=>fecha(r.hasta)),'#1A2456'):''}
+      ${contenidosHTML(x.contenidos,[fecha(P0),fecha(P1)],{sinT:true,filtro:c=>/regist|lead|waitlist/i.test(c)})}
+      ${E.length?`<div class="desglose"><h3>Medición de los registros</h3><p class="leyenda"><span>Lo que tiene que estar conectado para contar bien cada registro.</span> <span>${E.filter(z=>z.ok).length} de ${E.length}</span> <span>listos.</span></p>${E.map(z=>`<div class="fila2 conj" style="grid-template-columns:28px 1fr auto;column-gap:10px;align-items:center">
+        <span style="font-size:17px;color:${z.ok?'#3C8D5A':'#C98A1B'}">${z.ok?'✓':'○'}</span><span class="nom">${z.item}</span><span class="c">${z.nota||(z.ok?'Listo':'Pendiente')}</span></div>`).join('')}</div>`:''}`);
+  }
+  // 2. Seguidores
+  if(x.ig_followers_total!=null||x.ig_followers_nuevos!=null){
+    h+=H('Seguidores',P0,P1)+`<div class="tarj">
+      ${card('Seguidores', fmt(x.ig_followers_total), null,0,true)}
+      ${card('Nuevos en el período', fmt(x.ig_followers_nuevos), pv.ig_followers_nuevos!=null?[x.ig_followers_nuevos,pv.ig_followers_nuevos]:null,0)}
+      ${x.ig_costo_follower!=null?card('Costo por seguidor', mon(x.ig_costo_follower,2), pv.ig_costo_follower!=null?[x.ig_costo_follower,pv.ig_costo_follower]:null,2,false,true):''}
+      ${x.ig_inversion!=null?card('Invertido', mon(x.ig_inversion,2), null,2):''}
+    </div>`;
+    if(panel){
+      const et=R.map(r=>fecha(r.hasta));
+      h+=masA('Ver la campaña de seguidores', `<div class="tarj">
+          ${x.ig_visitas!=null?card('Visitas al perfil', fmt(x.ig_visitas), pv.ig_visitas!=null?[x.ig_visitas,pv.ig_visitas]:null):''}
+          ${convIG(R)}
+        </div>
+        ${conjIG(u)}
+        ${segRegion(R)}
+        ${R.filter(r=>r.metricas.ig_followers_total!=null).length>1?grafico('Seguidores','Cómo viene creciendo la cuenta.',R.map(r=>r.metricas.ig_followers_total),et,'#518BAF'):''}
+        ${R.filter(r=>r.metricas.ig_costo_follower!=null).length>1?grafico('Costo por seguidor','Cuánto cuesta cada seguidor nuevo. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.ig_costo_follower),et,'#F15C32',true):''}
+        ${grafNuevos(R,et)}${grafConv(R,et)}
+        ${contenidosHTML(x.contenidos,[fecha(P0),fecha(P1)],{sinT:true,filtro:c=>/follow|seguid/i.test(c)})}`);
+    }
+  }
+  // 3. Métricas desde el inicio
+  if(x.ini_desde){
+    const seg=R.reduce((t,r)=>t+n(r.metricas.ig_followers_nuevos),0), ult=n(x.tr_inversion)+n(x.ld_inversion)+n(x.rg_inversion)+n(x.ig_inversion);
+    h+=H('Métricas desde el inicio',x.ini_desde,P1)+`<div class="tarj">
+      ${x.ini_inversion!=null?card('Inversión desde el inicio', mon(x.ini_inversion,0), null,0,true):''}
+      ${appT!=null?card('Registros desde el inicio', fmt(appT), null,0):''}
+      ${card('Nuevos seguidores', fmt(seg), null,0)}
+      ${x.ini_alcance!=null?card('Personas alcanzadas', fmt(x.ini_alcance), null,0):''}
+      ${x.ini_visitas!=null?card('Visitas al sitio web', fmt(x.ini_visitas), null,0):''}
+      ${x.ini_cpc!=null?card('Costo por clic', mon(x.ini_cpc,2), null,2):''}
+      ${x.ini_costo_visita!=null?card('Costo por visita', mon(x.ini_costo_visita,2), null,2):''}
+      ${ult>0?card('Inversión de los últimos 7 días', mon(ult,0), null,0):''}
+    </div>`;
+    if(panel && R.length>1) h+=masA('Ver todos los reportes', `<table class="histA"><tr><th>Período</th><th>Registros nuevos</th><th>Seguidores nuevos</th><th>Inversión</th></tr>
+      ${R.slice().reverse().map(r=>{const z=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td><td>${z.app_nuevos!=null?fmt(z.app_nuevos):'—'}</td><td>${z.ig_followers_nuevos!=null?fmt(z.ig_followers_nuevos):'—'}</td><td>${mon(n(z.ig_inversion)+n(z.tr_inversion)+n(z.ld_inversion)+n(z.rg_inversion),2)}</td></tr>`}).join('')}</table>`);
+  }
+  return h;
+}
+function pintarAudova(d){
+  const R=d.reportes||[], u=R[R.length-1]||null;
+  return `<h1>${d.cliente.nombre}</h1><p class="periodo">${u?`${fecha((u.metricas.cont_desde)||u.desde)} al ${fecha((u.metricas.cont_hasta)||u.hasta)}`:'Sin reportes cargados'}</p>`+audovaSecciones(R,true);
+}
 function pintarTrafico(d){
   MON=(d.cliente.moneda||'USD');
   aplicarMarca(d.cliente.marca);
+  if(slug==='audova') return pintarAudova(d);
   const R=d.reportes||[];
   const u=R[R.length-1]||null, a=R.length>1?R[R.length-2]:null;
   const ultimo=(k)=>{ for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null) return x; } return null; };
@@ -2386,8 +2474,8 @@ function ponerReporte(d){
   fondo.innerHTML=`<div class="repCaja" role="dialog" aria-label="Tu reporte"><button class="x" type="button" aria-label="Cerrar">×</button>
     <div class="eti">Reporte · ${fecha(I.desde)} al ${fecha(I.hasta)}</div>
     <h2>Tu reporte</h2>
-    ${I.bloques&&I.bloques.length&&I.bloques[0].kpis?`${I.resumen?`<h3>Lo más importante</h3><div class="resu">${I.resumen}</div>`:''}${I.proyectada?`<div class="proy"><div class="l">Inversión proyectada para los próximos 7 días</div><div class="v">${I.proyectada.total}</div><div class="d">${I.proyectada.detalle}</div></div>`:''}<h3>Campañas</h3>${I.comparado?`<p class="cmpley">Las flechas comparan con la medición anterior (${I.comparado}).</p>`:''}${I.bloques.map(B=>pintaBlq(B)).join('')}`:I.bloques?`<p class="bajada">Los números de las campañas del período.</p>${I.bloques.map(B=>`<div class="blq"><h3>${B.titulo}${B.nota?`<small>${B.nota}</small>`:''}</h3>${(B.filas||[]).map(f=>`<div class="fr${f[2]?' sb':''}"><span>${f[0]}</span><span class="v">${f[1]}</span></div>`).join('')}</div>`).join('')}`:`${slugR==='audova'?`<p class="bajada">Reporte y recomendaciones del período.</p>${iniRep(R)}`:'<p class="bajada">Reporte y recomendaciones basadas en el Método Semilla y la experiencia de otros usuarios.</p>'}
-    <h3>Lo principal</h3><ol class="${(I.hallazgos||[]).some(x=>typeof x==='object')?'hz':''}">${(I.hallazgos||[]).map(x=>typeof x==='object'?`<li class="${x.tipo==='mal'?'mal':'bien'}">${x.t}</li>`:`<li>${x}</li>`).join('')}</ol>
+    ${I.bloques&&I.bloques.length&&I.bloques[0].kpis?`${I.resumen?`<h3>Lo más importante</h3><div class="resu">${I.resumen}</div>`:''}${I.proyectada?`<div class="proy"><div class="l">Inversión proyectada para los próximos 7 días</div><div class="v">${I.proyectada.total}</div><div class="d">${I.proyectada.detalle}</div></div>`:''}<h3>Campañas</h3>${I.comparado?`<p class="cmpley">Las flechas comparan con la medición anterior (${I.comparado}).</p>`:''}${I.bloques.map(B=>pintaBlq(B)).join('')}`:I.bloques?`<p class="bajada">Los números de las campañas del período.</p>${I.bloques.map(B=>`<div class="blq"><h3>${B.titulo}${B.nota?`<small>${B.nota}</small>`:''}</h3>${(B.filas||[]).map(f=>`<div class="fr${f[2]?' sb':''}"><span>${f[0]}</span><span class="v">${f[1]}</span></div>`).join('')}</div>`).join('')}`:`${slugR==='audova'?`<p class="bajada">Reporte y recomendaciones del período.</p>${audovaSecciones(R,false)}`:'<p class="bajada">Reporte y recomendaciones basadas en el Método Semilla y la experiencia de otros usuarios.</p>'}
+    ${slugR==='audova'?'':`<h3>Lo principal</h3><ol class="${(I.hallazgos||[]).some(x=>typeof x==='object')?'hz':''}">${(I.hallazgos||[]).map(x=>typeof x==='object'?`<li class="${x.tipo==='mal'?'mal':'bien'}">${x.t}</li>`:`<li>${x}</li>`).join('')}</ol>`}
     <h3>Qué hacer</h3><ol class="qh">${(I.recomendaciones||[]).map(x=>`<li>${x}${srBtnAcc(x)}</li>`).join('')}</ol>
     ${I.reunion?`<div class="reu"><b>En la próxima reunión con Agus</b> ${I.reunion}</div>`:''}`}
     <p class="cuando">Las métricas en detalle están en el panel, más abajo. Siempre podés volver a este reporte arriba de la página, en el botón Reporte. Se actualiza ${I.cuando||'todos los lunes a las 7 de la mañana'}.</p><button class="descargar" type="button">Descargar</button></div>`;
@@ -2491,7 +2579,7 @@ const DICT={
 'Público':'Audience','Cómo rindió cada uno en la campaña de tráfico, antes de pausarla.':'How each one performed in the traffic campaign, before it was paused.','En registros':'On sign-ups','Todo lo que se puso en pauta en este período, sumando las campañas.':'Everything invested in ads this period, all campaigns combined.','Total de anotados al cierre de cada período.':'Total sign-ups at the close of each period.','@Total de anotados':'Total sign-ups','Guardar':'Save',
 'Nuevos en el período':'New this period','Costo por registro':'Cost per sign-up','Actualizar':'Update',
 'Todavía no hay un número cargado. Poné cuántos anotados hay hoy.':'No number entered yet. Enter how many sign-ups there are today.',
-'Anotados en la waitlist':'Waitlist sign-ups','Métricas desde el inicio':'Metrics since launch','Reporte y recomendaciones del período.':'Report and recommendations for the period.','Inversión desde el inicio':'Spend since launch','Registros desde el inicio':'Sign-ups since launch','Inversión de los últimos 7 días':'Spend in the last 7 days','Del':'From','al':'to','Estado de la cuenta':'Account status','Lo que tiene que estar conectado para medir bien los registros.':'What needs to be connected to track sign-ups correctly.','listos.':'done.','Listo':'Done','Pendiente':'Pending','Registrados':'Registered users','Cuánta gente creó su cuenta en la app. La app se lo informa a Meta en cada registro y acá se actualiza solo, todos los jueves. Contamos desde el':'How many people created an account in the app. The app reports each sign-up to Meta and this updates automatically every Thursday. Counting since','cuando quedó conectada.':'when it was connected.','Píxel de Meta en audova.org':'Meta pixel on audova.org','Conversions API conectada en audova.live (los registros llegan desde el servidor de la app)':'Conversions API connected on audova.live (sign-ups are sent from the app server)','Probada el 13/10':'Tested on 10/13','Campaña de registros en la app':'App sign-up campaign','Activa desde el 15/10':'Active since 10/15','Primer registro real informado desde la app en producción':'First real sign-up reported from the live app','Dominio audova.live verificado en Meta':'audova.live domain verified in Meta','Dominio audova.org verificado en Meta':'audova.org domain verified in Meta','Falta cargar el registro TXT en el DNS':'TXT record still needs to be added to the DNS','Botones de audova.org que pasan fbclid y _fbp a audova.live':'audova.org buttons passing fbclid and _fbp to audova.live','Pendiente en la web':'Pending on the website','Toda la cuenta publicitaria desde el':'The whole ad account since','Visitas al sitio web':'Website visits','Costo por clic':'Cost per click','Nuevos seguidores':'New followers','Campaña de registros en la app':'App sign-up campaign','Arrancó el':'Started on','Los anuncios llevan directo a crear la cuenta en audova.live y Meta busca a la gente con más chances de registrarse. Cada registro llega desde el servidor de la app, sin píxel en la app.':'The ads lead straight to account creation on audova.live, and Meta looks for the people most likely to sign up. Each sign-up is reported from the app server, with no pixel in the app.','Registros desde los anuncios':'Sign-ups from ads','Clics a la app':'Clicks to the app','Los primeros números de esta campaña aparecen en el próximo reporte.':'This campaign\'s first numbers will show up in the next report.','Cómo viene creciendo la lista.':'How the list is growing.','@Anotados hoy':'Sign-ups today','@Escribí acá…':'Write here…','@Borrar':'Delete','@Borrar nota':'Delete note','@Secciones':'Sections'
+'Anotados en la waitlist':'Waitlist sign-ups','Métricas desde el inicio':'Metrics since launch','Desde la campaña':'From the campaign','Por otros medios':'From other sources','Ver la campaña de registros':'See the sign-up campaign','Ver la campaña de seguidores':'See the follower campaign','Ver todos los reportes':'See all reports','Medición de los registros':'Sign-up tracking','Lo que tiene que estar conectado para contar bien cada registro.':'What needs to be connected to count every sign-up correctly.','Registros nuevos':'New sign-ups','Reporte y recomendaciones del período.':'Report and recommendations for the period.','Inversión desde el inicio':'Spend since launch','Registros desde el inicio':'Sign-ups since launch','Inversión de los últimos 7 días':'Spend in the last 7 days','Del':'From','al':'to','Estado de la cuenta':'Account status','Lo que tiene que estar conectado para medir bien los registros.':'What needs to be connected to track sign-ups correctly.','listos.':'done.','Listo':'Done','Pendiente':'Pending','Registrados':'Registered users','Cuánta gente creó su cuenta en la app. La app se lo informa a Meta en cada registro y acá se actualiza solo, todos los jueves. Contamos desde el':'How many people created an account in the app. The app reports each sign-up to Meta and this updates automatically every Thursday. Counting since','cuando quedó conectada.':'when it was connected.','Píxel de Meta en audova.org':'Meta pixel on audova.org','Conversions API conectada en audova.live (los registros llegan desde el servidor de la app)':'Conversions API connected on audova.live (sign-ups are sent from the app server)','Probada el 13/10':'Tested on 10/13','Campaña de registros en la app':'App sign-up campaign','Activa desde el 15/10':'Active since 10/15','Primer registro real informado desde la app en producción':'First real sign-up reported from the live app','Dominio audova.live verificado en Meta':'audova.live domain verified in Meta','Dominio audova.org verificado en Meta':'audova.org domain verified in Meta','Falta cargar el registro TXT en el DNS':'TXT record still needs to be added to the DNS','Botones de audova.org que pasan fbclid y _fbp a audova.live':'audova.org buttons passing fbclid and _fbp to audova.live','Pendiente en la web':'Pending on the website','Toda la cuenta publicitaria desde el':'The whole ad account since','Visitas al sitio web':'Website visits','Costo por clic':'Cost per click','Nuevos seguidores':'New followers','Campaña de registros en la app':'App sign-up campaign','Arrancó el':'Started on','Los anuncios llevan directo a crear la cuenta en audova.live y Meta busca a la gente con más chances de registrarse. Cada registro llega desde el servidor de la app, sin píxel en la app.':'The ads lead straight to account creation on audova.live, and Meta looks for the people most likely to sign up. Each sign-up is reported from the app server, with no pixel in the app.','Registros desde los anuncios':'Sign-ups from ads','Clics a la app':'Clicks to the app','Los primeros números de esta campaña aparecen en el próximo reporte.':'This campaign\'s first numbers will show up in the next report.','Cómo viene creciendo la lista.':'How the list is growing.','@Anotados hoy':'Sign-ups today','@Escribí acá…':'Write here…','@Borrar':'Delete','@Borrar nota':'Delete note','@Secciones':'Sections'
 };
 const MES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
