@@ -467,7 +467,7 @@ details.hist table{border:0;border-radius:0}
   var oculto=0; document.addEventListener('visibilitychange',function(){ if(document.hidden) oculto=Date.now(); else if(oculto&&Date.now()-oculto>30*60000) abrir(); });
 })();
 </script>
-<script>/* app única: la app nueva para todos (salvo Audova, que va en inglés) */ if(!/[?&]c=audova(&|$)/.test(location.search)) document.write('<script src="/app3.js?v='+Date.now()+'"><\/script>');</script>
+<script>/* app única: la app nueva para todos (salvo Audova, que va en inglés, y Alamesa, que sigue en el formato viejo por pedido de Agus 22/10) */ if(!/[?&]c=(audova|alamesa)(&|$)/.test(location.search)) document.write('<script src="/app3.js?v='+Date.now()+'"><\/script>');</script>
 </head>
 <body>
 <div class="wrap">
