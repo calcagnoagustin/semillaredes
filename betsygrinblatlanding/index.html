@@ -39,7 +39,22 @@
   .hero h1{font-size:clamp(52px,6.6vw,96px);margin:16px 0 22px}
   .hero h1 em{font-style:italic;color:var(--warm)}
   .hero p{font-size:18px;color:var(--grey);max-width:440px;margin-bottom:34px}
-  .hero-img img{width:100%;aspect-ratio:1/1;object-fit:cover}
+  .slider{position:relative}
+  .sl-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .sl-track::-webkit-scrollbar{display:none}
+  .sl{flex:0 0 100%;scroll-snap-align:start;margin:0;aspect-ratio:1/1;background:var(--paper-2);display:flex;align-items:center;justify-content:center}
+  .sl img{width:100%;height:100%;object-fit:contain}
+  .sl:first-child img{object-fit:cover}
+  .sl figcaption{display:none}
+  .sl-btn{position:absolute;top:calc((100% - 44px)/2);transform:translateY(-50%);width:48px;height:48px;border-radius:50%;border:0;background:rgba(247,244,239,.92);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,.12);transition:background .2s}
+  .sl-btn:hover{background:#fff}
+  .sl-btn svg{width:20px;height:20px;fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .sl-btn.prev{left:16px}.sl-btn.next{right:16px}
+  .sl-foot{display:flex;align-items:center;justify-content:space-between;height:44px;gap:16px}
+  .sl-cap{font-size:13px;letter-spacing:.04em;color:var(--grey);line-height:44px}
+  .sl-dots{display:flex;gap:8px;align-items:center}
+  .sl-dots button{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:var(--line);cursor:pointer}
+  .sl-dots button.on{background:var(--ink)}
   .hero-ctas{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
 
   .ofrece{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--paper-2)}
@@ -91,6 +106,7 @@
     .hero{padding:28px 0 56px}
     .hero .wrap,.serie,.espacios .wrap,.bio .wrap{grid-template-columns:1fr;gap:32px}
     .hero-img{order:-1}
+    .sl-btn{width:40px;height:40px}.sl-btn.prev{left:10px}.sl-btn.next{right:10px}
     .hero p{font-size:17px}
     .ofrece ul{grid-template-columns:1fr}
     .ofrece li{border-left:0;border-top:1px solid var(--line);padding:24px 0}
@@ -125,7 +141,18 @@
         <a href="#obra" class="lnk">Ver la obra</a>
       </div>
     </div>
-    <div class="hero-img"><img src="img/arboles-interior.webp" width="1600" height="1600" alt="Obra de la Serie Árboles en un living"></div>
+    <div class="hero-img slider" id="slider" aria-roledescription="carrusel" aria-label="Obras de Betsy Grinblat">
+      <div class="sl-track">
+        <figure class="sl"><img src="img/arboles-interior.webp" width="1600" height="1600" alt="Obra de la Serie Árboles en un living"><figcaption>Serie Árboles · en un living</figcaption></figure>
+        <figure class="sl"><img src="img/arboles.webp" width="960" height="1200" alt="Serie Árboles"><figcaption>Serie Árboles</figcaption></figure>
+        <figure class="sl"><img src="img/gestos.webp" width="960" height="1200" alt="Gestos y contrastes"><figcaption>Gestos y contrastes</figcaption></figure>
+        <figure class="sl"><img src="img/casafoa.webp" width="1086" height="1086" alt="Obra en Casa FOA 2026"><figcaption>Casa FOA 2026 · Mico Estudio</figcaption></figure>
+        <figure class="sl"><img src="img/betsy.webp" width="1300" height="1261" alt="Serie Armonías"><figcaption>Serie Armonías</figcaption></figure>
+      </div>
+      <button class="sl-btn prev" type="button" aria-label="Obra anterior"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button class="sl-btn next" type="button" aria-label="Obra siguiente"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+      <div class="sl-foot"><span class="sl-cap"></span><span class="sl-dots"></span></div>
+    </div>
   </div>
 </section>
 
@@ -229,6 +256,22 @@
   </div>
 </footer>
 
+<script>
+(function(){
+  var sl=document.getElementById('slider'); if(!sl) return;
+  var tr=sl.querySelector('.sl-track'), items=[].slice.call(sl.querySelectorAll('.sl')), cap=sl.querySelector('.sl-cap'), dots=sl.querySelector('.sl-dots'), i=0, t;
+  items.forEach(function(_,k){var b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Obra '+(k+1));b.onclick=function(){go(k);reset();};dots.appendChild(b);});
+  function paint(){cap.textContent=items[i].querySelector('figcaption').textContent;[].forEach.call(dots.children,function(d,k){d.classList.toggle('on',k===i);});}
+  function go(k){i=(k+items.length)%items.length;tr.scrollTo({left:i*tr.clientWidth,behavior:'smooth'});paint();}
+  tr.addEventListener('scroll',function(){var k=Math.round(tr.scrollLeft/tr.clientWidth);if(k!==i){i=k;paint();}},{passive:true});
+  sl.querySelector('.prev').onclick=function(){go(i-1);reset();};
+  sl.querySelector('.next').onclick=function(){go(i+1);reset();};
+  function reset(){clearInterval(t);t=setInterval(function(){go(i+1);},5000);}
+  sl.addEventListener('mouseenter',function(){clearInterval(t);});sl.addEventListener('mouseleave',reset);
+  tr.addEventListener('touchstart',function(){clearInterval(t);},{passive:true});
+  paint();reset();
+})();
+</script>
 <script src="https://vm.semillaredes.com/web/editor.js" defer></script>
 </body>
 </html>
