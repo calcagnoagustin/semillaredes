@@ -661,8 +661,11 @@ const costoGeneral=x=>{ const i=Number(x.cal_inversion||0)-Number(x.fam_inversio
   return (x.cal_mensajes!=null&&x.fam_mensajes!=null&&n>0&&i>0)?Math.round(i/n*100)/100:null; };
 function multiCamp(R,et,costo){
   if(costo&&R.length>8){ R=R.slice(-8); et=et.slice(-8); }   // las ultimas 8 mediciones, para que se lean los numeros
-  const base=[{k:'ej',lab:'Ejecutivo',color:'#7A1F3A'},{k:'cal',lab:'Calificadas',color:'#87863A'}].concat(costo?[{k:'gen',lab:'General (dentro de Calificadas)',color:'#2F5D62'}]:[]).concat([{k:'fam',lab:'Famosos (dentro de Calificadas)',color:'#E2767C'},{k:'fog',lab:'Fogón (dentro de Calificadas)',color:'#1A2456'}]);
-  const val=(r,k)=>{ const x=r.metricas; if(!costo) return x[k+'_mensajes']??null; if(k==='gen') return costoGeneral(x); const v=x[k+'_costo_mensaje']; return (v==null||!(Number(v)>0))?null:Number(v); };
+  // 22/10 (pedido de Agus): solo el Total, Famosos y Fogón
+  const base=[{k:'tot',lab:'Total',color:'#7A1F3A'},{k:'fam',lab:'Famosos',color:'#E2767C'},{k:'fog',lab:'Fogón',color:'#1A2456'}];
+  const totM=x=>(x.ej_mensajes==null&&x.cal_mensajes==null)?null:Number(x.ej_mensajes||0)+Number(x.cal_mensajes||0)+Number(x.esp_mensajes||0);
+  const totI=x=>Number(x.ej_inversion||0)+Number(x.cal_inversion||0)+Number(x.esp_inversion||0);
+  const val=(r,k)=>{ const x=r.metricas; if(k==='tot'){ const n=totM(x); if(!costo) return n; return n>0&&totI(x)>0?Math.round(totI(x)/n*100)/100:null; } if(!costo) return x[k+'_mensajes']??null; const v=x[k+'_costo_mensaje']; return (v==null||!(Number(v)>0))?null:Number(v); };
   const series=base.map(x=>({...x, vals:R.map(r=>val(r,x.k))}))
     .filter(x=>x.vals.filter(v=>v!=null).length>(x.k==='fog'?0:1));
   const etq=v=>costo?Number(v).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2}):v;
@@ -685,8 +688,8 @@ function multiCamp(R,et,costo){
     L.forEach(o=>{ cuerpo+=`<text x="${x(i)}" y="${o.yy}" font-size="10.5" font-weight="700" fill="${o.s.color}" text-anchor="middle" paint-order="stroke" stroke="#fff" stroke-width="3">${etq(o.v)}</text>`; }); });
   cuerpo+=R.map((r,i)=>`<text x="${x(i)}" y="${H-8}" font-size="13" fill="#8A8697" text-anchor="middle">${et[i]}</text>`).join('');
   const ley=series.map(s=>`<span style="display:inline-flex;align-items:center;gap:6px;margin-right:16px"><span style="width:10px;height:10px;border-radius:50%;background:${s.color};display:inline-block"></span>${s.lab}</span>`).join('');
-  return `<div class="graf"><h3>${costo?'Costo por mensaje':'Mensajes por campaña'}</h3>
-    <p class="leyenda">${costo?'Cuánto costó cada consulta en cada campaña y conjunto, en '+MON+'. Mientras más baja la línea, mejor.':'Cuánta gente escribió para reservar en cada campaña.'}</p>
+  return `<div class="graf"><h3>${costo?'Costo por mensaje':'Mensajes'}</h3>
+    <p class="leyenda">${costo?'Cuánto costó cada consulta en total, en Famosos y en el Fogón, en '+MON+'. Mientras más baja la línea, mejor.':'Cuánta gente escribió para reservar: el total y lo que trajeron Famosos y el Fogón.'}</p>
     <div style="font-size:12.5px;margin-bottom:8px">${ley}</div>
     <svg class="linea" viewBox="0 0 ${W} ${H}">${cuerpo}</svg></div>`;
 }
