@@ -246,7 +246,7 @@
   #v3 .cj svg{display:block;width:100%;height:auto}
   #v3 .vacio{padding:16px;font-size:14.5px;color:#8A8577}
   #v3 .scr{display:none}#v3 .scr.on{display:block}
-  #v3 .ult-act{margin:6px 2px 10px;font:500 13px/1.4 Inter,sans-serif;color:#6F6B7C}
+  #v3 .ult-act{margin:-4px 0 14px;font:500 13px/1.4 Inter,sans-serif;color:#6F6B7C}
   #v3 .perh{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 2px 0}
   #v3 .perh h3{margin:0;font-family:'Playfair Display',serif;font-size:23px;font-weight:600;color:${NAVY}}
   #v3 .perh span{font:600 12px/1 Inter,sans-serif;letter-spacing:1.6px;text-transform:uppercase;color:#55525F;white-space:nowrap}
@@ -545,12 +545,11 @@
           ${f.tickets?`<a class="gl" href="${esc(f.tickets)}" target="_blank" rel="noopener">Ver entradas →</a>`:''}
         </div>${curvaCE(f.serie_costo)}</div>`; }).join('')}</div>`; })();
     const scrHoy=`
-      <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>${({'alan-sutton':'Tu reporte se actualiza los jueves a las 7.'})[slug]?`<p class="aviso-act">${({'alan-sutton':'Tu reporte se actualiza los jueves a las 7.'})[slug]}</p>`:''}
+      <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>${ACT}${({'alan-sutton':'Tu reporte se actualiza los jueves a las 7.'})[slug]?`<p class="aviso-act">${({'alan-sutton':'Tu reporte se actualiza los jueves a las 7.'})[slug]}</p>`:''}
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
       ${DEST}
       ${GIRA}
       <div class="tit2"><h3>Métricas principales</h3><button data-ir="metricas">Ver todas</button></div>
-      ${ACT}
       <div class="met">${MET.slice(0,3).map(m=>`<div class="card"><div class="ic">${ico[m.ic]}</div><div class="v ${m.k==='vta_costo_venta'?'ch':''}">${m.k==='ig_conv'?nf(val(m.k),1)+'%':m.k==='vta_costo_venta'?SIM.trim()+' '+nf(val(m.k),2):m.k==='vta_roas_pixel'?nf(val(m.k),1)+'x':nf(val(m.k),Number.isInteger(Number(val(m.k)))?0:1)}</div><div class="l">${Number(val(m.k))===1?m.l.replace(/^consultas$/,'consulta').replace(/^mensajes$/,'mensaje').replace(/^ventas$/,'venta').replace(/^seguidores$/,'seguidor'):m.l}</div><div class="d">${m.k==='ig_conv'?dPt(m.k):dK(m.k,m.k==='vta_costo_venta')}</div></div>`).join('')}</div>
       <div id="v3cj"></div>
       <div id="v3cta"></div>
