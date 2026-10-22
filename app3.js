@@ -161,6 +161,12 @@
   #v3 .cjl .cg b{display:block;font-size:20px;line-height:1.1;color:${NAVY};font-weight:700}
   #v3 .cjl .cg small{display:block;font-size:12px;color:#55525F;margin-top:3px;line-height:1.3}
   #v3 .gira{display:grid;gap:12px}
+  #v3 .gira .gcur{grid-column:1/-1;border-top:1px solid #EDE6D8;padding-top:10px}
+  #v3 .gira .gcur summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600;color:#24242C}
+  #v3 .gira .gcur summary::-webkit-details-marker{display:none}
+  #v3 .gira .gcur .fl{font-size:12px;color:#8A8577;transition:transform .2s}#v3 .gira .gcur[open] .fl{transform:rotate(90deg)}
+  #v3 .gira .gsvg{width:100%;height:auto;display:block;margin-top:8px}
+  #v3 .gira .gnota{margin:4px 0 0;font-size:12px;color:#8A8577;line-height:1.4}
   #v3 .gira .card{display:grid;grid-template-columns:76px 1fr;gap:14px;align-items:center;padding:14px}
   #v3 .gira img{width:76px;height:76px;border-radius:12px;object-fit:cover;display:block}
   #v3 .gira .gt{font-size:16px;font-weight:600;color:#24242C;line-height:1.25}
@@ -520,6 +526,12 @@
     // 22/10: cuándo se actualizaron los números por última vez
     const ACT=(()=>{ const a=[...R].reverse().map(r=>r.metricas&&r.metricas.actualizado).find(Boolean); if(!a) return ''; const z=String(a); const hoyS=new Date().toLocaleDateString('en-CA',{timeZone:'America/Argentina/Buenos_Aires'});
       const dia=z.slice(0,10)===hoyS?'hoy':'el '+z.slice(8,10)+'/'+z.slice(5,7); return `<p class="ult-act">Números actualizados ${dia} a las ${z.slice(11,16)} hs</p>`; })();
+    // 22/10 (Koino): curva del costo por entrada acumulado, día por día, desplegable debajo de cada show
+    const curvaCE=S=>{ if(!S||S.length<2) return ''; const W=320,H=150,PX=28,PT=22,PB=26; const v=S.map(z=>Number(z[1])), mn=Math.min(...v), mx=Math.max(...v), rg=(mx-mn)||1;
+      const X=i=>PX+i*(W-PX*2)/(S.length-1), Y=x=>PT+(1-(x-mn)/rg)*(H-PT-PB);
+      const d=v.map((x,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(x).toFixed(1)).join(' ');
+      const pasoE=Math.ceil(S.length/6);
+      return `<details class="gcur"><summary>Evolución del costo por entrada <span class="fl">▸</span></summary><svg viewBox="0 0 ${W} ${H}" class="gsvg"><path d="${d}" fill="none" stroke="#2F7A4F" stroke-width="2.2" stroke-linejoin="round"/>${v.map((x,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(x).toFixed(1)}" r="3" fill="#2F7A4F"/>${(i%pasoE===0||i===v.length-1)?`<text x="${X(i).toFixed(1)}" y="${(Y(x)-8).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#2F7A4F">${nf(x,2)}</text><text x="${X(i).toFixed(1)}" y="${H-8}" text-anchor="middle" font-size="10" fill="#8A8577">${String(S[i][0]).slice(8,10)}/${String(S[i][0]).slice(5,7)}</text>`:''}`).join('')}</svg><p class="gnota">Costo por entrada acumulado al cierre de cada día (inversión total ÷ entradas vendidas hasta ese día), en ${SIM.trim()||'USD'}.</p></details>`; };
     const GIRA=(()=>{ const hoyI=new Date().toISOString().slice(0,10); const L=(um.fechas||[]).filter(f=>f&&f.fecha&&String(f.fecha).slice(0,10)>=hoyI).sort((a,b)=>a.fecha<b.fecha?-1:1);
       if(!L.length) return '';
       const fl=x=>{ const z=String(x).slice(0,10).split('-'); return z[2]+'/'+z[1]; };
@@ -531,7 +543,7 @@
           ${Number(f.inv_acum||0)>0?`${e>0?`<div class="gc">Costo por entrada: <b>${SIM}${nf(Number(f.inv_acum)/e,2)}</b></div>`:''}<div class="gp">Inversión: ${SIM}${nf(Number(f.inv_acum),2)}${e>0?'':' · todavía sin entradas'}</div>`:''}
           <div class="gp">Según el píxel de Meta${f.ticketera?' en '+esc(f.ticketera):''}${f.estado==='borrador'?' · la campaña todavía no está publicada':''}</div>
           ${f.tickets?`<a class="gl" href="${esc(f.tickets)}" target="_blank" rel="noopener">Ver entradas →</a>`:''}
-        </div></div>`; }).join('')}</div>`; })();
+        </div>${curvaCE(f.serie_costo)}</div>`; }).join('')}</div>`; })();
     const scrHoy=`
       <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>${({'alan-sutton':'Tu reporte se actualiza los jueves a las 7.'})[slug]?`<p class="aviso-act">${({'alan-sutton':'Tu reporte se actualiza los jueves a las 7.'})[slug]}</p>`:''}
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
