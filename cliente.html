@@ -653,19 +653,18 @@ const CAMPS=[
   {p:'ej', tit:'Reservas Ejecutivo', que:'Campaña para el público ejecutivo.'},
   {p:'cal', tit:'Reservas Calificadas', que:'La campaña principal: incluye famosos y general.'},
   {p:'fam', tit:'Famosos', que:'Va adentro de Calificadas. Se muestra aparte para verlo solo.', dentro:true},
-  {p:'cata', tit:'Cata', que:'Degustación. Va adentro de Calificadas. Se muestra aparte para verlo solo.', dentro:true},
   {p:'esp', tit:'Campaña especial', que:'Acción puntual por fecha.'}
 ];
 
-// costo por mensaje de General = lo que queda de Calificadas sin Famosos ni Cata
+// costo por mensaje de General = lo que queda de Calificadas sin Famosos ni Fogón
 const costoGeneral=x=>{ const i=Number(x.cal_inversion||0)-Number(x.fam_inversion||0)-Number(x.cata_inversion||0)-Number(x.fog_inversion||0), n=Number(x.cal_mensajes||0)-Number(x.fam_mensajes||0)-Number(x.cata_mensajes||0)-Number(x.fog_mensajes||0);
   return (x.cal_mensajes!=null&&x.fam_mensajes!=null&&n>0&&i>0)?Math.round(i/n*100)/100:null; };
 function multiCamp(R,et,costo){
   if(costo&&R.length>8){ R=R.slice(-8); et=et.slice(-8); }   // las ultimas 8 mediciones, para que se lean los numeros
-  const base=[{k:'ej',lab:'Ejecutivo',color:'#7A1F3A'},{k:'cal',lab:'Calificadas',color:'#87863A'}].concat(costo?[{k:'gen',lab:'General (dentro de Calificadas)',color:'#2F5D62'}]:[]).concat([{k:'fam',lab:'Famosos (dentro de Calificadas)',color:'#E2767C'},{k:'cata',lab:'Cata (dentro de Calificadas)',color:'#1A2456'}]);
+  const base=[{k:'ej',lab:'Ejecutivo',color:'#7A1F3A'},{k:'cal',lab:'Calificadas',color:'#87863A'}].concat(costo?[{k:'gen',lab:'General (dentro de Calificadas)',color:'#2F5D62'}]:[]).concat([{k:'fam',lab:'Famosos (dentro de Calificadas)',color:'#E2767C'},{k:'fog',lab:'Fogón (dentro de Calificadas)',color:'#1A2456'}]);
   const val=(r,k)=>{ const x=r.metricas; if(!costo) return x[k+'_mensajes']??null; if(k==='gen') return costoGeneral(x); const v=x[k+'_costo_mensaje']; return (v==null||!(Number(v)>0))?null:Number(v); };
   const series=base.map(x=>({...x, vals:R.map(r=>val(r,x.k))}))
-    .filter(x=>x.vals.filter(v=>v!=null).length>1);
+    .filter(x=>x.vals.filter(v=>v!=null).length>(x.k==='fog'?0:1));
   const etq=v=>costo?Number(v).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2}):v;
   if(!series.length) return '';
   const W=GW(),H=costo?(W>560?270:240):(W>560?215:175),P=W>560?40:30;
@@ -1507,7 +1506,7 @@ function pintarMensajes(d){
   const previo=(k)=>{ let visto=false; for(let i=R.length-1;i>=0;i--){ const x=R[i].metricas[k]; if(x!=null){ if(visto) return x; visto=true; } } return null; };
   const m=new Proxy({},{get:(_,k)=>ultimo(k)}), ma=new Proxy({},{get:(_,k)=>previo(k)});
   const et=R.map(r=>fecha(r.hasta));
-  // Famosos y Cata estan dentro de Calificadas: no se suman para no contarlos dos veces
+  // Famosos y Fogón estan dentro de Calificadas: no se suman para no contarlos dos veces
   const tot=x=>(Number(x.ej_mensajes||0)+Number(x.cal_mensajes||0)+Number(x.esp_mensajes||0));
   const inv=x=>(Number(x.ej_inversion||0)+Number(x.cal_inversion||0)+Number(x.esp_inversion||0));
 
@@ -1520,7 +1519,7 @@ function pintarMensajes(d){
     ${card('Costo por mensaje', mon(inv(m)/(tot(m)||1),2), [inv(m)/(tot(m)||1), a?inv(ma)/(tot(ma)||1):null],2,false,true)}
     ${card('Personas alcanzadas', fmt(Number(m.ej_alcance||0)+Number(m.cal_alcance||0)+Number(m.esp_alcance||0)), null)}
   </div>`;
-  if(u){ const x=u.metricas, P=[['Ejecutivo','ej'],['General','cal'],['Famosos','fam'],['Cata','cata'],[x.fog_nombre||'Fogón','fog'],[x.esp_nombre||'Especial','esp']].map(([n,k])=>[n,Number(x[k+'_inv_diaria']||0)]).filter(z=>z[1]>0);
+  if(u){ const x=u.metricas, P=[['Ejecutivo','ej'],['General','cal'],['Famosos','fam'],[x.fog_nombre||'Fogón','fog'],[x.esp_nombre||'Especial','esp']].map(([n,k])=>[n,Number(x[k+'_inv_diaria']||0)]).filter(z=>z[1]>0);
     const dia=P.reduce((a,z)=>a+z[1],0), fN=x.fog_nombre||'Fogón';
     const dF=x.fog_fin?Math.max(0,Math.min(7,Math.round((new Date(x.fog_fin+'T12:00:00')-new Date(new Date().toDateString()+' 12:00'))/864e5)+1)):7, dd=n=>n===fN?dF:7;
     if(dia>0) h+=`<div class="proy"><div class="l">Inversión proyectada para los próximos 7 días</div><div class="v">${mon(P.reduce((a,z)=>a+z[1]*dd(z[0]),0),0)}</div><div class="d">${dF<7?P.map(z=>`${z[0]} ${fmt(z[1])} × ${dd(z[0])} días`).join(' + ')+` (el pop up termina el ${fecha(x.fog_fin)})`:`${mon(dia,0)} por día × 7 días · ${P.map(z=>`${z[0]} ${fmt(z[1])}`).join(' + ')}`}</div></div>`; }
@@ -1548,9 +1547,9 @@ function pintarMensajes(d){
   if(R.length>1){
     h+=`<h2>Historial</h2><p class="sub">Todos los reportes.</p>
       <details class="hist"><summary><span class="flecha">▶</span> Ver los ${R.length} reportes</summary><table>
-      <tr><th>Período</th><th>Ejecutivo</th><th>Calificadas</th><th>de esas, Famosos</th><th>de esas, Cata</th><th>Total</th><th>Costo x mje.</th><th>Inversión</th></tr>
+      <tr><th>Período</th><th>Ejecutivo</th><th>Calificadas</th><th>de esas, Famosos</th><th>de esas, Fogón</th><th>Total</th><th>Costo x mje.</th><th>Inversión</th></tr>
       ${R.slice().reverse().map(r=>{const x=r.metricas;return `<tr><td>${fecha(r.desde)} al ${fecha(r.hasta)}</td>
-        <td>${fmt(x.ej_mensajes)}</td><td>${fmt(x.cal_mensajes)}</td><td>${fmt(x.fam_mensajes)}</td><td>${fmt(x.cata_mensajes)}</td>
+        <td>${fmt(x.ej_mensajes)}</td><td>${fmt(x.cal_mensajes)}</td><td>${fmt(x.fam_mensajes)}</td><td>${fmt(x.fog_mensajes)}</td>
         <td><b>${fmt(tot(x))}</b></td><td>${fmt(inv(x)/(tot(x)||1),2)}</td><td>${fmt(inv(x),2)}</td></tr>`}).join('')}
       </table></details>`;
   }
