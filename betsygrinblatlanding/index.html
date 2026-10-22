@@ -46,10 +46,10 @@
   .sl img{width:100%;height:100%;object-fit:contain}
   .sl:first-child img{object-fit:cover}
   .sl figcaption{display:none}
-  .sl-btn{position:absolute;top:calc((100% - 44px)/2);transform:translateY(-50%);width:48px;height:48px;border-radius:50%;border:0;background:rgba(247,244,239,.92);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,.12);transition:background .2s}
-  .sl-btn:hover{background:#fff}
-  .sl-btn svg{width:20px;height:20px;fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-  .sl-btn.prev{left:16px}.sl-btn.next{right:16px}
+  .sl-btn{position:absolute;top:calc((100% - 44px)/2);transform:translateY(-50%);width:44px;height:64px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:.75;transition:opacity .2s}
+  .sl-btn:hover{opacity:1}
+  .sl-btn svg{width:22px;height:44px;fill:none;stroke:var(--ink);stroke-width:1;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 3px rgba(247,244,239,.9))}
+  .sl-btn.prev{left:6px}.sl-btn.next{right:6px}
   .sl-foot{display:flex;align-items:center;justify-content:space-between;height:44px;gap:16px}
   .sl-cap{font-size:13px;letter-spacing:.04em;color:var(--grey);line-height:44px}
   .sl-dots{display:flex;gap:8px;align-items:center}
@@ -106,7 +106,7 @@
     .hero{padding:28px 0 56px}
     .hero .wrap,.serie,.espacios .wrap,.bio .wrap{grid-template-columns:1fr;gap:32px}
     .hero-img{order:-1}
-    .sl-btn{width:40px;height:40px}.sl-btn.prev{left:10px}.sl-btn.next{right:10px}
+    .sl-btn.prev{left:2px}.sl-btn.next{right:2px}
     .hero p{font-size:17px}
     .ofrece ul{grid-template-columns:1fr}
     .ofrece li{border-left:0;border-top:1px solid var(--line);padding:24px 0}
@@ -149,8 +149,8 @@
         <figure class="sl"><img src="img/casafoa.webp" width="1086" height="1086" alt="Obra en Casa FOA 2026"><figcaption>Casa FOA 2026 · Mico Estudio</figcaption></figure>
         <figure class="sl"><img src="img/betsy.webp" width="1300" height="1261" alt="Serie Armonías"><figcaption>Serie Armonías</figcaption></figure>
       </div>
-      <button class="sl-btn prev" type="button" aria-label="Obra anterior"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
-      <button class="sl-btn next" type="button" aria-label="Obra siguiente"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+      <button class="sl-btn prev" type="button" aria-label="Obra anterior"><svg viewBox="0 0 22 44"><path d="M17 4L5 22l12 18"/></svg></button>
+      <button class="sl-btn next" type="button" aria-label="Obra siguiente"><svg viewBox="0 0 22 44"><path d="M5 4l12 18-12 18"/></svg></button>
       <div class="sl-foot"><span class="sl-cap"></span><span class="sl-dots"></span></div>
     </div>
   </div>
