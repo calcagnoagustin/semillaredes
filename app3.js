@@ -174,6 +174,11 @@
   #v3 .gira .gc b{color:#24242C;font-weight:700}
   #v3 .hito .hx{position:absolute;top:10px;right:10px;width:28px;height:28px;border:0;border-radius:50%;background:none;color:#A9A190;font:400 20px/1 Inter,sans-serif;cursor:pointer}
   #v3 .tkp .fila{grid-template-columns:1fr auto}
+  #v3 .pais .fila{grid-template-columns:1fr auto;padding:11px 16px}
+  #v3 .pais .tx b{display:block;color:${NAVY};font-size:15px;font-weight:600}
+  #v3 .pais .tx i{display:block;height:5px;border-radius:3px;background:#E2767C;margin-top:7px}
+  #v3 .pais .rt{text-align:right;line-height:1.15}#v3 .pais .rt b{display:block;font:600 17px/1.15 'Playfair Display',serif;color:${NAVY}}#v3 .pais .rt small{font-size:12px;color:#8A8577}
+  #v3 .pais .pie{margin:0;padding:10px 16px 13px;font-size:12.5px;color:#8A8577;border-top:1px solid #EDE6D8}
   #v3 .tkp .tx b{color:${NAVY};font-size:15.5px}#v3 .tkp .tx span{font-size:13.5px;color:#6F6B7C}
   #v3 .tkp .rt{text-align:right;line-height:1.1}#v3 .tkp .rt b{display:block;font:600 21px/1.1 'Playfair Display',serif;color:#2F6B2A}#v3 .tkp .rt small{font-size:11.5px;color:#8A8577}
   #v3 .notas3 .nn{display:grid;gap:8px;padding:12px 14px}
@@ -659,6 +664,9 @@
       <div class="dos">${mini(RD.a)}${mini(RD.b)}</div>
       ${RD.ad?(()=>{const [p,t,l]=RD.ad, vis=val(p+'_visitas')!=null?p+'_visitas':p+'_clics';return `<div class="tit2"><h2>${t}</h2></div><div class="card big"><div><div class="n">${nf(val(vis))}</div><div class="l">${l}</div><div class="d"><small>${val(p+'_alcance')!=null?nf(val(p+'_alcance'))+' personas alcanzadas':''}</small></div></div><div class="sp">${linea(serie(vis),RD.col)}</div></div><div class="dos">${mini([p+'_costo_visita','costo por visita',true,'#E2767C',2])}${mini([p+'_inversion','inversión en el período',true,OLIVA])}</div>`;})():''}
       ${SUBRED==='tk'&&TKP.length?`<div class="tit2"><h2>Públicos de la campaña</h2></div><div class="card lista tkp">${TKP.map(p=>`<div class="fila"><span class="tx ab"><b>${esc(p.nombre)}</b>${p.inversion>0?`<br><span>${nf(p.tickets)} ${p.tickets===1?'entrada':'entradas'} · ${p.costo!=null?SIM+nf(p.costo,2)+' por entrada':'sin ventas'}${p.alcance?` · ${nf(p.alcance)} personas`:''}</span>`:`<br><span>Público nuevo${p.inicio?`: arrancó el ${fd(p.inicio)}`:''}. Todavía sin resultados.</span>`}</span>${p.roas!=null&&p.inversion>0?`<span class="rt"><b>${nf(p.roas,2)}x</b><small>retorno</small></span>`:'<span></span>'}</div>`).join('')}</div>`:''}
+      ${SUBRED==='ig'&&['lara-fichera'].includes(slug)?(()=>{ const ur=[...R].reverse().find(r=>r.metricas&&r.metricas.ig_paises&&r.metricas.ig_paises.length); if(!ur) return ''; const L=ur.metricas.ig_paises.slice(0,10), tot=Number(ur.metricas.ig_followers_total)||0, mx=Math.max(...L.map(z=>Number(z.seguidores)||0))||1;
+        let DN=null; try{ DN=new Intl.DisplayNames(['es'],{type:'region'}); }catch(e){}
+        return `<div class="tit2"><h2>Seguidores por país</h2></div><div class="card lista pais">${L.map(z=>{ const n=Number(z.seguidores)||0; return `<div class="fila"><span class="tx"><b>${esc(DN?DN.of(z.nombre):z.nombre)}</b><i style="width:${Math.max(3,Math.round(n/mx*100))}%"></i></span><span class="rt"><b>${nf(n)}</b>${tot?`<small>${nf(n/tot*100,1)}%</small>`:''}</span></div>`; }).join('')}<p class="pie">Seguidores totales de la cuenta según Instagram${ur.hasta?`, al ${fd(ur.hasta)}`:''}.</p></div>`; })():''}
       ${recs.length?`<div class="card recos"><div class="h">${ico.hoja}Recomendaciones SemillaIA</div>${recs.slice(0,3).map((r,i)=>`<div class="r"><span class="k">${i+1}</span><p>${esc(String(r).replace(/<[^>]+>/g,''))}${accB(r)}</p></div>`).join('')}</div>`:''}
       <details class="todo" id="v3todo"><summary>Ver todas las métricas</summary></details>`;
 
