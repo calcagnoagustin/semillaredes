@@ -526,12 +526,12 @@ const fecha=s=>{const [a,m,d]=s.split('-');return `${d}/${m}`;};
 
 function delta(act,ant,invertido){
   if(ant==null||act==null) return '';
-  const d=act-ant; if(!ant||Math.abs(d)<0.0001) return '<span class="delta">igual que el período anterior</span>';
-  const pct=Math.round(d/ant*100);
+  const d=act-ant; if(Math.abs(d)<0.0001) return '<span class="delta">igual que el período anterior</span>';
+  const pct=ant?Math.round(d/ant*100):0;
   const bien = invertido ? d<0 : d>0;
   const flecha = d>0?'▲':'▼';
   // base chica (menos de 10 y números enteros): un % engaña (1 a 3 = +200%), se muestra la diferencia
-  if(Math.abs(ant)<10&&Number.isInteger(+act)&&Number.isInteger(+ant)) return `<span class="delta ${bien?'up':'down'}">${flecha} ${d>0?'+':''}${fmt(d)} vs período anterior</span>`;
+  if(!ant||(Math.abs(ant)<10&&Number.isInteger(+act)&&Number.isInteger(+ant))) return `<span class="delta ${bien?'up':'down'}">${flecha} ${d>0?'+':''}${fmt(d)} vs período anterior</span>`;
   return `<span class="delta ${bien?'up':'down'}">${flecha} ${Math.abs(pct)}% vs período anterior</span>`;
 }
 
