@@ -754,9 +754,9 @@ function contenidosHTML(L,per){
     const sec= esLead ? (x=>x.vis||0) : (x=>0);
     X.sort((a,b)=> (b.inv>0)-(a.inv>0) || res(b)-res(a) || sec(b)-sec(a) || ((a.inv/(res(a)||1e9))-(b.inv/(res(b)||1e9))) || b.inv-a.inv);
     const conVis=esLead&&X.some(x=>x.vis), conCosto=X.some(x=>x.inv>0&&res(x)>0);
-    const cols=[['Invertido',x=>`<span class="v">${mon(x.inv,2)}</span>`,'82px']];
+    const cols=[['Invertido',x=>`<span class="v" style="white-space:nowrap">${mon(x.inv,2)}</span>`,'96px']];
     if(conVis) cols.push(['Visitas',x=>`<span class="v">${fmt(x.vis||0)}</span>`,'56px']);
-    cols.push([lab,x=>`<span class="v">${fmt(res(x))}</span>`,'70px']);
+    cols.push([lab,x=>`<span class="v">${fmt(res(x))}</span>`,'92px']);
     if(conCosto) cols.push(['Costo c/u',x=>`<span class="c">${res(x)?mon(x.inv/res(x),2):'—'}</span>`,'76px']);
     const gc=`style="grid-template-columns:18px 1fr ${cols.map(z=>z[2]).join(' ')};column-gap:9px"`;
     h+=`<div class="desglose"><h3>${c}${per?` <small style="display:block;font:500 13px/1.4 inherit;color:#8A8577;margin-top:3px"><span>Del</span> ${per[0]} <span>al</span> ${per[1]}</small>`:''}</h3>
