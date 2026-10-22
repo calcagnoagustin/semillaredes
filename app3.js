@@ -755,10 +755,30 @@
       if(window.SRConexiones) cxIr(); else { const sc=document.createElement('script'); sc.src='/conexiones.js?v='+(window.SR_VER||Date.now()); sc.onload=cxIr; document.head.appendChild(sc); } }
     const web=raiz.querySelector('#v3web'); let intentos=0;
     let WEBV=window.__V3WEBS||[];
-    if(!window.__V3WEBS){ window.__V3WEBS=[]; fetch('https://vm.semillaredes.com/web/estado?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(j=>{ if(j&&j.webs&&j.webs.length){ window.__V3WEBS=j.webs; WEBV=j.webs; intentos=0; ponerWeb(); } }).catch(()=>{}); }
+    if(!window.__V3WEBS){ window.__V3WEBS=[]; fetch('https://vm.semillaredes.com/web/estado?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(j=>{ if(j) window.__V3WEBINFO=j; if(j&&j.webs&&j.webs.length){ window.__V3WEBS=j.webs; WEBV=j.webs; intentos=0; ponerWeb(); } else if(j&&j.puede_crear){ intentos=0; ponerWeb(); } }).catch(()=>{}); }
+    /* CREÁ TU LANDING (beta): arma la landing desde el Instagram del artista */
+    const crearLanding=()=>{ const I=window.__V3WEBINFO||{}, L=I.landing||{}, armando=L.estado==='armando';
+      web.innerHTML='<div class="tit2"><h2>Tu web</h2></div><p class="bj" style="margin:0 0 12px;font-size:14.5px">SemillaIA arma tu landing con lo que ya tenés en Instagram: tus fotos, tu bio y lo que contás en tus publicaciones. Después la editás cuando quieras.</p>'
+       +'<div class="card" style="padding:16px">'
+       +(armando?'<p style="margin:0;font-size:15px;color:'+NAVY+';font-weight:600">Armando tu landing…</p><p style="margin:4px 0 0;font-size:13.5px;color:#6B6878">'+esc(L.paso||'')+'. Tarda alrededor de un minuto.</p>'
+        :'<input id="v3lig" placeholder="@tuusuario de Instagram" autocomplete="off" autocapitalize="off" value="'+esc(L.instagram?'@'+L.instagram:'')+'" style="width:100%;height:48px;border:1px solid #E1D9C9;border-radius:12px;padding:0 14px;font:inherit;font-size:16px;margin:0 0 10px;background:#fff">'
+         +'<button id="v3lbt" style="display:block;width:100%;height:52px;border:0;border-radius:12px;background:'+NAVY+';color:#fff;font:700 15px/1 Inter,sans-serif;letter-spacing:.6px;cursor:pointer">CREÁ TU LANDING</button>'
+         +(L.estado==='error'?'<p style="margin:10px 0 0;font-size:13.5px;color:#7A1F3A">'+esc(L.error||'')+'</p>':''))
+       +'</div>';
+      const b=web.querySelector('#v3lbt'); if(b) b.onclick=async()=>{ const ig=(web.querySelector('#v3lig').value||'').trim(); b.disabled=true; b.textContent='Arrancando…';
+        window.SRE&&window.SRE('landing_crear',{});
+        let r=null; try{ r=await fetch('https://vm.semillaredes.com/web/crear-landing',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,instagram:ig})}).then(x=>x.json()); }catch(e){}
+        if(r&&r.ok){ I.landing=r.landing||{estado:'armando'}; crearLanding(); seguir(); }
+        else { I.landing={estado:'error',error:(r&&r.error==='falta_ig')?'Escribí tu usuario de Instagram.':((r&&r.error)||'No pudimos arrancar. Probá de nuevo.')}; crearLanding(); } };
+      if(armando) seguir(); };
+    let siguiendo=false;
+    const seguir=()=>{ if(siguiendo) return; siguiendo=true; const t=setInterval(()=>{ fetch('https://vm.semillaredes.com/web/estado?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(j=>{ if(!j) return; window.__V3WEBINFO=j;
+        if(j.webs&&j.webs.length){ clearInterval(t); siguiendo=false; window.__V3WEBS=j.webs; WEBV=j.webs; ponerWeb(); }
+        else if(j.landing&&j.landing.estado!=='armando'){ clearInterval(t); siguiendo=false; crearLanding(); }
+        else crearLanding(); }).catch(()=>{}); },3000); };
     const ponerWeb=()=>{ if(!web) return; const tw=app&&(app.querySelector('.twBtns')||app.querySelector('.twWebs')); if(!tw&&intentos++<20) setTimeout(ponerWeb,300);
       const eds=tw?[...tw.querySelectorAll('a')]:[];
-      if(!WEBV.length&&!eds.length){ web.innerHTML=''; return; }
+      if(!WEBV.length&&!eds.length){ if(window.__V3WEBINFO&&window.__V3WEBINFO.puede_crear) crearLanding(); else web.innerHTML=''; return; }
       const lista=WEBV.length?WEBV:[{titulo:'Tu web',url:''}];
       web.innerHTML='<div class="tit2"><h2>'+(lista.length>1?'Tus webs':'Tu web')+'</h2></div><p class="bj" style="margin:0 0 10px;font-size:14.5px">Tocá para verla. Con «Editá» la abrís en modo edición: cambiás textos y fotos, o le pedís cambios a SemillaIA. Nada se publica sin que lo apruebes.</p><div class="card lista webs">'+lista.map((w,n)=>'<div class="fila" style="grid-template-columns:1fr auto">'+(w.url?'<a class="tx" style="text-decoration:none" href="'+esc(w.url)+'" target="_blank" rel="noopener"><b style="color:'+NAVY+'">'+esc(w.titulo||'Tu web')+'</b><br><span style="color:#8A8577;font-size:13.5px">'+esc(String(w.url).replace(/^https?:\/\//,'').replace(/\/(index\.html)?$/,''))+'</span></a>':'<span class="tx"><b style="color:'+NAVY+'">Tu web</b></span>')+'<span class="ed" data-wed="'+n+'"></span></div>').join('')+'</div>';
       web.querySelectorAll('[data-wed]').forEach(x=>{ const i=+x.dataset.wed, a=eds[i], w=lista[i]; let c;
