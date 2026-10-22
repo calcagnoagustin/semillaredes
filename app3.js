@@ -174,7 +174,7 @@
   #v3 .gira .gc b{color:#24242C;font-weight:700}
   #v3 .hito .hx{position:absolute;top:10px;right:10px;width:28px;height:28px;border:0;border-radius:50%;background:none;color:#A9A190;font:400 20px/1 Inter,sans-serif;cursor:pointer}
   #v3 .tkp .fila{grid-template-columns:1fr auto}
-  #v3 .pais .fila{grid-template-columns:1fr auto;padding:11px 16px}
+  #v3 .pais .fila{grid-template-columns:1fr auto;padding:11px 16px;align-items:start}
   #v3 .pais .tx b{display:block;color:${NAVY};font-size:15px;font-weight:600}
   #v3 .pais .tx i{display:block;height:5px;border-radius:3px;background:#E2767C;margin-top:7px}
   #v3 .pais .rt{text-align:right;line-height:1.15}#v3 .pais .rt b{display:block;font:600 17px/1.15 'Playfair Display',serif;color:${NAVY}}#v3 .pais .rt small{font-size:12px;color:#8A8577}
