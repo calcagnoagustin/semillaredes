@@ -51,6 +51,18 @@
   #v3 .dtodos b{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:18px;line-height:1.2;color:#0E1E4F}
   #v3 .dtodos small{display:block;margin-top:3px;font-size:13px;line-height:1.35;color:#6B6E7E}
   #v3 .dtodos .fl{width:22px;height:22px;color:#0E1E4F}
+  .con-inf{display:inline-flex!important;align-items:center;gap:7px}
+  .inf{flex:0 0 auto;display:inline-grid;place-items:center;width:22px;height:22px;margin:0;padding:0;border:0;border-radius:50%;background:none;color:#A29E92;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .inf svg{width:17px;height:17px;display:block}.inf:hover,.inf:focus-visible{color:${NAVY}}
+  #v3 .tit2 h3 .inf svg,#v3 .dhd h3 .inf svg,#v3 .cta .l .inf svg{width:15px;height:15px}
+  #v3 .tit2 .inf,#v3 .tit2 button.inf{color:#A29E92;font-size:inherit}#v3 .tit2 .inf:hover{color:${NAVY}}
+  #v3 .hero .inf{color:rgba(255,255,255,.62)}#v3 .hero .inf:hover{color:#fff}#v3 .hero .e .inf svg{width:15px;height:15px}
+  .sdesc{margin:-4px 0 10px;font-size:14px;line-height:1.45;color:#6B6878}
+  #v3 .dcard .sdesc{margin:-6px 2px 12px}
+  .infb{position:fixed;z-index:300;left:0;top:0;padding:11px 14px;border-radius:12px;background:${NAVY};color:#fff;font:400 13.5px/1.45 Inter,system-ui,sans-serif;box-shadow:0 14px 30px -12px rgba(14,30,79,.55);opacity:0;pointer-events:none;transition:opacity .15s}
+  .infb.on{opacity:1;pointer-events:auto}
+  .infb::before{content:"";position:absolute;left:var(--fl,50%);top:-5px;width:11px;height:11px;background:inherit;border-radius:2px;transform:translateX(-50%) rotate(45deg)}
+  .infb.arr::before{top:auto;bottom:-5px}
   #v3 .tit2{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 10px}
   #v3 .tit2 h3{margin:0;font-size:12.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#24242C}
   #v3 .tit2 h2{margin:0;font-family:'Playfair Display',serif;font-size:23px;font-weight:600;color:${NAVY}}
@@ -583,7 +595,7 @@
         </div>${curvaCE(f.serie_costo)}</div>`; }).join('')}</div>`; })();
     const scrHoy=`
       <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>${ACT}${({'alan-sutton':'Tu reporte se actualiza los jueves a las 7.'})[slug]?`<p class="aviso-act">${({'alan-sutton':'Tu reporte se actualiza los jueves a las 7.'})[slug]}</p>`:''}
-      <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
+      <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g transform="translate(-4 44)"><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></g></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
       ${DEST}
       ${GIRA}
       <div class="tit2"><h3>Métricas principales</h3><button data-ir="metricas">Ver todas</button></div>
@@ -845,13 +857,13 @@
       const datos=async()=>{ if(CXD) return CXD; try{ const r=await fetch('https://fdrxsjphlvvwwknnrjtx.supabase.co/rest/v1/rpc/con_get',{method:'POST',headers:{apikey:'sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17','Content-Type':'application/json'},body:JSON.stringify({p_slug:slug,p_k:tok})}).then(x=>x.json()); const c=(r&&r.conexiones)||{};
           CXD={sp:(c.spotify&&c.spotify.estado==='conectado'&&c.spotify.valor)||'', ig:(c.instagram&&c.instagram.estado==='conectado'&&c.instagram.valor)||''}; }catch(e){ CXD={sp:'',ig:''}; } return CXD; };
       const fmtN=n=>Number(n||0).toLocaleString('es-AR');
-      /* PLANILLA DE CURADORES (23/10/2026): cada búsqueda suma los curadores a un Google Sheets del proyecto (queda en Tus activos) */
+      /* PLANILLA DE CURADORES (23/10/2026): cada búsqueda suma los curadores a la planilla del proyecto en la VM (queda en Tus activos) */
       const SK='sr_plsh_'+slug, VMC='https://vm.semillaredes.com/web/curadores'; let SH=lsg(SK);
       const sumarSheet=async(d,f)=>{ try{ const r=await fetch(VMC,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,playlists:(d&&d.playlists)||[]})}).then(x=>x.json());
           if(r&&r.url){ SH={url:r.url,total:r.total,nuevas:r.nuevas,sync:f}; lss(SK,SH); if(!plEl.querySelector('#v3plp')) pintarPl(null); } }catch(e){} };
       const planillaHTML=()=>!(SH&&SH.url)?'':'<a href="'+esc(SH.url)+'" target="_blank" rel="noopener" style="display:grid;grid-template-columns:40px 1fr 18px;align-items:center;gap:12px;margin-top:14px;padding:12px 14px;border:1px solid #E1D9C9;border-radius:12px;background:#fff;text-decoration:none">'
         +'<span style="display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:#E6F2EA;color:#1E7A46"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 9v12"/></svg></span>'
-        +'<span><b style="display:block;font-size:15px;line-height:1.3;color:'+NAVY+'">Tu planilla de curadores</b><span style="display:block;margin-top:2px;font-size:13px;line-height:1.3;color:#6B6878">'+(SH.total?fmtN(SH.total)+' curadores · ':'')+'Google Sheets, también en Tus activos</span></span>'
+        +'<span><b style="display:block;font-size:15px;line-height:1.3;color:'+NAVY+'">Tu planilla de curadores</b><span style="display:block;margin-top:2px;font-size:13px;line-height:1.3;color:#6B6878">'+(SH.total?fmtN(SH.total)+' curadores · ':'')+'También en Tus activos · se baja a Excel o Google Sheets</span></span>'
         +'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="'+NAVY+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>';
       const lista=d=>{ const pls=(d&&d.playlists)||[]; const p=(d&&d.perfil)||{};
         if(!pls.length) return '<p style="margin:0;font-size:14.5px;line-height:1.5;color:#3A3846">'+esc((d&&d.aviso)||'Todavía no encontramos playlists con contacto para tu perfil.')+'</p>';
@@ -868,7 +880,7 @@
         if(estado==='buscando') cuerpo='<p style="margin:0;font-size:15px;color:'+NAVY+';font-weight:600">Buscando curadores para tu música…</p><p id="v3plp" style="margin:4px 0 0;font-size:13.5px;color:#6B6878">Escuchando tu música. Tarda uno o dos minutos.</p>';
         else if(g&&g.d) cuerpo='<p style="margin:0 0 10px;font-size:12.5px;color:#6B6878">Búsqueda del '+esc(g.f||'')+'</p>'+(SH&&SH.nuevas&&SH.sync===g.f?'<p style="margin:0 0 10px;font-size:13.5px;color:#1E7A46;font-weight:600">Sumamos '+SH.nuevas+(SH.nuevas===1?' curador nuevo':' curadores nuevos')+' a tu planilla.</p>':'')+lista(g.d)+planillaHTML()+'<button id="v3plb" style="display:block;width:100%;height:48px;margin-top:14px;border:1px solid #E1D9C9;border-radius:12px;background:#fff;color:'+NAVY+';font:600 15px/1 Inter,sans-serif;cursor:pointer">Buscar de nuevo</button>';
         else cuerpo='<button id="v3plb" style="display:block;width:100%;height:52px;border:0;border-radius:12px;background:'+NAVY+';color:#fff;font:700 15px/1 Inter,sans-serif;letter-spacing:.6px;cursor:pointer">BUSCÁ CURADORES PARA TU MÚSICA</button>'+planillaHTML();
-        plEl.innerHTML='<div class="tit2"><h2>Playlists para tu música</h2></div><p class="bj" style="margin:0 0 12px;font-size:14.5px">SemillaIA escucha tu Spotify y tu Instagram y te trae el contacto de 10 curadores de playlists activas y sin bots, para que les escribas y entres en sus listas. Cada búsqueda suma los curadores nuevos a tu planilla de Google Sheets, en Tus activos.</p>'
+        plEl.innerHTML='<div class="tit2"><h2>Playlists para tu música</h2></div><p class="bj" style="margin:0 0 12px;font-size:14.5px">SemillaIA escucha tu Spotify y tu Instagram y te trae el contacto de 10 curadores de playlists activas y sin bots, para que les escribas y entres en sus listas. Cada búsqueda suma los curadores nuevos a tu planilla, en Tus activos.</p>'
           +'<div class="card" style="padding:16px">'+cuerpo+(msg?'<p style="margin:10px 0 0;font-size:13.5px;color:#7A1F3A">'+esc(msg)+'</p>':'')+'</div>';
         const b=plEl.querySelector('#v3plb'); if(b) b.onclick=buscarPl; };
       const PASOS=['Escuchando tu Spotify…','Mirando tu Instagram…','Entendiendo tu sonido y tus referencias…','Buscando entre miles de playlists verificadas…','Descartando las infladas y las abandonadas…','Eligiendo los 10 curadores que mejor te calzan…'];
@@ -1032,6 +1044,72 @@
     w.remove(); bt.innerHTML=t0; bt.disabled=false;
   }
 
+  // ---- INFO DE SECCIONES (23/10/2026): cada sección tiene una bajada que dice de qué se trata y una «i» que muestra más info ----
+  // Clave = título de la sección (o 'scr:<pantalla>' para el título grande de cada pantalla). d = bajada visible; i = más info.
+  const INFO={
+    'scr:hoy':{i:'Tu pantalla de inicio: lo más importante de tu proyecto de un vistazo. Se actualiza sola con tus redes conectadas.'},
+    'métricas principales':{d:'Los tres números que más importan hoy para tu proyecto.',i:'Se actualizan solos con tus redes conectadas. La flecha compara con el período anterior. En «Ver todas» tenés el detalle red por red.'},
+    'próximos shows':{d:'Tus próximas fechas con entradas a la venta y cómo viene cada una.',i:'Las entradas vendidas salen del píxel de Meta instalado en la ticketera. El costo por entrada es lo invertido en anuncios dividido las entradas vendidas.'},
+    'conjuntos de anuncios':{d:'Cómo rinde cada grupo de anuncios que está corriendo.',i:'Cada conjunto es un público con su propio presupuesto diario. Mirá cuántos resultados trae y cuánto cuesta cada uno.'},
+    'cuenta publicitaria':{i:'El estado de tu cuenta de anuncios de Meta: si está activa, cuántas campañas corren y cuándo se cobra.'},
+    'tu progreso del período':{i:'Lo que más creció en tu proyecto desde el reporte anterior. La flecha te lleva al reporte completo.'},
+    'tu comunidad':{i:'Cuánta gente sigue tu proyecto hoy en Instagram.'},
+    'crecimiento destacado':{i:'El dato de crecimiento más importante del período, comparado con el período anterior.'},
+    'resultado destacado':{i:'El resultado más importante del período, comparado con el período anterior.'},
+    'drop del viernes':{d:'La idea de la semana para tu proyecto, para leer o escuchar.',i:'Cada viernes sale un drop nuevo: una idea para pensar tu proyecto artístico como un negocio digital. Te avisamos con una notificación, y en «Todos los drops» está el archivo completo.'},
+    'tu próximo hito':{i:'La meta más cercana de las que definiste en Tu proyecto. La barra muestra cuánto te falta y se actualiza sola.'},
+    'accesos rápidos':{d:'Atajos a lo que más vas a usar.',i:'Abrí el reporte, sumá una tarea, cargá una fecha o hablá con SemillaIA sin cambiar de pantalla.'},
+    'scr:proyecto':{i:'Acá se ordena tu proyecto: hacia dónde vas (hitos), con qué contás (activos y web) y qué querés que sepamos (notas).'},
+    'hitos':{d:'Las metas concretas hacia las que estás trabajando.',i:'Cada hito sigue una métrica real (seguidores, oyentes, ventas…) y se actualiza solo. Sumá uno con «Agregar hito».'},
+    'tus activos':{d:'Todo lo que tu proyecto ya tiene: links, materiales y documentos.',i:'Tu Spotify, tu web, tu press kit, carpetas de fotos, la planilla de curadores… Tenerlo todo en un lugar nos deja usarlo en tu landing, tus reportes y tus campañas.'},
+    'tu web':{d:'Tu web, siempre al día con lo que pasa en tu proyecto.',i:'Tocá para verla. Con «Editá» cambiás textos y fotos, o le pedís cambios a SemillaIA. Nada se publica sin que lo apruebes. Las fechas que cargás en la app aparecen solas.'},
+    'tus webs':{d:'Tus webs, siempre al día con lo que pasa en tu proyecto.',i:'Tocá una para verla. Con «Editá» cambiás textos y fotos, o le pedís cambios a SemillaIA. Nada se publica sin que lo apruebes.'},
+    'playlists para tu música':{d:'Contactos de curadores de playlists para que entres en sus listas.',i:'SemillaIA escucha tu música y te trae curadores de playlists activas y sin bots, elegidos para tu sonido. Escribiles con un mensaje corto y personal. Cada búsqueda suma los curadores nuevos a tu planilla, en Tus activos, donde marcás a quién le escribiste.'},
+    'tus notas':{d:'Lo que quieras que tengamos en cuenta.',i:'Lo que escribas acá lo leemos antes de cada encuentro y de cada reporte. También te dejamos notas nosotros.'},
+    'scr:actividades':{i:'Tus tareas de la semana. Marcá «En curso» lo que empezaste, tocá el círculo cuando esté hecho y poné una alarma si querés que te avisemos.'},
+    'próximas fechas':{d:'Shows, lanzamientos y fechas importantes de tu proyecto.',i:'Las fechas que cargues acá aparecen solas en tu web. Si hay entradas, sumá el link a la ticketera.'},
+    'scr:metricas':{i:'Tus números red por red, del último período. Elegí la red arriba; la flecha compara con el período anterior.'},
+    'lo más importante':{i:'Lo que más pesó en tus números de este período, en una frase.'},
+    'publicidad hacia spotify':{d:'Lo que trajeron los anuncios hacia tu música en Spotify.',i:'Visitas que llegaron a tu Spotify desde los anuncios de Meta, con cuánta gente los vio y cuánto se invirtió.'},
+    'publicidad hacia youtube':{d:'Lo que trajeron los anuncios hacia tu canal de YouTube.',i:'Visitas que llegaron a tu YouTube desde los anuncios de Meta, con cuánta gente los vio y cuánto se invirtió.'},
+    'públicos de la campaña':{d:'Cómo rinde cada público al que le mostramos los anuncios.',i:'Cada público es un grupo de personas (por intereses, lugar o comportamiento). Así vemos dónde conviene poner más presupuesto.'},
+    'seguidores por país':{d:'Dónde está la gente que te sigue.',i:'Sale de Instagram. Sirve para decidir dónde tocar, dónde pautar y en qué idioma hablarle a tu público.'},
+    'seguidores por ciudad':{d:'En qué ciudades está la gente que te sigue.',i:'Sale de Instagram. Sirve para decidir dónde tocar y dónde pautar.'},
+    'recomendaciones semillaia':{i:'Acciones concretas que SemillaIA te sugiere a partir de tus números de este período.'},
+    'scr:ia':{i:'Tu reporte del período: lo principal, explicado y con próximos pasos. Se arma con tus redes conectadas y lo revisa el equipo de Semilla Redes.'},
+    'lo principal':{i:'Los puntos que más pesaron en el período, los buenos y los que hay que mejorar.'},
+    'tus conexiones':{d:'Las redes que SemillaIA lee para armar tus métricas y tus reportes.',i:'Conectá Instagram, Spotify, YouTube y Meta. Solo leemos tus datos: nunca publicamos ni cambiamos nada en tus cuentas.'},
+    'tu acceso':{d:'Cómo entrás a la app.',i:'Vinculá tu cuenta de Google o tu mail para entrar desde cualquier dispositivo sin perder nada.'},
+  };
+  const infKey=t=>String(t||'').replace(/\s+/g,' ').trim().toLowerCase();
+  let INFB=null, INFA=null;
+  function infCerrar(){ if(INFB){ INFB.classList.remove('on'); INFA=null; } }
+  function infAbrir(btn){ if(!INFB){ INFB=document.createElement('div'); INFB.className='infb'; INFB.setAttribute('role','tooltip'); document.body.appendChild(INFB); }
+    if(INFA===btn){ infCerrar(); return; } INFA=btn; INFB.textContent=btn.dataset.info;
+    const r=btn.getBoundingClientRect(), W=Math.min(300,window.innerWidth-24); INFB.style.width=W+'px';
+    const x=Math.max(12,Math.min(r.left+r.width/2-W/2,window.innerWidth-W-12));
+    INFB.style.left=x+'px'; INFB.style.setProperty('--fl',(r.left+r.width/2-x)+'px');
+    INFB.classList.add('on'); const h=INFB.offsetHeight, abajo=r.bottom+10+h<window.innerHeight-8;
+    INFB.classList.toggle('arr',!abajo); INFB.style.top=(abajo?r.bottom+10:r.top-10-h)+'px'; }
+  function infMontar(){
+    const pon=(h,k,desc,trasDe)=>{ const x=INFO[k]; if(!x||h.dataset.inf) return; h.dataset.inf='1';
+      const b=document.createElement('button'); b.type='button'; b.className='inf'; b.dataset.info=x.i; b.setAttribute('aria-label','Más info: '+(h.textContent||'').trim());
+      b.innerHTML='<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="6.2" r="1.2" fill="currentColor"/><path d="M10 9v5.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+      b.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); infAbrir(b); });
+      if(matchMedia('(hover:hover)').matches){ b.addEventListener('mouseenter',()=>{ if(INFA!==b) infAbrir(b); }); b.addEventListener('mouseleave',infCerrar); }
+      h.classList.add('con-inf'); h.appendChild(b);
+      if(desc&&x.d&&trasDe){ const sig=trasDe.nextElementSibling; if(!(sig&&(sig.classList.contains('bj')||sig.classList.contains('sdesc')))){ const p=document.createElement('p'); p.className='sdesc'; p.textContent=x.d; trasDe.after(p); } } };
+    document.querySelectorAll('#v3 .tit2 > h2, #v3 .tit2 > h3, .v3hoja .tit2 > h2, .v3hoja .tit2 > h3').forEach(h=>pon(h,infKey(h.firstChild&&h.firstChild.nodeType===3?h.firstChild.textContent:h.textContent),true,h.parentElement));
+    document.querySelectorAll('#v3 .scr > h1.v3t, #v3 .scr > .rep h1.v3t, #v3 .scr > .rph h1.v3t').forEach(h=>{ const s=h.closest('.scr'); if(s) pon(h,'scr:'+s.dataset.scr,false); });
+    document.querySelectorAll('#v3 .dcard .dhd > h3').forEach(h=>pon(h,'drop del viernes',true,h.parentElement));
+    document.querySelectorAll('#v3 .hito .v3t, #v3 .imp h4, #v3 .rsh > h2').forEach(h=>pon(h,infKey(h.textContent),false));
+    document.querySelectorAll('#v3 .cta > .l').forEach(h=>pon(h,'cuenta publicitaria',false));
+    document.querySelectorAll('#v3 .hero > div > .e, #v3 .hero .e, #v3 .rdz > .e').forEach(h=>pon(h,infKey(h.textContent),false));
+    document.querySelectorAll('#v3 .recos > .h').forEach(h=>pon(h,'recomendaciones semillaia',false)); }
+  let infT=0; const infObs=()=>{ try{ new MutationObserver(()=>{ clearTimeout(infT); infT=setTimeout(infMontar,60); }).observe(document.body,{childList:true,subtree:true}); infMontar(); }catch(e){} };
+  if(document.body) infObs(); else document.addEventListener('DOMContentLoaded',infObs);
+  document.addEventListener('click',e=>{ if(INFB&&!e.target.closest('.inf')&&!e.target.closest('.infb')) infCerrar(); });
+  window.addEventListener('scroll',infCerrar,{passive:true});
   // ---- Drops (playlists + drops: por ahora solo estos proyectos) ----
   const DP_BETA=['eupatridas','eupatridas-1','semilla-redes','piku-yoga','hernan-onirico','hernan-onirico-2'];
   let DROPS_L=null;
