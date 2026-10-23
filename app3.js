@@ -326,6 +326,12 @@
   .v3hoja .vo{width:44px;height:44px;border:0;background:none;color:${NAVY};display:grid;place-items:center;cursor:pointer}
   .v3hoja .hc{max-width:560px;margin:0 auto;padding:16px 18px calc(40px + env(safe-area-inset-bottom,0px))}
   .v3hoja .card{background:#FBF8F2;border:1px solid #E7DFCF;border-radius:18px}
+  .v3hoja .dk{margin:6px 0 0;font:700 11.5px/1.3 Inter,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:#87863A}
+  .v3hoja .dt{margin:10px 0 0;font-family:'Playfair Display',serif;font-size:28px;font-weight:600;line-height:1.15;color:${NAVY}}
+  .v3hoja .df{margin:8px 0 0;font-size:13.5px;color:#8A8577}
+  .v3hoja .da{margin:18px 0 0;padding:14px 14px 12px}.v3hoja .da p{margin:0 0 10px;font:600 13.5px/1.2 Inter,sans-serif;color:${NAVY}}.v3hoja .da audio{display:block;width:100%}
+  .v3hoja .dx{margin:20px 0 0;font-size:16.5px;line-height:1.62;color:#2E2C36}.v3hoja .dx p{margin:0 0 14px}.v3hoja .dx h2,.v3hoja .dx h3{font-family:'Playfair Display',serif;color:${NAVY};line-height:1.2;margin:24px 0 10px}.v3hoja .dx ul,.v3hoja .dx ol{padding-left:22px;margin:0 0 14px}.v3hoja .dx li{margin:0 0 6px}.v3hoja .dx a{color:${NAVY}}.v3hoja .dx img{max-width:100%;height:auto;border-radius:12px}.v3hoja .dx blockquote{margin:0 0 14px;padding-left:14px;border-left:3px solid #C9C08A;color:#55525E}
+  .v3hoja .dv{display:flex;align-items:center;justify-content:center;height:52px;margin:22px 0 0;border-radius:12px;background:${NAVY};color:#fff;text-decoration:none;font:700 15px/1 Inter,sans-serif;letter-spacing:.4px}
   .v3hoja .vacio{padding:22px 18px;color:#6F6B7C;font-size:15px;line-height:1.45;text-align:center}
   .v3hoja .lista>*{border-top:1px solid #EDE6D8}.v3hoja .lista>*:first-child{border-top:0}
   .v3hoja .ni{width:100%;display:grid;grid-template-columns:40px 1fr 10px;column-gap:12px;align-items:start;text-align:left;border:0;background:none;padding:14px;cursor:pointer;font:inherit;color:inherit}
@@ -794,18 +800,18 @@
         if(!c) return; c.className='edt'; c.innerHTML='✎ Editá'; x.appendChild(c); }); }; ponerWeb();
     /* LOS DROPS EN LA APP (23/10/2026): el último drop del newsletter, sale los viernes (drops_app.py publica drops/ultimos.json) */
     const dropEl=raiz.querySelector('#v3drop');
-    if(dropEl) fetch('/drops/ultimos.json?v='+new Date().toISOString().slice(0,10)).then(r=>r.ok?r.json():null).then(j=>{ const d=j&&j.drops&&j.drops[0]; if(!d) return;
+    if(dropEl&&DP_BETA.includes(slug)) dropsCargar().then(L=>{ const d=L&&L[0]; if(!d) return;
       const dias=(Date.now()-new Date(d.fecha+'T12:00:00').getTime())/864e5, nuevo=dias<=7;
       dropEl.innerHTML='<div class="tit2"><h3>Drop de la semana</h3>'+(nuevo?'<span style="font:700 11px/1 Inter,sans-serif;letter-spacing:1px;text-transform:uppercase;color:#fff;background:#7A1F3A;border-radius:999px;padding:5px 9px">Nuevo</span>':'')+'</div>'
-        +'<a class="card" href="'+esc(d.url)+'" target="_blank" rel="noopener" style="display:block;padding:16px 18px;text-decoration:none;color:inherit">'
+        +'<a class="card" href="'+esc(d.url)+'" style="display:block;padding:16px 18px;text-decoration:none;color:inherit">'
         +'<p style="margin:0;font:700 11.5px/1.3 Inter,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:#87863A">Drop #'+d.n+(d.categoria?' · '+esc(d.categoria):'')+'</p>'
         +'<p style="margin:8px 0 0;font-family:\'Playfair Display\',serif;font-size:21px;font-weight:600;line-height:1.2;color:'+NAVY+'">'+esc(d.titulo)+'</p>'
         +(d.resumen?'<p style="margin:8px 0 0;font-size:14.5px;line-height:1.5;color:#3A3846">'+esc(d.resumen)+'</p>':'')
-        +'<p style="margin:12px 0 0;font:600 14.5px/1 Inter,sans-serif;color:'+NAVY+'">Leer el drop →</p></a>';
-      dropEl.querySelector('a').addEventListener('click',()=>{ window.SRE&&window.SRE('drop_abrir',{n:d.n}); }); }).catch(()=>{});
+        +'<p style="margin:12px 0 0;font:600 14.5px/1 Inter,sans-serif;color:'+NAVY+'">'+(d.audio?'Leer y escuchar →':'Leer el drop →')+'</p></a>';
+      dropEl.querySelector('a').addEventListener('click',ev=>{ ev.preventDefault(); dropAbrir(d.n); }); }).catch(()=>{});
     /* BUSCADOR DE PLAYLISTS (23/10/2026): la misma IA de curadores.html, con el Spotify y el Instagram que ya conectó */
     const plEl=raiz.querySelector('#v3pl');
-    if(plEl){ const PK='sr_pl_'+slug, lsg=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}, lss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+    if(plEl&&DP_BETA.includes(slug)){ const PK='sr_pl_'+slug, lsg=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}, lss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
       const miMail=()=>{ try{ for(const k of Object.keys(localStorage)) if(/^sb-.*-auth-token$/.test(k)){ const u=(JSON.parse(localStorage.getItem(k))||{}).user; if(u&&u.email) return u.email; } }catch(e){} return 'app+'+slug+'@semillaredes.com'; };
       let CXD=null;
       const datos=async()=>{ if(CXD) return CXD; try{ const r=await fetch('https://fdrxsjphlvvwwknnrjtx.supabase.co/rest/v1/rpc/con_get',{method:'POST',headers:{apikey:'sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17','Content-Type':'application/json'},body:JSON.stringify({p_slug:slug,p_k:tok})}).then(x=>x.json()); const c=(r&&r.conexiones)||{};
@@ -987,6 +993,20 @@
     w.remove(); bt.innerHTML=t0; bt.disabled=false;
   }
 
+  // ---- Drops (playlists + drops: por ahora solo estos proyectos) ----
+  const DP_BETA=['eupatridas','eupatridas-1','semilla-redes','piku-yoga','hernan-onirico','hernan-onirico-2'];
+  let DROPS_L=null;
+  function dropsCargar(){ if(DROPS_L) return Promise.resolve(DROPS_L); return fetch('/drops/ultimos.json?v='+new Date().toISOString().slice(0,13)).then(r=>r.ok?r.json():null).then(j=>(DROPS_L=(j&&j.drops)||[])); }
+  function dropAbrir(n){ window.SRE&&window.SRE('drop_abrir',{n}); dropsCargar().then(L=>{ const d=L.find(x=>x.n===n)||L[0]; if(!d) return;
+    const f=d.fecha?new Date(d.fecha+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'}):'';
+    const h=hoja('v3drophoja','Drop #'+d.n,
+      '<p class="dk">Drop #'+d.n+(d.categoria?' · '+esc(d.categoria):'')+'</p><h1 class="dt">'+esc(d.titulo)+'</h1>'+(f?'<p class="df">'+f+'</p>':'')
+      +(d.audio?'<div class="card da"><p>Escuchalo, contado por Agus</p><audio controls preload="metadata" src="'+esc(d.audio)+'"></audio></div>':'')
+      +'<div class="dx">'+(d.html||('<p>'+esc(d.resumen||'')+'</p>'))+'</div>'
+      +'<a class="dv" href="https://semillaredes.com/drops/" target="_blank" rel="noopener">Ver todos los drops</a>');
+    h.querySelectorAll('.dx a').forEach(a=>{ a.target='_blank'; a.rel='noopener'; });
+    const au=h.querySelector('audio'); if(au) au.addEventListener('play',()=>{ window.SRE&&window.SRE('drop_escuchar',{n:d.n}); },{once:true});
+    h.querySelector('.vo').addEventListener('click',()=>{ if(au) au.pause(); }); }); }
   // ---- Notificaciones ----
   let NOTIFS=null;
   const fechaN=f=>{ const d=new Date(f), h=new Date(); const dd=Math.round((new Date(h.toDateString())-new Date(d.toDateString()))/864e5);
@@ -1003,7 +1023,7 @@
               aviso:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5h4"/></svg>'};
     const h=hoja('v3notifs','Notificaciones', L.length?`<div class="card lista nl">${L.map(n=>`<button class="ni ${n.leida?'':'nueva'}" data-nt="${esc(n.tipo)}" data-ref="${esc(n.ref||'')}"><span class="ic">${ic[n.tipo]||ic.aviso}</span><span class="tx"><b>${esc(n.titulo)}</b>${n.texto?`<span>${esc(n.texto)}</span>`:''}<small>${fechaN(n.fecha)}</small></span>${n.leida?'':'<i></i>'}</button>`).join('')}</div>`
       :'<div class="card vacio">Todavía no tenés notificaciones. Acá vas a ver cada reporte nuevo y los avisos que te mandemos.</div>');
-    h.querySelectorAll('[data-nt]').forEach(b=>b.onclick=()=>{ h.classList.remove('on'); if(b.dataset.nt==='reporte') ir('ia',true); else if(b.dataset.nt==='drop'&&/^https:\/\/semillaredes\.com\//.test(b.dataset.ref)) window.open(b.dataset.ref,'_blank','noopener'); });
+    h.querySelectorAll('[data-nt]').forEach(b=>b.onclick=()=>{ h.classList.remove('on'); if(b.dataset.nt==='reporte') ir('ia',true); else if(b.dataset.nt==='drop'){ const m=(b.dataset.ref||'').match(/#\/(\d+)/); dropAbrir(m?+m[1]:0); } });
     if(L.some(x=>!x.leida)){ rpc('sub_notifs_leer',{p_slug:slug,p_k:tok}).then(()=>{ L.forEach(x=>x.leida=true); notifBadge(); }).catch(()=>{}); }
   }
   // ---- Perfil ----
