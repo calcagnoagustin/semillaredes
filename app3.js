@@ -45,6 +45,8 @@
   #v3 .cta .e i{width:9px;height:9px;border-radius:50%;background:#B9B19E}
   #v3 .cta .e.on{color:#2F6B2A}#v3 .cta .e.on i{background:#3E9B3A;box-shadow:0 0 0 4px rgba(62,155,58,.15)}
   #v3 .cta .n{grid-area:n;font:500 14.5px/1 Inter,sans-serif;color:${NAVY}}
+  #v3 .cta .cn{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+  #v3 .cta .cn span{font:500 12.5px/1.3 Inter,sans-serif;color:#6F6B7C;background:#F2EDE3;border-radius:99px;padding:4px 10px}
   #v3 .cta .pg{grid-column:1/-1;margin-top:6px;padding-top:12px;border-top:1px solid #EAE3D5}
   #v3 .cta .pg .r1{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
   #v3 .cta .pg .r1 span{font:500 14.5px/1.2 Inter,sans-serif;color:#55525F}
@@ -843,7 +845,9 @@
       const cjEl=document.getElementById('v3cj'), CJ=CJON?(c.conjuntos||[]):[];
       if(cjEl) cjEl.innerHTML=CJ.length?`<div class="tit2"><h3>Conjuntos de anuncios</h3></div><div class="cjl">${CJ.map(z=>`<div class="card"><div class="ct">${esc(z.nombre)}</div><div class="cs">Desde el ${fd(z.inicio)}${z.diaria!=null?' · '+moneyC(z.diaria)+' por día':''}</div>
         <div class="cg"><div><b>${nf(z.resultados)}</b><small>${esc(z.resultado)}</small></div><div><b>${nf(z.alcance)}</b><small>personas alcanzadas</small></div><div><b>${z.costo!=null?moneyC(z.costo).replace(/,00$/,',00'):'—'}</b><small>por visita</small></div></div></div>`).join('')}</div>`:'';
-      el.innerHTML=`<div class="cta"><span class="l">Cuenta publicitaria</span><span class="e ${c.activa?'on':''}"><i></i>${c.activa?'Activa':esc(c.estado.charAt(0).toUpperCase()+c.estado.slice(1))}</span><span class="n">${c.campanas} ${c.campanas===1?'campaña corriendo':'campañas corriendo'}</span>${dia}${pg}</div>`; };
+      el.innerHTML=`<div class="cta"><span class="l">Cuenta publicitaria</span><span class="e ${c.activa?'on':''}"><i></i>${c.activa?'Activa':esc(c.estado.charAt(0).toUpperCase()+c.estado.slice(1))}</span><span class="n">${c.campanas} ${c.campanas===1?'campaña corriendo':'campañas corriendo'}</span>${(()=>{ // 23/10: nombres de las campañas, sutil; no va si ya hay campañas destacadas en Hoy
+        const N=(c.nombres||[]).filter(Boolean); if(!N.length||document.querySelector('#v3 .dest, #v3 .gira')) return '';
+        return `<div class="cn">${N.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`; })()}${dia}${pg}</div>`; };
     if(window.__V3CTA) pintaCta(window.__V3CTA);
     else fetch('https://vm.semillaredes.com/web/cuenta?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(c=>{ window.__V3CTA=c; pintaCta(c); }).catch(()=>{});
 
