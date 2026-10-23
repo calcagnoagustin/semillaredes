@@ -845,6 +845,14 @@
       const datos=async()=>{ if(CXD) return CXD; try{ const r=await fetch('https://fdrxsjphlvvwwknnrjtx.supabase.co/rest/v1/rpc/con_get',{method:'POST',headers:{apikey:'sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17','Content-Type':'application/json'},body:JSON.stringify({p_slug:slug,p_k:tok})}).then(x=>x.json()); const c=(r&&r.conexiones)||{};
           CXD={sp:(c.spotify&&c.spotify.estado==='conectado'&&c.spotify.valor)||'', ig:(c.instagram&&c.instagram.estado==='conectado'&&c.instagram.valor)||''}; }catch(e){ CXD={sp:'',ig:''}; } return CXD; };
       const fmtN=n=>Number(n||0).toLocaleString('es-AR');
+      /* PLANILLA DE CURADORES (23/10/2026): cada búsqueda suma los curadores a un Google Sheets del proyecto (queda en Tus activos) */
+      const SK='sr_plsh_'+slug, VMC='https://vm.semillaredes.com/web/curadores'; let SH=lsg(SK);
+      const sumarSheet=async(d,f)=>{ try{ const r=await fetch(VMC,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,playlists:(d&&d.playlists)||[]})}).then(x=>x.json());
+          if(r&&r.url){ SH={url:r.url,total:r.total,nuevas:r.nuevas,sync:f}; lss(SK,SH); if(!plEl.querySelector('#v3plp')) pintarPl(null); } }catch(e){} };
+      const planillaHTML=()=>!(SH&&SH.url)?'':'<a href="'+esc(SH.url)+'" target="_blank" rel="noopener" style="display:grid;grid-template-columns:40px 1fr 18px;align-items:center;gap:12px;margin-top:14px;padding:12px 14px;border:1px solid #E1D9C9;border-radius:12px;background:#fff;text-decoration:none">'
+        +'<span style="display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:#E6F2EA;color:#1E7A46"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 9v12"/></svg></span>'
+        +'<span><b style="display:block;font-size:15px;line-height:1.3;color:'+NAVY+'">Tu planilla de curadores</b><span style="display:block;margin-top:2px;font-size:13px;line-height:1.3;color:#6B6878">'+(SH.total?fmtN(SH.total)+' curadores · ':'')+'Google Sheets, también en Tus activos</span></span>'
+        +'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="'+NAVY+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>';
       const lista=d=>{ const pls=(d&&d.playlists)||[]; const p=(d&&d.perfil)||{};
         if(!pls.length) return '<p style="margin:0;font-size:14.5px;line-height:1.5;color:#3A3846">'+esc((d&&d.aviso)||'Todavía no encontramos playlists con contacto para tu perfil.')+'</p>';
         return (p.descripcion?'<p style="margin:0 0 4px;font-size:14px;line-height:1.5;color:#3A3846">'+esc(p.descripcion)+'</p>':'')
@@ -857,21 +865,24 @@
            +(x.instagram?'<a href="https://instagram.com/'+esc(x.instagram)+'" target="_blank" rel="noopener" style="color:#7A1F3A;font-weight:600">Escribile: @'+esc(x.instagram)+'</a>':(x.email?'<a href="mailto:'+esc(x.email)+'" style="color:#7A1F3A;font-weight:600">Escribile: '+esc(x.email)+'</a>':''))+'</p></div>').join(''); };
       const pintarPl=(estado,msg)=>{ const g=lsg(PK);
         let cuerpo;
-        if(estado==='buscando') cuerpo='<p style="margin:0;font-size:15px;color:'+NAVY+';font-weight:600">Buscando tus playlists…</p><p id="v3plp" style="margin:4px 0 0;font-size:13.5px;color:#6B6878">Escuchando tu música. Tarda uno o dos minutos.</p>';
-        else if(g&&g.d) cuerpo='<p style="margin:0 0 10px;font-size:12.5px;color:#6B6878">Búsqueda del '+esc(g.f||'')+'</p>'+lista(g.d)+'<button id="v3plb" style="display:block;width:100%;height:48px;margin-top:14px;border:1px solid #E1D9C9;border-radius:12px;background:#fff;color:'+NAVY+';font:600 15px/1 Inter,sans-serif;cursor:pointer">Buscar de nuevo</button>';
-        else cuerpo='<button id="v3plb" style="display:block;width:100%;height:52px;border:0;border-radius:12px;background:'+NAVY+';color:#fff;font:700 15px/1 Inter,sans-serif;letter-spacing:.6px;cursor:pointer">BUSCÁ PLAYLISTS PARA TU MÚSICA</button>';
-        plEl.innerHTML='<div class="tit2"><h2>Playlists para tu música</h2></div><p class="bj" style="margin:0 0 12px;font-size:14.5px">SemillaIA escucha tu Spotify y tu Instagram y te trae 10 playlists activas, sin bots, con el contacto de quien las arma y por qué te sirven.</p>'
+        if(estado==='buscando') cuerpo='<p style="margin:0;font-size:15px;color:'+NAVY+';font-weight:600">Buscando curadores para tu música…</p><p id="v3plp" style="margin:4px 0 0;font-size:13.5px;color:#6B6878">Escuchando tu música. Tarda uno o dos minutos.</p>';
+        else if(g&&g.d) cuerpo='<p style="margin:0 0 10px;font-size:12.5px;color:#6B6878">Búsqueda del '+esc(g.f||'')+'</p>'+(SH&&SH.nuevas&&SH.sync===g.f?'<p style="margin:0 0 10px;font-size:13.5px;color:#1E7A46;font-weight:600">Sumamos '+SH.nuevas+(SH.nuevas===1?' curador nuevo':' curadores nuevos')+' a tu planilla.</p>':'')+lista(g.d)+planillaHTML()+'<button id="v3plb" style="display:block;width:100%;height:48px;margin-top:14px;border:1px solid #E1D9C9;border-radius:12px;background:#fff;color:'+NAVY+';font:600 15px/1 Inter,sans-serif;cursor:pointer">Buscar de nuevo</button>';
+        else cuerpo='<button id="v3plb" style="display:block;width:100%;height:52px;border:0;border-radius:12px;background:'+NAVY+';color:#fff;font:700 15px/1 Inter,sans-serif;letter-spacing:.6px;cursor:pointer">BUSCÁ CURADORES PARA TU MÚSICA</button>'+planillaHTML();
+        plEl.innerHTML='<div class="tit2"><h2>Playlists para tu música</h2></div><p class="bj" style="margin:0 0 12px;font-size:14.5px">SemillaIA escucha tu Spotify y tu Instagram y te trae el contacto de 10 curadores de playlists activas y sin bots, para que les escribas y entres en sus listas. Cada búsqueda suma los curadores nuevos a tu planilla de Google Sheets, en Tus activos.</p>'
           +'<div class="card" style="padding:16px">'+cuerpo+(msg?'<p style="margin:10px 0 0;font-size:13.5px;color:#7A1F3A">'+esc(msg)+'</p>':'')+'</div>';
         const b=plEl.querySelector('#v3plb'); if(b) b.onclick=buscarPl; };
-      const PASOS=['Escuchando tu Spotify…','Mirando tu Instagram…','Entendiendo tu sonido y tus referencias…','Buscando entre miles de playlists verificadas…','Descartando las infladas y las abandonadas…','Eligiendo las 10 que mejor te calzan…'];
+      const PASOS=['Escuchando tu Spotify…','Mirando tu Instagram…','Entendiendo tu sonido y tus referencias…','Buscando entre miles de playlists verificadas…','Descartando las infladas y las abandonadas…','Eligiendo los 10 curadores que mejor te calzan…'];
       const buscarPl=async()=>{ const c=await datos();
         if(!c.sp&&!c.ig){ pintarPl(null,'Conectá tu Spotify o tu Instagram en Tus conexiones (en tu perfil) para buscar playlists.'); return; }
         window.SRE&&window.SRE('playlists_buscar',{}); pintarPl('buscando'); let i=0; const t=setInterval(()=>{ const e=plEl.querySelector('#v3plp'); if(e) e.textContent=PASOS[Math.min(i++,PASOS.length-1)]; },10000);
         try{ const r=await fetch('https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/curadores-ia',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:(window.__D&&window.__D.cliente&&window.__D.cliente.nombre)||slug,email:miMail(),instagram:c.ig,spotify:c.sp})});
           const d=await r.json(); clearInterval(t); if(!r.ok||d.error) throw new Error(d.error||'');
-          lss(PK,{d,f:new Date().toLocaleDateString('es-AR')}); pintarPl(null); }
+          const f=new Date().toLocaleString('es-AR'); lss(PK,{d,f:f.split(',')[0],t:f}); pintarPl(null); sumarSheet(d,f.split(',')[0]); }
         catch(e){ clearInterval(t); pintarPl(null,(e&&e.message)||'No pudimos buscar ahora. Probá de nuevo en un rato.'); } };
-      pintarPl(null); }
+      pintarPl(null);
+      fetch(VMC+'?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(r=>{ const g=lsg(PK);
+        if(r&&r.url&&(!SH||SH.url!==r.url||SH.total!==r.total)){ SH=Object.assign({},SH||{},{url:r.url,total:r.total}); lss(SK,SH); pintarPl(null); }
+        if(g&&g.d&&(!SH||SH.sync!==g.f)) sumarSheet(g.d,g.f); }).catch(()=>{}); }
     let nav=document.getElementById('v3nav');
     if(!nav){ nav=document.createElement('nav'); nav.id='v3nav'; document.body.appendChild(nav); }
     const NV=[['hoy','Hoy'],['proyecto','Proyecto'],['actividades','Actividades'],['metricas','Métricas'],['ia','Reporte']];
