@@ -765,8 +765,17 @@ table{font-size:13px}
 <h3>Backend</h3>
 <p class="small"><b>Supabase</b> (<code>fdrxsjphlvvwwknnrjtx</code>): RPC <code>sub_get</code>, <code>meta_guardar</code>, <code>sub_reporte_borrar</code>, <code>sub_tarea_set/alta</code>, <code>sub_hito_cliente_alta/borrar</code>, <code>sub_nota_alta/borrar</code>, <code>sub_notif_alta</code>, <code>sub_venta_cliente2</code>; edge function <code>youtube-sync</code> v6. <b>VM Semillas</b> <code>status_clientes/</code>: <code>auto_status.py</code> (métricas del período, públicos de entradas), <code>informe.py</code> + <code>informe_datos.py</code> (reporte con Gemini), <code>cola.py</code> (cola, pedidos con fecha, publicar), <code>rehacer.py</code> (rehace reporte al cargar ventas), <code>titulos.py</code>, <code>push.py</code> (push + aviso en la app), <code>fotos.py</code> (foto de perfil desde Instagram). <code>semilla_webs/webs_srv.py</code>: <code>/web/venta</code>, <code>/web/cuenta</code>, <code>/web/chat</code>, <code>/web/estado</code>. YouTube del cliente: <code>oauth-youtube.html?c=&lt;slug&gt;&amp;k=&lt;token&gt;</code>. La clave de Gemini vive solo en la VM.</p>
 
-<h3>Comercial — ideas anotadas</h3>
-<p><b>23/10/2026 · Tono del bot cuando dejan de pagar.</b> Cuando alguien deja de pagar, SemillaIA deja de ser tan positiva: los diagnósticos se vuelven más rojos, sin mentir nunca, de forma sutil y gradual a lo largo de las semanas. Frente a la duda en un diagnóstico, se inclina hacia la lectura menos favorable. Idea anotada, sin implementar.</p>
+<h3>Monetización — cómo gana plata la app (ideas, todavía sin aplicar)</h3>
+<p class="small">«Comercial» queda para partnerships, precios y promos. Acá se anota qué da gratis cada función y qué se paga. Nada de esto está activo todavía: hoy todo funciona igual para todos.</p>
+<table>
+<tr><th>Función</th><th>Gratis</th><th>Pago (autoservicio)</th><th>Clientes de Semilla</th></tr>
+<tr><td>Landing (CREÁ TU LANDING)</td><td>Te la arma y la publica una vez</td><td>Actualizarla: editar, pedir cambios a SemillaIA, volver a armarla</td><td>Incluida, siempre actualizada</td></tr>
+<tr><td>Buscador de playlists</td><td>Una sola búsqueda de 20 playlists</td><td>20 playlists actualizadas por mes</td><td>20 playlists por semana</td></tr>
+<tr><td>Reporte</td><td>Mensual</td><td>Semanal</td><td>Semanal o según su cadencia</td></tr>
+<tr><td>Métricas avanzadas</td><td colspan="2">No se abren solas: «Para analizar con el equipo de Semilla Redes» (ya aplicado en la app desde el 23/10)</td><td>Se analizan con Agus en los encuentros</td></tr>
+</table>
+<p class="small">Para aplicar lo de playlists hay que llevar la búsqueda de 10 a 20 resultados (hoy devuelve 10).</p>
+<p><b>23/10/2026 · Tono del bot cuando dejan de pagar.</b> Cuando alguien deja de pagar, SemillaIA deja de ser tan positiva: los diagnósticos se vuelven más rojos, sin mentir nunca, de forma sutil y gradual a lo largo de las semanas. Frente a la duda en un diagnóstico, se inclina hacia la lectura menos favorable. <i>Alternativa a evaluar (Claude): en vez de cambiar el tono, que el plan gratis vea menos (frecuencia, detalle, recomendaciones), para no poner en duda la credibilidad de los diagnósticos.</i></p>
 
 <h3>Pendiente</h3>
 <table>
