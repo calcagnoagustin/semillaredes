@@ -749,6 +749,11 @@
     raiz.innerHTML=`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="v3g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#F9A43A"/><stop offset=".5" stop-color="#E1306C"/><stop offset="1" stop-color="#7B3FE4"/></linearGradient></defs></svg><div class="cab"><img src="/assets/semilla-redes-oliva.png" alt="Semilla Redes"><span class="sep"></span><span class="ia">semilla<b>IA</b></span><span class="esp"></span><button class="camp" id="v3camp" aria-label="Notificaciones">${ico.camp}<b id="v3nn"></b></button><button class="av" id="v3av" aria-label="Tu perfil">${ini}<img src="/assets/avatars/${slug}.jpg?v=${new Date().toISOString().slice(0,10)}" alt="" onerror="this.remove()"></button></div>
       <div class="scr" data-scr="hoy">${scrHoy}</div><div class="scr" data-scr="proyecto">${scrPro}</div><div class="scr" data-scr="actividades">${scrAct}</div><div class="scr" data-scr="metricas">${scrMet}</div><div class="scr" data-scr="ia">${scrIA}</div>`;
     const todo=raiz.querySelector('#v3todo'); if(app&&todo){ todo.appendChild(app); app.classList.remove('oculto'); }
+    /* Métricas avanzadas: el cliente no las abre solo, se miran con el equipo de Semilla Redes (Agus sí las ve) */
+    let esSemilla=false; try{ esSemilla=localStorage.getItem('sr_semilla')==='1'; }catch(e){}
+    if(todo&&!esSemilla){ const sm=todo.querySelector('summary');
+      if(sm){ sm.innerHTML='<span style="display:inline-flex;align-items:center;gap:8px;vertical-align:middle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex:0 0 16px"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Métricas avanzadas</span></span><span style="display:block;font-weight:400;font-size:13px;color:#6B6878;margin-top:3px">Para analizar con el equipo de Semilla Redes</span>';
+        sm.style.cursor='default'; sm.addEventListener('click',e=>{ if(!todo.dataset.abrir) e.preventDefault(); }); } }
     // conexiones para todos (20/10/2026): la misma pieza que usan los alumnos
     const cxEl=null;
     if(cxEl){ const cxIr=()=>window.SRConexiones.montar(cxEl,{slug,k:tok,plegado:true});
@@ -1041,7 +1046,7 @@
     const ve=(sel,fn)=>{ setTimeout(()=>{ const el=typeof sel==='function'?sel():document.querySelector(sel); if(el){ if(fn) fn(el); el.scrollIntoView({behavior:'smooth',block:'start'}); el.classList.add('srFlash'); setTimeout(()=>el.classList.remove('srFlash'),1800); } },120); };
     if(k==='hitos'){ HFORM=true; TAB='proyecto'; SS('tab','proyecto'); armar(window.__D); ve('#v3ho'); }
     else if(k==='notas'){ ir('proyecto',true); ve('#v3nt',el=>el.focus()); }
-    else if(['ventas','activos'].includes(k)&&window.srBuscar){ ir('metricas',true); const t=document.getElementById('v3todo'); if(t) t.open=true; setTimeout(()=>{ window.srIrA(window.srBuscar(k)||t); },150); }
+    else if(['ventas','activos'].includes(k)&&window.srBuscar){ ir('metricas',true); const t=document.getElementById('v3todo'); if(t){ t.dataset.abrir='1'; t.open=true; } setTimeout(()=>{ window.srIrA(window.srBuscar(k)||t); },150); }
     else if(k==='fechas'){ FFORM=true; TAB='actividades'; SS('tab','actividades'); armar(window.__D); ve('#v3ff'); }
     else if(k==='tareas'){ ir('actividades',true); ve('#v3tarea'); }
     else if(k==='web'){ ir('proyecto',true); ve('#v3web'); }
