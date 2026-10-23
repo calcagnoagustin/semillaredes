@@ -705,7 +705,7 @@
       <p class="bj" style="margin:0 0 10px;font-size:14.5px">Dejanos lo que quieras que tengamos en cuenta: una idea, una duda, algo que pasó en estos días.</p>
       <div class="card notas3"><div class="nn"><textarea id="v3nt" rows="3" placeholder="Escribí acá…"></textarea><button id="v3nadd">Guardar nota</button></div>
         ${NT.map(n=>`<div class="nt"><div class="cb"><b class="${n.autor==='semilla'?'sem':''}">${n.autor==='semilla'?'Semilla Redes':'Vos'}</b><small>${new Date(n.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</small>${n.autor==='semilla'?'':`<span class="sp"></span>${IB('nota',n.id)}`}</div>${EDon('nota',n.id)?EDF([{v:String(n.texto||'').replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g,''),area:1}]):`<p>${esc(String(n.texto||'').replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g,'')).replace(/\n/g,'<br>')}</p>`}</div>`).join('')}</div>
-      <div id="v3web"></div>`;
+      <div id="v3web"></div><div id="v3pl"></div>`;
 
     // --- SemillaIA ---
     const hx=(hero.match(/<div class="x">([\s\S]*?)<\/div>/)||[])[1]||'';
@@ -784,6 +784,41 @@
         if(w&&w.url){ c=document.createElement('a'); c.href=w.url+(w.url.includes('?')?'&':'?')+'editar='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok); c.target='_blank'; c.rel='noopener'; c.addEventListener('click',ev=>{ window.SRE&&window.SRE('web_editar',{}); if('ontouchstart' in window){ ev.preventDefault(); location.href=c.href+'&volver='+encodeURIComponent(location.href); } }); }
         else if(a){ c=a.cloneNode(true); }
         if(!c) return; c.className='edt'; c.innerHTML='✎ Editá'; x.appendChild(c); }); }; ponerWeb();
+    /* BUSCADOR DE PLAYLISTS (23/10/2026): la misma IA de curadores.html, con el Spotify y el Instagram que ya conectó */
+    const plEl=raiz.querySelector('#v3pl');
+    if(plEl){ const PK='sr_pl_'+slug, lsg=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}, lss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+      const miMail=()=>{ try{ for(const k of Object.keys(localStorage)) if(/^sb-.*-auth-token$/.test(k)){ const u=(JSON.parse(localStorage.getItem(k))||{}).user; if(u&&u.email) return u.email; } }catch(e){} return 'app+'+slug+'@semillaredes.com'; };
+      let CXD=null;
+      const datos=async()=>{ if(CXD) return CXD; try{ const r=await fetch('https://fdrxsjphlvvwwknnrjtx.supabase.co/rest/v1/rpc/con_get',{method:'POST',headers:{apikey:'sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17','Content-Type':'application/json'},body:JSON.stringify({p_slug:slug,p_k:tok})}).then(x=>x.json()); const c=(r&&r.conexiones)||{};
+          CXD={sp:(c.spotify&&c.spotify.estado==='conectado'&&c.spotify.valor)||'', ig:(c.instagram&&c.instagram.estado==='conectado'&&c.instagram.valor)||''}; }catch(e){ CXD={sp:'',ig:''}; } return CXD; };
+      const fmtN=n=>Number(n||0).toLocaleString('es-AR');
+      const lista=d=>{ const pls=(d&&d.playlists)||[]; const p=(d&&d.perfil)||{};
+        if(!pls.length) return '<p style="margin:0;font-size:14.5px;line-height:1.5;color:#3A3846">'+esc((d&&d.aviso)||'Todavía no encontramos playlists con contacto para tu perfil.')+'</p>';
+        return (p.descripcion?'<p style="margin:0 0 4px;font-size:14px;line-height:1.5;color:#3A3846">'+esc(p.descripcion)+'</p>':'')
+         +(p.referencias&&p.referencias.length?'<p style="margin:0 0 12px;font-size:13px;color:#6B6878">Tu vecindario sonoro: '+esc(p.referencias.join(' · '))+'</p>':'')
+         +pls.map((x,i)=>'<div style="border-top:1px solid #E8E1D3;padding:12px 0 2px">'
+           +'<p style="margin:0;font-weight:700;color:'+NAVY+';font-size:15.5px;line-height:20px">'+(i+1)+'. '+esc(x.name)+'</p>'
+           +'<p style="margin:2px 0 0;font-size:13px;color:#6B6878">Curada por '+esc(x.owner||'?')+' · '+fmtN(x.followers)+' seguidores</p>'
+           +(x.razon?'<p style="margin:6px 0 0;font-size:14px;line-height:1.45;color:#3A3846">'+esc(x.razon)+'</p>':'')
+           +'<p style="margin:8px 0 0;font-size:13.5px;display:flex;flex-wrap:wrap;gap:6px 14px"><a href="'+esc(x.spotify_url)+'" target="_blank" rel="noopener" style="color:'+NAVY+';font-weight:600">Abrir en Spotify</a>'
+           +(x.instagram?'<a href="https://instagram.com/'+esc(x.instagram)+'" target="_blank" rel="noopener" style="color:#7A1F3A;font-weight:600">Escribile: @'+esc(x.instagram)+'</a>':(x.email?'<a href="mailto:'+esc(x.email)+'" style="color:#7A1F3A;font-weight:600">Escribile: '+esc(x.email)+'</a>':''))+'</p></div>').join(''); };
+      const pintarPl=(estado,msg)=>{ const g=lsg(PK);
+        let cuerpo;
+        if(estado==='buscando') cuerpo='<p style="margin:0;font-size:15px;color:'+NAVY+';font-weight:600">Buscando tus playlists…</p><p id="v3plp" style="margin:4px 0 0;font-size:13.5px;color:#6B6878">Escuchando tu música. Tarda uno o dos minutos.</p>';
+        else if(g&&g.d) cuerpo='<p style="margin:0 0 10px;font-size:12.5px;color:#6B6878">Búsqueda del '+esc(g.f||'')+'</p>'+lista(g.d)+'<button id="v3plb" style="display:block;width:100%;height:48px;margin-top:14px;border:1px solid #E1D9C9;border-radius:12px;background:#fff;color:'+NAVY+';font:600 15px/1 Inter,sans-serif;cursor:pointer">Buscar de nuevo</button>';
+        else cuerpo='<button id="v3plb" style="display:block;width:100%;height:52px;border:0;border-radius:12px;background:'+NAVY+';color:#fff;font:700 15px/1 Inter,sans-serif;letter-spacing:.6px;cursor:pointer">BUSCÁ PLAYLISTS PARA TU MÚSICA</button>';
+        plEl.innerHTML='<div class="tit2"><h2>Playlists para tu música</h2></div><p class="bj" style="margin:0 0 12px;font-size:14.5px">SemillaIA escucha tu Spotify y tu Instagram y te trae 10 playlists activas, sin bots, con el contacto de quien las arma y por qué te sirven.</p>'
+          +'<div class="card" style="padding:16px">'+cuerpo+(msg?'<p style="margin:10px 0 0;font-size:13.5px;color:#7A1F3A">'+esc(msg)+'</p>':'')+'</div>';
+        const b=plEl.querySelector('#v3plb'); if(b) b.onclick=buscarPl; };
+      const PASOS=['Escuchando tu Spotify…','Mirando tu Instagram…','Entendiendo tu sonido y tus referencias…','Buscando entre miles de playlists verificadas…','Descartando las infladas y las abandonadas…','Eligiendo las 10 que mejor te calzan…'];
+      const buscarPl=async()=>{ const c=await datos();
+        if(!c.sp&&!c.ig){ pintarPl(null,'Conectá tu Spotify o tu Instagram en Tus conexiones (en tu perfil) para buscar playlists.'); return; }
+        window.SRE&&window.SRE('playlists_buscar',{}); pintarPl('buscando'); let i=0; const t=setInterval(()=>{ const e=plEl.querySelector('#v3plp'); if(e) e.textContent=PASOS[Math.min(i++,PASOS.length-1)]; },10000);
+        try{ const r=await fetch('https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/curadores-ia',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:(window.__D&&window.__D.cliente&&window.__D.cliente.nombre)||slug,email:miMail(),instagram:c.ig,spotify:c.sp})});
+          const d=await r.json(); clearInterval(t); if(!r.ok||d.error) throw new Error(d.error||'');
+          lss(PK,{d,f:new Date().toLocaleDateString('es-AR')}); pintarPl(null); }
+        catch(e){ clearInterval(t); pintarPl(null,(e&&e.message)||'No pudimos buscar ahora. Probá de nuevo en un rato.'); } };
+      pintarPl(null); }
     let nav=document.getElementById('v3nav');
     if(!nav){ nav=document.createElement('nav'); nav.id='v3nav'; document.body.appendChild(nav); }
     const NV=[['hoy','Hoy'],['proyecto','Proyecto'],['actividades','Actividades'],['metricas','Métricas'],['ia','Reporte']];
