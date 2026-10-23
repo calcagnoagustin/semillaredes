@@ -29,6 +29,28 @@
   #v3 .cab .av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%}
   #v3 h1.v3t{font-family:'Playfair Display',serif;font-weight:600;font-size:34px;line-height:1.1;color:${NAVY};margin:0}
   #v3 .bj{font-size:16px;color:#55525F;margin:4px 0 0}
+  #v3 .dcard{margin-top:22px;padding:18px 14px 14px;border-radius:20px}
+  #v3 .dcard .dhd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 2px 14px}
+  #v3 .dcard .dhd h3{margin:0;font:700 11.5px/1.2 Inter,sans-serif;letter-spacing:1.9px;white-space:nowrap;text-transform:uppercase;color:#5F6A30}
+  #v3 .dnot{display:flex;align-items:center;gap:6px;padding:4px 10px 4px 4px;white-space:nowrap;border-radius:999px;background:#F1EFE4}
+  #v3 .dnot .bl{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#E6E4D2;color:#5F6A30;flex:0 0 auto}
+  #v3 .dnot .bl svg{width:15px;height:15px}
+  #v3 .dnot b{display:block;font-size:10px;font-weight:600;line-height:1.25;color:#2F3A12}
+  #v3 .dnot small{display:block;font-size:10px;line-height:1.25;color:#6B6E7E}
+  #v3 .din{position:relative;display:block;min-height:200px;padding:16px 12px 16px;border:1px solid #EAE3D5;border-radius:14px;background:#F8F4EB;text-decoration:none;color:inherit;overflow:hidden}
+  #v3 .din .dtx{position:relative;z-index:1;max-width:184px}
+  #v3 .din .dk{margin:0;font:700 10px/1.3 Inter,sans-serif;letter-spacing:1.6px;white-space:nowrap;text-transform:uppercase;color:#5F6A30}
+  #v3 .din .dt{margin:8px 0 0;font-family:'Playfair Display',serif;font-weight:700;font-size:18.5px;line-height:1.14;color:#0E1E4F}
+  #v3 .din .dr{margin:8px 0 0;font-size:13px;line-height:1.45;color:#3A3F5A;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  #v3 .din .db{display:inline-flex;align-items:center;gap:9px;height:38px;margin-top:14px;padding:0 16px;border-radius:999px;background:#5F6A30;color:#fff;font:500 14.5px/1 Inter,sans-serif}
+  #v3 .din .db svg{width:16px;height:16px}
+  #v3 .din .da{position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:152px;height:auto;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%),linear-gradient(180deg,transparent,#000 5%,#000 95%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 6%),linear-gradient(180deg,transparent,#000 5%,#000 95%,transparent);mask-composite:intersect}
+  #v3 .dtodos{display:grid;grid-template-columns:52px 1fr 24px;align-items:center;gap:14px;margin-top:12px;padding:16px 18px 16px 14px;border-radius:18px;text-decoration:none;color:inherit}
+  #v3 .dtodos .ib{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:#F0EBE1;color:#0E1E4F}
+  #v3 .dtodos .ib svg{width:24px;height:24px}
+  #v3 .dtodos b{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:18px;line-height:1.2;color:#0E1E4F}
+  #v3 .dtodos small{display:block;margin-top:3px;font-size:13px;line-height:1.35;color:#6B6E7E}
+  #v3 .dtodos .fl{width:22px;height:22px;color:#0E1E4F}
   #v3 .tit2{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 10px}
   #v3 .tit2 h3{margin:0;font-size:12.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#24242C}
   #v3 .tit2 h2{margin:0;font-family:'Playfair Display',serif;font-size:23px;font-weight:600;color:${NAVY}}
@@ -326,12 +348,19 @@
   .v3hoja .vo{width:44px;height:44px;border:0;background:none;color:${NAVY};display:grid;place-items:center;cursor:pointer}
   .v3hoja .hc{max-width:560px;margin:0 auto;padding:16px 18px calc(40px + env(safe-area-inset-bottom,0px))}
   .v3hoja .card{background:#FBF8F2;border:1px solid #E7DFCF;border-radius:18px}
-  .v3hoja .dk{margin:6px 0 0;font:700 11.5px/1.3 Inter,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:#87863A}
-  .v3hoja .dt{margin:10px 0 0;font-family:'Playfair Display',serif;font-size:28px;font-weight:600;line-height:1.15;color:${NAVY}}
-  .v3hoja .df{margin:8px 0 0;font-size:13.5px;color:#8A8577}
-  .v3hoja .da{margin:18px 0 0;padding:14px 14px 12px}.v3hoja .da p{margin:0 0 10px;font:600 13.5px/1.2 Inter,sans-serif;color:${NAVY}}.v3hoja .da audio{display:block;width:100%}
-  .v3hoja .dx{margin:20px 0 0;font-size:16.5px;line-height:1.62;color:#2E2C36}.v3hoja .dx p{margin:0 0 14px}.v3hoja .dx h2,.v3hoja .dx h3{font-family:'Playfair Display',serif;color:${NAVY};line-height:1.2;margin:24px 0 10px}.v3hoja .dx ul,.v3hoja .dx ol{padding-left:22px;margin:0 0 14px}.v3hoja .dx li{margin:0 0 6px}.v3hoja .dx a{color:${NAVY}}.v3hoja .dx img{max-width:100%;height:auto;border-radius:12px}.v3hoja .dx blockquote{margin:0 0 14px;padding-left:14px;border-left:3px solid #C9C08A;color:#55525E}
-  .v3hoja .dv{display:flex;align-items:center;justify-content:center;height:52px;margin:22px 0 0;border-radius:12px;background:${NAVY};color:#fff;text-decoration:none;font:700 15px/1 Inter,sans-serif;letter-spacing:.4px}
+  .v3hoja .dk{margin:8px 0 0;font:700 12px/1.3 Inter,sans-serif;letter-spacing:2.2px;text-transform:uppercase;color:#5F6A30}
+  .v3hoja .dt{margin:10px 0 0;font-family:'Playfair Display',serif;font-style:italic;font-weight:800;font-size:36px;line-height:1.02;letter-spacing:-.5px;color:#0E1E4F}
+  .v3hoja .df{margin:12px 0 0;font-size:15px;color:#8C8C96}
+  .v3hoja .dau{display:flex;align-items:center;gap:14px;width:100%;margin:20px 0 0;padding:10px 20px 10px 10px;border:0;border-radius:999px;background:#ECEAD6;text-align:left;font:inherit;color:inherit;text-decoration:none;cursor:pointer}
+  .v3hoja .dau .pl{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:#5F6A30;color:#fff;flex:0 0 auto}
+  .v3hoja .dau .pl svg{width:18px;height:18px}
+  .v3hoja .dau b{display:block;font-size:16px;font-weight:600;line-height:1.3;color:#0E1E4F}
+  .v3hoja .dau small{display:block;margin-top:2px;font-size:13px;line-height:1.3;color:#6B6E7E}
+  .v3hoja .dau .br{display:none;height:4px;margin-top:7px;border-radius:2px;background:rgba(95,106,48,.18);overflow:hidden}.v3hoja .dau .br i{display:block;height:100%;width:0;background:#5F6A30}
+  .v3hoja .dau.on .br{display:block}
+  .v3hoja .dx{margin:24px 0 0;font-size:17px;line-height:1.62;color:#2B3150}.v3hoja .dx p{margin:0 0 14px}.v3hoja .dx h3{margin:26px 0 8px;font-family:'Playfair Display',serif;font-weight:700;font-size:25px;line-height:1.15;color:#0E1E4F}.v3hoja .dx h2{font-family:'Playfair Display',serif;color:#0E1E4F;line-height:1.2;margin:24px 0 10px}.v3hoja .dx ul,.v3hoja .dx ol{padding-left:22px;margin:0 0 14px}.v3hoja .dx li{margin:0 0 6px}.v3hoja .dx a{color:#0E1E4F;text-underline-offset:3px}.v3hoja .dx strong{color:#0E1E4F}.v3hoja .dx img{max-width:100%;height:auto;border-radius:12px}
+  .v3hoja .dv{display:flex;align-items:center;justify-content:center;gap:10px;height:52px;margin:26px 0 0;border-radius:999px;background:#5F6A30;color:#fff;text-decoration:none;font:600 15.5px/1 Inter,sans-serif}
+  .v3hoja .dv svg{width:18px;height:18px}
   .v3hoja .vacio{padding:22px 18px;color:#6F6B7C;font-size:15px;line-height:1.45;text-align:center}
   .v3hoja .lista>*{border-top:1px solid #EDE6D8}.v3hoja .lista>*:first-child{border-top:0}
   .v3hoja .ni{width:100%;display:grid;grid-template-columns:40px 1fr 10px;column-gap:12px;align-items:start;text-align:left;border:0;background:none;padding:14px;cursor:pointer;font:inherit;color:inherit}
@@ -801,14 +830,13 @@
     /* LOS DROPS EN LA APP (23/10/2026): el último drop del newsletter, sale los viernes (drops_app.py publica drops/ultimos.json) */
     const dropEl=raiz.querySelector('#v3drop');
     if(dropEl&&DP_BETA.includes(slug)) dropsCargar().then(L=>{ const d=L&&L[0]; if(!d) return;
-      const dias=(Date.now()-new Date(d.fecha+'T12:00:00').getTime())/864e5, nuevo=dias<=7;
-      dropEl.innerHTML='<div class="tit2"><h3>Drop de la semana</h3>'+(nuevo?'<span style="font:700 11px/1 Inter,sans-serif;letter-spacing:1px;text-transform:uppercase;color:#fff;background:#7A1F3A;border-radius:999px;padding:5px 9px">Nuevo</span>':'')+'</div>'
-        +'<a class="card" href="'+esc(d.url)+'" style="display:block;padding:16px 18px;text-decoration:none;color:inherit">'
-        +'<p style="margin:0;font:700 11.5px/1.3 Inter,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:#87863A">Drop #'+d.n+(d.categoria?' · '+esc(d.categoria):'')+'</p>'
-        +'<p style="margin:8px 0 0;font-family:\'Playfair Display\',serif;font-size:21px;font-weight:600;line-height:1.2;color:'+NAVY+'">'+esc(d.titulo)+'</p>'
-        +(d.resumen?'<p style="margin:8px 0 0;font-size:14.5px;line-height:1.5;color:#3A3846">'+esc(d.resumen)+'</p>':'')
-        +'<p style="margin:12px 0 0;font:600 14.5px/1 Inter,sans-serif;color:'+NAVY+'">'+(d.audio?'Leer y escuchar →':'Leer el drop →')+'</p></a>';
-      dropEl.querySelector('a').addEventListener('click',ev=>{ ev.preventDefault(); dropAbrir(d.n); }); }).catch(()=>{});
+      const flecha='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+      dropEl.innerHTML='<div class="card dcard"><div class="dhd"><h3>Drop del viernes</h3><span class="dnot"><span class="bl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a6 6 0 0 0-6 6v4.2L4.4 16a.8.8 0 0 0 .7 1.2h13.8a.8.8 0 0 0 .7-1.2L18 13.2V9a6 6 0 0 0-6-6zm-2.2 15.6a2.3 2.3 0 0 0 4.4 0z"/></svg></span><span><b>Notificaciones activadas</b><small>Todos los viernes</small></span></span></div>'
+        +'<a class="din" href="'+esc(d.url)+'"><div class="dtx"><p class="dk">Drop #'+d.n+(d.categoria?' · '+esc(d.categoria):'')+'</p><p class="dt">'+esc(d.titulo)+'</p>'
+        +(d.resumen?'<p class="dr">'+esc(d.resumen)+'</p>':'')+'<span class="db">'+(d.audio?'Leer y escuchar':'Leer el drop')+' '+flecha+'</span></div><img class="da" src="/assets/drop-vinilo.webp" width="402" height="424" alt=""></a></div>'
+        +'<a class="card dtodos" href="https://semillaredes.com/drops/" target="_blank" rel="noopener"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 6.5C10 5 7.2 4.5 3.5 4.8v13c3.7-.3 6.5.2 8.5 1.7 2-1.5 4.8-2 8.5-1.7v-13C16.8 4.5 14 5 12 6.5z"/><path d="M12 6.5v13"/></svg></span><span><b>Todos los drops</b><small>Explorá el archivo completo de ideas para tu proyecto artístico.</small></span><svg class="fl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>';
+      dropEl.querySelector('.din').addEventListener('click',ev=>{ ev.preventDefault(); dropAbrir(d.n); });
+      dropEl.querySelector('.dtodos').addEventListener('click',()=>{ window.SRE&&window.SRE('drops_todos',{}); }); }).catch(()=>{});
     /* BUSCADOR DE PLAYLISTS (23/10/2026): la misma IA de curadores.html, con el Spotify y el Instagram que ya conectó */
     const plEl=raiz.querySelector('#v3pl');
     if(plEl&&DP_BETA.includes(slug)){ const PK='sr_pl_'+slug, lsg=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}, lss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
@@ -999,14 +1027,22 @@
   function dropsCargar(){ if(DROPS_L) return Promise.resolve(DROPS_L); return fetch('/drops/ultimos.json?v='+new Date().toISOString().slice(0,13)).then(r=>r.ok?r.json():null).then(j=>(DROPS_L=(j&&j.drops)||[])); }
   function dropAbrir(n){ window.SRE&&window.SRE('drop_abrir',{n}); dropsCargar().then(L=>{ const d=L.find(x=>x.n===n)||L[0]; if(!d) return;
     const f=d.fecha?new Date(d.fecha+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'}):'';
+    const icP='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>', icS='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>';
+    const tx=(d.html||('<p>'+esc(d.resumen||'')+'</p>')).replace(/<p>\s*<strong>([^<]{2,90})<\/strong>\s*:?\s*<\/p>/g,'<h3>$1</h3>');
     const h=hoja('v3drophoja','Drop #'+d.n,
       '<p class="dk">Drop #'+d.n+(d.categoria?' · '+esc(d.categoria):'')+'</p><h1 class="dt">'+esc(d.titulo)+'</h1>'+(f?'<p class="df">'+f+'</p>':'')
-      +(d.audio?'<div class="card da"><p>Escuchalo, contado por Agus</p><audio controls preload="metadata" src="'+esc(d.audio)+'"></audio></div>':'')
-      +'<div class="dx">'+(d.html||('<p>'+esc(d.resumen||'')+'</p>'))+'</div>'
-      +'<a class="dv" href="https://semillaredes.com/drops/" target="_blank" rel="noopener">Ver todos los drops</a>');
+      +(d.audio?'<button class="dau" type="button"><span class="pl">'+icP+'</span><span style="flex:1"><b>Escuchar este drop</b><small>Contado por Agus</small><span class="br"><i></i></span></span></button>'
+               :'<a class="dau" href="https://chat.whatsapp.com/ChPARJAjr0BA8OUBGFIK1K?mode=gi_t" target="_blank" rel="noopener"><span class="pl">'+icP+'</span><span><b>Escuchar este drop</b><small>Audio de Agus en el grupo de la membresía</small></span></a>')
+      +'<div class="dx">'+tx+'</div>'
+      +'<a class="dv" href="https://semillaredes.com/drops/" target="_blank" rel="noopener">Ver todos los drops <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>');
     h.querySelectorAll('.dx a').forEach(a=>{ a.target='_blank'; a.rel='noopener'; });
-    const au=h.querySelector('audio'); if(au) au.addEventListener('play',()=>{ window.SRE&&window.SRE('drop_escuchar',{n:d.n}); },{once:true});
-    h.querySelector('.vo').addEventListener('click',()=>{ if(au) au.pause(); }); }); }
+    if(d.audio){ const au=new Audio(d.audio); au.preload='metadata'; const b=h.querySelector('.dau'), pl=b.querySelector('.pl'), bi=b.querySelector('.br i'), sm=b.querySelector('small');
+      au.addEventListener('loadedmetadata',()=>{ if(au.duration) sm.textContent='Contado por Agus · '+Math.max(1,Math.round(au.duration/60))+' min aprox.'; });
+      const sync=()=>{ pl.innerHTML=au.paused?icP:icS; b.classList.toggle('on',au.currentTime>0); if(au.duration) bi.style.width=(100*au.currentTime/au.duration)+'%'; };
+      ['play','pause','timeupdate','ended'].forEach(e=>au.addEventListener(e,sync));
+      b.onclick=()=>{ if(au.paused){ au.play(); window.SRE&&window.SRE('drop_escuchar',{n:d.n}); } else au.pause(); };
+      h.querySelector('.vo').addEventListener('click',()=>au.pause()); }
+  }); }
   // ---- Notificaciones ----
   let NOTIFS=null;
   const fechaN=f=>{ const d=new Date(f), h=new Date(); const dd=Math.round((new Date(h.toDateString())-new Date(d.toDateString()))/864e5);
