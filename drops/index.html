@@ -26,6 +26,11 @@ img{display:block;max-width:100%;height:auto}
 :focus-visible{outline:2.5px solid var(--coral);outline-offset:3px;border-radius:4px}
 .pf{font-family:"Playfair Display",Georgia,serif}
 
+/* ---------- VOLVER A LA APP (cuando se llega desde la app) ---------- */
+.volver-app{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:center;gap:8px;height:52px;background:var(--navy);color:#fff;text-decoration:none;font-weight:600;font-size:16px}
+.volver-app[hidden]{display:none}
+.volver-app svg{width:20px;height:20px;flex:0 0 auto}
+.volver-app:hover{background:#18295F}
 /* ---------- NAV ---------- */
 .top{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:24px;height:84px}
 .brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--navy);font-weight:600;font-size:17px;letter-spacing:.3em;white-space:nowrap}
@@ -180,6 +185,7 @@ footer a:hover{color:var(--oliva)}
 </style>
 </head>
 <body>
+<a class="volver-app" id="volverApp" href="#" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Volver a la app</a>
 <div class="wrap">
   <header class="top">
     <a class="brand" href="https://semillaredes.com/" aria-label="Semilla Redes">
@@ -477,6 +483,11 @@ function ruta(){
 }
 document.querySelector('.volver').addEventListener('click',e=>{e.preventDefault();history.pushState('', '', location.pathname);ruta();});
 window.addEventListener('hashchange',ruta);
+// si se llegó desde la app: barra fija para volver (la app pasa ?volver=<su dirección>)
+(function(){ let v=null; try{ const q=new URLSearchParams(location.search).get('volver');
+    if(q&&/^https:\/\/(semillaredes|semillaia)\.com\//.test(q)) sessionStorage.setItem('sr_volver_app',q);
+    v=sessionStorage.getItem('sr_volver_app'); }catch(e){}
+  if(!v) return; const b=document.getElementById('volverApp'); b.href=v; b.hidden=false; })();
 lista(); ruta();
 </script>
 </body>

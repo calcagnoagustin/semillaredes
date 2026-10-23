@@ -836,7 +836,7 @@
       const lista=WEBV.length?WEBV:[{titulo:'Tu web',url:''}];
       web.innerHTML='<div class="tit2"><h2>'+(lista.length>1?'Tus webs':'Tu web')+'</h2></div><p class="bj" style="margin:0 0 10px;font-size:14.5px">Tocá para verla. Con «Editá» la abrís en modo edición: cambiás textos y fotos, o le pedís cambios a SemillaIA. Nada se publica sin que lo apruebes.</p><div class="card lista webs">'+lista.map((w,n)=>'<div class="fila" style="grid-template-columns:1fr auto">'+(w.url?'<a class="tx" style="text-decoration:none" href="'+esc(w.url)+'" target="_blank" rel="noopener"><b style="color:'+NAVY+'">'+esc(w.titulo||'Tu web')+'</b><br><span style="color:#8A8577;font-size:13.5px">'+esc(String(w.url).replace(/^https?:\/\//,'').replace(/\/(index\.html)?$/,''))+'</span></a>':'<span class="tx"><b style="color:'+NAVY+'">Tu web</b></span>')+'<span class="ed" data-wed="'+n+'"></span></div>').join('')+'</div>';
       web.querySelectorAll('[data-wed]').forEach(x=>{ const i=+x.dataset.wed, a=eds[i], w=lista[i]; let c;
-        if(w&&w.url){ c=document.createElement('a'); c.href=w.url+(w.url.includes('?')?'&':'?')+'editar='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok); c.target='_blank'; c.rel='noopener'; c.addEventListener('click',ev=>{ window.SRE&&window.SRE('web_editar',{}); if('ontouchstart' in window){ ev.preventDefault(); location.href=c.href+'&volver='+encodeURIComponent(location.href); } }); }
+        if(w&&w.url){ c=document.createElement('a'); c.href=w.url+(w.url.includes('?')?'&':'?')+'editar='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok); c.target='_blank'; c.rel='noopener'; c.addEventListener('click',ev=>{ window.SRE&&window.SRE('web_editar',{}); ev.preventDefault(); let top=location.href; try{ top=window.top.location.href; }catch(e){} const u=c.href+'&volver='+encodeURIComponent(top.split('#')[0]); try{ window.top.location.href=u; }catch(e){ location.href=u; } }); }
         else if(a){ c=a.cloneNode(true); }
         if(!c) return; c.className='edt'; c.innerHTML='✎ Editá'; x.appendChild(c); }); }; ponerWeb();
     /* LOS DROPS EN LA APP (23/10/2026): el último drop del newsletter, sale los viernes (drops_app.py publica drops/ultimos.json) */
@@ -846,9 +846,9 @@
       dropEl.innerHTML='<div class="card dcard"><div class="dhd"><h3>Drop del viernes</h3><span class="dnot"><span class="bl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a6 6 0 0 0-6 6v4.2L4.4 16a.8.8 0 0 0 .7 1.2h13.8a.8.8 0 0 0 .7-1.2L18 13.2V9a6 6 0 0 0-6-6zm-2.2 15.6a2.3 2.3 0 0 0 4.4 0z"/></svg></span><span><b>Notificaciones activadas</b><small>Todos los viernes</small></span></span></div>'
         +'<a class="din" href="'+esc(d.url)+'"><div class="dtx"><p class="dk">Drop #'+d.n+(d.categoria?' · '+esc(d.categoria):'')+'</p><p class="dt">'+esc(d.titulo)+'</p>'
         +(d.resumen?'<p class="dr">'+esc(d.resumen)+'</p>':'')+'<span class="db">'+(d.audio?'Leer y escuchar':'Leer el drop')+' '+flecha+'</span></div><img class="da" src="/assets/drop-vinilo.webp" width="402" height="424" alt=""></a></div>'
-        +'<a class="card dtodos" href="https://semillaredes.com/drops/" target="_blank" rel="noopener"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 6.5C10 5 7.2 4.5 3.5 4.8v13c3.7-.3 6.5.2 8.5 1.7 2-1.5 4.8-2 8.5-1.7v-13C16.8 4.5 14 5 12 6.5z"/><path d="M12 6.5v13"/></svg></span><span><b>Todos los drops</b><small>Explorá el archivo completo de ideas para tu proyecto artístico.</small></span><svg class="fl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>';
+        +'<a class="card dtodos" href="https://semillaredes.com/drops/"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 6.5C10 5 7.2 4.5 3.5 4.8v13c3.7-.3 6.5.2 8.5 1.7 2-1.5 4.8-2 8.5-1.7v-13C16.8 4.5 14 5 12 6.5z"/><path d="M12 6.5v13"/></svg></span><span><b>Todos los drops</b><small>Explorá el archivo completo de ideas para tu proyecto artístico.</small></span><svg class="fl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>';
       dropEl.querySelector('.din').addEventListener('click',ev=>{ ev.preventDefault(); dropAbrir(d.n); });
-      dropEl.querySelector('.dtodos').addEventListener('click',()=>{ window.SRE&&window.SRE('drops_todos',{}); }); }).catch(()=>{});
+      dropEl.querySelector('.dtodos').addEventListener('click',ev=>{ ev.preventDefault(); window.SRE&&window.SRE('drops_todos',{}); irDrops(); }); }).catch(()=>{});
     /* BUSCADOR DE PLAYLISTS (23/10/2026): la misma IA de curadores.html, con el Spotify y el Instagram que ya conectó */
     const plEl=raiz.querySelector('#v3pl');
     if(plEl&&DP_BETA.includes(slug)){ const PK='sr_pl_'+slug, lsg=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}, lss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
@@ -1111,6 +1111,8 @@
   document.addEventListener('click',e=>{ if(INFB&&!e.target.closest('.inf')&&!e.target.closest('.infb')) infCerrar(); });
   window.addEventListener('scroll',infCerrar,{passive:true});
   // ---- Drops (playlists + drops: por ahora solo estos proyectos) ----
+  const urlApp=()=>{ try{ return window.top.location.href.split('#')[0]; }catch(e){ return location.href.split('#')[0]; } };
+  const irDrops=()=>{ const u='https://semillaredes.com/drops/?volver='+encodeURIComponent(urlApp()); try{ window.top.location.href=u; }catch(e){ location.href=u; } };
   const DP_BETA=['eupatridas','eupatridas-1','semilla-redes','piku-yoga','hernan-onirico','hernan-onirico-2'];
   let DROPS_L=null;
   function dropsCargar(){ if(DROPS_L) return Promise.resolve(DROPS_L); return fetch('/drops/ultimos.json?v='+new Date().toISOString().slice(0,13)).then(r=>r.ok?r.json():null).then(j=>(DROPS_L=(j&&j.drops)||[])); }
@@ -1123,8 +1125,9 @@
       +(d.audio?'<button class="dau" type="button"><span class="pl">'+icP+'</span><span style="flex:1"><b>Escuchar este drop</b><small>Contado por Agus</small><span class="br"><i></i></span></span></button>'
                :'<a class="dau" href="https://chat.whatsapp.com/ChPARJAjr0BA8OUBGFIK1K?mode=gi_t" target="_blank" rel="noopener"><span class="pl">'+icP+'</span><span><b>Escuchar este drop</b><small>Audio de Agus en el grupo de la membresía</small></span></a>')
       +'<div class="dx">'+tx+'</div>'
-      +'<a class="dv" href="https://semillaredes.com/drops/" target="_blank" rel="noopener">Ver todos los drops <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>');
+      +'<a class="dv" href="https://semillaredes.com/drops/">Ver todos los drops <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>');
     h.querySelectorAll('.dx a').forEach(a=>{ a.target='_blank'; a.rel='noopener'; });
+    h.querySelector('.dv').addEventListener('click',ev=>{ ev.preventDefault(); irDrops(); });
     if(d.audio){ const au=new Audio(d.audio); au.preload='metadata'; const b=h.querySelector('.dau'), pl=b.querySelector('.pl'), bi=b.querySelector('.br i'), sm=b.querySelector('small');
       au.addEventListener('loadedmetadata',()=>{ if(au.duration) sm.textContent='Contado por Agus · '+Math.max(1,Math.round(au.duration/60))+' min aprox.'; });
       const sync=()=>{ pl.innerHTML=au.paused?icP:icS; b.classList.toggle('on',au.currentTime>0); if(au.duration) bi.style.width=(100*au.currentTime/au.duration)+'%'; };
