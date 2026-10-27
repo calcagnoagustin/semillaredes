@@ -606,7 +606,7 @@
       return `<div class="dest"><div class="de">Campaña destacada<span class="${on?'on':''}"><i></i>${on?'Activa':M.estado==='sin_circular'?'Sin circular':'Terminada'}</span></div>
         <h3>${esc(k.nombre)}</h3><div class="ds">${M.show?'Show el '+fl(M.show)+' · ':''}${M.desde?'Desde el '+fl(M.desde):''}${M.hasta?' hasta el '+fl(M.hasta):''}${M.diaria?' · '+SIM+nf(M.diaria)+' por día':''}</div>
         ${it.length?`<div class="dg">${it.map(x=>`<div><b>${x[0]}</b><small>${esc(x[1])}</small></div>`).join('')}</div>`:'<div class="ds" style="margin-top:12px">Los números aparecen en la próxima actualización.</div>'}
-        <div class="dp">${M.show?'Acumulado desde el '+fl(M.desde):'Acumulado de toda la campaña'}${M.ventas!=null?' · según el píxel de la tienda':''}${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; }).join('');
+        <div class="dp">${(M.show||M.corte)?'Acumulado desde el '+fl(M.desde):'Acumulado de toda la campaña'}${M.ventas!=null?' · según el píxel de la tienda':''}${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; }).join('');
     // --- Shows de la gira en Hoy (Koino): entradas vendidas según el píxel de Meta, una tarjeta por fecha que todavía no pasó ---
     // 22/10: cuándo se actualizaron los números por última vez
     const ACT=(()=>{ const a=[...R].reverse().map(r=>r.metricas&&r.metricas.actualizado).find(Boolean); if(!a) return ''; const z=String(a); const hoyS=new Date().toLocaleDateString('en-CA',{timeZone:'America/Argentina/Buenos_Aires'});
