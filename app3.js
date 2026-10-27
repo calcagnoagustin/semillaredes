@@ -90,6 +90,12 @@
   #v3 .flg .esp div{display:grid;place-items:center;aspect-ratio:4/5;padding:16px;text-align:center;font-size:13.5px;line-height:1.4;color:#6B6878}
   #v3 .flg .esp.error div{color:#7A1F3A}
   #v3 .cab .ver{margin-left:8px;padding:4px 7px;border-radius:999px;background:#ECEAD6;color:#5F6A30;font:700 10.5px/1 Inter,sans-serif;letter-spacing:.3px;white-space:nowrap}
+  #v3 .acum{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);padding:0}
+  #v3 .acum .ac{padding:16px 16px 14px}#v3 .acum .ac+.ac{border-left:1px solid #EDE6D8}
+  #v3 .acum .at{margin:0;font-family:'Playfair Display',serif;font-weight:700;font-size:18px;line-height:1.2;color:${NAVY}}
+  #v3 .acum .as{margin:3px 0 10px;font-size:12.5px;color:#8A8577}
+  #v3 .acum .ar{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:7px 0;border-top:1px solid #F0EADF;font-size:13.5px;color:#55525E}
+  #v3 .acum .ar b{font-size:14.5px;color:${NAVY};white-space:nowrap}
   #v3 .tit2{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 10px}
   #v3 .tit2 h3{margin:0;font-size:12.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#24242C}
   #v3 .tit2 h2{margin:0;font-family:'Playfair Display',serif;font-size:23px;font-weight:600;color:${NAVY}}
@@ -761,6 +767,13 @@
       <div class="card big"><div><div style="display:flex;align-items:center;gap:10px">${ico[SUBRED]}<div class="n">${nf(val(RD.k),Number.isInteger(Number(val(RD.k)))?0:1)}</div></div><div class="l">${RD.l}</div><div class="d">${dK(RD.k)}<small>${RD.ex}</small></div></div>${RD.kpis?`<div class="kp">${RD.kpis.map(([k,l])=>{const v=Number(val(k));return `<div><div class="n">${v<0?'−':''}${SIM}${nf(Math.abs(v),0)}</div><div class="l">${l}</div></div>`;}).join('')}</div>`:`<div class="sp">${linea(serie(RD.k),RD.col)}</div>`}</div>
       <div class="dos">${mini(RD.a)}${mini(RD.b)}</div>
       ${RD.ad?(()=>{const [p,t,l]=RD.ad, vis=val(p+'_visitas')!=null?p+'_visitas':p+'_clics';return `<div class="tit2"><h2>${t}</h2></div><div class="card big"><div><div class="n">${nf(val(vis))}</div><div class="l">${l}</div><div class="d"><small>${val(p+'_alcance')!=null?nf(val(p+'_alcance'))+' personas alcanzadas':''}</small></div></div><div class="sp">${linea(serie(vis),RD.col)}</div></div><div class="dos">${mini([p+'_costo_visita','costo por visita',true,'#E2767C',2])}${mini([p+'_inversion','inversión en el período',true,OLIVA])}</div>`;})():''}
+      ${SUBRED==='tk'?(()=>{ /* 27/10: acumulado de entradas — el mes y desde el inicio (pedido de Agus para Berco) */
+        const byD=new Map(); R.filter(r=>r.metricas&&r.metricas.tk_inversion!=null).forEach(r=>byD.set(String(r.desde).slice(0,10),r)); const L=[...byD.values()]; if(!L.length) return '';
+        const ult=L[L.length-1], mes=String(ult.hasta).slice(0,7), MN=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][+mes.slice(5)-1];
+        const suma=X=>X.reduce((a,r)=>{ const m=r.metricas, i=Number(m.tk_inversion)||0; a.t+=Number(m.tk_tickets)||0; a.i+=i; a.v+=(Number(m.tk_roas)||0)*i; return a; },{t:0,i:0,v:0});
+        const M=L.filter(r=>String(r.hasta).slice(0,7)===mes), tm=suma(M), tt=suma(L);
+        const col=(tit,sub,x)=>`<div class="ac"><p class="at">${tit}</p><p class="as">${sub}</p><div class="ar"><span>Entradas</span><b>${nf(x.t)}</b></div><div class="ar"><span>Inversión</span><b>${SIM}${nf(x.i,2)}</b></div><div class="ar"><span>Ventas</span><b>${SIM}${nf(x.v,2)}</b></div><div class="ar"><span>Retorno</span><b>${x.i?nf(x.v/x.i,2)+'x':'—'}</b></div></div>`;
+        return `<div class="tit2"><h2>Acumulado</h2></div><div class="card acum">${col('En '+MN,'Del '+fd(M[0].desde)+' al '+fd(ult.hasta),tm)}${col('Desde el inicio','Del '+fd(L[0].desde)+' al '+fd(ult.hasta),tt)}</div>`; })():''}
       ${SUBRED==='tk'&&TKP.length?`<div class="tit2"><h2>Públicos de la campaña</h2></div><div class="card lista tkp">${TKP.map(p=>`<div class="fila"><span class="tx ab"><b>${esc(p.nombre)}</b>${p.inversion>0?`<br><span>${nf(p.tickets)} ${p.tickets===1?'entrada':'entradas'} · ${p.costo!=null?SIM+nf(p.costo,2)+' por entrada':'sin ventas'}${p.alcance?` · ${nf(p.alcance)} personas`:''}</span>`:`<br><span>Público nuevo${p.inicio?`: arrancó el ${fd(p.inicio)}`:''}. Todavía sin resultados.</span>`}</span>${p.roas!=null&&p.inversion>0?`<span class="rt"><b>${nf(p.roas,2)}x</b><small>retorno</small></span>`:'<span></span>'}</div>`).join('')}</div>`:''}
       ${SUBRED==='ig'&&['lara-fichera'].includes(slug)?(()=>{ const ur=[...R].reverse().find(r=>r.metricas&&r.metricas.ig_paises&&r.metricas.ig_paises.length); if(!ur) return ''; const L=ur.metricas.ig_paises.slice(0,10), tot=Number(ur.metricas.ig_followers_total)||0, mx=Math.max(...L.map(z=>Number(z.seguidores)||0))||1;
         let DN=null; try{ DN=new Intl.DisplayNames(['es'],{type:'region'}); }catch(e){}
@@ -1196,6 +1209,7 @@
     'gestioná tus tickets':{d:'Las entradas de tus shows, en el mismo lugar que el resto de tu proyecto.',i:'Muy pronto vas a poder vender y seguir las entradas de tus fechas desde la app: cuántas se vendieron, por qué canal y cuánto costó cada una.'},
     'tus lanzamientos':{d:'Tus singles, EPs y discos, cada uno con su landing para compartir.',i:'Pegá los links de tu lanzamiento (Spotify, YouTube, Apple Music, Deezer…) y SemillaIA arma una landing con la portada, los colores del lanzamiento y todos los accesos. Compartila en tu bio, en historias y en tus anuncios.'},
     'tus flyers':{d:'Flyers para tus fechas y lanzamientos, diseñados con ChatGPT.',i:'Elegís la fecha o el lanzamiento, le contás cómo lo imaginás y ChatGPT diseña el flyer con tus datos, tu foto o la portada. Tarda alrededor de un minuto. Revisá siempre los textos antes de publicarlo.'},
+    'acumulado':{d:'Entradas, inversión y ventas del mes y desde que arrancó la campaña.',i:'Suma todos los períodos. Las ventas en plata salen del píxel de Meta en la ticketera (retorno por inversión). El mes toma los períodos que terminan en ese mes, por eso puede arrancar unos días antes.'},
     'tus activos':{d:'Todo lo que tu proyecto ya tiene: links, materiales y documentos.',i:'Tu Spotify, tu web, tu press kit, carpetas de fotos, la planilla de curadores… Tenerlo todo en un lugar nos deja usarlo en tu landing, tus reportes y tus campañas.'},
     'tu web':{d:'Tu web, siempre al día con lo que pasa en tu proyecto.',i:'Tocá para verla. Con «Editá» cambiás textos y fotos, o le pedís cambios a SemillaIA. Nada se publica sin que lo apruebes. Las fechas que cargás en la app aparecen solas.'},
     'tus webs':{d:'Tus webs, siempre al día con lo que pasa en tu proyecto.',i:'Tocá una para verla. Con «Editá» cambiás textos y fotos, o le pedís cambios a SemillaIA. Nada se publica sin que lo apruebes.'},
