@@ -67,6 +67,18 @@
   #v3 .tkpr .ic{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:#F0EBE1;color:${NAVY}}
   #v3 .tkpr b{display:block;font-size:15px;line-height:1.3;color:${NAVY}}
   #v3 .tkpr small{display:inline-block;margin-top:6px;padding:4px 10px;border-radius:999px;background:#ECEAD6;color:#5F6A30;font:700 11px/1.2 Inter,sans-serif;letter-spacing:1.4px;text-transform:uppercase}
+  #v3 .lzf{padding:16px}#v3 .lzf label{display:block;margin:0 0 6px;font:600 13px/1.3 Inter,sans-serif;color:${NAVY}}#v3 .lzf label small{font-weight:400;color:#8A8577}
+  #v3 .lzf textarea,#v3 .lzf input{width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid #E1D9C9;border-radius:10px;background:#fff;font:15px/1.4 Inter,sans-serif;color:#24242C}
+  #v3 .lzf textarea{resize:vertical;min-height:96px}
+  #v3 .lzc{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0}#v3 .lzc:empty{display:none}#v3 .lzc span{padding:4px 10px;border-radius:999px;background:#ECEAD6;color:#4E5726;font:600 12px/1.3 Inter,sans-serif}
+  #v3 .lz2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 0}
+  #v3 .lzf #v3lzok{display:block;width:100%;height:50px;margin:16px 0 0;border:0;border-radius:12px;background:${NAVY};color:#fff;font:700 15px/1 Inter,sans-serif;cursor:pointer}#v3 .lzf #v3lzok:disabled{opacity:.6}
+  #v3 .lze{margin:10px 0 0;font-size:13.5px;color:#7A1F3A}
+  #v3 .lzm{margin:0 0 10px;padding:12px 14px;border-radius:12px;background:#E6F2EA;color:#1E5C36;font-size:14px;line-height:1.45}#v3 .lzm a{color:#1E5C36;font-weight:600}
+  #v3 .lzl{margin-top:10px}#v3 .lzi{display:grid;grid-template-columns:60px 1fr;gap:14px;align-items:start;padding:14px}
+  #v3 .lzi img,#v3 .lzi .sin{width:60px;height:60px;border-radius:10px;object-fit:cover;background:#E8E1D3;display:block}
+  #v3 .lzi .lztx b{display:block;font-size:15.5px;line-height:1.3;color:${NAVY}}#v3 .lzi .lztx>span{display:block;margin-top:3px;font-size:13px;color:#6B6878}
+  #v3 .lzi .lzac{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px}#v3 .lzi .lzac a,#v3 .lzi .lzac button{padding:0;border:0;background:none;font:600 13.5px/1.4 Inter,sans-serif;color:${NAVY};text-decoration:none;cursor:pointer}#v3 .lzi .lzac .del{color:#9A4A4A}
   #v3 .tit2{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 10px}
   #v3 .tit2 h3{margin:0;font-size:12.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#24242C}
   #v3 .tit2 h2{margin:0;font-family:'Playfair Display',serif;font-size:23px;font-weight:600;color:${NAVY}}
@@ -650,6 +662,7 @@
           :`<div class="vacio">Poné aquí las próximas fechas y los links a la ticketera, de ser necesario.</div>`}
         ${FFORM?`<div class="fform"><input id="v3ff" type="date"><input id="v3ft" placeholder="Título. Por ejemplo: ${d.cliente.tipo==='musica'?'Show en La Tangente':'Inicio de la próxima cohorte'}"><input class="u" id="v3fu" placeholder="Link a la ticketera (opcional)"><button id="v3fadd">Guardar fecha</button></div>`:''}
       </div>
+      <div id="v3lz"></div>
       ${idea?`<div class="card idea"><div>${ico.luz}</div><div><b>Idea del día ✨</b><p>${esc(String(idea).replace(/<[^>]+>/g,''))}</p></div></div>`:''}`;
 
     // --- Métricas ---
@@ -855,6 +868,46 @@
         +'<a class="card dtodos" href="https://semillaredes.com/drops/"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 6.5C10 5 7.2 4.5 3.5 4.8v13c3.7-.3 6.5.2 8.5 1.7 2-1.5 4.8-2 8.5-1.7v-13C16.8 4.5 14 5 12 6.5z"/><path d="M12 6.5v13"/></svg></span><span><b>Todos los drops</b><small>Explorá el archivo completo de ideas para tu proyecto artístico.</small></span><svg class="fl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>';
       dropEl.querySelector('.din').addEventListener('click',ev=>{ ev.preventDefault(); dropAbrir(d.n); });
       dropEl.querySelector('.dtodos').addEventListener('click',ev=>{ ev.preventDefault(); window.SRE&&window.SRE('drops_todos',{}); irDrops(); }); }).catch(()=>{});
+    /* TUS LANZAMIENTOS (27/10/2026): pegás los links del lanzamiento y SemillaIA arma una landing con la portada y todos los accesos */
+    const lzEl=raiz.querySelector('#v3lz');
+    if(lzEl){ const API='https://vm.semillaredes.com/web/'; let LZ=[], LZF=null, LZE=null, LZB=false, LZM=null;
+      const PL=[['spotify','Spotify',/(open|play)\.spotify\.com|spotify\.link/i],['youtube_music','YouTube Music',/music\.youtube\.com/i],['youtube','YouTube',/youtube\.com|youtu\.be/i],['apple','Apple Music',/music\.apple\.com|itunes\.apple\.com/i],['deezer','Deezer',/deezer\./i],['tidal','Tidal',/tidal\.com/i],['amazon','Amazon Music',/music\.amazon\.|amazon\.[a-z.]+\/music/i],['soundcloud','SoundCloud',/soundcloud\.com/i],['bandcamp','Bandcamp',/bandcamp\.com/i],['instagram','Instagram',/instagram\.com/i],['tiktok','TikTok',/tiktok\.com/i]];
+      const plat=u=>{ const x=PL.find(p=>p[2].test(u)); return x?x[1]:'Web'; };
+      const urls=t=>[...new Set(String(t||'').split(/[\s,]+/).map(x=>x.trim()).filter(x=>/^https?:\/\//.test(x)))];
+      const MS=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+      const cuando=f=>{ if(!f) return ''; const [a,m,d]=f.split('-').map(Number), fut=f>new Date().toISOString().slice(0,10); return (fut?'Sale el ':'Salió el ')+d+' '+MS[m-1]+' '+a; };
+      const pintarLz=()=>{
+        const form=LZF?`<div class="card lzf">
+            <label>Links del lanzamiento</label>
+            <textarea id="v3lzl" rows="4" placeholder="Pegá los links, uno por línea: Spotify, YouTube, Apple Music, Deezer…">${esc((LZF.links||[]).join('\n'))}</textarea>
+            <div class="lzc" id="v3lzc"></div>
+            <div class="lz2"><div><label>Fecha de salida</label><input id="v3lzd" type="date" value="${esc(LZF.fecha||'')}"></div><div><label>Título <small>(opcional)</small></label><input id="v3lzt" placeholder="Se completa solo" value="${esc(LZF.titulo||'')}"></div></div>
+            <button id="v3lzok" ${LZB?'disabled':''}>${LZB?'Armando tu landing…':(LZF.id?'Guardar y actualizar la landing':'Armar la landing')}</button>
+            ${LZE?`<p class="lze">${esc(LZE)}</p>`:''}</div>`:'';
+        const lista=LZ.length?`<div class="card lista lzl">${LZ.map(l=>`<div class="lzi">${l.tapa?`<img src="${esc(l.tapa)}" alt="" loading="lazy">`:'<span class="sin"></span>'}
+            <div class="lztx"><b>${esc(l.titulo||'Lanzamiento')}</b><span>${[cuando(l.fecha),(l.links||[]).length+((l.links||[]).length===1?' plataforma':' plataformas')].filter(Boolean).join(' · ')}</span>
+            <div class="lzac">${l.url?`<a href="${esc(l.url)}" target="_blank" rel="noopener">Ver landing</a><button data-lzc="${esc(l.url)}">Copiar link</button>`:''}<button data-lze="${esc(l.id)}">Editar</button><button class="del" data-lzx="${esc(l.id)}">Borrar</button></div></div></div>`).join('')}</div>`
+          :(LZF?'':`<div class="card vacio">Cargá tu próximo lanzamiento: pegás los links y te armamos una landing con la portada y todos los accesos, lista para compartir.</div>`);
+        lzEl.innerHTML=`<div class="tit2"><h2>Tus lanzamientos</h2><button id="v3lzn">${LZF?'Cerrar':'Nuevo lanzamiento'}</button></div>${LZM?`<p class="lzm">${LZM}</p>`:''}${form}${lista}`;
+        const ta=lzEl.querySelector('#v3lzl'), ch=lzEl.querySelector('#v3lzc');
+        const chips=()=>{ if(ch) ch.innerHTML=urls(ta.value).map(u=>`<span>${esc(plat(u))}</span>`).join(''); };
+        if(ta){ ta.addEventListener('input',chips); chips(); }
+        lzEl.querySelector('#v3lzn').onclick=()=>{ LZF=LZF?null:{}; LZE=null; LZM=null; pintarLz(); if(LZF) setTimeout(()=>{ const t=lzEl.querySelector('#v3lzl'); t&&t.focus(); },50); };
+        const ok=lzEl.querySelector('#v3lzok');
+        if(ok) ok.onclick=async()=>{ const L=urls(ta.value); if(!L.length){ LZE='Pegá al menos un link del lanzamiento.'; pintarLz(); return; }
+          LZF={id:LZF.id,links:L,fecha:lzEl.querySelector('#v3lzd').value,titulo:lzEl.querySelector('#v3lzt').value.trim()}; LZB=true; LZE=null; pintarLz(); window.SRE&&window.SRE('lanzamiento_guardar',{});
+          try{ const r=await fetch(API+'lanzamiento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,...LZF})}).then(x=>x.json());
+            LZB=false; if(!r||!r.ok){ LZE=(r&&r.error)||'No pudimos armar la landing ahora. Probá de nuevo en un rato.'; pintarLz(); return; }
+            const L2=r.lanzamiento; LZ=[L2,...LZ.filter(x=>x.id!==L2.id)]; LZF=null; LZM=`Tu landing está lista: <a href="${esc(L2.url)}" target="_blank" rel="noopener">${esc(L2.url.replace(/^https:\/\//,''))}</a>. Si no abre todavía, esperá un minuto.`; pintarLz(); }
+          catch(e){ LZB=false; LZE='No pudimos armar la landing ahora. Probá de nuevo en un rato.'; pintarLz(); } };
+        lzEl.querySelectorAll('[data-lze]').forEach(b=>b.onclick=()=>{ const l=LZ.find(x=>x.id===b.dataset.lze); LZF={id:l.id,links:(l.links||[]).map(x=>x.url),fecha:l.fecha||'',titulo:l.titulo||''}; LZE=null; LZM=null; pintarLz(); lzEl.scrollIntoView({behavior:'smooth',block:'start'}); });
+        lzEl.querySelectorAll('[data-lzc]').forEach(b=>b.onclick=()=>{ const u=b.dataset.lzc; (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>{ b.textContent='¡Copiado!'; setTimeout(()=>b.textContent='Copiar link',1500); }).catch(()=>prompt('Copiá el link:',u)); });
+        lzEl.querySelectorAll('[data-lzx]').forEach(b=>b.onclick=async()=>{ if(!confirm('¿Borrar este lanzamiento de la app?')) return; b.disabled=true;
+          await fetch(API+'lanzamiento-borrar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,id:b.dataset.lzx})}).catch(()=>{});
+          LZ=LZ.filter(x=>x.id!==b.dataset.lzx); pintarLz(); });
+      };
+      pintarLz();
+      fetch(API+'lanzamientos?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(r=>{ if(r&&r.lanzamientos){ LZ=r.lanzamientos; pintarLz(); } }).catch(()=>{}); }
     /* BUSCADOR DE PLAYLISTS (23/10/2026): la misma IA de curadores.html, con el Spotify y el Instagram que ya conectó */
     const plEl=raiz.querySelector('#v3pl');
     if(plEl&&DP_BETA.includes(slug)){ const PK='sr_pl_'+slug, lsg=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}, lss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
@@ -1068,6 +1121,7 @@
     'scr:proyecto':{i:'Acá se ordena tu proyecto: hacia dónde vas (hitos), con qué contás (activos y web) y qué querés que sepamos (notas).'},
     'hitos':{d:'Las metas concretas hacia las que estás trabajando.',i:'Cada hito sigue una métrica real (seguidores, oyentes, ventas…) y se actualiza solo. Sumá uno con «Agregar hito».'},
     'gestioná tus tickets':{d:'Las entradas de tus shows, en el mismo lugar que el resto de tu proyecto.',i:'Muy pronto vas a poder vender y seguir las entradas de tus fechas desde la app: cuántas se vendieron, por qué canal y cuánto costó cada una.'},
+    'tus lanzamientos':{d:'Tus singles, EPs y discos, cada uno con su landing para compartir.',i:'Pegá los links de tu lanzamiento (Spotify, YouTube, Apple Music, Deezer…) y SemillaIA arma una landing con la portada, los colores del lanzamiento y todos los accesos. Compartila en tu bio, en historias y en tus anuncios.'},
     'tus activos':{d:'Todo lo que tu proyecto ya tiene: links, materiales y documentos.',i:'Tu Spotify, tu web, tu press kit, carpetas de fotos, la planilla de curadores… Tenerlo todo en un lugar nos deja usarlo en tu landing, tus reportes y tus campañas.'},
     'tu web':{d:'Tu web, siempre al día con lo que pasa en tu proyecto.',i:'Tocá para verla. Con «Editá» cambiás textos y fotos, o le pedís cambios a SemillaIA. Nada se publica sin que lo apruebes. Las fechas que cargás en la app aparecen solas.'},
     'tus webs':{d:'Tus webs, siempre al día con lo que pasa en tu proyecto.',i:'Tocá una para verla. Con «Editá» cambiás textos y fotos, o le pedís cambios a SemillaIA. Nada se publica sin que lo apruebes.'},
