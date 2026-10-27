@@ -89,6 +89,7 @@
   #v3 .flg figcaption{display:flex;justify-content:space-between;gap:6px;padding:10px 10px 12px}#v3 .flg figcaption a,#v3 .flg figcaption button{padding:0;border:0;background:none;font:600 12.5px/1.3 Inter,sans-serif;color:${NAVY};text-decoration:none;cursor:pointer}#v3 .flg figcaption .del{color:#9A4A4A}
   #v3 .flg .esp div{display:grid;place-items:center;aspect-ratio:4/5;padding:16px;text-align:center;font-size:13.5px;line-height:1.4;color:#6B6878}
   #v3 .flg .esp.error div{color:#7A1F3A}
+  #v3 .cab .ver{margin-left:8px;padding:4px 7px;border-radius:999px;background:#ECEAD6;color:#5F6A30;font:700 10.5px/1 Inter,sans-serif;letter-spacing:.3px;white-space:nowrap}
   #v3 .tit2{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 10px}
   #v3 .tit2 h3{margin:0;font-size:12.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#24242C}
   #v3 .tit2 h2{margin:0;font-family:'Playfair Display',serif;font-size:23px;font-weight:600;color:${NAVY}}
@@ -828,7 +829,7 @@
     const app=document.getElementById('app');
     if(!raiz){ raiz=document.createElement('div'); raiz.id='v3'; document.querySelector('.wrap').prepend(raiz); }
     if(app&&app.parentNode!==document.body) document.body.appendChild(app);   // sacarlo antes de reescribir
-    raiz.innerHTML=`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="v3g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#F9A43A"/><stop offset=".5" stop-color="#E1306C"/><stop offset="1" stop-color="#7B3FE4"/></linearGradient></defs></svg><div class="cab"><img src="/assets/semilla-redes-oliva.png" alt="Semilla Redes"><span class="sep"></span><span class="ia">semilla<b>IA</b></span><span class="esp"></span><button class="camp" id="v3camp" aria-label="Notificaciones">${ico.camp}<b id="v3nn"></b></button><button class="av" id="v3av" aria-label="Tu perfil">${ini}<img src="/assets/avatars/${slug}.jpg?v=${new Date().toISOString().slice(0,10)}" alt="" onerror="this.remove()"></button></div>
+    raiz.innerHTML=`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="v3g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#F9A43A"/><stop offset=".5" stop-color="#E1306C"/><stop offset="1" stop-color="#7B3FE4"/></linearGradient></defs></svg><div class="cab"><img src="/assets/semilla-redes-oliva.png" alt="Semilla Redes"><span class="sep"></span><span class="ia">semilla<b>IA</b></span><span class="ver" title="Versión de tu app">v${VER_APP}</span><span class="esp"></span><button class="camp" id="v3camp" aria-label="Notificaciones">${ico.camp}<b id="v3nn"></b></button><button class="av" id="v3av" aria-label="Tu perfil">${ini}<img src="/assets/avatars/${slug}.jpg?v=${new Date().toISOString().slice(0,10)}" alt="" onerror="this.remove()"></button></div>
       <div class="scr" data-scr="hoy">${scrHoy}</div><div class="scr" data-scr="proyecto">${scrPro}</div><div class="scr" data-scr="actividades">${scrAct}</div><div class="scr" data-scr="metricas">${scrMet}</div><div class="scr" data-scr="ia">${scrIA}</div>`;
     const todo=raiz.querySelector('#v3todo'); if(app&&todo){ todo.appendChild(app); app.classList.remove('oculto'); }
     /* Métricas avanzadas: el cliente no las abre solo, se miran con el equipo de Semilla Redes (Agus sí las ve) */
@@ -875,7 +876,7 @@
       const WI=window.__V3WEBINFO; if(WI&&WI.puede_crear&&!lista.some(w=>/semillaia\.com\//.test(w.url||''))){ web.insertAdjacentHTML('beforeend','<div id="v3webcl" style="margin-top:14px"></div>'); crearLanding(web.querySelector('#v3webcl')); } }; ponerWeb();
     /* LOS DROPS EN LA APP (23/10/2026): el último drop del newsletter, sale los viernes (drops_app.py publica drops/ultimos.json) */
     const dropEl=raiz.querySelector('#v3drop');
-    if(dropEl&&DP_BETA.includes(slug)) dropsCargar().then(L=>{ const d=L&&L[0]; if(!d) return;
+    if(dropEl&&vOk('2.1')) dropsCargar().then(L=>{ const d=L&&L[0]; if(!d) return;
       const flecha='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
       dropEl.innerHTML='<div class="card dcard"><div class="dhd"><h3>Drop del viernes</h3><span class="dnot"><span class="bl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a6 6 0 0 0-6 6v4.2L4.4 16a.8.8 0 0 0 .7 1.2h13.8a.8.8 0 0 0 .7-1.2L18 13.2V9a6 6 0 0 0-6-6zm-2.2 15.6a2.3 2.3 0 0 0 4.4 0z"/></svg></span><span><b>Notificaciones activadas</b><small>Todos los viernes</small></span></span></div>'
         +'<a class="din" href="'+esc(d.url)+'"><div class="dtx"><p class="dk">Drop #'+d.n+(d.categoria?' · '+esc(d.categoria):'')+'</p><p class="dt">'+esc(d.titulo)+'</p>'
@@ -982,7 +983,7 @@
         fetch(API+'lanzamientos?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(x=>x.ok?x.json():null).then(j=>{ LZS=(j&&j.lanzamientos)||[]; if(FLF) return; pintarFl(); }).catch(()=>{}); }).catch(()=>{}); }
     /* BUSCADOR DE PLAYLISTS (23/10/2026): la misma IA de curadores.html, con el Spotify y el Instagram que ya conectó */
     const plEl=raiz.querySelector('#v3pl');
-    if(plEl&&DP_BETA.includes(slug)&&!PL_NO.includes(slug)){ const PK='sr_pl_'+slug, lsg=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}, lss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+    if(plEl&&vOk('2.1')&&!PL_NO.includes(slug)){ const PK='sr_pl_'+slug, lsg=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}, lss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
       const miMail=()=>{ try{ for(const k of Object.keys(localStorage)) if(/^sb-.*-auth-token$/.test(k)){ const u=(JSON.parse(localStorage.getItem(k))||{}).user; if(u&&u.email) return u.email; } }catch(e){} return 'app+'+slug+'@semillaredes.com'; };
       let CXD=null;
       const datos=async()=>{ if(CXD) return CXD; try{ const r=await fetch('https://fdrxsjphlvvwwknnrjtx.supabase.co/rest/v1/rpc/con_get',{method:'POST',headers:{apikey:'sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17','Content-Type':'application/json'},body:JSON.stringify({p_slug:slug,p_k:tok})}).then(x=>x.json()); const c=(r&&r.conexiones)||{};
@@ -1247,7 +1248,12 @@
   // ---- Drops (playlists + drops: por ahora solo estos proyectos) ----
   const urlApp=()=>{ try{ return window.top.location.href.split('#')[0]; }catch(e){ return location.href.split('#')[0]; } };
   const irDrops=()=>{ const u='https://semillaredes.com/drops/?volver='+encodeURIComponent(urlApp()); try{ window.top.location.href=u; }catch(e){ location.href=u; } };
-  const DP_BETA=['eupatridas','eupatridas-1','semilla-redes','piku-yoga','hernan-onirico','hernan-onirico-2','los-soplafortune','maria-marta-crespo'];
+  /* VERSIONES DE LA APP (27/10/2026): cada proyecto tiene su versión; las funciones se activan por versión.
+     2.0 = app nueva para todos · 2.1 = Creá tu landing, curadores de playlists y Drop del viernes con audio.
+     Esta línea es la fuente única: la VM (landing.py, drops_app.py) la lee de semillaredes.com/app3.js. No partir en varias líneas. */
+  const VERSIONES={"actual":"2.1","base":"2.0","proyectos":{"eupatridas":"2.1","eupatridas-1":"2.1","semilla-redes":"2.1","piku-yoga":"2.1","hernan-onirico":"2.1","hernan-onirico-2":"2.1","los-soplafortune":"2.1","maria-marta-crespo":"2.1","berco-estudio":"2.1"}};
+  const vCmp=(a,b)=>{ const x=String(a).split('.').map(Number), y=String(b).split('.').map(Number); for(let i=0;i<Math.max(x.length,y.length);i++){ const d=(x[i]||0)-(y[i]||0); if(d) return d; } return 0; };
+  const VER_APP=VERSIONES.proyectos[slug]||VERSIONES.base, vOk=v=>vCmp(VER_APP,v)>=0;
   const PL_NO=[];   // proyectos de la lista sin buscador de playlists
   let DROPS_L=null;
   function dropsCargar(){ if(DROPS_L) return Promise.resolve(DROPS_L); return fetch('/drops/ultimos.json?v='+new Date().toISOString().slice(0,13)).then(r=>r.ok?r.json():null).then(j=>(DROPS_L=(j&&j.drops)||[])); }
