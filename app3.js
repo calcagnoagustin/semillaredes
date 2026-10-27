@@ -79,6 +79,16 @@
   #v3 .lzi img,#v3 .lzi .sin{width:60px;height:60px;border-radius:10px;object-fit:cover;background:#E8E1D3;display:block}
   #v3 .lzi .lztx b{display:block;font-size:15.5px;line-height:1.3;color:${NAVY}}#v3 .lzi .lztx>span{display:block;margin-top:3px;font-size:13px;color:#6B6878}
   #v3 .lzi .lzac{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px}#v3 .lzi .lzac a,#v3 .lzi .lzac button{padding:0;border:0;background:none;font:600 13.5px/1.4 Inter,sans-serif;color:${NAVY};text-decoration:none;cursor:pointer}#v3 .lzi .lzac .del{color:#9A4A4A}
+  #v3 .flf select{width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid #E1D9C9;border-radius:10px;background:#fff;font:15px/1.4 Inter,sans-serif;color:#24242C;margin-bottom:14px}
+  #v3 .flf .lz2{margin:0 0 14px}#v3 .flf label[style]{display:block}
+  #v3 .flc{display:flex;flex-wrap:wrap;gap:8px}#v3 .flc button{height:36px;padding:0 14px;border-radius:999px;border:1px solid #D3CDB9;background:#fff;font:600 13.5px/1 Inter,sans-serif;color:${NAVY};cursor:pointer}#v3 .flc button.on{background:${NAVY};border-color:${NAVY};color:#fff}
+  #v3 .flt{margin:10px 0 0;font-size:13.5px;color:#4E5726}
+  #v3 .flg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  #v3 .flg figure{margin:0;background:#FBF8F2;border:1px solid #E7DFCF;border-radius:14px;overflow:hidden}
+  #v3 .flg img{display:block;width:100%;height:auto}
+  #v3 .flg figcaption{display:flex;justify-content:space-between;gap:6px;padding:10px 10px 12px}#v3 .flg figcaption a,#v3 .flg figcaption button{padding:0;border:0;background:none;font:600 12.5px/1.3 Inter,sans-serif;color:${NAVY};text-decoration:none;cursor:pointer}#v3 .flg figcaption .del{color:#9A4A4A}
+  #v3 .flg .esp div{display:grid;place-items:center;aspect-ratio:4/5;padding:16px;text-align:center;font-size:13.5px;line-height:1.4;color:#6B6878}
+  #v3 .flg .esp.error div{color:#7A1F3A}
   #v3 .tit2{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 10px}
   #v3 .tit2 h3{margin:0;font-size:12.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#24242C}
   #v3 .tit2 h2{margin:0;font-family:'Playfair Display',serif;font-size:23px;font-weight:600;color:${NAVY}}
@@ -665,6 +675,7 @@
         ${FFORM?`<div class="fform"><input id="v3ff" type="date"><input id="v3ft" placeholder="Título. Por ejemplo: ${d.cliente.tipo==='musica'?'Show en La Tangente':'Inicio de la próxima cohorte'}"><input class="u" id="v3fu" placeholder="Link a la ticketera (opcional)"><button id="v3fadd">Guardar fecha</button></div>`:''}
       </div>
       <div id="v3lz"></div>
+      <div id="v3fly"></div>
       ${idea?`<div class="card idea"><div>${ico.luz}</div><div><b>Idea del día ✨</b><p>${esc(String(idea).replace(/<[^>]+>/g,''))}</p></div></div>`:''}`;
 
     // --- Métricas ---
@@ -912,6 +923,63 @@
       };
       pintarLz();
       fetch(API+'lanzamientos?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(r=>{ if(r&&r.lanzamientos){ LZ=r.lanzamientos; pintarLz(); } }).catch(()=>{}); }
+    /* TUS FLYERS (27/10/2026, en prueba solo para la beta de flyers): el flyer lo diseña ChatGPT (gpt-image-1) */
+    const flEl=raiz.querySelector('#v3fly');
+    if(flEl){ const API='https://vm.semillaredes.com/web/'; let FLS=[], FLF=null, FLB=false, FLE=null, FLK=true, FLT=null, LZS=[];
+      const hoyIso=new Date().toISOString().slice(0,10);
+      const FECH=(d.fechas||[]).filter(f=>String(f.fecha||'').slice(0,10)>=hoyIso).sort((a,b)=>String(a.fecha).localeCompare(String(b.fecha)));
+      const dm=f=>{ const p=String(f||'').slice(0,10).split('-'); return p.length===3?p[2]+'/'+p[1]:''; };
+      const opciones=()=>[...FECH.map((f,i)=>['f'+i,'Fecha: '+(f.titulo||'Show')+' ('+dm(f.fecha)+')']),...LZS.map((l,i)=>['l'+i,'Lanzamiento: '+(l.titulo||'')]),['otro','Otra cosa']];
+      const desde=v=>{ if(v[0]==='f'){ const f=FECH[+v.slice(1)]; return {tipo:'fecha',titulo:f.titulo||'',fecha:String(f.fecha||'').slice(0,10),lugar:'',tapa_url:''}; }
+        if(v[0]==='l'){ const l=LZS[+v.slice(1)]; return {tipo:'lanzamiento',titulo:l.titulo||'',fecha:l.fecha||'',lugar:'',tapa_url:l.tapa||''}; }
+        return {tipo:'libre',titulo:'',fecha:'',lugar:'',tapa_url:''}; };
+      const FMT=[['post','Post'],['historia','Historia'],['cuadrado','Cuadrado']];
+      const pintarFl=()=>{
+        const o=opciones(), F=FLF;
+        const form=F?`<div class="card lzf flf">
+            <label>¿Para qué es?</label><select id="v3fq">${o.map(x=>`<option value="${x[0]}" ${F.sel===x[0]?'selected':''}>${esc(x[1])}</option>`).join('')}</select>
+            <div class="lz2"><div><label>Título</label><input id="v3ft1" value="${esc(F.titulo||'')}" placeholder="Ej: Presentación del disco"></div><div><label>Fecha</label><input id="v3ff1" type="date" value="${esc(F.fecha||'')}"></div></div>
+            <div class="lz2"><div><label>Hora <small>(opcional)</small></label><input id="v3fh" value="${esc(F.hora||'')}" placeholder="21 h"></div><div><label>Lugar <small>(opcional)</small></label><input id="v3fl" value="${esc(F.lugar||'')}" placeholder="La Tangente, CABA"></div></div>
+            <label style="margin-top:14px">Otro texto <small>(opcional)</small></label><input id="v3fx" value="${esc(F.extra||'')}" placeholder="Entradas en la bio">
+            <label style="margin-top:14px">¿Cómo lo imaginás?</label><textarea id="v3fi" rows="3" placeholder="Colores, estilo, referencias… Ej: psicodélico, años 70, naranjas y violetas">${esc(F.idea||'')}</textarea>
+            <label style="margin-top:14px">Formato</label><div class="flc">${FMT.map(x=>`<button type="button" data-ffm="${x[0]}" class="${(F.formato||'post')===x[0]?'on':''}">${x[1]}</button>`).join('')}</div>
+            ${F.tipo==='lanzamiento'&&F.tapa_url?`<p class="flt">Usamos la portada del lanzamiento como base.</p>`:`<label style="margin-top:14px">Foto</label><div class="flc">${[['','Sin foto'],['ig','De mi Instagram'],['subida','Subir una']].map(x=>`<button type="button" data-ffo="${x[0]}" class="${(F.foto||'')===x[0]?'on':''}">${x[1]}</button>`).join('')}</div>
+            ${F.foto==='subida'?`<input id="v3fup" type="file" accept="image/*" style="margin-top:10px">${F.foto_arch?'<p class="flt">Foto cargada ✓</p>':''}`:''}`}
+            <button id="v3fok" ${FLB?'disabled':''}>${FLB?'Mandando…':'Diseñar con ChatGPT'}</button>
+            ${FLE?`<p class="lze">${esc(FLE)}</p>`:''}</div>`:'';
+        const lista=FLS.length?`<div class="flg">${FLS.map(f=>f.estado==='listo'?`<figure><a href="${esc(f.url)}" target="_blank" rel="noopener"><img src="${esc(f.url)}" alt="${esc(f.titulo||'Flyer')}" loading="lazy"></a><figcaption><button data-fsh="${esc(f.id)}">Compartir</button><a href="${esc(f.url)}" target="_blank" rel="noopener">Abrir</a><button class="del" data-fdl="${esc(f.id)}">Borrar</button></figcaption></figure>`
+            :`<figure class="esp ${f.estado}"><div>${f.estado==='error'?'No salió. '+esc(f.error||''):'ChatGPT está diseñando tu flyer… tarda alrededor de un minuto.'}</div>${f.estado==='error'?`<figcaption><button class="del" data-fdl="${esc(f.id)}">Borrar</button></figcaption>`:''}</figure>`).join('')}</div>`
+          :(F?'':`<div class="card vacio">Pedile a ChatGPT un flyer para tu próxima fecha o tu lanzamiento: le decís cómo lo imaginás y lo diseña con tus datos.</div>`);
+        flEl.innerHTML=`<div class="tit2"><h2>Tus flyers</h2><button id="v3fn">${F?'Cerrar':'Nuevo flyer'}</button></div>${FLK?'':'<p class="lze" style="margin:0 0 10px">Falta conectar ChatGPT (clave de OpenAI).</p>'}${form}${lista}`;
+        flEl.querySelector('#v3fn').onclick=()=>{ FLF=FLF?null:Object.assign({sel:opciones()[0][0],formato:'post',foto:''},desde(opciones()[0][0])); FLE=null; pintarFl(); };
+        const lee=()=>{ if(!FLF) return; const g=id=>{ const e=flEl.querySelector(id); return e?e.value:undefined; };
+          Object.assign(FLF,{titulo:g('#v3ft1'),fecha:g('#v3ff1'),hora:g('#v3fh'),lugar:g('#v3fl'),extra:g('#v3fx'),idea:g('#v3fi')}); };
+        const q=flEl.querySelector('#v3fq'); if(q) q.onchange=()=>{ lee(); Object.assign(FLF,desde(q.value),{sel:q.value}); pintarFl(); };
+        flEl.querySelectorAll('[data-ffm]').forEach(b=>b.onclick=()=>{ lee(); FLF.formato=b.dataset.ffm; pintarFl(); });
+        flEl.querySelectorAll('[data-ffo]').forEach(b=>b.onclick=()=>{ lee(); FLF.foto=b.dataset.ffo; pintarFl(); });
+        const up=flEl.querySelector('#v3fup'); if(up) up.onchange=async()=>{ const f=up.files[0]; if(!f) return; lee(); FLE=null;
+          try{ const img=await createImageBitmap(f), s=Math.min(1,1600/Math.max(img.width,img.height)), c=document.createElement('canvas'); c.width=Math.round(img.width*s); c.height=Math.round(img.height*s); c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+            const r=await fetch(API+'foto',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,nombre:f.name,b64:c.toDataURL('image/jpeg',.88)})}).then(x=>x.json());
+            if(r&&r.foto){ FLF.foto_arch=r.foto; } else FLE='No pudimos subir la foto.'; }catch(e){ FLE='No pudimos leer la foto.'; } pintarFl(); };
+        const ok=flEl.querySelector('#v3fok'); if(ok) ok.onclick=async()=>{ lee();
+          if(!FLF.titulo&&!FLF.idea){ FLE='Poné al menos un título o contale cómo lo imaginás.'; pintarFl(); return; }
+          if(FLF.foto==='subida'&&!FLF.foto_arch){ FLE='Elegí la foto que querés usar.'; pintarFl(); return; }
+          FLB=true; FLE=null; pintarFl(); window.SRE&&window.SRE('flyer_crear',{});
+          try{ const r=await fetch(API+'flyer',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({c:slug,k:tok},FLF))}).then(x=>x.json());
+            FLB=false; if(!r||!r.ok){ FLE=(r&&r.error)||'No pudimos mandarlo. Probá de nuevo.'; pintarFl(); return; }
+            FLS=[r.flyer,...FLS]; FLF=null; pintarFl(); seguirFl(); }
+          catch(e){ FLB=false; FLE='No pudimos mandarlo. Probá de nuevo.'; pintarFl(); } };
+        flEl.querySelectorAll('[data-fdl]').forEach(b=>b.onclick=async()=>{ if(!confirm('¿Borrar este flyer?')) return;
+          await fetch(API+'flyer-borrar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,id:b.dataset.fdl})}).catch(()=>{}); FLS=FLS.filter(x=>x.id!==b.dataset.fdl); pintarFl(); });
+        flEl.querySelectorAll('[data-fsh]').forEach(b=>b.onclick=async()=>{ const f=FLS.find(x=>x.id===b.dataset.fsh);
+          try{ const bl=await fetch(f.url).then(x=>x.blob()), fi=new File([bl],'flyer.png',{type:'image/png'});
+            if(navigator.canShare&&navigator.canShare({files:[fi]})){ await navigator.share({files:[fi],title:f.titulo||'Flyer'}); return; } }catch(e){}
+          window.open(f.url,'_blank','noopener'); });
+      };
+      const cargarFl=()=>fetch(API+'flyers?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null);
+      const seguirFl=()=>{ clearInterval(FLT); FLT=setInterval(()=>{ cargarFl().then(r=>{ if(!r) return; FLS=r.flyers||[]; if(!FLS.some(x=>x.estado==='creando')) clearInterval(FLT); if(!FLF) pintarFl(); }).catch(()=>{}); },5000); };
+      cargarFl().then(r=>{ if(!r||!r.beta) return; FLK=r.clave; FLS=r.flyers||[]; pintarFl(); if(FLS.some(x=>x.estado==='creando')) seguirFl();
+        fetch(API+'lanzamientos?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(x=>x.ok?x.json():null).then(j=>{ LZS=(j&&j.lanzamientos)||[]; if(FLF) return; pintarFl(); }).catch(()=>{}); }).catch(()=>{}); }
     /* BUSCADOR DE PLAYLISTS (23/10/2026): la misma IA de curadores.html, con el Spotify y el Instagram que ya conectó */
     const plEl=raiz.querySelector('#v3pl');
     if(plEl&&DP_BETA.includes(slug)&&!PL_NO.includes(slug)){ const PK='sr_pl_'+slug, lsg=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}, lss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
@@ -1126,6 +1194,7 @@
     'hitos':{d:'Las metas concretas hacia las que estás trabajando.',i:'Cada hito sigue una métrica real (seguidores, oyentes, ventas…) y se actualiza solo. Sumá uno con «Agregar hito».'},
     'gestioná tus tickets':{d:'Las entradas de tus shows, en el mismo lugar que el resto de tu proyecto.',i:'Muy pronto vas a poder vender y seguir las entradas de tus fechas desde la app: cuántas se vendieron, por qué canal y cuánto costó cada una.'},
     'tus lanzamientos':{d:'Tus singles, EPs y discos, cada uno con su landing para compartir.',i:'Pegá los links de tu lanzamiento (Spotify, YouTube, Apple Music, Deezer…) y SemillaIA arma una landing con la portada, los colores del lanzamiento y todos los accesos. Compartila en tu bio, en historias y en tus anuncios.'},
+    'tus flyers':{d:'Flyers para tus fechas y lanzamientos, diseñados con ChatGPT.',i:'Elegís la fecha o el lanzamiento, le contás cómo lo imaginás y ChatGPT diseña el flyer con tus datos, tu foto o la portada. Tarda alrededor de un minuto. Revisá siempre los textos antes de publicarlo.'},
     'tus activos':{d:'Todo lo que tu proyecto ya tiene: links, materiales y documentos.',i:'Tu Spotify, tu web, tu press kit, carpetas de fotos, la planilla de curadores… Tenerlo todo en un lugar nos deja usarlo en tu landing, tus reportes y tus campañas.'},
     'tu web':{d:'Tu web, siempre al día con lo que pasa en tu proyecto.',i:'Tocá para verla. Con «Editá» cambiás textos y fotos, o le pedís cambios a SemillaIA. Nada se publica sin que lo apruebes. Las fechas que cargás en la app aparecen solas.'},
     'tus webs':{d:'Tus webs, siempre al día con lo que pasa en tu proyecto.',i:'Tocá una para verla. Con «Editá» cambiás textos y fotos, o le pedís cambios a SemillaIA. Nada se publica sin que lo apruebes.'},
