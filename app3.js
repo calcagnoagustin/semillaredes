@@ -833,14 +833,15 @@
     let WEBV=window.__V3WEBS||[];
     if(!window.__V3WEBS){ window.__V3WEBS=[]; fetch('https://vm.semillaredes.com/web/estado?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(j=>{ if(j) window.__V3WEBINFO=j; if(j&&j.webs&&j.webs.length){ window.__V3WEBS=j.webs; WEBV=j.webs; intentos=0; ponerWeb(); } else if(j&&j.puede_crear){ intentos=0; ponerWeb(); } }).catch(()=>{}); }
     /* CREÁ TU LANDING (beta): arma la landing desde el Instagram del artista */
-    const crearLanding=()=>{ const I=window.__V3WEBINFO||{}, L=I.landing||{}, armando=L.estado==='armando';
-      web.innerHTML='<div class="tit2"><h2>Tu web</h2></div><p class="bj" style="margin:0 0 12px;font-size:14.5px">SemillaIA arma tu landing con todo lo que ya conectaste: tu Instagram, tu Spotify, tu YouTube, tus links y tus fechas. Después la editás cuando quieras.</p>'
+    let CLD=null;   // 27/10: si ya tiene webs, el botón va debajo de la lista (CLD = contenedor)
+    const crearLanding=(dest)=>{ if(dest!==undefined) CLD=dest; const W=CLD||web; const I=window.__V3WEBINFO||{}, L=I.landing||{}, armando=L.estado==='armando';
+      W.innerHTML=(CLD?'<p class="bj" style="margin:0 0 10px;font-size:14.5px">¿Querés una landing nueva? SemillaIA la arma con todo lo que ya conectaste: tu Instagram, tu Spotify, tu YouTube, tus links y tus fechas.</p>':'<div class="tit2"><h2>Tu web</h2></div><p class="bj" style="margin:0 0 12px;font-size:14.5px">SemillaIA arma tu landing con todo lo que ya conectaste: tu Instagram, tu Spotify, tu YouTube, tus links y tus fechas. Después la editás cuando quieras.</p>')
        +'<div class="card" style="padding:16px">'
        +(armando?'<p style="margin:0;font-size:15px;color:'+NAVY+';font-weight:600">Armando tu landing…</p><p style="margin:4px 0 0;font-size:13.5px;color:#6B6878">'+esc(L.paso||'')+'. Tarda alrededor de un minuto.</p>'
         :'<button id="v3lbt" style="display:block;width:100%;height:52px;border:0;border-radius:12px;background:'+NAVY+';color:#fff;font:700 15px/1 Inter,sans-serif;letter-spacing:.6px;cursor:pointer">CREÁ TU LANDING</button>'
          +(L.estado==='error'?'<p style="margin:10px 0 0;font-size:13.5px;color:#7A1F3A">'+esc(L.error||'')+'</p>':''))
        +'</div>';
-      const b=web.querySelector('#v3lbt'); if(b) b.onclick=async()=>{ b.disabled=true; b.textContent='Arrancando…';
+      const b=W.querySelector('#v3lbt'); if(b) b.onclick=async()=>{ b.disabled=true; b.textContent='Arrancando…';
         window.SRE&&window.SRE('landing_crear',{});
         let r=null; try{ r=await fetch('https://vm.semillaredes.com/web/crear-landing',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok})}).then(x=>x.json()); }catch(e){}
         if(r&&r.ok){ I.landing=r.landing||{estado:'armando'}; crearLanding(); seguir(); }
@@ -848,18 +849,19 @@
       if(armando) seguir(); };
     let siguiendo=false;
     const seguir=()=>{ if(siguiendo) return; siguiendo=true; const t=setInterval(()=>{ fetch('https://vm.semillaredes.com/web/estado?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(j=>{ if(!j) return; window.__V3WEBINFO=j;
-        if(j.webs&&j.webs.length){ clearInterval(t); siguiendo=false; window.__V3WEBS=j.webs; WEBV=j.webs; ponerWeb(); }
-        else if(j.landing&&j.landing.estado!=='armando'){ clearInterval(t); siguiendo=false; crearLanding(); }
-        else crearLanding(); }).catch(()=>{}); },3000); };
+        if(j.landing&&j.landing.estado==='armando'){ crearLanding(); return; }
+        clearInterval(t); siguiendo=false; if(j.webs&&j.webs.length){ window.__V3WEBS=j.webs; WEBV=j.webs; }
+        if(j.landing&&j.landing.estado==='error') crearLanding(); else ponerWeb(); }).catch(()=>{}); },3000); };
     const ponerWeb=()=>{ if(!web) return; const tw=app&&(app.querySelector('.twBtns')||app.querySelector('.twWebs')); if(!tw&&intentos++<20) setTimeout(ponerWeb,300);
       const eds=tw?[...tw.querySelectorAll('a')]:[];
-      if(!WEBV.length&&!eds.length){ if(window.__V3WEBINFO&&window.__V3WEBINFO.puede_crear) crearLanding(); else web.innerHTML=''; return; }
+      if(!WEBV.length&&!eds.length){ if(window.__V3WEBINFO&&window.__V3WEBINFO.puede_crear) crearLanding(null); else web.innerHTML=''; return; }
       const lista=WEBV.length?WEBV:[{titulo:'Tu web',url:''}];
       web.innerHTML='<div class="tit2"><h2>'+(lista.length>1?'Tus webs':'Tu web')+'</h2></div><p class="bj" style="margin:0 0 10px;font-size:14.5px">'+(lista.every(w=>w.externa)?'Tocá para verla.':'Tocá para verla. Con «Editá» la abrís en modo edición: cambiás textos y fotos, o le pedís cambios a SemillaIA. Nada se publica sin que lo apruebes.')+'</p><div class="card lista webs">'+lista.map((w,n)=>'<div class="fila" style="grid-template-columns:1fr auto">'+(w.url?'<a class="tx" style="text-decoration:none" href="'+esc(w.url)+'" target="_blank" rel="noopener"><b style="color:'+NAVY+'">'+esc(w.titulo||'Tu web')+'</b><br><span style="color:#8A8577;font-size:13.5px">'+esc(String(w.url).replace(/^https?:\/\//,'').replace(/\/(index\.html)?$/,''))+'</span></a>':'<span class="tx"><b style="color:'+NAVY+'">Tu web</b></span>')+'<span class="ed" data-wed="'+n+'"></span></div>').join('')+'</div>';
       web.querySelectorAll('[data-wed]').forEach(x=>{ const i=+x.dataset.wed, a=eds[i], w=lista[i]; let c; if(w&&w.externa) return; /* 27/10: web externa (Wix, etc.): solo se ve, no se edita desde la app */
         if(w&&w.url){ c=document.createElement('a'); c.href=w.url+(w.url.includes('?')?'&':'?')+'editar='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok); c.target='_blank'; c.rel='noopener'; c.addEventListener('click',ev=>{ window.SRE&&window.SRE('web_editar',{}); ev.preventDefault(); let top=location.href; try{ top=window.top.location.href; }catch(e){} const u=c.href+'&volver='+encodeURIComponent(top.split('#')[0]); try{ window.top.location.href=u; }catch(e){ location.href=u; } }); }
         else if(a){ c=a.cloneNode(true); }
-        if(!c) return; c.className='edt'; c.innerHTML='✎ Editá'; x.appendChild(c); }); }; ponerWeb();
+        if(!c) return; c.className='edt'; c.innerHTML='✎ Editá'; x.appendChild(c); });
+      const WI=window.__V3WEBINFO; if(WI&&WI.puede_crear&&!lista.some(w=>/semillaia\.com\//.test(w.url||''))){ web.insertAdjacentHTML('beforeend','<div id="v3webcl" style="margin-top:14px"></div>'); crearLanding(web.querySelector('#v3webcl')); } }; ponerWeb();
     /* LOS DROPS EN LA APP (23/10/2026): el último drop del newsletter, sale los viernes (drops_app.py publica drops/ultimos.json) */
     const dropEl=raiz.querySelector('#v3drop');
     if(dropEl&&DP_BETA.includes(slug)) dropsCargar().then(L=>{ const d=L&&L[0]; if(!d) return;
@@ -1177,7 +1179,7 @@
   const urlApp=()=>{ try{ return window.top.location.href.split('#')[0]; }catch(e){ return location.href.split('#')[0]; } };
   const irDrops=()=>{ const u='https://semillaredes.com/drops/?volver='+encodeURIComponent(urlApp()); try{ window.top.location.href=u; }catch(e){ location.href=u; } };
   const DP_BETA=['eupatridas','eupatridas-1','semilla-redes','piku-yoga','hernan-onirico','hernan-onirico-2','los-soplafortune','maria-marta-crespo'];
-  const PL_NO=['maria-marta-crespo'];   // artistas visuales: sin buscador de playlists
+  const PL_NO=[];   // proyectos de la lista sin buscador de playlists
   let DROPS_L=null;
   function dropsCargar(){ if(DROPS_L) return Promise.resolve(DROPS_L); return fetch('/drops/ultimos.json?v='+new Date().toISOString().slice(0,13)).then(r=>r.ok?r.json():null).then(j=>(DROPS_L=(j&&j.drops)||[])); }
   function dropAbrir(n){ window.SRE&&window.SRE('drop_abrir',{n}); dropsCargar().then(L=>{ const d=L.find(x=>x.n===n)||L[0]; if(!d) return;
