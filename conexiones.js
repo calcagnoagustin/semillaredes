@@ -109,7 +109,7 @@
     function cargar(){
       return rpc('con_get',{p_slug:o.slug,p_k:o.k}).then(function(r){ if(r&&!r.error){ st.tipo=r.tipo; st.origen=r.origen||null; st.L=r.conexiones||{};
         var sem=false; try{ sem=localStorage.getItem('sr_semilla')==='1'; }catch(e){}
-        st.gestion=(st.origen==='cliente'&&!sem); } pintar(); }).catch(pintar);
+        st.gestion=false; /* 27/10/2026: todos conectan todo; lo público (Instagram, Spotify) ya viene conectado */ } pintar(); }).catch(pintar);
     }
     function conectar(f){
       var i=el.querySelector('[data-in="'+f+'"]'); var v=(i&&i.value||'').trim(); if(!v){ i&&i.focus(); return; }

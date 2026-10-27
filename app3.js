@@ -58,6 +58,7 @@
   #v3 .tit2 .inf,#v3 .tit2 button.inf{color:#A29E92;font-size:inherit}#v3 .tit2 .inf:hover{color:${NAVY}}
   #v3 .hero .inf{color:rgba(255,255,255,.62)}#v3 .hero .inf:hover{color:#fff}#v3 .hero .e .inf svg{width:15px;height:15px}
   .sdesc{margin:-4px 0 10px;font-size:14px;line-height:1.45;color:#6B6878}
+  .ptl{display:inline-block;vertical-align:3px;margin:0 7px 0 0;padding:4px 8px;border-radius:999px;background:#FBE9D2;color:#8A4B12;font:700 10.5px/1 Inter,sans-serif;letter-spacing:.3px;text-transform:uppercase}
   #v3 .dcard .sdesc{margin:-6px 2px 12px}
   .infb{position:fixed;z-index:300;left:0;top:0;padding:11px 14px;border-radius:12px;background:${NAVY};color:#fff;font:400 13.5px/1.45 Inter,system-ui,sans-serif;box-shadow:0 14px 30px -12px rgba(14,30,79,.55);opacity:0;pointer-events:none;transition:opacity .15s}
   .infb.on{opacity:1;pointer-events:auto}
@@ -1230,6 +1231,7 @@
     'tus conexiones':{d:'Las redes que SemillaIA lee para armar tus métricas y tus reportes.',i:'Conectá Instagram, Spotify, YouTube y Meta. Solo leemos tus datos: nunca publicamos ni cambiamos nada en tus cuentas.'},
     'tu acceso':{d:'Cómo entrás a la app.',i:'Vinculá tu cuenta de Google o tu mail para entrar desde cualquier dispositivo sin perder nada.'},
   };
+  const LIM=['tu web','tus webs','playlists para tu música','próximas fechas','tus lanzamientos'];   // funciones avanzadas: «Por tiempo limitado» fuera de la lista completa
   const infKey=t=>String(t||'').replace(/\s+/g,' ').trim().toLowerCase();
   let INFB=null, INFA=null;
   function infCerrar(){ if(INFB){ INFB.classList.remove('on'); INFA=null; } }
@@ -1247,7 +1249,10 @@
       b.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); infAbrir(b); });
       if(matchMedia('(hover:hover)').matches){ b.addEventListener('mouseenter',()=>{ if(INFA!==b) infAbrir(b); }); b.addEventListener('mouseleave',infCerrar); }
       h.classList.add('con-inf'); h.appendChild(b);
-      if(desc&&x.d&&trasDe){ const sig=trasDe.nextElementSibling; if(!(sig&&(sig.classList.contains('bj')||sig.classList.contains('sdesc')))){ const p=document.createElement('p'); p.className='sdesc'; p.textContent=x.d; trasDe.after(p); } } };
+      if(desc&&x.d&&trasDe){ const sig=trasDe.nextElementSibling; if(!(sig&&(sig.classList.contains('bj')||sig.classList.contains('sdesc')))){ const p=document.createElement('p'); p.className='sdesc'; p.textContent=x.d; trasDe.after(p); } }
+      if(trasDe&&LIM.includes(k)&&limitado()){ b.dataset.info=x.i+' Está incluida en tu app por tiempo limitado.'; let p=trasDe.nextElementSibling;
+        if(!(p&&(p.classList.contains('bj')||p.classList.contains('sdesc')))){ p=document.createElement('p'); p.className='sdesc'; trasDe.after(p); }
+        if(!p.querySelector('.ptl')) p.insertAdjacentHTML('afterbegin','<span class="ptl">Por tiempo limitado</span>'); } };
     document.querySelectorAll('#v3 .tit2 > h2, #v3 .tit2 > h3, .v3hoja .tit2 > h2, .v3hoja .tit2 > h3').forEach(h=>pon(h,infKey(h.firstChild&&h.firstChild.nodeType===3?h.firstChild.textContent:h.textContent),true,h.parentElement));
     document.querySelectorAll('#v3 .scr > h1.v3t, #v3 .scr > .rep h1.v3t, #v3 .scr > .rph h1.v3t').forEach(h=>{ const s=h.closest('.scr'); if(s) pon(h,'scr:'+s.dataset.scr,false); });
     document.querySelectorAll('#v3 .dcard .dhd > h3').forEach(h=>pon(h,'drop del viernes',true,h.parentElement));
@@ -1264,10 +1269,13 @@
   const irDrops=()=>{ const u='https://semillaredes.com/drops/?volver='+encodeURIComponent(urlApp()); try{ window.top.location.href=u; }catch(e){ location.href=u; } };
   /* VERSIONES DE LA APP (27/10/2026): cada proyecto tiene su versión; las funciones se activan por versión.
      2.0 = app nueva para todos · 2.1 = Creá tu landing, curadores de playlists y Drop del viernes con audio.
+     Desde 27/10 todos tienen 2.1. «proyectos» = la lista completa de Agus; el resto ve las funciones avanzadas
+     (landing, playlists, próximas fechas, lanzamientos) con la etiqueta «Por tiempo limitado».
      Esta línea es la fuente única: la VM (landing.py, drops_app.py) la lee de semillaredes.com/app3.js. No partir en varias líneas. */
-  const VERSIONES={"actual":"2.1","base":"2.0","proyectos":{"eupatridas":"2.1","eupatridas-1":"2.1","semilla-redes":"2.1","piku-yoga":"2.1","hernan-onirico":"2.1","hernan-onirico-2":"2.1","los-soplafortune":"2.1","maria-marta-crespo":"2.1","berco-estudio":"2.1"}};
+  const VERSIONES={"actual":"2.1","base":"2.1","proyectos":{"semilla-redes":"2.1","piku-yoga":"2.1","los-soplafortune":"2.1","eupatridas":"2.1","eupatridas-1":"2.1","hernan-onirico":"2.1","hernan-onirico-2":"2.1","maria-marta-crespo":"2.1","berco-estudio":"2.1","abel-maldonado":"2.1","flor-scott":"2.1","felipe-gonzalez":"2.1","andrea-guedella":"2.1","flor-del-valle":"2.1","federico-andahazi":"2.1","alan-sutton":"2.1","sin-fronteras-duo":"2.1","lu-glass":"2.1","alamesa":"2.1","spam-studio":"2.1","emma-avila":"2.1","lara-fichera":"2.1","mavela":"2.1","cheche-beraja":"2.1","animales-del-rock":"2.1","betsy-grinblat":"2.1","silvina":"2.1","yamila-beraja":"2.1","jimena-pesado":"2.1","jimena-mercedes":"2.1","audova":"2.1","koino":"2.1"}};
   const vCmp=(a,b)=>{ const x=String(a).split('.').map(Number), y=String(b).split('.').map(Number); for(let i=0;i<Math.max(x.length,y.length);i++){ const d=(x[i]||0)-(y[i]||0); if(d) return d; } return 0; };
-  const verApp=()=>{ let c=''; try{ c=new URLSearchParams(location.search).get('c')||''; }catch(e){} return VERSIONES.proyectos[c]||VERSIONES.base; }, vOk=v=>vCmp(verApp(),v)>=0;
+  const verApp=()=>{ let c=''; try{ c=new URLSearchParams(location.search).get('c')||''; }catch(e){} return VERSIONES.proyectos[c]||VERSIONES.base; }, vOk=v=>vCmp(verApp(),v)>=0,
+    limitado=()=>{ let c=''; try{ c=new URLSearchParams(location.search).get('c')||''; }catch(e){} return !!c&&!VERSIONES.proyectos[c]; };
   const PL_NO=[];   // proyectos de la lista sin buscador de playlists
   let DROPS_L=null;
   function dropsCargar(){ if(DROPS_L) return Promise.resolve(DROPS_L); return fetch('/drops/ultimos.json?v='+new Date().toISOString().slice(0,13)).then(r=>r.ok?r.json():null).then(j=>(DROPS_L=(j&&j.drops)||[])); }
