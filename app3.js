@@ -574,7 +574,9 @@
     const HTIT=h=>{ if(h.titulo&&!/^[a-z]+_[a-z_]+$/.test(h.titulo)) return h.titulo; return nf(h.objetivo)+' '+((HMET[h.metrica]||[])[1]||''); };
     const HDISP=Object.keys(HMET).filter(k=>(d.reportes||[]).some(r=>r.metricas&&r.metricas[k]!=null)&&!(k==='vta_ventas'&&(d.reportes||[]).some(r=>r.metricas&&r.metricas.msj_conversiones!=null)));
     const H=(d.hitos||[]).map(h=>({h,v:val(h.metrica)})).filter(x=>x.v!=null&&Number(x.v)<Number(x.h.objetivo));
-    const hito=H.sort((a,b)=>(b.v/b.h.objetivo)-(a.v/a.h.objetivo))[0];
+    // avance de un hito: en los de costo (ig_costo_follower, etc.) lo bueno es bajar, así que se mide al revés (27/10/2026)
+    const hAv=x=>{ const v=Number(x.v), o=Number(x.h.objetivo); if(x.v==null||!o||!v) return 0; return /costo/.test(x.h.metrica||'')?o/v:v/o; };
+    const hito=H.sort((a,b)=>hAv(b)-hAv(a))[0];
     const tiene=k=>val(k)!=null;
     const MET=[['ig_followers_total','seguidores','ig'],[SPK,'oyentes mensuales','sp'],['yt_views','vistas','yt'],['msj_mensajes','mensajes','msj'],['msj_conversiones','ventas','msj'],['tk_tickets','entradas','tk'],['stm_wishlist','wishlists en Steam','stm'],['vta_visitas','visitas a la tienda','vtv'],['ig_conv','conversión de visitas','ig'],['vta_ventas','ventas','vta'],['vta_roas_pixel','retorno por dólar','vta'],['vta_costo_venta','costo por venta','vta'],['frm_visitas','visitas a la formación','frm'],['frm_mensajes','consultas','frm'],['ig_visitas','visitas al perfil','ig']].filter(([k])=>tiene(k)&&!(k==='vta_visitas'&&tiene('vta_ventas'))).map(([k,l,ic])=>({k,l,ic}));
     // --- Campaña destacada (sub_campanas con tipo 'destacada'): arriba de todo en Hoy, con sus números acumulados ---
@@ -620,7 +622,7 @@
       <div id="v3cta"></div>
       <div id="v3drop"></div>
       ${hito?`<div class="card hito"><div>${ico.sol}</div><div><div class="v3t">Tu próximo hito</div><div class="tx">${esc(HTIT(hito.h))}</div></div><button class="ir" data-ir="proyecto" aria-label="Ver hitos">${ico.flecha}</button>
-        <div class="bar"><div class="b"><i style="width:${Math.min(100,hito.v/hito.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(hito.v)} / ${nf(hito.h.objetivo)}</span></div></div>`:''}
+        <div class="bar"><div class="b"><i style="width:${Math.min(100,hAv(hito)*100).toFixed(1)}%"></i></div><span>${nf(hito.v)} / ${nf(hito.h.objetivo)}</span></div></div>`:''}
       <div class="tit2"><h3>Accesos rápidos</h3></div>
       <div class="acc">
         <button data-acc="rep"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M6 19v-5M10 19V9M14 19v-7M18 19V6"/></svg>Ver reporte</button>
@@ -763,7 +765,7 @@
     const scrPro=`
       <h1 class="v3t">Tu proyecto</h1><p class="bj">Tus metas, tus links y tu web.</p>
       <div class="tit2"><h2>Hitos</h2>${HDISP.length?`<button id="v3hnuevo">${HFORM?'Cerrar':'Agregar hito'}</button>`:''}</div>
-      <div class="card">${HT.length?HT.map(x=>`<div class="hito" style="margin:0;border-top:1px solid #EDE6D8;grid-template-columns:38px 1fr;position:relative"><div>${ico.sol}</div><div style="${x.h.id&&!x.h.virtual?'padding-right:70px':''}"><div class="v3t">${esc(HTIT(x.h))}</div><div class="tx">${x.v!=null&&Number(x.v)>=Number(x.h.objetivo)?'¡Logrado!':'En camino'}</div></div><div class="bar"><div class="b"><i style="width:${x.v==null?0:Math.min(100,x.v/x.h.objetivo*100).toFixed(1)}%"></i></div><span>${nf(x.v)} / ${nf(x.h.objetivo)}</span></div>${x.h.id&&!x.h.virtual?`<span class="hacc">${IB('hito',x.h.id)}</span>`:''}${EDon('hito',x.h.id)?`<div style="grid-column:1/-1">${EDF([{v:x.h.titulo||'',ph:'Nombre (opcional)'},{v:x.h.objetivo,ph:'Meta (número)',num:1}])}</div>`:''}</div>`).join(''):'<div class="vacio">Todavía no hay hitos. Sumá una meta: por ejemplo, a cuántos seguidores querés llegar.</div>'}
+      <div class="card">${HT.length?HT.map(x=>`<div class="hito" style="margin:0;border-top:1px solid #EDE6D8;grid-template-columns:38px 1fr;position:relative"><div>${ico.sol}</div><div style="${x.h.id&&!x.h.virtual?'padding-right:70px':''}"><div class="v3t">${esc(HTIT(x.h))}</div><div class="tx">${x.v!=null&&hAv(x)>=1?'¡Logrado!':'En camino'}</div></div><div class="bar"><div class="b"><i style="width:${x.v==null?0:Math.min(100,hAv(x)*100).toFixed(1)}%"></i></div><span>${nf(x.v)} / ${nf(x.h.objetivo)}</span></div>${x.h.id&&!x.h.virtual?`<span class="hacc">${IB('hito',x.h.id)}</span>`:''}${EDon('hito',x.h.id)?`<div style="grid-column:1/-1">${EDF([{v:x.h.titulo||'',ph:'Nombre (opcional)'},{v:x.h.objetivo,ph:'Meta (número)',num:1}])}</div>`:''}</div>`).join(''):'<div class="vacio">Todavía no hay hitos. Sumá una meta: por ejemplo, a cuántos seguidores querés llegar.</div>'}
         ${HFORM?`<div class="fform hform"><select id="v3hm">${HDISP.map(k=>`<option value="${k}">${HMET[k][0]}</option>`).join('')}</select><input id="v3ho" inputmode="decimal" placeholder="Meta (número)"><input id="v3ht" placeholder="Nombre (opcional)"><button id="v3hadd">Guardar hito</button></div>`:''}</div>
       <div class="tit2"><h2>Gestioná tus tickets</h2></div>
       <div class="card tkpr"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 7.5A1.5 1.5 0 0 1 5.5 6h13A1.5 1.5 0 0 1 20 7.5V10a2 2 0 0 0 0 4v2.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 16.5V14a2 2 0 0 0 0-4z"/><path d="M14 6.5v11" stroke-dasharray="2 2"/></svg></span><span class="tx"><b>Vendé y seguí tus entradas desde la app</b><small>Muy pronto</small></span></div>
@@ -910,7 +912,7 @@
       fetch(API+'lanzamientos?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(r=>{ if(r&&r.lanzamientos){ LZ=r.lanzamientos; pintarLz(); } }).catch(()=>{}); }
     /* BUSCADOR DE PLAYLISTS (23/10/2026): la misma IA de curadores.html, con el Spotify y el Instagram que ya conectó */
     const plEl=raiz.querySelector('#v3pl');
-    if(plEl&&DP_BETA.includes(slug)){ const PK='sr_pl_'+slug, lsg=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}, lss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+    if(plEl&&DP_BETA.includes(slug)&&!PL_NO.includes(slug)){ const PK='sr_pl_'+slug, lsg=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}, lss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
       const miMail=()=>{ try{ for(const k of Object.keys(localStorage)) if(/^sb-.*-auth-token$/.test(k)){ const u=(JSON.parse(localStorage.getItem(k))||{}).user; if(u&&u.email) return u.email; } }catch(e){} return 'app+'+slug+'@semillaredes.com'; };
       let CXD=null;
       const datos=async()=>{ if(CXD) return CXD; try{ const r=await fetch('https://fdrxsjphlvvwwknnrjtx.supabase.co/rest/v1/rpc/con_get',{method:'POST',headers:{apikey:'sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17','Content-Type':'application/json'},body:JSON.stringify({p_slug:slug,p_k:tok})}).then(x=>x.json()); const c=(r&&r.conexiones)||{};
@@ -1174,7 +1176,8 @@
   // ---- Drops (playlists + drops: por ahora solo estos proyectos) ----
   const urlApp=()=>{ try{ return window.top.location.href.split('#')[0]; }catch(e){ return location.href.split('#')[0]; } };
   const irDrops=()=>{ const u='https://semillaredes.com/drops/?volver='+encodeURIComponent(urlApp()); try{ window.top.location.href=u; }catch(e){ location.href=u; } };
-  const DP_BETA=['eupatridas','eupatridas-1','semilla-redes','piku-yoga','hernan-onirico','hernan-onirico-2','los-soplafortune'];
+  const DP_BETA=['eupatridas','eupatridas-1','semilla-redes','piku-yoga','hernan-onirico','hernan-onirico-2','los-soplafortune','maria-marta-crespo'];
+  const PL_NO=['maria-marta-crespo'];   // artistas visuales: sin buscador de playlists
   let DROPS_L=null;
   function dropsCargar(){ if(DROPS_L) return Promise.resolve(DROPS_L); return fetch('/drops/ultimos.json?v='+new Date().toISOString().slice(0,13)).then(r=>r.ok?r.json():null).then(j=>(DROPS_L=(j&&j.drops)||[])); }
   function dropAbrir(n){ window.SRE&&window.SRE('drop_abrir',{n}); dropsCargar().then(L=>{ const d=L.find(x=>x.n===n)||L[0]; if(!d) return;
