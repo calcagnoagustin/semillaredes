@@ -1113,7 +1113,7 @@
   // ---- Drops (playlists + drops: por ahora solo estos proyectos) ----
   const urlApp=()=>{ try{ return window.top.location.href.split('#')[0]; }catch(e){ return location.href.split('#')[0]; } };
   const irDrops=()=>{ const u='https://semillaredes.com/drops/?volver='+encodeURIComponent(urlApp()); try{ window.top.location.href=u; }catch(e){ location.href=u; } };
-  const DP_BETA=['eupatridas','eupatridas-1','semilla-redes','piku-yoga','hernan-onirico','hernan-onirico-2'];
+  const DP_BETA=['eupatridas','eupatridas-1','semilla-redes','piku-yoga','hernan-onirico','hernan-onirico-2','los-soplafortune'];
   let DROPS_L=null;
   function dropsCargar(){ if(DROPS_L) return Promise.resolve(DROPS_L); return fetch('/drops/ultimos.json?v='+new Date().toISOString().slice(0,13)).then(r=>r.ok?r.json():null).then(j=>(DROPS_L=(j&&j.drops)||[])); }
   function dropAbrir(n){ window.SRE&&window.SRE('drop_abrir',{n}); dropsCargar().then(L=>{ const d=L.find(x=>x.n===n)||L[0]; if(!d) return;
