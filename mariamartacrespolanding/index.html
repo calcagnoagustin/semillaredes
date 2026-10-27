@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>María Marta Crespo · Arte abstracto contemporáneo · Obras únicas</title>
+<meta name="description" content="Obras únicas de arte abstracto en técnica mixta, pintadas a mano por María Marta Crespo. Obras disponibles, obras por encargo y envíos a todo el país y al exterior.">
+<meta property="og:title" content="María Marta Crespo · Obras únicas para espacios con identidad">
+<meta property="og:description" content="Arte abstracto contemporáneo en técnica mixta. Obras disponibles, encargos y envíos a todo el país y al exterior.">
+<meta property="og:image" content="https://semillaredes.com/mariamartacrespolanding/img/og.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--fondo:#F8F5F0;--blanco:#FFFFFF;--pared:#EFEAE2;--tinta:#1E1C1A;--suave:#69625B;--rosa:#B4426A;--rosa2:#963657;--salvia:#6B7B5F;--linea:#E4DCD0}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--fondo);color:var(--tinta);font-family:'Inter',system-ui,sans-serif;font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.eti{font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--rosa);margin:0 0 16px}
+h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;margin:0;line-height:1.04;letter-spacing:-.005em}
+h2{font-size:clamp(40px,5vw,62px)}
+h1 em,h2 em{font-style:italic;color:var(--rosa)}
+section{padding:110px 0}
+.bajada{color:var(--suave);max-width:660px;margin:20px 0 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:54px;padding:0 28px;border-radius:999px;font-size:15.5px;font-weight:600;text-decoration:none;transition:transform .2s,background .2s,color .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.pri{background:var(--tinta);color:#fff}
+.btn.pri:hover{background:var(--rosa2)}
+.btn.sec{border:1.5px solid var(--tinta)}
+.btn.sec:hover{background:var(--tinta);color:var(--fondo)}
+.btn svg{width:20px;height:20px;flex:none}
+.acciones{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+
+/* nav */
+.nav{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 28px;max-width:1280px;margin:0 auto}
+.nav b{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:25px;line-height:1.1}
+.nav b small{display:block;font-family:'Inter',sans-serif;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--suave);font-weight:500;margin-top:3px}
+.nav .links{display:flex;gap:30px;font-size:15px;font-weight:500}
+.nav .links a{text-decoration:none;color:var(--suave);transition:color .2s}
+.nav .links a:hover{color:var(--tinta)}
+
+/* portada */
+.portada{display:grid;grid-template-columns:1.05fr .95fr;gap:72px;align-items:center;padding:28px 24px 104px}
+.portada>div{min-width:0}
+.portada h1{font-size:clamp(54px,6.8vw,96px)}
+.portada .rol{font-size:clamp(18.5px,1.8vw,21px);margin:28px 0 0;line-height:1.55;max-width:560px}
+.creds{display:flex;flex-wrap:wrap;gap:10px;margin:36px 0 0;padding:0;list-style:none}
+.creds li{display:inline-flex;align-items:center;gap:9px;height:36px;padding:0 15px;border-radius:999px;background:var(--blanco);border:1px solid var(--linea);font-size:13.5px;font-weight:500}
+.creds li i{width:7px;height:7px;border-radius:50%;background:var(--rosa);flex:none}
+.portada .foto img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 40%;border-radius:4px}
+
+/* como comprar */
+.compra{background:var(--blanco);border-top:1px solid var(--linea);border-bottom:1px solid var(--linea)}
+.pasos{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin:56px 0 0;padding:0;list-style:none}
+.pasos li{border-top:1.5px solid var(--tinta);padding-top:22px}
+.pasos .n{display:block;font-family:'Cormorant Garamond',serif;font-size:40px;line-height:1;color:var(--rosa)}
+.pasos h3{font-size:28px;margin:14px 0 0}
+.pasos p{color:var(--suave);font-size:16px;margin:10px 0 0}
+
+/* obras */
+.grilla{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:56px}
+.obra{background:var(--blanco);border:1px solid var(--linea);border-radius:6px;overflow:hidden;display:flex;flex-direction:column}
+.obra.ancha{grid-column:span 2}
+.marco{height:340px;background:var(--pared);display:flex;align-items:center;justify-content:center;padding:34px}
+.marco img{max-width:100%;max-height:100%;width:auto;height:auto;box-shadow:0 10px 24px rgba(30,28,26,.22),0 2px 4px rgba(30,28,26,.12)}
+.ficha{padding:22px 24px 24px;display:flex;flex-direction:column;flex:1}
+.ficha h3{font-size:27px;line-height:1.1}
+.ficha .med{margin:10px 0 0;font-size:15px;font-weight:600}
+.ficha .tec{margin:2px 0 0;font-size:14.5px;color:var(--suave)}
+.cons{margin-top:auto;padding-top:18px;align-self:flex-start;font-size:15px;font-weight:600;color:var(--rosa);text-decoration:none;border-bottom:1.5px solid currentColor;line-height:1.3}
+.cons:hover{color:var(--rosa2)}
+.nota{margin:28px 0 0;font-size:14.5px;color:var(--suave)}
+
+/* formas de vivir */
+.formas{background:var(--tinta);color:#F3EEE7}
+.formas .eti{color:#E7A9BE}
+.formas h2 em{color:#E7A9BE}
+.formas .bajada{color:#CFC7BD}
+.formas .btn.pri{background:#F3EEE7;color:var(--tinta)}
+.formas .btn.pri:hover{background:#fff}
+.cuatro{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:52px}
+.cuatro img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:3px}
+
+/* en tu espacio */
+.espacio .dos{display:grid;grid-template-columns:.9fr 1.1fr;gap:64px;align-items:end}
+.paredes{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:56px}
+.paredes figure{margin:0}
+.paredes img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:4px}
+.paredes figcaption{margin-top:12px;font-size:14.5px;color:var(--suave)}
+.paredes figcaption b{color:var(--tinta);font-weight:600}
+
+/* encargos */
+.encargos{background:var(--pared)}
+.lado{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.lado>div{min-width:0}
+.lado img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:4px}
+.ejemplo{margin:28px 0 0;padding:18px 20px;border-left:3px solid var(--rosa);background:var(--blanco);font-size:15px;color:var(--suave)}
+.ejemplo b{display:block;color:var(--tinta);font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;line-height:1.2}
+
+/* showroom */
+.showroom .lado img{aspect-ratio:4/5}
+
+/* sobre mi */
+.sobre{background:var(--blanco);border-top:1px solid var(--linea)}
+.sobre .lado{align-items:start}
+.sobre .lado img{aspect-ratio:4/5;object-position:50% 50%}
+.sobre p.tx{margin:20px 0 0;color:var(--suave)}
+blockquote{margin:30px 0 0;padding:0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(25px,2.4vw,30px);line-height:1.25}
+blockquote cite{display:block;margin-top:10px;font-family:'Inter',sans-serif;font-style:normal;font-size:13.5px;letter-spacing:.06em;color:var(--suave)}
+.tray{margin:72px 0 0;padding:0;list-style:none;border-top:1px solid var(--linea)}
+.tray li{display:grid;grid-template-columns:150px 1fr;gap:28px;padding:20px 0;border-bottom:1px solid var(--linea);align-items:baseline}
+.tray .an{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--rosa);line-height:1.2}
+.tray .ev{font-size:16.5px;line-height:1.55}
+.tray .ev b{font-weight:600}
+.prensa{margin:26px 0 0;font-size:15px;color:var(--suave)}
+.fotos3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px}
+.fotos3 img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:4px}
+
+/* faq */
+.faq .dos{display:grid;grid-template-columns:.8fr 1.2fr;gap:64px}
+details{border-bottom:1px solid var(--linea);padding:22px 0}
+details:first-child{border-top:1px solid var(--linea)}
+summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:20px;font-family:'Cormorant Garamond',serif;font-size:25px;font-weight:500;line-height:1.2}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'+';font-family:'Inter',sans-serif;font-size:24px;font-weight:400;color:var(--rosa);flex:none;line-height:1}
+details[open] summary::after{content:'–'}
+details p{margin:12px 0 0;color:var(--suave);font-size:16.5px}
+
+/* contacto */
+.contacto{background:var(--tinta);color:#F3EEE7;text-align:center}
+.contacto .eti{color:#E7A9BE}
+.contacto h2 em{color:#E7A9BE}
+.contacto .bajada{color:#CFC7BD;margin-left:auto;margin-right:auto}
+.contacto .acciones{justify-content:center}
+.contacto .btn.pri{background:#F3EEE7;color:var(--tinta)}
+.contacto .btn.pri:hover{background:#fff}
+.contacto .btn.sec{border-color:#F3EEE7}
+.contacto .btn.sec:hover{background:#F3EEE7;color:var(--tinta)}
+.redes{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 30px;margin-top:40px;font-size:15px}
+.redes a{color:#E8E1D8;text-decoration:none;border-bottom:1px solid rgba(232,225,216,.35)}
+.pie{margin:52px 0 0;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#9D958B}
+
+.flota{position:fixed;right:20px;bottom:20px;width:58px;height:58px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.22);z-index:20}
+.flota svg{width:30px;height:30px}
+
+@media (max-width:980px){
+  .portada,.lado,.espacio .dos,.faq .dos{grid-template-columns:1fr;gap:44px}
+  .pasos{grid-template-columns:1fr 1fr}
+  .grilla{grid-template-columns:1fr 1fr}
+  .cuatro{grid-template-columns:1fr 1fr}
+  .nav .links{display:none}
+}
+@media (max-width:640px){
+  body{font-size:16.5px}
+  section{padding:80px 0}
+  .wrap{padding:0 20px}
+  .nav{padding:18px 20px}
+  .portada{padding:12px 20px 80px}
+  .pasos,.grilla,.paredes,.fotos3{grid-template-columns:1fr}
+  .obra.ancha{grid-column:auto}
+  .marco{height:300px;padding:28px}
+  .tray li{grid-template-columns:1fr;gap:4px}
+  .btn{width:100%}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" data-b="1"><b data-e="1">María Marta Crespo<small>Arte contemporáneo</small></b><div class="links"><a href="#obras" data-e="2">Obras</a><a href="#encargos" data-e="3">Encargos</a><a href="#sobre-mi" data-e="4">Trayectoria</a><a href="#contacto" data-e="5">Consultar</a></div></nav>
+
+<header class="wrap portada" data-b="2">
+  <div>
+    <p class="eti" data-e="6">Artista visual · Arte abstracto contemporáneo</p>
+    <h1 data-e="7">Obras únicas para espacios con <em>identidad</em></h1>
+    <p class="rol" data-e="8">Pinto obras abstractas en técnica mixta, una por una, en mi taller. Elegí la tuya, te ayudo a verla en tu pared y te la envío a todo el país y al exterior.</p>
+    <div class="acciones">
+      <a class="btn pri" href="#obras" data-e="9">Ver obras disponibles</a>
+      <a class="btn sec" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20tus%20obras" target="_blank" rel="noopener" data-e="10">Consultar por WhatsApp</a>
+    </div>
+    <ul class="creds">
+      <li><i></i><span data-e="11">Muestras individuales en Tokio desde 2017</span></li>
+      <li><i></i><span data-e="12">Más de 20 años pintando</span></li>
+      <li><i></i><span data-e="13">Envíos a todo el país y al exterior</span></li>
+    </ul>
+  </div>
+  <div class="foto"><img src="img/hero.jpg" alt="Obra «Abundancia» de María Marta Crespo en un living" fetchpriority="high" data-e="14"></div>
+</header>
+
+<section class="compra" id="comprar" data-b="3">
+  <div class="wrap">
+    <p class="eti" data-e="15">Cómo comprar una obra</p>
+    <h2 data-e="16">Simple, directo y <em>con la artista</em></h2>
+    <p class="bajada" data-e="17">Te acompaño desde que elegís la obra hasta que la tenés colgada.</p>
+    <ol class="pasos">
+      <li><span class="n" data-e="18">01</span><h3 data-e="19">Elegí la obra</h3><p data-e="20">Mirá las obras disponibles y escribime por la que te guste. Te paso el precio y todos los detalles.</p></li>
+      <li><span class="n" data-e="21">02</span><h3 data-e="22">Imaginala en tu espacio</h3><p data-e="23">Contame dónde la querés colgar y te ayudo a que la veas en tu pared antes de decidir.</p></li>
+      <li><span class="n" data-e="24">03</span><h3 data-e="25">Si querés, vení a verla</h3><p data-e="26">Podés visitar mi showroom con cita previa y ver las obras en persona.</p></li>
+      <li><span class="n" data-e="27">04</span><h3 data-e="28">Te la envío</h3><p data-e="29">Coordinamos el envío a cualquier punto del país y también al exterior.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="obras" id="obras" data-b="4">
+  <div class="wrap">
+    <p class="eti" data-e="30">Obras disponibles</p>
+    <h2 data-e="31">Cada obra es <em>única</em></h2>
+    <p class="bajada" data-e="32">Piezas originales, pintadas a mano y firmadas. Cuando una obra se vende, no se repite. Tocá «Consultar precio» y te respondo por WhatsApp.</p>
+    <div class="grilla">
+      <article class="obra ">
+        <div class="marco"><img src="img/o-tu-todo.jpg" alt="Tu todo, te define, obra de María Marta Crespo" loading="lazy" data-e="33"></div>
+        <div class="ficha">
+          <h3 data-e="34">Tu todo, te define</h3>
+          <p class="med" data-e="35">80 × 120 cm</p>
+          <p class="tec" data-e="36">Técnica mixta sobre lienzo</p>
+          <a class="cons" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20me%20interesa%20la%20obra%20%E2%80%9CTu%20todo%2C%20te%20define%E2%80%9D%20%2880%20%C3%97%20120%20cm%29.%20%C2%BFMe%20pas%C3%A1s%20el%20precio%3F" target="_blank" rel="noopener" data-e="37">Consultar precio</a>
+        </div>
+      </article>
+      <article class="obra ">
+        <div class="marco"><img src="img/o-victoria.jpg" alt="Donde nace la victoria, obra de María Marta Crespo" loading="lazy" data-e="38"></div>
+        <div class="ficha">
+          <h3 data-e="39">Donde nace la victoria</h3>
+          <p class="med" data-e="40">65 × 65 cm</p>
+          <p class="tec" data-e="41">Acrílicos y pastel a la tiza sobre lienzo</p>
+          <a class="cons" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20me%20interesa%20la%20obra%20%E2%80%9CDonde%20nace%20la%20victoria%E2%80%9D%20%2865%20%C3%97%2065%20cm%29.%20%C2%BFMe%20pas%C3%A1s%20el%20precio%3F" target="_blank" rel="noopener" data-e="42">Consultar precio</a>
+        </div>
+      </article>
+      <article class="obra ">
+        <div class="marco"><img src="img/o-bosque.jpg" alt="Juguemos en el bosque, obra de María Marta Crespo" loading="lazy" data-e="43"></div>
+        <div class="ficha">
+          <h3 data-e="44">Juguemos en el bosque</h3>
+          <p class="med" data-e="45">140 × 180 cm</p>
+          <p class="tec" data-e="46">Técnica mixta sobre lienzo</p>
+          <a class="cons" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20me%20interesa%20la%20obra%20%E2%80%9CJuguemos%20en%20el%20bosque%E2%80%9D%20%28140%20%C3%97%20180%20cm%29.%20%C2%BFMe%20pas%C3%A1s%20el%20precio%3F" target="_blank" rel="noopener" data-e="47">Consultar precio</a>
+        </div>
+      </article>
+      <article class="obra ">
+        <div class="marco"><img src="img/o-abundancia.jpg" alt="Abundancia, obra de María Marta Crespo" loading="lazy" data-e="48"></div>
+        <div class="ficha">
+          <h3 data-e="49">Abundancia</h3>
+          <p class="med" data-e="50">120 × 120 cm</p>
+          <p class="tec" data-e="51">Técnica mixta sobre lienzo</p>
+          <a class="cons" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20me%20interesa%20la%20obra%20%E2%80%9CAbundancia%E2%80%9D%20%28120%20%C3%97%20120%20cm%29.%20%C2%BFMe%20pas%C3%A1s%20el%20precio%3F" target="_blank" rel="noopener" data-e="52">Consultar precio</a>
+        </div>
+      </article>
+      <article class="obra ancha">
+        <div class="marco"><img src="img/o-ventanita.jpg" alt="A través de tu ventanita, obra de María Marta Crespo" loading="lazy" data-e="53"></div>
+        <div class="ficha">
+          <h3 data-e="54">A través de tu ventanita</h3>
+          <p class="med" data-e="55">Tríptico · 120 × 240 cm en total</p>
+          <p class="tec" data-e="56">Técnica mixta sobre lienzo</p>
+          <a class="cons" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20me%20interesa%20la%20obra%20%E2%80%9CA%20trav%C3%A9s%20de%20tu%20ventanita%E2%80%9D%20%28Tr%C3%ADptico%20%C2%B7%20120%20%C3%97%20240%20cm%20en%20total%29.%20%C2%BFMe%20pas%C3%A1s%20el%20precio%3F" target="_blank" rel="noopener" data-e="57">Consultar precio</a>
+        </div>
+      </article>
+      <article class="obra ">
+        <div class="marco"><img src="img/o-rulos.jpg" alt="Con los rulos hechos, obra de María Marta Crespo" loading="lazy" data-e="58"></div>
+        <div class="ficha">
+          <h3 data-e="59">Con los rulos hechos</h3>
+          <p class="med" data-e="60">120 × 80 cm</p>
+          <p class="tec" data-e="61">Técnica mixta sobre lienzo</p>
+          <a class="cons" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20me%20interesa%20la%20obra%20%E2%80%9CCon%20los%20rulos%20hechos%E2%80%9D%20%28120%20%C3%97%2080%20cm%29.%20%C2%BFMe%20pas%C3%A1s%20el%20precio%3F" target="_blank" rel="noopener" data-e="62">Consultar precio</a>
+        </div>
+      </article>
+      <article class="obra ">
+        <div class="marco"><img src="img/o-tres-marias.jpg" alt="Las tres marías, obra de María Marta Crespo" loading="lazy" data-e="63"></div>
+        <div class="ficha">
+          <h3 data-e="64">Las tres marías</h3>
+          <p class="med" data-e="65">80 × 120 cm</p>
+          <p class="tec" data-e="66">Técnica mixta sobre lienzo</p>
+          <a class="cons" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20me%20interesa%20la%20obra%20%E2%80%9CLas%20tres%20mar%C3%ADas%E2%80%9D%20%2880%20%C3%97%20120%20cm%29.%20%C2%BFMe%20pas%C3%A1s%20el%20precio%3F" target="_blank" rel="noopener" data-e="67">Consultar precio</a>
+        </div>
+      </article>
+      <article class="obra ">
+        <div class="marco"><img src="img/o-puerta.jpg" alt="Cuando abro la puerta para ir a jugar, obra de María Marta Crespo" loading="lazy" data-e="68"></div>
+        <div class="ficha">
+          <h3 data-e="69">Cuando abro la puerta para ir a jugar</h3>
+          <p class="med" data-e="70">90 × 90 cm</p>
+          <p class="tec" data-e="71">Técnica mixta sobre lienzo</p>
+          <a class="cons" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20me%20interesa%20la%20obra%20%E2%80%9CCuando%20abro%20la%20puerta%20para%20ir%20a%20jugar%E2%80%9D%20%2890%20%C3%97%2090%20cm%29.%20%C2%BFMe%20pas%C3%A1s%20el%20precio%3F" target="_blank" rel="noopener" data-e="72">Consultar precio</a>
+        </div>
+      </article>
+      <article class="obra ancha">
+        <div class="marco"><img src="img/o-oscuridad.jpg" alt="No se brilla sin oscuridad I y II, obra de María Marta Crespo" loading="lazy" data-e="73"></div>
+        <div class="ficha">
+          <h3 data-e="74">No se brilla sin oscuridad I y II</h3>
+          <p class="med" data-e="75">Díptico · 100 × 80 cm cada una</p>
+          <p class="tec" data-e="76">Técnica mixta sobre lienzo</p>
+          <a class="cons" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20me%20interesa%20la%20obra%20%E2%80%9CNo%20se%20brilla%20sin%20oscuridad%20I%20y%20II%E2%80%9D%20%28D%C3%ADptico%20%C2%B7%20100%20%C3%97%2080%20cm%20cada%20una%29.%20%C2%BFMe%20pas%C3%A1s%20el%20precio%3F" target="_blank" rel="noopener" data-e="77">Consultar precio</a>
+        </div>
+      </article>
+      <article class="obra ">
+        <div class="marco"><img src="img/o-vida-va.jpg" alt="Y la vida va, obra de María Marta Crespo" loading="lazy" data-e="78"></div>
+        <div class="ficha">
+          <h3 data-e="79">Y la vida va</h3>
+          <p class="med" data-e="80">90 × 90 cm</p>
+          <p class="tec" data-e="81">Acrílico sobre lienzo</p>
+          <a class="cons" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20me%20interesa%20la%20obra%20%E2%80%9CY%20la%20vida%20va%E2%80%9D%20%2890%20%C3%97%2090%20cm%29.%20%C2%BFMe%20pas%C3%A1s%20el%20precio%3F" target="_blank" rel="noopener" data-e="82">Consultar precio</a>
+        </div>
+      </article>
+      <article class="obra ">
+        <div class="marco"><img src="img/o-dimes.jpg" alt="Dimes y diretes…, tía Chola, obra de María Marta Crespo" loading="lazy" data-e="83"></div>
+        <div class="ficha">
+          <h3 data-e="84">Dimes y diretes…, tía Chola</h3>
+          <p class="med" data-e="85">100 × 100 cm</p>
+          <p class="tec" data-e="86">Técnica mixta sobre lienzo</p>
+          <a class="cons" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20me%20interesa%20la%20obra%20%E2%80%9CDimes%20y%20diretes%E2%80%A6%2C%20t%C3%ADa%20Chola%E2%80%9D%20%28100%20%C3%97%20100%20cm%29.%20%C2%BFMe%20pas%C3%A1s%20el%20precio%3F" target="_blank" rel="noopener" data-e="87">Consultar precio</a>
+        </div>
+      </article>
+    </div>
+    <p class="nota" data-e="88">Al ser piezas únicas, la disponibilidad puede cambiar: confirmala cuando me escribas. Hay más obras en la <a href="https://www.mariamartacrespo.com/" target="_blank" rel="noopener">galería completa</a>.</p>
+  </div>
+</section>
+
+<section class="formas" id="formas-de-vivir" data-b="5">
+  <div class="wrap">
+    <p class="eti" data-e="89">Serie «Formas de vivir»</p>
+    <h2 data-e="90">Obras chicas, <em>36 × 36 cm</em></h2>
+    <p class="bajada" data-e="91">Una serie que tuvo muchísimas obras y es parte central de mi recorrido. Todavía quedan algunas: son ideales para empezar una colección, armar una composición en una pared o regalar arte.</p>
+    <div class="cuatro">
+      <img src="img/formas-1.jpg" alt="Obra de la serie Formas de vivir" loading="lazy" data-e="92">
+      <img src="img/formas-2.jpg" alt="Obra de la serie Formas de vivir" loading="lazy" data-e="93">
+      <img src="img/formas-3.jpg" alt="Obra de la serie Formas de vivir" loading="lazy" data-e="94">
+      <img src="img/formas-4.jpg" alt="Obra de la serie Formas de vivir" loading="lazy" data-e="95">
+    </div>
+    <div class="acciones"><a class="btn pri" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20quiero%20consultar%20por%20las%20obras%20de%2036%20%C3%97%2036%20cm%20de%20la%20serie%20%C2%ABFormas%20de%20vivir%C2%BB" target="_blank" rel="noopener" data-e="96">Consultar por las obras de 36 × 36</a></div>
+  </div>
+</section>
+
+<section class="espacio" id="en-tu-espacio" data-b="6">
+  <div class="wrap">
+    <div class="dos">
+      <div><p class="eti" data-e="97">Arte en tu casa</p><h2 data-e="98">Una obra no es solo una imagen: <em>es una presencia</em></h2></div>
+      <p class="bajada" style="margin:0" data-e="99">Convivís con ella todos los días y siempre le descubrís algo nuevo. Por eso te acompaño a elegir la medida y el lugar: escribime y te ayudo a que la veas en tu pared.</p>
+    </div>
+    <div class="paredes">
+      <figure><img src="img/pared-1.jpg" alt="Obra «Tu todo, te define» en un living" loading="lazy" data-e="100"><figcaption data-e="101"><b>Tu todo, te define</b> · 80 × 120 cm</figcaption></figure>
+      <figure><img src="img/pared-2.jpg" alt="Obra «Las tres marías» en un escritorio" loading="lazy" data-e="102"><figcaption data-e="103"><b>Las tres marías</b> · 80 × 120 cm</figcaption></figure>
+      <figure><img src="img/pared-3.jpg" alt="Obra «Cuando abro la puerta para ir a jugar» en un dormitorio" loading="lazy" data-e="104"><figcaption data-e="105"><b>Cuando abro la puerta para ir a jugar</b> · 90 × 90 cm</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section class="encargos" id="encargos" data-b="7">
+  <div class="wrap lado">
+    <div><img src="img/encargo.jpg" alt="Obra por encargo «Sereno fluir», de 110 cm de diámetro" loading="lazy" data-e="106"></div>
+    <div>
+      <p class="eti" data-e="107">Obras por encargo</p>
+      <h2 data-e="108">Una obra pensada <em>para tu espacio</em></h2>
+      <p class="bajada" data-e="109">Si buscás una medida, una paleta o un formato especial, puedo pintar una obra a pedido. Charlamos qué buscás y cómo es el lugar, y armamos juntos la idea. Los encargos se toman por orden: escribime y guardo tu lugar en la lista.</p>
+      <div class="ejemplo"><b data-e="110">Sereno fluir</b><span data-e="111">Obra a pedido · 110 cm de diámetro · Técnica mixta sobre lienzo</span></div>
+      <div class="acciones"><a class="btn pri" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20quiero%20anotarme%20en%20la%20lista%20de%20encargos" target="_blank" rel="noopener" data-e="112"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4a.5.5 0 0 0 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.6 11.6 0 0 0 4.5 3.9c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.1-.2-.2-.4-.3z"/></svg>Anotarme en la lista de encargos</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="showroom" id="showroom" data-b="8">
+  <div class="wrap lado">
+    <div>
+      <p class="eti" data-e="113">Showroom</p>
+      <h2 data-e="114">Vení a ver las obras <em>en persona</em></h2>
+      <p class="bajada" data-e="115">Mi taller es mi mundo: el lugar donde nacen las obras. Con cita previa podés venir a verlas, charlar sobre cada una con un café y elegir sin apuro.</p>
+      <div class="acciones"><a class="btn pri" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20quiero%20coordinar%20una%20visita%20a%20tu%20showroom" target="_blank" rel="noopener" data-e="116"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4a.5.5 0 0 0 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.6 11.6 0 0 0 4.5 3.9c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.1-.2-.2-.4-.3z"/></svg>Pedir una cita</a></div>
+    </div>
+    <div><img src="img/taller.jpg" alt="El taller de María Marta Crespo" loading="lazy" data-e="117"></div>
+  </div>
+</section>
+
+<section class="sobre" id="sobre-mi" data-b="9">
+  <div class="wrap">
+    <div class="lado">
+      <div><img src="img/retrato.jpg" alt="María Marta Crespo junto a sus obras en una feria de arte" loading="lazy" data-e="118"></div>
+      <div>
+        <p class="eti" data-e="119">Sobre mí</p>
+        <h2 data-e="120">María Marta <em>Crespo</em></h2>
+        <p class="tx" data-e="121">Pinto hace más de veinte años. Empecé estudiando sistemas, pero mi pasión estaba en el arte: hice talleres con artistas de renombre y desde entonces no paré.</p>
+        <p class="tx" data-e="122">Mi trabajo es una búsqueda constante: expresar mi ser interior a través de la pintura. El color es mi lenguaje, la voz con la que me expreso sin palabras. Los materiales no me limitan: por eso casi todas mis obras son en técnica mixta.</p>
+        <blockquote data-e="123">«Un volcán de formas y colores sugerentes le dan identidad a sus pinturas.»<cite>Marino Santa María, artista visual</cite></blockquote>
+      </div>
+    </div>
+    <ul class="tray">
+      <li><span class="an" data-e="124">Desde 2017</span><span class="ev" data-e="125"><b>Galerie Çabon</b>, Shibuya, Tokio: muestras individuales de mi obra.</span></li>
+      <li><span class="an" data-e="126">2025 – 2026</span><span class="ev" data-e="127"><b>Muestra individual en Tokio</b>, de diciembre a febrero, en Galerie Çabon.</span></li>
+      <li><span class="an" data-e="128">2026</span><span class="ev" data-e="129">Mi obra en el <b>Museo de Bellas Artes de Tokio</b>, Roppongi.</span></li>
+      <li><span class="an" data-e="130">2026</span><span class="ev" data-e="131"><b>Museo Sívori</b>, Buenos Aires, con el espacio Viva Estampa.</span></li>
+      <li><span class="an" data-e="132">2025</span><span class="ev" data-e="133">Feria de arte <b>BADA</b>, Buenos Aires.</span></li>
+      <li><span class="an" data-e="134">2024</span><span class="ev" data-e="135">«Miro en mi interior y veo», invitada por la <b>UNLaM</b>.</span></li>
+      <li><span class="an" data-e="136">2023</span><span class="ev" data-e="137">100 años del Dr. René Favaloro en el <b>Museo Malba</b>: intervine un corazón que fue a subasta a beneficio de la Fundación Favaloro.</span></li>
+    </ul>
+    <p class="prensa" data-e="138">Prensa: Revista Caras (2021) · Revista Para Ti (2010 y 2013).</p>
+    <div class="fotos3">
+      <img src="img/tokio.jpg" alt="Obras de María Marta Crespo en Galerie Çabon, Tokio" loading="lazy" data-e="139">
+      <img src="img/feria.jpg" alt="Stand con obras de María Marta Crespo en una feria de arte" loading="lazy" data-e="140">
+      <img src="img/diploma.jpg" alt="María Marta Crespo recibiendo un reconocimiento" loading="lazy" data-e="141">
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="preguntas" data-b="10">
+  <div class="wrap dos">
+    <div><p class="eti" data-e="142">Preguntas frecuentes</p><h2 data-e="143">Antes de <em>escribirme</em></h2></div>
+    <div>
+      <details><summary data-e="144">¿Hacés envíos?</summary><p data-e="145">Sí. Envío obras a todo el país y al exterior. Coordinamos el envío por WhatsApp según la obra y el destino.</p></details>
+      <details><summary data-e="146">¿Cuánto cuesta una obra?</summary><p data-e="147">Depende de la obra y de su medida. Escribime por WhatsApp y te paso el precio de la que te interese.</p></details>
+      <details><summary data-e="148">¿Puedo ver la obra antes de comprarla?</summary><p data-e="149">Sí. Podés venir al showroom con cita previa, o escribime y te ayudo a imaginarla en tu pared.</p></details>
+      <details><summary data-e="150">¿Hacés obras a pedido?</summary><p data-e="151">Sí. Pinto obras por encargo pensadas para tu espacio. Los encargos se toman por orden: escribime y guardo tu lugar en la lista.</p></details>
+      <details><summary data-e="152">¿Cómo sé si una obra sigue disponible?</summary><p data-e="153">Cada obra es única, así que la disponibilidad puede cambiar. Cuando me escribas te confirmo si sigue disponible.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="contacto" id="contacto" data-b="11">
+  <div class="wrap">
+    <p class="eti" data-e="154">Consultas</p>
+    <h2 data-e="155">¿Te gustó alguna obra? <em>Escribime</em></h2>
+    <p class="bajada" data-e="156">Te respondo por WhatsApp con el precio, los detalles y cómo hacer el envío.</p>
+    <div class="acciones">
+      <a class="btn pri" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20tus%20obras" target="_blank" rel="noopener" data-e="157"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4a.5.5 0 0 0 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.6 11.6 0 0 0 4.5 3.9c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.1-.2-.2-.4-.3z"/></svg>Escribir por WhatsApp</a>
+      <a class="btn sec" href="https://www.instagram.com/mariamartacrespo.art/" target="_blank" rel="noopener" data-e="158">Ver Instagram</a>
+    </div>
+    <div class="redes">
+      <a href="https://wa.me/5491153316752" target="_blank" rel="noopener" data-e="159">WhatsApp +54 9 11 5331-6752</a>
+      <a href="mailto:mm.crespo.mail@gmail.com" data-e="160">mm.crespo.mail@gmail.com</a>
+      <a href="https://www.instagram.com/mariamartacrespo.art/" target="_blank" rel="noopener" data-e="161">@mariamartacrespo.art</a>
+      <a href="https://www.youtube.com/@mariamartacrespoarte" target="_blank" rel="noopener" data-e="162">YouTube</a>
+      <a href="https://www.mariamartacrespo.com/" target="_blank" rel="noopener" data-e="163">Galería completa</a>
+    </div>
+    <p class="pie" data-e="164">María Marta Crespo · Arte contemporáneo</p>
+  </div>
+</section>
+
+<a class="flota" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20tus%20obras" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4a.5.5 0 0 0 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.6 11.6 0 0 0 4.5 3.9c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.1-.2-.2-.4-.3z"/></svg></a>
+
+<script src="https://semillaredes.com/assets/idioma.js" defer></script>
+<script src="https://vm.semillaredes.com/web/editor.js" defer></script>
+</body>
+</html>
