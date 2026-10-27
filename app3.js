@@ -848,8 +848,8 @@
     const todo=raiz.querySelector('#v3todo'); if(app&&todo){ todo.appendChild(app); app.classList.remove('oculto'); }
     /* Métricas avanzadas: el cliente no las abre solo, se miran con el equipo de Semilla Redes (Agus sí las ve) */
     let esSemilla=false; try{ esSemilla=localStorage.getItem('sr_semilla')==='1'; }catch(e){}
-    /* 27/10/2026: los clientes las abren solos (no alumnos ni independientes). Se habilita de a uno: arrancó RÁU */
-    const AVZ=['felipe-gonzalez'];
+    /* 27/10/2026: los clientes las abren solos (no alumnos ni independientes). Lista de clientes de Agus (27/10) */
+    const AVZ=["abel-maldonado","flor-scott","felipe-gonzalez","andrea-guedella","maria-marta-crespo","flor-del-valle","federico-andahazi","alan-sutton","sin-fronteras-duo","lu-glass","alamesa","spam-studio","emma-avila","lara-fichera","mavela","berco-estudio","cheche-beraja","animales-del-rock","betsy-grinblat","hernan-onirico","hernan-onirico-2","silvina","yamila-beraja","jimena-pesado","jimena-mercedes","audova","koino"];
     if(todo&&AVZ.includes(slug)){ const sm=todo.querySelector('summary'); if(sm) sm.innerHTML='<span>Métricas avanzadas</span><span style="display:block;font-weight:400;font-size:13px;color:#6B6878;margin-top:3px">Todos tus números, red por red</span>'; }
     if(todo&&!esSemilla&&!AVZ.includes(slug)){ const sm=todo.querySelector('summary');
       if(sm){ sm.innerHTML='<span style="display:inline-flex;align-items:center;gap:8px;vertical-align:middle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex:0 0 16px"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Métricas avanzadas</span></span><span style="display:block;font-weight:400;font-size:13px;color:#6B6878;margin-top:3px">Para analizar con el equipo de Semilla Redes</span>';
