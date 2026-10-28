@@ -243,6 +243,11 @@
   #v3 .cjl .card.tt .ct,#v3 .cjl .card.tt .cg b,#v3 .cjl .card.tt .cf b{color:#fff}
   #v3 .cjl .card.tt .cs,#v3 .cjl .card.tt .cg small,#v3 .cjl .card.tt .cf{color:#C9CDE0}
   #v3 .cjl .card.tt .cf{border-top-color:rgba(255,255,255,.18)}
+  #v3 .rev{padding:4px 18px}
+  #v3 .rev>div{padding:14px 0;border-top:1px solid #EDE6D8}
+  #v3 .rev>div:first-child{border-top:0}
+  #v3 .rev h3{margin:0 0 4px;font-size:16px;color:#24242C}
+  #v3 .rev p{margin:0;font-size:14.5px;line-height:1.55;color:#55525F}
   #v3 .cjn{font-size:12.5px;color:#8A8698;margin:10px 2px 0;line-height:1.45}
   #v3 .gira{display:grid;gap:12px}
   #v3 .gira .gcur{grid-column:1/-1;border-top:1px solid #EDE6D8;padding-top:10px}
@@ -860,6 +865,7 @@
       ${I?`${DZ?`<div class="card rdz"><span class="ci ok">${DZ.ic==='vta'?rIco.vta:DZ.ic==='msj'?rIco.msj:rIco.barras}</span><div class="e">${DZ.e}</div><div class="hd"><div class="v"><b>${DZ.v}</b> <span>${DZ.u}</span></div></div>${dzBar||dzD?`<div class="gr">${dzBar}${dzD?`<span class="pl ${dzD[0]==='+'?'':'baja'}">${dzD}</span><small>vs. período anterior</small>`:''}</div>`:''}<p class="tx">${pegaM(DZ.t)}</p></div>`:''}
         <div class="rsh">${ico.sol}<h2>Lo principal</h2><i></i><span>${nPal(HZ.length,'punto','puntos')}</span></div>
         ${HZ.map(h=>`<div class="card rit"><span class="ci ${h.tipo==='mal'?'ma':'ok'}">${icoH(h)}</span><div>${h.titulo?`<h3>${esc(h.titulo)}</h3>`:''}<p>${pegaM(h.t)}</p></div></div>`).join('')}
+        ${(I.evaluacion||[]).length?`<div class="rsh">${ico.barras||ico.sol}<h2>Evaluación a fondo</h2><i></i><span>${nPal(I.evaluacion.length,'tema','temas')}</span></div><div class="card rev">${I.evaluacion.map(e=>`<div><h3>${esc(e.titulo)}</h3><p>${pegaM(e.t)}</p></div>`).join('')}</div>`:''}
         <div class="rsh">${ico.hoja}<h2>Qué hacer</h2><i></i><span>${nPal(RC.length,'acción','acciones')}</span></div>
         ${RC.map((r,i)=>{ const a=window.srAccion&&window.srAccion(r); return `<div class="card rit rq${a?' con':''}"${a?` data-v3acc="${a.k}" role="button" tabindex="0" aria-label="${esc(a.t)}"`:''}><span class="ci nu">${i+1}</span><div>${RT[i]?`<h3>${esc(RT[i])}</h3>`:''}<p>${pegaM(esc(r))}</p></div>${a?`<span class="ch">${ico.ch}</span>`:''}</div>`; }).join('')}
         ${I.reunion?`<div class="rru">${ico.luz}<i></i><div><h4>En la próxima reunión con Agus</h4><p>${pegaM(esc(I.reunion.charAt(0).toUpperCase()+I.reunion.slice(1)))}</p></div></div>`:''}

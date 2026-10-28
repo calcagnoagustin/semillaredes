@@ -370,7 +370,8 @@ table.histA th{font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;co
 .srFlash{animation:srFl 1.8s ease}@keyframes srFl{0%,60%{background:#F6EFC8}100%{background:transparent}}
 .repCaja ol.hz li::before{content:'✓';background:#E7F0DC;color:#4E6B24;font-size:13px}
 .repCaja ol.hz li.mal::before{content:'!';background:#F8E1E2;color:#9B2C36}
-.repCaja .reu{background:var(--crema);border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.5;color:var(--navy);margin-top:4px}
+.repCaja .evf div{padding:12px 0;border-top:1px solid #E6DECF}.evf div:first-child{border-top:0;padding-top:4px}.evf b{display:block;font-size:15px;margin-bottom:4px}.evf p{margin:0;font-size:14.5px;line-height:1.55;color:#4F4C58}
+.reu{background:var(--crema);border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.5;color:var(--navy);margin-top:4px}
 .repCaja .reu b{font-weight:700}
 .proy{background:#5E7B3C;color:#fff;border-radius:16px;padding:16px 18px;margin:12px 0 4px}
 .proy .l{font-size:13px;font-weight:600;letter-spacing:.3px;opacity:.92}
@@ -2492,6 +2493,7 @@ function ponerReporte(d){
     <h2>Tu reporte</h2>
     ${I.bloques&&I.bloques.length&&I.bloques[0].kpis?`${I.resumen?`<h3>Lo más importante</h3><div class="resu">${I.resumen}</div>`:''}${I.proyectada?`<div class="proy"><div class="l">Inversión proyectada para los próximos 7 días</div><div class="v">${I.proyectada.total}</div><div class="d">${I.proyectada.detalle}</div></div>`:''}<h3>Campañas</h3>${I.comparado?`<p class="cmpley">Las flechas comparan con la medición anterior (${I.comparado}).</p>`:''}${I.bloques.map(B=>pintaBlq(B)).join('')}`:I.bloques?`<p class="bajada">Los números de las campañas del período.</p>${I.bloques.map(B=>`<div class="blq"><h3>${B.titulo}${B.nota?`<small>${B.nota}</small>`:''}</h3>${(B.filas||[]).map(f=>`<div class="fr${f[2]?' sb':''}"><span>${f[0]}</span><span class="v">${f[1]}</span></div>`).join('')}</div>`).join('')}`:`${slugR==='audova'?`<p class="actA">Las métricas se actualizan todos los días. El reporte sale los jueves a las 7 am.</p><div class="resA"><h3>Resumen</h3>${I.intro?`<p class="intro">${I.intro}</p>`:''}<ul>${(I.hallazgos||[]).map(x=>`<li>${typeof x==='object'?x.t:x}</li>`).join('')}</ul></div>${audovaSecciones(R,false)}`:'<p class="bajada">Reporte y recomendaciones basadas en el Método Semilla y la experiencia de otros usuarios.</p>'}
     ${slugR==='audova'?'':`<h3>Lo principal</h3><ol class="${(I.hallazgos||[]).some(x=>typeof x==='object')?'hz':''}">${(I.hallazgos||[]).map(x=>typeof x==='object'?`<li class="${x.tipo==='mal'?'mal':'bien'}">${x.t}</li>`:`<li>${x}</li>`).join('')}</ol>`}
+    ${(I.evaluacion||[]).length?`<h3>Evaluación a fondo</h3><div class="evf">${I.evaluacion.map(e=>`<div><b>${e.titulo}</b><p>${e.t}</p></div>`).join('')}</div>`:''}
     <h3>Qué hacer</h3><ol class="qh">${(I.recomendaciones||[]).map(x=>`<li>${x}${srBtnAcc(x)}</li>`).join('')}</ol>
     ${I.reunion?`<div class="reu"><b>En la próxima reunión con Agus</b> ${I.reunion}</div>`:''}`}
     <p class="cuando">Las métricas en detalle están en el panel, más abajo. Siempre podés volver a este reporte arriba de la página, en el botón Reporte. Se actualiza ${I.cuando||'todos los lunes a las 7 de la mañana'}.</p><button class="descargar" type="button">Descargar</button></div>`;
