@@ -13,7 +13,8 @@
   var dir = location.pathname.replace(/[^\/]*$/, '');
   var key = (location.pathname.split('/').pop() || 'index').replace(/\.html?$/, '') || 'index';
   var base = dir + 'i18n/' + key + '.';
-  var elegido = ls('sr_lang');
+  var LK = 'sr_lang:' + dir;   // la elección manual vale solo para esta web, no para todo el dominio
+  var elegido = ls(LK);
   var nav = (navigator.language || 'es').slice(0, 2).toLowerCase();
 
   // si probablemente no es español, ocultamos un instante para que no "parpadee" el texto original
@@ -73,7 +74,7 @@
     var s = document.createElement('select'); s.setAttribute('aria-label', 'Idioma / Language');
     s.setAttribute('style', 'appearance:none;-webkit-appearance:none;border:1px solid rgba(128,128,128,.35);border-radius:999px;padding:7px 12px;background:rgba(255,255,255,.82);color:#222;backdrop-filter:blur(6px);cursor:pointer');
     disponibles.forEach(function (l) { var o = document.createElement('option'); o.value = l; o.textContent = NOMBRES[l]; if (l === actual) o.selected = true; s.appendChild(o); });
-    s.onchange = function () { ls('sr_lang', s.value); cargar(s.value, disponibles); };
+    s.onchange = function () { ls(LK, s.value); cargar(s.value, disponibles); };
     d.appendChild(s); document.body.appendChild(d);
   }
 
