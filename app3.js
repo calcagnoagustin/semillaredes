@@ -249,6 +249,14 @@
   #v3 .gira .gp{font-size:12px;color:#8A8698;margin-top:4px}
   #v3 .gira .gc{font-size:13.5px;color:#55525F;margin-top:6px}
   #v3 .gira .gc b{color:#24242C;font-weight:700}
+  #v3 .gira .gpr{grid-column:1/-1;border-top:1px solid #EDE6D8;padding-top:12px}
+  #v3 .gira .gprh{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  #v3 .gira .gprh .e{font-size:11.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#55525F}
+  #v3 .gira .gprh .pc{font:700 22px/1 'Playfair Display',Georgia,serif;color:#2F7A4F}
+  #v3 .gira .gprn{margin-top:4px;font-size:15px;color:#24242C}#v3 .gira .gprn b{font-weight:700}
+  #v3 .gira .gbar{position:relative;height:14px;margin-top:10px;border-radius:999px;background:#ECE6D8;overflow:hidden}
+  #v3 .gira .gbar i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,#5FA777,#2F7A4F)}
+  #v3 .gira .gprf{margin-top:6px;font-size:12.5px;color:#6B6878}
   #v3 .hito .hx{position:absolute;top:10px;right:10px;width:28px;height:28px;border:0;border-radius:50%;background:none;color:#A9A190;font:400 20px/1 Inter,sans-serif;cursor:pointer}
   #v3 .tkp .fila{grid-template-columns:1fr auto}
   #v3 .pais .fila{grid-template-columns:1fr auto;padding:11px 16px;align-items:start}
@@ -618,6 +626,11 @@
       const d=v.map((x,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(x).toFixed(1)).join(' ');
       const pasoE=Math.ceil(S.length/8);
       return `<details class="gcur"><summary>Evolución del costo por entrada <span class="fl">▸</span></summary><svg viewBox="0 0 ${W} ${H}" class="gsvg"><path d="${d}" fill="none" stroke="#2F7A4F" stroke-width="2.2" stroke-linejoin="round"/>${v.map((x,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(x).toFixed(1)}" r="3" fill="#2F7A4F"/>${(i%pasoE===0||i===v.length-1)?`<text x="${X(i).toFixed(1)}" y="${(Y(x)-8).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#2F7A4F" paint-order="stroke" stroke="#FBF8F2" stroke-width="4" stroke-linejoin="round">${nf(x,2)}</text><text x="${X(i).toFixed(1)}" y="${H-8}" text-anchor="middle" font-size="10" fill="#8A8577">${String(S[i][0]).slice(8,10)}/${String(S[i][0]).slice(5,7)}</text>`:''}`).join('')}</svg><p class="gnota">Costo por entrada acumulado al cierre de cada día (inversión total ÷ entradas vendidas hasta ese día), en ${SIM.trim()||'USD'}.</p></details>`; };
+    // 28/10 (Koino): barra de progreso de la venta total del show (vendidas según la ticketera + compras nuevas que ve el píxel)
+    const prog=f=>{ const o=Number(f.objetivo||0), v=Number(f.vendidas_total); if(!o||!isFinite(v)) return ''; const p=Math.min(100,Math.round(v/o*100)), fal=Math.max(0,o-v);
+      return `<div class="gpr"><div class="gprh"><span class="e">Venta total del show</span><span class="pc">${p}%</span></div>
+        <div class="gprn"><b>${nf(v)}</b> de ${nf(o)} entradas</div><div class="gbar" role="progressbar" aria-valuemin="0" aria-valuemax="${o}" aria-valuenow="${v}"><i style="width:${p}%"></i></div>
+        <div class="gprf">${fal?'Faltan '+nf(fal)+' entradas':'¡Objetivo cumplido!'} · se actualiza con las compras del píxel en ${esc(f.ticketera||'la ticketera')}</div></div>`; };
     const GIRA=(()=>{ const hoyI=new Date().toISOString().slice(0,10); const L=(um.fechas||[]).filter(f=>f&&f.fecha&&String(f.fecha).slice(0,10)>=hoyI).sort((a,b)=>a.fecha<b.fecha?-1:1);
       if(!L.length) return '';
       const fl=x=>{ const z=String(x).slice(0,10).split('-'); return z[2]+'/'+z[1]; };
@@ -625,11 +638,11 @@
         return `<div class="card">${f.img?`<img src="${esc(f.img)}" alt="${esc(f.ciudad||'')}">`:'<div></div>'}<div>
           <div class="gt">${esc(f.lugar||'')}${f.ciudad?' · '+esc(f.ciudad):''}</div>
           <div class="gs">${fl(f.fecha)} · ${dd===0?'es hoy':dd===1?'falta 1 día':'faltan '+dd+' días'}</div>
-          <div class="gn"><b>${nf(e)}</b><span>${e===1?'entrada vendida':'entradas vendidas'}${ep?` · +${nf(ep)} en el período`:''}</span></div>
+          <div class="gn"><b>${nf(e)}</b><span>${e===1?'entrada vendida':'entradas vendidas'}${f.objetivo?' con la campaña':''}${ep?` · +${nf(ep)} en el período`:''}</span></div>
           ${Number(f.inv_acum||0)>0?`${e>0?`<div class="gc">Costo por entrada: <b>${SIM}${nf(Number(f.inv_acum)/e,2)}</b></div>`:''}<div class="gp">Inversión: ${SIM}${nf(Number(f.inv_acum),2)}${e>0?'':' · todavía sin entradas'}</div>`:''}
           <div class="gp">Según el píxel de Meta${f.ticketera?' en '+esc(f.ticketera):''}${f.estado==='borrador'?' · la campaña todavía no está publicada':''}</div>
           ${f.tickets?`<a class="gl" href="${esc(f.tickets)}" target="_blank" rel="noopener">Ver entradas →</a>`:''}
-        </div>${curvaCE(f.serie_costo)}</div>`; }).join('')}</div>`; })();
+        </div>${prog(f)}${curvaCE(f.serie_costo)}</div>`; }).join('')}</div>`; })();
     const scrHoy=`
       <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>${ACT}${({'alan-sutton':'Tu reporte se actualiza los jueves a las 7.'})[slug]?`<p class="aviso-act">${({'alan-sutton':'Tu reporte se actualiza los jueves a las 7.'})[slug]}</p>`:''}
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g transform="translate(-4 44)"><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></g></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
