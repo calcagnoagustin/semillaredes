@@ -230,7 +230,7 @@
   #v3 .cjl .cg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
   #v3 .cjl .cg b{display:block;font-size:20px;line-height:1.1;color:${NAVY};font-weight:700}
   #v3 .cjl .cg small{display:block;font-size:12px;color:#55525F;margin-top:3px;line-height:1.3}
-  #v3 .cjl .cf{font-size:13px;color:#6B6878;margin-top:12px;padding-top:10px;border-top:1px solid #ECE6DA;display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px}
+  #v3 .cjl .cf{font-size:13px;color:#6B6878;margin-top:12px;padding-top:10px;border-top:1px solid #ECE6DA;display:flex;flex-direction:column;gap:4px}
   #v3 .cjl .cg b{white-space:nowrap}
   #v3 .cjl .cg.cv{grid-template-columns:.7fr 1.2fr 1.1fr}
   @media (max-width:380px){#v3 .cjl .cg.cv b{font-size:17px}}
