@@ -235,6 +235,14 @@
   #v3 .cjl .cg.cv{grid-template-columns:.7fr 1.2fr 1.1fr}
   @media (max-width:380px){#v3 .cjl .cg.cv b{font-size:17px}}
   #v3 .cjl .cf b{color:#24242C;font-weight:600}
+  #v3 .cjt{background:#EDE6D8;border-radius:22px;padding:20px 16px 18px;margin:0 0 26px}
+  #v3 .cjt .k{margin:0 2px;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:#7A1F3A}
+  #v3 .cjt h3{margin:6px 2px 0;font-family:'Playfair Display',Georgia,serif;font-size:22px;line-height:1.15;color:${NAVY}}
+  #v3 .cjt .b{margin:6px 2px 14px;font-size:13.5px;color:#6B6878;line-height:1.45}
+  #v3 .cjl .card.tt{background:${NAVY};border-color:${NAVY}}
+  #v3 .cjl .card.tt .ct,#v3 .cjl .card.tt .cg b,#v3 .cjl .card.tt .cf b{color:#fff}
+  #v3 .cjl .card.tt .cs,#v3 .cjl .card.tt .cg small,#v3 .cjl .card.tt .cf{color:#C9CDE0}
+  #v3 .cjl .card.tt .cf{border-top-color:rgba(255,255,255,.18)}
   #v3 .cjn{font-size:12.5px;color:#8A8698;margin:10px 2px 0;line-height:1.45}
   #v3 .gira{display:grid;gap:12px}
   #v3 .gira .gcur{grid-column:1/-1;border-top:1px solid #EDE6D8;padding-top:10px}
@@ -781,6 +789,7 @@
       <div class="rep"><div><h1 class="v3t" style="font-size:31px">Tus métricas</h1><p class="bj">${I?`Del ${fd(I.desde)} al ${fd(I.hasta)}`:'Tus números, red por red'}</p></div>${I?`<button class="ir" id="v3rep" aria-label="Abrir reporte">${ico.flecha}</button>`:''}</div>
       ${imp?`<div class="card imp"><div>${ico.sol}</div><div><h4>Lo más importante</h4><p>${imp}</p></div></div>`:''}
       ${MESP}
+      <div id="v3cjt"></div>
       ${u?`<div class="perh"><h3>Resumen del período</h3><span>Del ${fd(u.desde)} al ${fd(u.hasta)}</span></div>`:''}
       ${ACT}
       <div class="red">${Object.keys(redes).map(k=>`<button class="${k===SUBRED?'on':''}" data-red="${k}">${redes[k].n}</button>`).join('')}</div>
@@ -1079,11 +1088,17 @@
           :`${P.prepago?'Cuenta prepaga: se descuenta de los fondos cargados.':`Se cobra solo${met?` a la <b>${esc(met)}</b>`:''} cuando el saldo llega al umbral de Meta o a fin del ciclo de facturación.`}`}</p></div>`;
       const CJON=['yamila-beraja','maria-marta-crespo','sin-fronteras-duo','animales-del-rock'].includes(slug), moneyC=v=>v==null?'—':usd?'USD '+nf(v,2):'$ '+nf(v,0);
       const dia=CJON&&P.inversion_diaria!=null?`<div class="pg"><div class="r1"><span>Inversión diaria</span><b>${moneyC(P.inversion_diaria)}</b></div><p>Lo que está programado por día entre todos los conjuntos activos.</p></div>`:'';
+      const m0=v=>v>=1000?(usd?'USD ':'$ ')+nf(v,0):moneyC(v);
+      const vtaCard=(nom,sub,n,inv,costo,ing,cls)=>`<div class="card ${cls}"><div class="ct">${esc(nom)}</div><div class="cs">${sub}</div>
+        <div class="cg cv"><div><b>${nf(n)}</b><small>ventas</small></div><div><b>${m0(inv)}</b><small>invertidos</small></div><div><b>${costo!=null?moneyC(costo):'—'}</b><small>por venta</small></div></div>${ing?`<div class="cf"><span>Facturado según el píxel: <b>${m0(ing)}</b></span>${inv?`<span>Retorno: <b>${nf(ing/inv,1)}x</b></span>`:''}</div>`:''}</div>`;
       const cjEl=document.getElementById('v3cj'), CJ=CJON?(c.conjuntos||[]):[];
-      if(cjEl) cjEl.innerHTML=CJ.length?`<div class="tit2"><h3>Conjuntos de anuncios</h3></div><div class="cjl">${(CJ.some(z=>z.seguidores!=null)?[...CJ].sort((a,b)=>(b.seguidores||0)-(a.seguidores||0)):CJ).map(z=>z.resultado==='ventas'?`<div class="card"><div class="ct">${esc(z.nombre)}</div><div class="cs">Desde el ${fd(z.inicio)}${z.diaria!=null?' · '+moneyC(z.diaria)+' por día':''}</div>
-        <div class="cg cv"><div><b>${nf(z.resultados)}</b><small>ventas</small></div><div><b>${z.inversion>=1000?(usd?'USD ':'$ ')+nf(z.inversion,0):moneyC(z.inversion)}</b><small>invertidos</small></div><div><b>${z.costo!=null?moneyC(z.costo):'—'}</b><small>por venta</small></div></div>${z.ingreso?`<div class="cf"><span>Facturado según el píxel: <b>${z.ingreso>=1000?(usd?'USD ':'$ ')+nf(z.ingreso,0):moneyC(z.ingreso)}</b></span>${z.inversion?`<span>Retorno: <b>${nf(z.ingreso/z.inversion,1)}x</b></span>`:''}</div>`:''}</div>`:z.seguidores!=null&&c.conj_periodo?`<div class="card"><div class="ct">${esc(z.nombre)}</div><div class="cs">Del ${fd(c.conj_periodo.desde)} al ${fd(c.conj_periodo.hasta)}${z.diaria!=null?' · '+moneyC(z.diaria)+' por día':''}</div>
+      if(cjEl) cjEl.innerHTML=CJ.length?`<div class="tit2"><h3>Conjuntos de anuncios</h3></div><div class="cjl">${(CJ.some(z=>z.seguidores!=null)?[...CJ].sort((a,b)=>(b.seguidores||0)-(a.seguidores||0)):CJ).map(z=>z.resultado==='ventas'?(z.sem?vtaCard(z.nombre,`Últimos 7 días · del ${fd(z.sem.desde)} al ${fd(z.sem.hasta)}`,z.sem.ventas,z.sem.inversion,z.sem.costo,z.sem.ingreso,''):vtaCard(z.nombre,`Desde el ${fd(z.inicio)}`,z.resultados,z.inversion,z.costo,z.ingreso,'')):z.seguidores!=null&&c.conj_periodo?`<div class="card"><div class="ct">${esc(z.nombre)}</div><div class="cs">Del ${fd(c.conj_periodo.desde)} al ${fd(c.conj_periodo.hasta)}${z.diaria!=null?' · '+moneyC(z.diaria)+' por día':''}</div>
         <div class="cg"><div><b>${moneyC(z.inv_periodo)}</b><small>invertidos</small></div><div><b>${nf(z.seguidores)}</b><small>seguidores</small></div><div><b>${z.costo_seguidor!=null?moneyC(z.costo_seguidor):'—'}</b><small>por seguidor</small></div></div></div>`:`<div class="card"><div class="ct">${esc(z.nombre)}</div><div class="cs">Desde el ${fd(z.inicio)}${z.diaria!=null?' · '+moneyC(z.diaria)+' por día':''}</div>
         <div class="cg"><div><b>${nf(z.resultados)}</b><small>${esc(z.resultado)}</small></div><div><b>${nf(z.alcance)}</b><small>personas alcanzadas</small></div><div><b>${z.costo!=null?moneyC(z.costo).replace(/,00$/,',00'):'—'}</b><small>${esc(z.por||'por visita')}</small></div></div></div>`).join('')}</div>${c.conj_periodo&&CJ.some(z=>z.seguidores!=null)?`<p class="cjn">Seguidores que Meta atribuye a cada conjunto. No suman lo mismo que los seguidores nuevos de Instagram.</p>`:''}`:'';
+      const ctEl=document.getElementById('v3cjt'), CV=CJ.filter(z=>z.resultado==='ventas');   // 28/10: totales desde el inicio en Métricas, aparte de lo semanal
+      if(ctEl) ctEl.innerHTML=CV.length?(()=>{ const T=CV.reduce((a,z)=>({n:a.n+(z.resultados||0),i:a.i+(z.inversion||0),g:a.g+(z.ingreso||0)}),{n:0,i:0,g:0});
+        return `<div class="cjt"><p class="k">Desde el inicio · acumulado</p><h3>Campaña de ventas por conjunto</h3><p class="b">El total de cada conjunto desde que arrancó hasta hoy. No es el resumen del período: eso está más abajo.</p>
+          <div class="cjl">${CV.map(z=>vtaCard(z.nombre,`Del ${fd(z.inicio)} a hoy`,z.resultados,z.inversion,z.costo,z.ingreso,'')).join('')}${CV.length>1?vtaCard('Total de la campaña',`Los ${CV.length} conjuntos juntos`,T.n,T.i,T.n?T.i/T.n:null,T.g,'tt'):''}</div></div>`; })():'';
       el.innerHTML=`<div class="cta"><span class="l">Cuenta publicitaria</span><span class="e ${c.activa?'on':''}"><i></i>${c.activa?'Activa':esc(c.estado.charAt(0).toUpperCase()+c.estado.slice(1))}</span><span class="n">${c.campanas} ${c.campanas===1?'campaña corriendo':'campañas corriendo'}</span>${(()=>{ // 23/10: nombres de las campañas, sutil; no va si ya hay campañas destacadas en Hoy
         const N=(c.nombres||[]).filter(Boolean); if(!N.length||document.querySelector('#v3 .dest, #v3 .gira')) return '';
         return `<div class="cn">${N.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`; })()}${dia}${pg}</div>`; };
