@@ -230,6 +230,7 @@
   #v3 .cjl .cg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
   #v3 .cjl .cg b{display:block;font-size:20px;line-height:1.1;color:${NAVY};font-weight:700}
   #v3 .cjl .cg small{display:block;font-size:12px;color:#55525F;margin-top:3px;line-height:1.3}
+  #v3 .cjn{font-size:12.5px;color:#8A8698;margin:10px 2px 0;line-height:1.45}
   #v3 .gira{display:grid;gap:12px}
   #v3 .gira .gcur{grid-column:1/-1;border-top:1px solid #EDE6D8;padding-top:10px}
   #v3 .gira .gcur summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600;color:#24242C}
@@ -1058,11 +1059,12 @@
       const pg=P.saldo==null?'':`<div class="pg">${px?`<div class="r1"><span>Próximo cobro</span><b>${fch(px.fecha)} · ${pl(px.monto)}</b></div>`:`<div class="r1"><span>Saldo a pagar</span><b>${pl(P.saldo)}</b></div>`}
         <p>${px?`Se cobra solo${met?` a la <b>${esc(met)}</b>`:''} cuando el saldo llega a ${pl(P.umbral)}${P.fecha_ciclo?` o el ${fd(P.fecha_ciclo)}, lo que pase primero`:''}. Hoy el saldo es de ${pl(P.saldo)}${P.promedio_diario?` y se gastan unos ${pl(P.promedio_diario)} por día`:''}, por eso la fecha es aproximada.`
           :`${P.prepago?'Cuenta prepaga: se descuenta de los fondos cargados.':`Se cobra solo${met?` a la <b>${esc(met)}</b>`:''} cuando el saldo llega al umbral de Meta o a fin del ciclo de facturación.`}`}</p></div>`;
-      const CJON=['yamila-beraja','maria-marta-crespo'].includes(slug), moneyC=v=>v==null?'—':usd?'USD '+nf(v,2):'$ '+nf(v,0);
+      const CJON=['yamila-beraja','maria-marta-crespo','sin-fronteras-duo'].includes(slug), moneyC=v=>v==null?'—':usd?'USD '+nf(v,2):'$ '+nf(v,0);
       const dia=CJON&&P.inversion_diaria!=null?`<div class="pg"><div class="r1"><span>Inversión diaria</span><b>${moneyC(P.inversion_diaria)}</b></div><p>Lo que está programado por día entre todos los conjuntos activos.</p></div>`:'';
       const cjEl=document.getElementById('v3cj'), CJ=CJON?(c.conjuntos||[]):[];
-      if(cjEl) cjEl.innerHTML=CJ.length?`<div class="tit2"><h3>Conjuntos de anuncios</h3></div><div class="cjl">${CJ.map(z=>`<div class="card"><div class="ct">${esc(z.nombre)}</div><div class="cs">Desde el ${fd(z.inicio)}${z.diaria!=null?' · '+moneyC(z.diaria)+' por día':''}</div>
-        <div class="cg"><div><b>${nf(z.resultados)}</b><small>${esc(z.resultado)}</small></div><div><b>${nf(z.alcance)}</b><small>personas alcanzadas</small></div><div><b>${z.costo!=null?moneyC(z.costo).replace(/,00$/,',00'):'—'}</b><small>${esc(z.por||'por visita')}</small></div></div></div>`).join('')}</div>`:'';
+      if(cjEl) cjEl.innerHTML=CJ.length?`<div class="tit2"><h3>Conjuntos de anuncios</h3></div><div class="cjl">${(CJ.some(z=>z.seguidores!=null)?[...CJ].sort((a,b)=>(b.seguidores||0)-(a.seguidores||0)):CJ).map(z=>z.seguidores!=null&&c.conj_periodo?`<div class="card"><div class="ct">${esc(z.nombre)}</div><div class="cs">Del ${fd(c.conj_periodo.desde)} al ${fd(c.conj_periodo.hasta)}${z.diaria!=null?' · '+moneyC(z.diaria)+' por día':''}</div>
+        <div class="cg"><div><b>${moneyC(z.inv_periodo)}</b><small>invertidos</small></div><div><b>${nf(z.seguidores)}</b><small>seguidores</small></div><div><b>${z.costo_seguidor!=null?moneyC(z.costo_seguidor):'—'}</b><small>por seguidor</small></div></div></div>`:`<div class="card"><div class="ct">${esc(z.nombre)}</div><div class="cs">Desde el ${fd(z.inicio)}${z.diaria!=null?' · '+moneyC(z.diaria)+' por día':''}</div>
+        <div class="cg"><div><b>${nf(z.resultados)}</b><small>${esc(z.resultado)}</small></div><div><b>${nf(z.alcance)}</b><small>personas alcanzadas</small></div><div><b>${z.costo!=null?moneyC(z.costo).replace(/,00$/,',00'):'—'}</b><small>${esc(z.por||'por visita')}</small></div></div></div>`).join('')}</div>${c.conj_periodo&&CJ.some(z=>z.seguidores!=null)?`<p class="cjn">Seguidores que Meta atribuye a cada conjunto. No suman lo mismo que los seguidores nuevos de Instagram.</p>`:''}`:'';
       el.innerHTML=`<div class="cta"><span class="l">Cuenta publicitaria</span><span class="e ${c.activa?'on':''}"><i></i>${c.activa?'Activa':esc(c.estado.charAt(0).toUpperCase()+c.estado.slice(1))}</span><span class="n">${c.campanas} ${c.campanas===1?'campaña corriendo':'campañas corriendo'}</span>${(()=>{ // 23/10: nombres de las campañas, sutil; no va si ya hay campañas destacadas en Hoy
         const N=(c.nombres||[]).filter(Boolean); if(!N.length||document.querySelector('#v3 .dest, #v3 .gira')) return '';
         return `<div class="cn">${N.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`; })()}${dia}${pg}</div>`; };
