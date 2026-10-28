@@ -2717,7 +2717,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261028a';
+var SR_VER='20261028b';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
@@ -2767,6 +2767,50 @@ function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.n
       setTimeout(function(){ if(typeof srFresco==='function') srFresco(); else location.reload(); },650); }
     else { pintar(0); setTimeout(function(){ document.body.classList.remove('ptr-vuelve'); },300); } });
 })();
+</script>
+<!-- 28/10: cartel para activar notificaciones cuando la app se abre sola (app única instalada, sin el lanzador del proyecto) -->
+<div id="srAv" role="dialog" aria-label="Activá tus notificaciones" style="position:fixed;inset:0;background:rgba(20,22,40,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:2147483000;font-family:Inter,system-ui,-apple-system,sans-serif">
+  <div style="background:#fff;border-radius:22px;max-width:380px;width:100%;padding:28px 24px 22px;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.3)">
+    <div style="width:64px;height:64px;border-radius:50%;background:#ECEAD6;color:#5F6A30;display:flex;align-items:center;justify-content:center;margin:0 auto"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
+    <h2 id="srAvT" style="font-family:'Playfair Display',Georgia,serif;color:#1A2456;font-size:23px;margin:14px 0 8px">Activá tus notificaciones</h2>
+    <p id="srAvP" style="color:#55525F;font-size:15px;line-height:1.5;margin:0 0 18px">Te avisamos cuando sale tu reporte, el Drop del viernes y las novedades de tu proyecto.</p>
+    <button id="srAvSi" style="display:block;width:100%;border:0;background:#1A2456;color:#F2EDE4;font:inherit;font-weight:700;font-size:16px;border-radius:12px;padding:14px;cursor:pointer">Activar notificaciones</button>
+    <button id="srAvNo" style="display:block;width:100%;border:0;background:transparent;color:#8A8697;font:inherit;font-size:14px;padding:12px 0 0;cursor:pointer">Ahora no</button>
+  </div>
+</div>
+<script>
+(function(){ try{
+  var AVISOS=['lu-glass'];   // proyectos con el cartel en la app única (se suman de a uno)
+  var q=new URLSearchParams(location.search), c=q.get('c'), k=q.get('k');
+  if(!c||!k||AVISOS.indexOf(c)<0||window.top!==window) return;   // dentro del lanzador del proyecto, el cartel lo pone el lanzador
+  var ua=navigator.userAgent, ios=/iphone|ipad|ipod/i.test(ua), inapp=/instagram|fban|fbav|whatsapp|line\/|tiktok/i.test(ua);
+  var inst=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+  var ok=('serviceWorker' in navigator)&&('PushManager' in window)&&('Notification' in window), perm=ok?Notification.permission:'nd';
+  var KEY='sr_push_pausa_'+c, pausa=false; try{ pausa=Date.now()<(+localStorage.getItem(KEY)||0); }catch(e){}
+  new Image().src='https://vm.semillaredes.com/web/log?p=avisos_app&c='+c+'&perm='+perm+'&inst='+(inst?1:0)+'&ios='+(ios?1:0)+'&inapp='+(inapp?1:0)+'&pausa='+(pausa?1:0);
+  var VAPID='BMEkI5u9yPV48NpVPbC2svp3QnMUCcmUALIQceMBf7LnHZqHguiYU8hUzL6VgfZ2KhtymINg2reReO3kgPO1ynU';
+  function b64u(t){ var p='='.repeat((4-t.length%4)%4), r=atob((t+p).replace(/-/g,'+').replace(/_/g,'/')); return Uint8Array.from(r.split('').map(function(x){return x.charCodeAt(0)})); }
+  function suscribir(){ return navigator.serviceWorker.register('/sw.js').then(function(){ return navigator.serviceWorker.ready; }).then(function(reg){
+      return reg.pushManager.getSubscription().then(function(s){ return s||reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(VAPID)}); }); })
+    .then(function(sub){ return fetch('https://fdrxsjphlvvwwknnrjtx.supabase.co/rest/v1/rpc/sub_push_alta',{method:'POST',headers:{'apikey':'sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17','Content-Type':'application/json'},body:JSON.stringify({p_slug:c,p_k:k,p_sub:sub.toJSON(),p_ua:ua})}); }); }
+  var av=document.getElementById('srAv'), si=document.getElementById('srAvSi'), no=document.getElementById('srAvNo'), solo=false;
+  function texto(t,p){ document.getElementById('srAvT').textContent=t; document.getElementById('srAvP').innerHTML=p; si.textContent='Entendido'; solo=true; }
+  function ver(){ var tapa=[].some.call(document.querySelectorAll('.repFondo'),function(x){ return !x.classList.contains('oculto')&&getComputedStyle(x).display!=='none'; });
+    if(tapa){ setTimeout(ver,1500); return; } av.style.display='flex'; }
+  si.onclick=function(){ if(solo){ av.style.display='none'; return; }
+    Notification.requestPermission().then(function(p){ if(p!=='granted'){ av.style.display='none'; return; }
+      return suscribir().then(function(){ document.getElementById('srAvP').textContent='¡Listo! Te vamos a avisar acá cada vez que haya algo nuevo.'; si.style.display='none'; no.style.display='none'; setTimeout(function(){ av.style.display='none'; },2200); }); })
+    .catch(function(){ av.style.display='none'; }); };
+  no.onclick=function(){ av.style.display='none'; try{ localStorage.setItem(KEY,String(Date.now()+3*864e5)); }catch(e){} };
+  if(perm==='granted'){ suscribir().catch(function(){}); return; }
+  if(pausa) return;
+  if(perm==='default'&&(inst||!ios)){ setTimeout(ver,2500); return; }
+  if(inapp) texto('Activá tus notificaciones','Para recibir los avisos, abrí este link en el navegador del celular (Safari o Chrome): tocá los tres puntitos o el ícono de compartir → <b>Abrir en el navegador</b>.');
+  else if(ios&&!inst) texto('Activá tus notificaciones','En iPhone los avisos llegan a la app instalada. Tocá <b>Compartir</b> en Safari → <b>Agregar a pantalla de inicio</b>, abrila desde el ícono nuevo y te va a aparecer el botón para activarlos.');
+  else if(perm==='denied') texto('Tus notificaciones están bloqueadas', ios?'Para activarlas: <b>Ajustes</b> del iPhone → <b>Notificaciones</b> → <b>SemillaIA</b> → Permitir notificaciones.':'Para activarlas: tocá el candado o los tres puntitos al lado de la dirección → <b>Permisos / Notificaciones</b> → Permitir. Después volvé a abrir la app.');
+  else return;
+  setTimeout(ver,2500);
+}catch(e){} })();
 </script>
 </body>
 </html>
