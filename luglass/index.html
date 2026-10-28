@@ -163,14 +163,20 @@ async function suscribir(){
 const pushOK=('serviceWorker' in navigator)&&('PushManager' in window)&&('Notification' in window);
 const AV_OFF='sr_push_pausa_luglass';
 function avPausado(){ try{ return Date.now() < (+localStorage.getItem(AV_OFF)||0); }catch(e){ return false; } }
-if(pushOK){
-  if(Notification.permission==='granted') suscribir().catch(()=>{});   // vuelve a registrar el celular por si cambio
-  else if(Notification.permission==='default' && !avPausado() && (yaInstalada || !esIOS)){   // en iPhone primero hay que instalarla (lo pide el otro cartel)
-    const ver=()=>{ if(pop.style.display==='flex'){ setTimeout(ver,1500); return; } caja.style.display='none'; cajaAv.style.display='flex'; };
-    setTimeout(ver, 2500);
-  }
+// 28/10: el cartel aparece en todos los casos en que todavía no llegan los avisos, con la instrucción que corresponde
+const perm = pushOK ? Notification.permission : 'nd';
+try{ new Image().src='https://vm.semillaredes.com/web/log?p=avisos&c=lu-glass&perm='+perm+'&inst='+(yaInstalada?1:0)+'&ios='+(esIOS?1:0)+'&inapp='+(enApp?1:0)+'&pausa='+(avPausado()?1:0); }catch(e){}
+function avTexto(t, p, boton){ cajaAv.querySelector('h2').textContent=t; document.getElementById('msjAv').innerHTML=p; const b=document.getElementById('btnAv'); if(boton) b.textContent=boton; else b.dataset.solo='1', b.textContent='Entendido'; }
+function avVer(){ const ver=()=>{ if(pop.style.display==='flex'){ setTimeout(ver,1500); return; } caja.style.display='none'; cajaAv.style.display='flex'; }; setTimeout(ver, 2500); }
+if(perm==='granted') suscribir().catch(()=>{});   // vuelve a registrar el celular por si cambio
+else if(!avPausado()){
+  if(perm==='default') avVer();
+  else if(enApp){ avTexto('Activá tus notificaciones','Para recibir los avisos, abrí este link en el navegador del celular (Safari o Chrome): tocá los tres puntitos o el ícono de compartir → <b>Abrir en el navegador</b>.'); avVer(); }
+  else if(esIOS && !yaInstalada){ avTexto('Activá tus notificaciones','En iPhone los avisos llegan a la app instalada. Tocá <b>Compartir</b> en Safari → <b>Agregar a pantalla de inicio</b>, abrila desde el ícono nuevo y te va a aparecer el botón para activarlos.'); avVer(); }
+  else if(perm==='denied'){ avTexto('Tus notificaciones están bloqueadas', esIOS?'Para activarlas: <b>Ajustes</b> del iPhone → <b>Notificaciones</b> → <b>Semilla IA</b> → Permitir notificaciones.':'Para activarlas: tocá el candado o los tres puntitos al lado de la dirección → <b>Permisos / Notificaciones</b> → Permitir. Después volvé a abrir la app.'); avVer(); }
 }
 document.getElementById('btnAv').onclick=async()=>{
+  if(document.getElementById('btnAv').dataset.solo){ cajaAv.style.display='none'; return; }
   try{
     const p=await Notification.requestPermission();
     if(p==='granted'){ await suscribir(); document.getElementById('msjAv').textContent='¡Listo! Te vamos a avisar acá cada vez que haya algo nuevo.'; document.getElementById('btnAv').style.display='none'; document.getElementById('cerrarAv').style.display='none'; setTimeout(()=>cajaAv.style.display='none',2200); }
