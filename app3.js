@@ -875,7 +875,7 @@
       <div class="scr" data-scr="hoy">${scrHoy}</div><div class="scr" data-scr="proyecto">${scrPro}</div><div class="scr" data-scr="actividades">${scrAct}</div><div class="scr" data-scr="metricas">${scrMet}</div><div class="scr" data-scr="ia">${scrIA}</div>`;
     const todo=raiz.querySelector('#v3todo'); if(app&&todo){ todo.appendChild(app); app.classList.remove('oculto'); }
     /* Métricas avanzadas: el cliente no las abre solo, se miran con el equipo de Semilla Redes (Agus sí las ve) */
-    let esSemilla=false; try{ esSemilla=localStorage.getItem('sr_semilla')==='1'; }catch(e){}
+    let esSemilla=false; try{ esSemilla=localStorage.getItem('sr_semilla')==='1'; }catch(e){} if(['marcos-cifuentes'].includes(slug)) esSemilla=true;   /* 28/10: métricas avanzadas abiertas para el cliente (pedido de Agus) */
     /* 27/10/2026: los clientes las abren solos (no alumnos ni independientes). Lista de clientes de Agus (27/10) */
     const AVZ=["abel-maldonado","flor-scott","felipe-gonzalez","andrea-guedella","maria-marta-crespo","flor-del-valle","federico-andahazi","alan-sutton","sin-fronteras-duo","lu-glass","alamesa","spam-studio","emma-avila","lara-fichera","mavela","berco-estudio","cheche-beraja","animales-del-rock","betsy-grinblat","hernan-onirico","hernan-onirico-2","silvina","yamila-beraja","jimena-pesado","jimena-mercedes","audova","koino"];
     if(todo&&AVZ.includes(slug)){ const sm=todo.querySelector('summary'); if(sm) sm.innerHTML='<span>Métricas avanzadas</span><span style="display:block;font-weight:400;font-size:13px;color:#6B6878;margin-top:3px">Todos tus números, red por red</span>'; }
