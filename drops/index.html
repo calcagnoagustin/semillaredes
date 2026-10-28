@@ -182,6 +182,68 @@ footer a:hover{color:var(--oliva)}
   .rel{grid-template-columns:110px 1fr;gap:18px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
+
+/* ===== REDISEÑO 10/2026 (estética collage) ===== */
+:root{--bg:#F1ECE3;--card:#F8F4EE;--navy:#1A2456;--ink:#2B3150;--oliva:#87863A;--oliva2:#6E6D2E;--coral:#E2767C;--wine:#8B1E3F;--line:#DED6C8;--line2:#D3CAB9}
+.top .pill{border-radius:4px;background:var(--wine);height:46px;padding:0 22px}
+.top .pill:hover{background:#6E1631}
+.menu a.on{color:var(--wine)}
+.menu a.on::after{background:var(--wine);height:2px}
+.hero{grid-template-columns:minmax(0,1fr) minmax(0,600px);padding:18px 0 34px}
+.hero .eyebrow{color:var(--oliva);letter-spacing:.26em}
+.hero h1{font-size:clamp(76px,11vw,150px);margin:10px 0 20px}
+.hero .bajada{font-family:"Playfair Display",serif;font-size:clamp(22px,2.2vw,27px);line-height:1.3;color:var(--navy);max-width:21em}
+.acciones{margin-top:30px}
+.acciones .pill{border-radius:4px;background:var(--wine);height:52px}
+.acciones .pill:hover{background:#6E1631}
+.acciones .pill.ghost{background:transparent;color:var(--navy);border:1.5px solid var(--line2)}
+.hero-arte{mix-blend-mode:multiply;max-height:560px;width:auto;justify-self:center}
+.kpis{margin:34px 0 0;padding-top:26px;border-top:1px solid var(--line)}
+.kpi{align-items:flex-start;gap:12px;padding:0 28px}
+.kpi b{font-weight:500;font-size:46px;color:var(--navy);line-height:46px}
+.kpi:nth-child(2) b{color:var(--wine)}.kpi:nth-child(3) b{color:var(--wine)}
+.kpi span{font-size:14.5px;line-height:1.4;padding-top:3px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin:54px 0 22px}
+.sh h2{margin:0;font-family:"Playfair Display",serif;font-weight:700;font-size:clamp(30px,3vw,40px);color:var(--navy);letter-spacing:-.01em}
+.sh a{font-size:15px;font-weight:600;color:var(--navy);text-decoration:none;border-bottom:2px solid var(--wine);padding-bottom:2px;white-space:nowrap}
+.ult{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.chip{border-radius:999px;border-color:var(--line2);background:var(--card)}
+.chip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.chip:hover{border-color:var(--navy)}
+.buscar{border-radius:12px;background:var(--card);margin-top:22px}
+.grid{gap:18px;padding-top:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px 22px 18px}
+.card .k{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--oliva);line-height:16px}
+.card .k .kc{color:var(--wine)}
+.card h3{margin:10px 0 0;font-size:25px;line-height:1.12;min-height:2.24em}
+.card .il{margin:14px -6px 0;aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card .il img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;transition:transform .5s ease}
+.card:hover .il img{transform:scale(1.04)}
+.card .pie{display:flex;align-items:center;justify-content:space-between;margin-top:12px;font-size:13.5px;color:var(--mute)}
+.card .go{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--navy);display:flex;align-items:center;justify-content:center;color:var(--navy);flex:none}
+.card .go svg{width:16px;height:16px}
+.card:hover .go{background:var(--navy);color:#fff}
+.ult .card h3{font-size:28px}
+.lado .arte{mix-blend-mode:multiply}
+.audio{background:#ECE6D6}.audio .play{background:var(--wine)}
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .hero-arte{order:-1;max-height:340px}
+  .ult{grid-template-columns:1fr;gap:12px}
+  .ult .card{position:relative;display:grid;grid-template-columns:92px 1fr;grid-template-rows:auto auto auto;column-gap:14px;padding:14px 58px 14px 14px;align-items:center}
+  .ult .card .il{grid-row:1/4;grid-column:1;margin:0;aspect-ratio:1/1}
+  .ult .card .k{grid-column:2;align-self:end;font-size:10px;letter-spacing:.12em}
+  .ult .card h3{grid-column:2;font-size:18px;min-height:0;margin-top:4px}
+  .ult .card .pie{grid-column:2;grid-row:3;margin-top:4px;font-size:12.5px}
+  .ult .card .pie .go{position:absolute;right:14px;top:50%;transform:translateY(-50%)}
+  .grid .card .pie{font-size:12px}
+  .grid .card .go{width:30px;height:30px}
+  .grid{grid-template-columns:1fr 1fr;gap:12px}
+  .grid .card{padding:14px 14px 12px}
+  .grid .card h3{font-size:18px}
+  .grid .card .k{font-size:10px;letter-spacing:.12em}
+  .kpi{padding:0 14px}.kpi b{font-size:36px;line-height:36px}
+}
 </style>
 </head>
 <body>
@@ -207,28 +269,32 @@ footer a:hover{color:var(--oliva)}
     <section id="vLista">
       <div class="hero">
         <div>
-          <p class="eyebrow">Ideas cada viernes para artistas</p>
+          <p class="eyebrow">Cada viernes</p>
           <h1>Drops<i>.</i></h1>
-          <p class="bajada">El archivo de los envíos semanales. Cada viernes, una idea para pensar tu proyecto artístico como un negocio digital — sin perder la obra de vista.</p>
+          <p class="bajada">Ideas, herramientas y estrategias para hacer crecer tu proyecto artístico.</p>
+          <div class="acciones">
+            <a class="pill" href="https://chat.whatsapp.com/ChPARJAjr0BA8OUBGFIK1K?mode=gi_t" target="_blank" rel="noopener">Sumate a la membresía gratuita <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a class="pill ghost" href="https://semillaredes.com/">Conocer Semilla</a>
+          </div>
           <div class="kpis">
             <div class="kpi"><b id="kTotal">97</b><span>viernes<br>consecutivos</span></div>
             <div class="kpi"><b>3</b><span>ejes: negocio,<br>comunicación<br>y publicidad</span></div>
             <div class="kpi"><b id="kArtists">+180</b><span>artistas en la<br>comunidad</span></div>
           </div>
-          <div class="acciones">
-            <a class="pill" href="https://chat.whatsapp.com/ChPARJAjr0BA8OUBGFIK1K?mode=gi_t" target="_blank" rel="noopener">Sumate a la membresía gratuita <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-            <a class="pill ghost" href="https://semillaredes.com/">Conocer Semilla</a>
-          </div>
         </div>
-        <img class="hero-arte fundido" src="img/drops-hero.webp" width="650" height="475" alt="">
+        <img class="hero-arte fundido" src="img/il-hero.webp" width="1068" height="1212" alt="">
       </div>
 
+      <div class="sh"><h2>Últimos drops</h2><a href="#todos" id="verTodos">Ver todos →</a></div>
+      <div class="ult" id="ult"></div>
+      <div class="sh" id="todos"><h2>Explorá por tema</h2></div>
+      <div class="chips" id="chips" role="group" aria-label="Filtrar por tema"></div>
       <label class="buscar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
         <input id="q" type="search" placeholder="Buscar un drop…" aria-label="Buscar drops">
         <span class="atajo">Presioná / para buscar</span>
       </label>
-      <div class="chips" id="chips" role="group" aria-label="Filtrar por tema"></div>
+
       <div class="fila">
         <span class="cuenta" id="cuenta"></span>
         <label class="orden">
@@ -407,16 +473,21 @@ const chipsEl=document.getElementById('chips');
 const plano=h=>(h||'').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
 const resumen=d=>{const t=plano(d.html)||d.snippet||'';return t.replace(/^Buenas semanas,? artistas\.?\s*/i,'').replace(/^Embudo Semilla\b.{0,120}?Fidelizaci[oó]n\s*/i,'');};
 
+const IL={'Herramientas':['auris','vinilo','ojo'],'Estrategia':['embudo','megafono','ojo'],'Comunicación':['boca','megafono','auris'],'Publicidad y métricas':['ojo','embudo','vinilo'],'Modelo de negocio':['embudo','vinilo','boca'],'Método Semilla':['ojo','boca','megafono'],'Comunidad':['megafono','auris','boca']};
+const il=d=>'img/il-'+((IL[d.category]||['vinilo','embudo','megafono','boca','ojo','auris'])[d.n%3])+'.webp';
+const flecha='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 function tarjeta(d){
   return `<a class="card" href="#/${d.n}">
-    <div class="foto" style="background-image:url('${foto(d.n)}')"><b>${String(d.n).padStart(2,'0')}</b></div>
-    <div class="cuerpo"><div class="meta"><span class="${tagCls(d.category)}">${esc(d.category)}</span><span>${fmt(d.date)}</span></div>
-    <h3>${esc(d.title)}</h3><p>${esc(resumen(d))}</p></div></a>`;
+    <div class="k">Drop #${d.n} · <span class="kc">${esc(d.category)}</span></div>
+    <h3>${esc(d.title)}</h3>
+    <div class="il"><img src="${il(d)}" alt="" loading="lazy"></div>
+    <div class="pie"><span>${fmt(d.date)}</span><span class="go">${flecha}</span></div></a>`;
 }
 function lista(){
   const s=q.trim().toLowerCase();
   const L=DROPS.filter(d=>(cat==='Todos'||d.category===cat||(d.tags&&d.tags.includes(cat)))&&(!s||(d._s||(d._s=(d.title+' '+d.category+' '+plano(d.html)).toLowerCase())).includes(s)))
     .sort((a,b)=>orden==='r'?b.n-a.n:a.n-b.n);
+  document.getElementById('ult').innerHTML=[...DROPS].sort((a,b)=>b.n-a.n).slice(0,3).map(tarjeta).join('');
   document.getElementById('grid').innerHTML=L.map(tarjeta).join('')||'<p class="vacio">No encontramos drops con ese filtro. Probá otra búsqueda.</p>';
   document.getElementById('cuenta').textContent=`${L.length} drop${L.length===1?'':'s'}${cat!=='Todos'?' · '+cat:''}`;
 }
@@ -467,12 +538,13 @@ function detalle(n){
   document.getElementById('dFecha').textContent=fmt(d.date);
   document.getElementById('dTexto').innerHTML=texto(d.html);
   document.querySelectorAll('#dTexto a').forEach(a=>{a.target='_blank';a.rel='noopener';});
-  document.getElementById('dRel').innerHTML=relacionados(d).map(r=>`<a class="rel" href="#/${r.n}"><span class="th" style="background-image:url('${TH[r.n%3]}')"></span><span><small>${esc(r.category)}</small><b>${esc(r.title)}</b><em>${fmt(r.date)}</em></span></a>`).join('');
+  document.getElementById('dRel').innerHTML=relacionados(d).map(r=>`<a class="rel" href="#/${r.n}"><span class="th" style="background-image:url('${il(r)}');background-color:#F8F4EE;background-size:contain;background-repeat:no-repeat;background-position:center"></span><span><small>${esc(r.category)}</small><b>${esc(r.title)}</b><em>${fmt(r.date)}</em></span></a>`).join('');
   const url='https://semillaredes.com/drops/#/'+d.n, txt=`Drop #${d.n} · ${d.title}`;
   document.getElementById('shX').href='https://twitter.com/intent/tweet?text='+encodeURIComponent(txt)+'&url='+encodeURIComponent(url);
   document.getElementById('shIn').href='https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(url);
   document.getElementById('shWa').href='https://wa.me/?text='+encodeURIComponent(txt+' '+url);
   const sl=document.getElementById('shLink'); sl.onclick=()=>{ (navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).catch(()=>{}).finally(()=>{sl.classList.add('copiado');setTimeout(()=>sl.classList.remove('copiado'),1600);}); };
+  document.querySelector('.lado .arte').src=il(d);
   cargarAudio(d);
   document.title=`${d.title} · Drop #${d.n} — Semilla Redes`;
 }
