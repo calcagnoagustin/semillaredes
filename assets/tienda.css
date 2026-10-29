@@ -215,3 +215,7 @@ html.tienda .uk-card-body.uk-padding-remove-horizontal{padding-left:22px!importa
 html.tienda .list-product-card .uk-card-body .uk-h4{line-height:1.2;margin-bottom:8px!important}
 html.tienda .list-product-card .uk-text-small{line-height:1.5;color:var(--t-muted)}
 html.tienda .list-product-card .uk-card-body{background:var(--t-paper);border:1px solid var(--t-line);border-top:0;border-radius:0 0 14px 14px;margin-top:-6px;position:relative}
+
+/* página del instructor: bio con ancho de lectura, centrada */
+html.tienda .instructor-bio,html.tienda .instructor-page .instructor-description{max-width:720px;margin-left:auto;margin-right:auto}
+html.tienda .instructor-page p,html.tienda [class*="instructor"] .uk-container>p{max-width:720px;margin-left:auto;margin-right:auto;font-size:16px;line-height:1.65;color:var(--t-text);text-align:center}
