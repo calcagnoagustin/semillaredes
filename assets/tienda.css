@@ -188,3 +188,12 @@ html.tienda .uk-section-muted .uk-h3,html.tienda .uk-section-muted h3{font-size:
 html.tienda .uk-section-muted .material-icons{color:var(--t-olive)}
 html.tienda .course-fixed-bar-buy{background:var(--t-navy)!important}
 html.tienda .course-fixed-bar-buy .uk-h3{color:#fff!important}
+
+/* clases como tarjetas numeradas */
+html.tienda ul.t-clases{display:grid;gap:12px;background:transparent!important;box-shadow:none!important;border:0!important;padding:0!important}
+html.tienda .t-clase{background:var(--t-paper)!important;border:1px solid var(--t-line)!important;border-radius:12px;box-shadow:0 8px 22px rgba(17,28,90,.06)}
+html.tienda .t-clase>a{display:flex;align-items:center;gap:6px;padding:14px 18px!important;color:var(--t-navy)!important;font-family:'Playfair Display',serif;font-weight:700;font-size:17px}
+html.tienda .t-clase>a>.uk-width-expand{flex:1}
+.t-num{width:46px;height:46px;border-radius:50%;background:var(--t-rose-soft);color:var(--t-wine);font:800 20px 'Playfair Display',serif;display:flex;align-items:center;justify-content:center;flex:none;margin-right:12px}
+.t-th{width:150px;height:80px;object-fit:cover;border-radius:6px;margin:0 18px;flex:none}
+@media (max-width:640px){.t-th{display:none}.t-clase>a{font-size:15px}}

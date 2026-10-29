@@ -122,11 +122,23 @@
     }
   }
 
+  function clases(){
+    var lis=[].filter.call(document.querySelectorAll('li'),function(li){return li.querySelector('.lesson-list-indicator')&&li.querySelector('a');});
+    if(!lis.length||lis[0].classList.contains('t-clase'))return;
+    var thumbs=path.indexOf('meta-ads')>0;
+    lis.forEach(function(li,i){
+      li.classList.add('t-clase');if(li.parentElement)li.parentElement.classList.add('t-clases');
+      var a=li.querySelector('a');var n=i+1;
+      a.insertAdjacentHTML('afterbegin','<span class="t-num">'+n+'</span>');
+      if(thumbs&&n<=4&&a.lastElementChild)a.lastElementChild.insertAdjacentHTML('beforebegin','<img class="t-th" alt="" loading="lazy" src="'+BASE+'/assets/tienda/clase-'+n+'.webp">');
+    });
+  }
+
   function init(){
     document.documentElement.classList.add('tienda');
-    try{header();footer();home();sobreMi();categoria();curso();}catch(e){console.warn('tienda',e);}
+    try{header();footer();home();sobreMi();categoria();curso();clases();}catch(e){console.warn('tienda',e);}
   }
   document.documentElement.classList.add('tienda');
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-  window.addEventListener('load',function(){try{header();footer();home();sobreMi();categoria();curso();}catch(e){}});
+  window.addEventListener('load',function(){try{header();footer();home();sobreMi();categoria();curso();clases();}catch(e){}});
 })();
