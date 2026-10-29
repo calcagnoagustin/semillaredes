@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap');
+/* Tienda Agus Calcagno (aguscalcagno.com, Tiendup) — estética Semilla: papel crema, bordó, azul noche, collage.
+   Se carga desde Códigos personalizados de Tiendup. Fuente: semillaredes/assets/tienda.css */
+:root{
+  --t-bg:#F4EFE5;--t-bg2:#F8F4EC;--t-bg3:#EFE8DB;--t-paper:#FCF9F3;
+  --t-navy:#111C5A;--t-wine:#871C38;--t-wine-d:#6B142B;
+  --t-olive:#7B7A2E;--t-olive-soft:#E3E0BD;--t-rose:#E8757D;--t-rose-soft:#F6D8D4;
+  --t-line:#E4DCCD;--t-text:#2B2B33;--t-muted:#5C5A66;
+  --t-grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .3  0 0 0 0 .2  0 0 0 .07 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+html.tienda body{background:var(--t-bg) var(--t-grain);color:var(--t-text);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+html.tienda .uk-background-default,html.tienda .uk-section-default{background:transparent!important}
+html.tienda .uk-section-muted,html.tienda .uk-background-muted{background:var(--t-bg3)!important}
+
+/* tipografía */
+html.tienda h1,html.tienda h2,html.tienda h3,html.tienda h4,html.tienda .uk-h1,html.tienda .uk-h2,html.tienda .uk-h3,html.tienda .uk-h4,html.tienda .uk-card-title{
+  font-family:'Playfair Display',serif!important;color:var(--t-navy)!important;font-weight:800!important;letter-spacing:-.02em;line-height:1.08}
+html.tienda h1,html.tienda .uk-h1{font-weight:900!important;letter-spacing:-.03em;font-size:clamp(34px,4.6vw,58px)}
+html.tienda h2,html.tienda .uk-h2{font-size:clamp(26px,3vw,38px)}
+html.tienda a{color:var(--t-wine)}
+html.tienda .uk-link,html.tienda .uk-link-text{color:var(--t-wine)}
+html.tienda .t-eyebrow,html.tienda .uk-text-meta{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--t-olive)}
+
+/* botones */
+html.tienda .uk-button{font-family:'Inter',sans-serif!important;font-weight:700!important;text-transform:none!important;letter-spacing:0!important;border-radius:8px!important;transition:background .2s,transform .15s,box-shadow .2s}
+html.tienda .uk-button-primary,html.tienda .uk-button-secondary{background:var(--t-wine)!important;border:1.5px solid var(--t-wine)!important;color:#fff!important;box-shadow:0 6px 16px rgba(135,28,56,.18)}
+html.tienda .uk-button-primary:hover,html.tienda .uk-button-secondary:hover{background:var(--t-wine-d)!important;border-color:var(--t-wine-d)!important}
+html.tienda .uk-button-default{background:transparent!important;border:1.5px solid var(--t-wine)!important;color:var(--t-wine)!important}
+html.tienda .uk-button-default:hover{background:var(--t-wine)!important;color:#fff!important}
+html.tienda .uk-input,html.tienda .uk-select,html.tienda .uk-textarea{border-radius:8px;background:var(--t-paper);border-color:var(--t-line)}
+html.tienda .uk-input:focus,html.tienda .uk-textarea:focus,html.tienda .uk-select:focus{border-color:var(--t-wine)}
+
+/* tarjetas */
+html.tienda .uk-card,html.tienda .uk-card-default{background:var(--t-paper)!important;border:1px solid var(--t-line);border-radius:14px!important;box-shadow:0 10px 30px rgba(17,28,90,.07)!important}
+html.tienda .uk-card-body{border-radius:14px}
+html.tienda img.uk-border-rounded,html.tienda .uk-border-rounded{border-radius:14px!important}
+
+/* ---------- header ---------- */
+html.tienda .main-navbar{min-height:78px}
+html.tienda .store-logo{display:none!important}
+.t-brand{display:flex;align-items:center;gap:12px;text-decoration:none!important;margin-right:34px}
+.t-brand svg{width:44px;height:44px;flex:none}
+.t-brand-txt{display:flex;flex-direction:column;line-height:1}
+.t-brand-name{font-family:'Bebas Neue','Oswald',sans-serif;font-size:27px;letter-spacing:.08em;color:var(--t-navy)}
+.t-brand-sub{font-family:'Space Mono',monospace;font-size:8.2px;letter-spacing:.2em;text-transform:uppercase;color:var(--t-olive);margin-top:4px;white-space:nowrap}
+html.tienda .main-navbar .uk-navbar-nav>li>a{font-size:13.5px;font-weight:600;color:var(--t-navy);text-transform:none;letter-spacing:0;min-height:78px;padding:0 15px;position:relative}
+html.tienda .main-navbar .uk-navbar-nav>li>a:hover{color:var(--t-wine)}
+html.tienda .main-navbar .uk-navbar-nav>li.uk-active>a{color:var(--t-wine)}
+html.tienda .main-navbar .uk-navbar-nav>li.uk-active>a:after{content:"";position:absolute;left:15px;right:15px;bottom:22px;height:2px;background:var(--t-wine)}
+html.tienda .separator-nav>li:before,html.tienda .separator-nav>li+li:before{display:none!important;border:0!important}
+html.tienda .main-navbar .uk-button{padding:0 22px;line-height:42px;font-size:13.5px}
+html.tienda .main-navbar .uk-button-default{background:var(--t-wine)!important;color:#fff!important}
+html.tienda .main-navbar .uk-button-default:hover{background:var(--t-wine-d)!important}
+html.tienda .cart-menu-option a{color:var(--t-wine)!important}
+html.tienda .navbar-sticky-wrap,html.tienda .uk-navbar-sticky{background:rgba(244,239,229,.94)!important;backdrop-filter:blur(8px)}
+
+/* ---------- footer ---------- */
+html.tienda .site-footer,html.tienda footer.site-footer{background:var(--t-bg3)!important;border-top:1px solid var(--t-line)}
+html.tienda .site-footer a{color:var(--t-wine)}
+html.tienda .from-tiendup-footer{background:var(--t-bg3)!important}
+.t-foot{max-width:1100px;margin:0 auto;padding:34px 20px 8px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.t-foot .t-brand{margin:0}
+.t-foot p{font-size:13px;color:var(--t-muted);max-width:420px;line-height:1.45}
+
+/* ---------- home ---------- */
+html.tienda .home-page-wrapper:not(.t-home){visibility:hidden;animation:tShow 0s 2.5s forwards}
+@keyframes tShow{to{visibility:visible}}
+.t-home{color:var(--t-text)}
+.t-wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.t-hero{position:relative;overflow:hidden}
+.t-hero .t-wrap{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.25fr);align-items:center;gap:0;min-height:480px}
+.t-hero-txt{position:relative;z-index:2;padding:46px 0 52px}
+.t-hero h1{font-size:clamp(40px,5.4vw,72px);line-height:.98;margin:16px 0 22px}
+.t-hero h1 i{font-style:normal;color:var(--t-wine)}
+.t-hero p.lead{font-size:17px;line-height:1.5;color:var(--t-text);max-width:440px;margin:0 0 26px}
+.t-art{position:relative}
+.t-art img{display:block;width:100%;height:auto;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 100%),linear-gradient(0deg,transparent 0,#000 4%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 100%),linear-gradient(0deg,transparent 0,#000 4%);mask-composite:intersect}
+.t-proof{display:flex;align-items:center;gap:12px;margin-top:26px;font-size:12.5px;color:var(--t-muted);line-height:1.35}
+.t-proof .av{display:flex}.t-proof .av img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--t-paper);margin-left:-9px}
+.t-proof .av img:first-child{margin-left:0}
+html.tienda .t-btn{display:inline-flex;align-items:center;gap:10px;background:var(--t-wine);color:#fff!important;font-weight:700;font-size:14.5px;padding:15px 26px;border-radius:8px;text-decoration:none!important;box-shadow:0 8px 20px rgba(135,28,56,.2);transition:background .2s,transform .15s}
+html.tienda .t-btn:hover{background:var(--t-wine-d);transform:translateY(-1px)}
+html.tienda .t-btn.sm{padding:10px 18px;font-size:13px;box-shadow:none}
+html.tienda .t-btn.line{background:transparent;color:var(--t-wine)!important;border:1.5px solid var(--t-wine);box-shadow:none}
+.t-sec{padding:44px 0}
+.t-sec.alt{background:var(--t-bg3)}
+.t-sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-bottom:26px;flex-wrap:wrap}
+.t-sec-head h2{margin:0;position:relative;padding-bottom:14px}
+.t-sec-head h2:after{content:"";position:absolute;left:0;bottom:0;width:30px;height:2px;background:var(--t-olive)}
+.t-sec-head p{font-size:13.5px;color:var(--t-muted);max-width:430px;line-height:1.45;margin:0}
+.t-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.t-card{position:relative;display:grid;grid-template-columns:1fr 46%;background:var(--t-paper);border:1px solid var(--t-line);border-radius:14px;box-shadow:0 10px 30px rgba(17,28,90,.07);overflow:hidden;min-height:230px}
+.t-card-b{padding:26px 8px 24px 24px;position:relative;z-index:2;display:flex;flex-direction:column;align-items:flex-start}
+.t-card .t-eyebrow{font-size:9.5px;color:var(--t-wine)}
+.t-card h3{font-size:26px;margin:12px 0 10px}
+.t-card p{font-size:13.5px;line-height:1.45;color:var(--t-muted);margin:0 0 18px}
+.t-card .t-btn{margin-top:auto}
+.t-card-i{position:relative}
+.t-card-i img{position:absolute;right:0;bottom:0;height:100%;width:100%;object-fit:cover;object-position:left center;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 22%);mask-image:linear-gradient(90deg,transparent 0,#000 22%)}
+.t-drops{display:grid;grid-template-columns:minmax(0,.7fr) repeat(3,minmax(0,1fr));gap:20px;align-items:start}
+.t-drops-intro h2{margin:0 0 14px}
+.t-drops-intro p{font-size:14px;line-height:1.5;color:var(--t-muted);margin:0 0 18px}
+.t-drops-intro a.more{font-weight:700;font-size:14px;color:var(--t-wine);border-bottom:1.5px solid var(--t-wine);text-decoration:none}
+.t-drop{display:block;background:var(--t-paper);border:1px solid var(--t-line);border-radius:12px;padding:14px 14px 12px;text-decoration:none!important;color:var(--t-text);box-shadow:0 8px 22px rgba(17,28,90,.06);transition:transform .2s}
+.t-drop:hover{transform:translateY(-3px)}
+.t-drop .t-eyebrow{font-size:8.5px;color:var(--t-wine);letter-spacing:.16em}
+.t-drop h4{font-size:19px;margin:7px 0 10px;min-height:44px}
+.t-drop .im{height:104px;border-radius:8px;overflow:hidden;background:var(--t-bg2)}
+.t-drop .im img{width:100%;height:100%;object-fit:cover;display:block}
+.t-drop .ft{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12px;color:var(--t-muted)}
+.t-drop .ft b{width:26px;height:26px;border:1.5px solid var(--t-navy);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--t-navy);font-size:13px}
+
+/* ---------- páginas de curso / producto ---------- */
+html.tienda .page-section.uk-section{padding-top:44px;padding-bottom:44px}
+html.tienda .product-title,html.tienda .uk-article-title{font-size:clamp(34px,4.4vw,56px)!important;font-weight:900!important;letter-spacing:-.03em}
+html.tienda .uk-container img[src*="cdn"],html.tienda .product-image img{border-radius:14px}
+html.tienda .uk-label{background:var(--t-rose-soft);color:var(--t-wine);border-radius:999px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;padding:3px 10px}
+html.tienda ul.uk-list>li:before{color:var(--t-olive)}
+html.tienda .uk-accordion-title{font-family:'Playfair Display',serif;color:var(--t-navy);font-weight:800}
+html.tienda .uk-subnav-pill>.uk-active>a{background:var(--t-wine)}
+html.tienda .uk-tab>.uk-active>a{color:var(--t-wine);border-color:var(--t-wine)}
+html.tienda hr{border-color:var(--t-line)}
+html.tienda .uk-badge{background:var(--t-wine)}
+
+/* blog */
+html.tienda .blog-title,html.tienda .uk-h2.uk-text-center{margin-bottom:34px}
+html.tienda .blog-post-title a,html.tienda .uk-card-title a{color:var(--t-navy)!important}
+
+/* ---------- mobile ---------- */
+@media (max-width:959px){
+  .t-hero .t-wrap{grid-template-columns:1fr;min-height:0}
+  .t-hero-txt{padding:30px 0 6px}
+  .t-art{margin:0 -24px}
+  .t-cards{grid-template-columns:1fr}
+  .t-drops{grid-template-columns:1fr 1fr}
+  .t-drops-intro{grid-column:1/-1}
+  .t-sec-head{align-items:flex-start}
+}
+@media (max-width:600px){
+  .t-card{grid-template-columns:1fr 38%}
+  .t-card h3{font-size:23px}
+  .t-drops{grid-template-columns:1fr}
+  .t-brand-name{font-size:23px}
+  .t-brand-sub{display:none}
+}
