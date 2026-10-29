@@ -142,13 +142,17 @@
     h.insertAdjacentHTML('beforebegin','<span class="t-eyebrow">Programa online · Semilla Redes</span>');
     var grid=h.closest('.uk-grid');var cols=grid?grid.children:[];
     if(cols.length>1){var r=cols[cols.length-1];r.className='uk-width-1-2@m t-curso-art';r.innerHTML='<img alt="" src="'+A+'formacion-hero2.webp">';}
-    var eje=function(n,t,p,img){return '<article class="t-card t-eje"><div class="t-card-b"><span class="t-eyebrow">'+n+'</span><h3>'+t+'</h3><p>'+p+'</p></div><div class="t-card-i"><img alt="" loading="lazy" src="'+A+img+'.webp"></div></article>';};
+    var eje=function(n,t,p,img){return '<article class="t-card t-eje"><div class="t-card-b"><span class="t-eyebrow">'+n+'</span><h3>'+t+'</h3><p>'+p+'</p></div><div class="t-card-i"><img alt="" src="'+A+img+'.webp"></div></article>';};
     var sec=document.createElement('section');sec.className='t-sec';
     sec.innerHTML='<div class="t-wrap"><div class="t-sec-head"><h2>Tres ejes para hacer crecer tu proyecto</h2><p>Un enfoque integral que combina estrategia, creatividad y herramientas digitales para que puedas vivir de tu arte con más libertad.</p></div><div class="t-cards">'+
       eje('01','Negocio','Definí tu propuesta, encontrá a tu audiencia y creá un modelo de ingresos sostenible.','eje-negocio')+
       eje('02','Comunicación','Contá tu historia, creá contenido que conecte y construí una marca auténtica y coherente.','eje-comunicacion')+
       eje('03','Publicidad','Aprendé a usar Meta Ads y otras herramientas para llegar a más personas y potenciar tu proyecto.','eje-publicidad')+'</div></div>';
-    blk.parentElement.insertBefore(sec,blk.nextSibling);
+    var at=h;while(at&&at.parentElement&&!at.nextElementSibling)at=at.parentElement;
+    // sube hasta el bloque del hero que tenga un hermano siguiente
+    var up=h.closest('.uk-grid')||h;
+    while(up.parentElement&&up.parentElement!==document.querySelector('#page-content')&&!up.nextElementSibling)up=up.parentElement;
+    up.parentElement.insertBefore(sec,up.nextElementSibling||null);
   }
 
   function init(){
