@@ -43,6 +43,7 @@
 
   function footer(){
     var f=document.querySelector('footer.site-footer');if(!f||f.querySelector('.t-foot'))return;
+    [].forEach.call(f.querySelectorAll('a'),function(a){if(a.textContent.trim()==='Home'){var ul=a.closest('ul');if(ul&&!ul.getAttribute('data-t')){ul.setAttribute('data-t','1');ul.innerHTML=NAV.map(function(it){return '<li><a href="'+it[1]+'">'+it[0]+'</a></li>';}).join('');}}});
     f.insertAdjacentHTML('afterbegin','<div class="t-foot">'+brand()+'<p>Estrategia digital, publicidad y herramientas prácticas para que la música, el arte y la cultura lleguen más lejos.</p></div>');
   }
 
