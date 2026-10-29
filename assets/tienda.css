@@ -147,9 +147,17 @@ html.tienda .blog-post-title a,html.tienda .uk-card-title a{color:var(--t-navy)!
 
 /* header: una sola fila */
 html.tienda .main-navbar .uk-navbar-left,html.tienda .main-navbar .uk-navbar-right{flex-wrap:nowrap!important;align-items:center}
-html.tienda .main-navbar .uk-navbar-right{gap:14px}
+html.tienda .main-navbar .uk-navbar-right{gap:12px}
+html.tienda .main-navbar a,.t-brand-name{white-space:nowrap}
 @media (max-width:1199px){
-  .t-brand{margin-right:14px}.t-brand-sub{display:none}
-  html.tienda .main-navbar .uk-navbar-nav>li>a{padding:0 9px;font-size:13px}
-  html.tienda .main-navbar .uk-navbar-nav>li.uk-active>a:after{left:9px;right:9px}
+  .t-brand{margin-right:12px;gap:9px}.t-brand svg{width:38px;height:38px}.t-brand-sub{display:none}.t-brand-name{font-size:22px}
+  html.tienda .main-navbar .uk-navbar-nav>li>a{padding:0 7px;font-size:12.5px}
+  html.tienda .main-navbar .uk-navbar-nav>li.uk-active>a:after{left:7px;right:7px}
+  html.tienda .main-navbar .uk-button{padding:0 14px;line-height:38px;font-size:12.5px}
 }
+/* categorías y sobre mí */
+html.tienda .category-title,html.tienda .uk-container>.uk-h2.uk-text-center,html.tienda h1.uk-text-center{text-transform:capitalize}
+.t-about .t-hero-txt{padding:54px 0 60px}
+.t-about p.lead{max-width:520px;margin-bottom:16px}
+.t-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+.t-about .t-art img{border-radius:14px}

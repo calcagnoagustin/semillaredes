@@ -82,11 +82,29 @@
     drops(w.querySelector('#t-drops-list'));
   }
 
+  function sobreMi(){
+    if(path!=='/page/quien-soy')return;
+    var pc=document.querySelector('#page-content');if(!pc||pc.querySelector('.t-about'))return;
+    var blk=[].filter.call(pc.children,function(e){return /^\s*404/.test(e.textContent);})[0];if(!blk)return;
+    blk.className='t-about t-home';
+    blk.innerHTML='<section class="t-hero"><div class="t-wrap"><div class="t-hero-txt"><span class="t-eyebrow">Sobre mí</span><h1>Hola, soy Agus<i>.</i></h1>'+
+      '<p class="lead">Trabajo con músicos, artistas y proyectos culturales para convertir su talento en negocios digitales que funcionan. Soy el creador de Semilla Redes, un método que parte de una pregunta simple: ¿qué vendés, a quién y por qué alguien pagaría?</p>'+
+      '<p class="lead">Desde ahí construimos todo: marca, redes, publicidad y modelo de negocio. Me especializo en estrategia digital, Meta Ads, YouTube Ads y Spotify Ads para proyectos culturales.</p>'+
+      '<p class="lead">Más de 150 artistas ya pasaron por el proceso. El árbol ya está en la semilla. Yo te ayudo a encontrarlo.</p>'+
+      '<div class="t-actions"><a class="t-btn" href="/s/auditoria-inicial-con-agus">Agendá tu auditoría '+ARROW+'</a><a class="t-btn line" href="/c/curso">Conocé mis cursos</a></div></div>'+
+      '<div class="t-art"><img alt="Agus Calcagno" src="'+BASE+'/assets/tienda/dash-hero.webp"></div></div></section>';
+    document.title='Sobre mí — Agus Calcagno';
+  }
+  function categoria(){
+    if(path!=='/c/curso')return;
+    [].forEach.call(document.querySelectorAll('h1,h2,.uk-h1,.uk-h2'),function(h){if(h.textContent.trim().toLowerCase()==='curso')h.textContent='Cursos';});
+  }
+
   function init(){
     document.documentElement.classList.add('tienda');
-    try{header();footer();home();}catch(e){console.warn('tienda',e);}
+    try{header();footer();home();sobreMi();categoria();}catch(e){console.warn('tienda',e);}
   }
   document.documentElement.classList.add('tienda');
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-  window.addEventListener('load',function(){try{header();footer();home();}catch(e){}});
+  window.addEventListener('load',function(){try{header();footer();home();sobreMi();categoria();}catch(e){}});
 })();
