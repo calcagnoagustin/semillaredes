@@ -161,3 +161,4 @@ html.tienda .category-title,html.tienda .uk-container>.uk-h2.uk-text-center,html
 .t-about p.lead{max-width:520px;margin-bottom:16px}
 .t-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
 .t-about .t-art img{border-radius:14px}
+@media (max-width:1099px){.dd{display:none}.t-brand-name{font-size:21px}html.tienda .main-navbar .uk-navbar-nav>li>a{padding:0 6px}}

@@ -7,7 +7,7 @@
     ['Inicio','/'],
     ['Cursos','/c/curso'],
     ['Auditoría','/s/auditoria-inicial-con-agus'],
-    ['Recursos (Drops)',BASE+'/drops/'],
+    ['Recursos<span class="dd"> (Drops)</span>',BASE+'/drops/'],
     ['Sobre mí','/page/quien-soy'],
     ['Blog','/blog']
   ];
