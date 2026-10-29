@@ -14,7 +14,7 @@
     if(document.getElementById('aud-lp'))return;
     var pc=document.getElementById('page-content')||document.body;
     var st=document.createElement('style');st.textContent=CSS;document.head.appendChild(st);
-    var w=document.createElement('div');w.innerHTML=HTML;var lp=w.firstElementChild;pc.insertBefore(lp,pc.firstChild);
+    var w=document.createElement('div');w.innerHTML=HTML;var lp=w.firstElementChild;var hd=pc.firstElementChild;pc.insertBefore(lp,hd&&hd.classList.contains('uk-background-default')?hd.nextSibling:pc.firstChild);
     document.documentElement.classList.add('aud-lp');document.documentElement.classList.remove('aud-cargando');
     var local=ar()?'ARS':'USD', otra=local==='ARS'?'USD':'ARS';
     var o=lp.querySelector('[data-otra]');if(o)o.textContent=local==='ARS'?'¿Pagás desde otro país? Pagá en USD':'¿Estás en Argentina? Pagá en pesos';
