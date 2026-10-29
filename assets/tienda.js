@@ -101,7 +101,7 @@
     portadas();
   }
   // portadas de cursos con la estética nueva (por si Tiendup todavía muestra la vieja)
-  var PORTADAS={'curso-de-anuncios-en-meta-ads':'flyer-metaads'};
+  var PORTADAS={'curso-de-anuncios-en-meta-ads':'flyer-metaads','formacion-semilla':'flyer-formacion'};
   function portadas(){
     [].forEach.call(document.querySelectorAll('a[href*="/curso/"]'),function(a){
       var k=Object.keys(PORTADAS).filter(function(k){return a.getAttribute('href').indexOf(k)>=0;})[0];if(!k)return;
