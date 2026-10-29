@@ -162,3 +162,10 @@ html.tienda .category-title,html.tienda .uk-container>.uk-h2.uk-text-center,html
 .t-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
 .t-about .t-art img{border-radius:14px}
 @media (max-width:1099px){.dd{display:none}.t-brand-name{font-size:21px}html.tienda .main-navbar .uk-navbar-nav>li>a{padding:0 6px}}
+.t-proof .av{flex:none}
+@media (max-width:959px){
+  html.tienda .main-navbar{min-height:0}
+  html.tienda .main-navbar .uk-navbar-nav>li>a{min-height:0;padding:12px 0}
+  html.tienda #page-content>.uk-hidden\@m{background:var(--t-paper)!important;border-top:1px solid var(--t-line);box-shadow:0 -6px 20px rgba(17,28,90,.06)}
+  html.tienda #page-content>.uk-hidden\@m a{color:var(--t-navy)}
+}
