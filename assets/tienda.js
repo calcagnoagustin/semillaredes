@@ -130,7 +130,7 @@
       li.classList.add('t-clase');if(li.parentElement)li.parentElement.classList.add('t-clases');
       var a=li.querySelector('a');var n=i+1;
       a.insertAdjacentHTML('afterbegin','<span class="t-num">'+n+'</span>');
-      if(thumbs&&n<=4&&a.lastElementChild)a.lastElementChild.insertAdjacentHTML('beforebegin','<img class="t-th" alt="" loading="lazy" src="'+BASE+'/assets/tienda/clase-'+n+'.webp">');
+      if(thumbs&&n<=4&&a.lastElementChild)a.lastElementChild.insertAdjacentHTML('beforebegin','<img class="t-th" alt="" src="'+BASE+'/assets/tienda/clase-'+n+'.webp">');
     });
   }
 
