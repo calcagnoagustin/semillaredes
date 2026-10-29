@@ -200,3 +200,11 @@ html.tienda .t-clase>a>.uk-width-expand{flex:1}
 html.tienda :has(>ul.t-clases){background:transparent!important;box-shadow:none!important;border:0!important}
 html.tienda .t-clases>li{margin:0!important;padding:0!important}
 html.tienda .t-clases>li:before,html.tienda .t-clases>li:after{display:none!important}
+
+/* página de venta Formación Semilla */
+html.tienda .t-prod h1{font-size:clamp(38px,4.8vw,64px)!important;line-height:1;margin:14px 0 18px!important;font-weight:900!important}
+html.tienda .t-prod h1:after{content:".";color:var(--t-wine)}
+html.tienda .t-prod .wrap-product-data p,html.tienda .t-prod p{font-size:16px;line-height:1.5}
+html.tienda .t-prod{padding-top:6px}
+.t-eje .t-card-b{padding-right:0}
+.t-eje h3{font-size:26px}

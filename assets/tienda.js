@@ -134,11 +134,28 @@
     });
   }
 
+  function producto(){
+    if(path!=='/p/formacion-semilla-grupo')return;
+    var h=document.querySelector('h1');if(!h||h.getAttribute('data-t'))return;h.setAttribute('data-t','1');
+    var A=BASE+'/assets/tienda/';
+    var blk=h.closest('#page-content>*');if(!blk)return;blk.classList.add('t-prod');
+    h.insertAdjacentHTML('beforebegin','<span class="t-eyebrow">Programa online · Semilla Redes</span>');
+    var grid=h.closest('.uk-grid');var cols=grid?grid.children:[];
+    if(cols.length>1){var r=cols[cols.length-1];r.className='uk-width-1-2@m t-curso-art';r.innerHTML='<img alt="" src="'+A+'formacion-hero2.webp">';}
+    var eje=function(n,t,p,img){return '<article class="t-card t-eje"><div class="t-card-b"><span class="t-eyebrow">'+n+'</span><h3>'+t+'</h3><p>'+p+'</p></div><div class="t-card-i"><img alt="" loading="lazy" src="'+A+img+'.webp"></div></article>';};
+    var sec=document.createElement('section');sec.className='t-sec';
+    sec.innerHTML='<div class="t-wrap"><div class="t-sec-head"><h2>Tres ejes para hacer crecer tu proyecto</h2><p>Un enfoque integral que combina estrategia, creatividad y herramientas digitales para que puedas vivir de tu arte con más libertad.</p></div><div class="t-cards">'+
+      eje('01','Negocio','Definí tu propuesta, encontrá a tu audiencia y creá un modelo de ingresos sostenible.','eje-negocio')+
+      eje('02','Comunicación','Contá tu historia, creá contenido que conecte y construí una marca auténtica y coherente.','eje-comunicacion')+
+      eje('03','Publicidad','Aprendé a usar Meta Ads y otras herramientas para llegar a más personas y potenciar tu proyecto.','eje-publicidad')+'</div></div>';
+    blk.parentElement.insertBefore(sec,blk.nextSibling);
+  }
+
   function init(){
     document.documentElement.classList.add('tienda');
-    try{header();footer();home();sobreMi();categoria();curso();clases();}catch(e){console.warn('tienda',e);}
+    try{header();footer();home();sobreMi();categoria();curso();clases();producto();}catch(e){console.warn('tienda',e);}
   }
   document.documentElement.classList.add('tienda');
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-  window.addEventListener('load',function(){try{header();footer();home();sobreMi();categoria();curso();clases();}catch(e){}});
+  window.addEventListener('load',function(){try{header();footer();home();sobreMi();categoria();curso();clases();producto();}catch(e){}});
 })();
