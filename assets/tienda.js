@@ -100,11 +100,33 @@
     [].forEach.call(document.querySelectorAll('h1,h2,.uk-h1,.uk-h2'),function(h){if(h.textContent.trim().toLowerCase()==='curso')h.textContent='Cursos';});
   }
 
+  function curso(){
+    if(path.indexOf('/curso/')!==0)return;
+    var ci=document.querySelector('.course-intro');if(!ci||ci.classList.contains('t-curso'))return;
+    ci.classList.add('t-curso');
+    var h=ci.querySelector('h1');
+    if(h)h.insertAdjacentHTML('beforebegin','<span class="t-eyebrow">Curso online · Semilla Redes</span>');
+    var grid=ci.querySelector('.uk-grid');var cols=grid?grid.children:[];var right=cols.length>1?cols[cols.length-1]:null;
+    var A=BASE+'/assets/tienda/';
+    var art=path==='/curso/formacion-semilla'?'formacion-curso':'meta-hero';
+    if(right){
+      var fr=right.querySelector('iframe');
+      if(fr){
+        var sec=document.createElement('section');sec.className='t-sec t-video';
+        sec.innerHTML='<div class="t-wrap"><div class="t-sec-head"><h2>Mirá la presentación</h2></div><div class="t-vid"></div></div>';
+        sec.querySelector('.t-vid').appendChild(fr);
+        ci.parentElement.insertBefore(sec,ci.nextSibling);
+      }
+      right.className='uk-width-1-2@m uk-width-1-2@s t-curso-art';
+      right.innerHTML='<img alt="" src="'+A+art+'.webp">';
+    }
+  }
+
   function init(){
     document.documentElement.classList.add('tienda');
-    try{header();footer();home();sobreMi();categoria();}catch(e){console.warn('tienda',e);}
+    try{header();footer();home();sobreMi();categoria();curso();}catch(e){console.warn('tienda',e);}
   }
   document.documentElement.classList.add('tienda');
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-  window.addEventListener('load',function(){try{header();footer();home();sobreMi();categoria();}catch(e){}});
+  window.addEventListener('load',function(){try{header();footer();home();sobreMi();categoria();curso();}catch(e){}});
 })();

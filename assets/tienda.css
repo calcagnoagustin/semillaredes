@@ -169,3 +169,22 @@ html.tienda .category-title,html.tienda .uk-container>.uk-h2.uk-text-center,html
   html.tienda #page-content>.uk-hidden\@m{background:var(--t-paper)!important;border-top:1px solid var(--t-line);box-shadow:0 -6px 20px rgba(17,28,90,.06)}
   html.tienda #page-content>.uk-hidden\@m a{color:var(--t-navy)}
 }
+
+/* ---------- páginas internas de curso ---------- */
+html.tienda .course-intro.t-curso{background:transparent!important;padding:10px 0 6px}
+html.tienda .t-curso .uk-section-small{padding-top:34px;padding-bottom:34px}
+html.tienda .t-curso h1{font-size:clamp(36px,4.6vw,60px)!important;line-height:1;margin:14px 0 18px!important;font-weight:900!important}
+html.tienda .t-curso h1:after{content:".";color:var(--t-wine)}
+html.tienda .t-curso p{font-size:16px;line-height:1.5;color:var(--t-text)}
+html.tienda .t-curso-art img{display:block;width:100%;height:auto;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 94%,transparent 100%),linear-gradient(180deg,transparent 0,#000 7%,#000 93%,transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 94%,transparent 100%),linear-gradient(180deg,transparent 0,#000 7%,#000 93%,transparent 100%);mask-composite:intersect}
+html.tienda .t-curso-art{align-self:center}
+.t-vid{position:relative;max-width:860px;margin:0 auto;border-radius:14px;overflow:hidden;box-shadow:0 14px 40px rgba(17,28,90,.14);aspect-ratio:16/9;background:#000}
+.t-vid iframe{position:absolute;inset:0;width:100%!important;height:100%!important;border:0}
+.t-video .t-sec-head{justify-content:center;text-align:center}
+.t-video .t-sec-head h2:after{left:50%;margin-left:-15px}
+html.tienda .uk-section.uk-section-muted{background:transparent!important}
+html.tienda .uk-section.uk-section-muted:nth-of-type(even){background:var(--t-bg3)!important}
+html.tienda .uk-section-muted .uk-h3,html.tienda .uk-section-muted h3{font-size:26px}
+html.tienda .uk-section-muted .material-icons{color:var(--t-olive)}
+html.tienda .course-fixed-bar-buy{background:var(--t-navy)!important}
+html.tienda .course-fixed-bar-buy .uk-h3{color:#fff!important}
