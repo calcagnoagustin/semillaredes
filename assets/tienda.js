@@ -43,7 +43,7 @@
 
   function footer(){
     var f=document.querySelector('footer.site-footer');if(!f||f.querySelector('.t-foot'))return;
-    [].forEach.call(f.querySelectorAll('a'),function(a){if(a.textContent.trim()==='Home'){var ul=a.closest('ul');if(ul&&!ul.getAttribute('data-t')){ul.setAttribute('data-t','1');ul.innerHTML=NAV.map(function(it){return '<li><a href="'+it[1]+'">'+it[0]+'</a></li>';}).join('');}}});
+    [].forEach.call(f.querySelectorAll('a'),function(a){if(a.textContent.trim()==='Home'){var ul=a.closest('ul');if(ul&&!ul.getAttribute('data-t')){ul.setAttribute('data-t','1');ul.innerHTML=NAV.concat([['Semilla Redes',BASE+'/']]).map(function(it){return '<li><a href="'+it[1]+'">'+it[0]+'</a></li>';}).join('');}}});
     f.insertAdjacentHTML('afterbegin','<div class="t-foot">'+brand()+'<p>Estrategia digital, publicidad y herramientas prácticas para que la música, el arte y la cultura lleguen más lejos.</p></div>');
   }
 
@@ -166,8 +166,9 @@
     up.parentElement.insertBefore(sec,up.nextElementSibling||null);
   }
 
+  function puente(){if(window.__puente||document.getElementById('pt-js'))return;var j=document.createElement('script');j.id='pt-js';j.src=BASE+'/assets/puente.js?v=1';document.head.appendChild(j);}
   function init(){
-    document.documentElement.classList.add('tienda');
+    document.documentElement.classList.add('tienda');puente();
     try{header();footer();home();sobreMi();categoria();curso();clases();producto();}catch(e){console.warn('tienda',e);}
   }
   document.documentElement.classList.add('tienda');
