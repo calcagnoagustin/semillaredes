@@ -1904,6 +1904,18 @@ const WEBS={'semilla-redes':1,'piku-yoga':1,'hernan-onirico':1,'hernan-onirico-2
 const API_WEB='https://vm.semillaredes.com/web';
 let TW_FOTOS=[];
 const twEsc=t=>String(t||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// 29/10: consultas que le trae su web (clics a WhatsApp, mail, Instagram...) en los últimos 30 días
+async function twConsultas(caja){
+  try{ const u=await (await fetch(`${API_WEB}/uso?c=${encodeURIComponent(slug)}&k=${encodeURIComponent(tok)}`)).json(); if(!u||u.error) return;
+    const c=u.clics||{}, N={wa:'WhatsApp',mail:'mail',tel:'teléfono',ig:'Instagram',spotify:'Spotify',youtube:'YouTube',steam:'Steam',otro:'otros'};
+    const det=Object.keys(N).filter(k=>c[k]).map(k=>`${c[k]} por ${N[k]}`).join(' · ');
+    const d=document.createElement('div'); d.className='twConsultas';
+    d.style.cssText='margin:14px 0 0;padding:14px 16px;border:1px solid rgba(0,0,0,.08);border-radius:14px;background:rgba(255,255,255,.6)';
+    d.innerHTML=u.total?`<div style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.65;font-weight:700">Consultas desde tu web · 30 días</div><div style="font-size:30px;font-weight:800;line-height:1.1;margin:4px 0">${u.total}</div><div style="font-size:14px;opacity:.8">${det}</div>`
+      :`<div style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.65;font-weight:700">Consultas desde tu web</div><div style="font-size:14px;opacity:.8;margin-top:4px">Desde el 29/10 contamos cada vez que alguien te escribe por WhatsApp, mail o Instagram desde tu web. Acá vas a ver cuántas consultas te trae.</div>`;
+    caja.appendChild(d);
+  }catch(e){}
+}
 async function cargarTuWeb(){
   const caja=document.getElementById('tuweb'); if(!caja) return;
   let d; try{ d=await (await fetch(`${API_WEB}/estado?c=${encodeURIComponent(slug)}&k=${encodeURIComponent(tok)}`)).json(); }catch(e){ caja.innerHTML='<div class="twCarg">No se pudo cargar. Probá de nuevo en un rato.</div>'; return; }
@@ -1927,6 +1939,7 @@ async function cargarTuWeb(){
   const bonita=u=>u.replace(/^https?:\/\//,'').replace(/\/$/,'');
   if(WS.length===1) caja.innerHTML=`<div class="twBtns"><a class="twVerde" href="${conEd(WS[0].url)}" target="_blank" rel="noopener" ${onc}><span>✎</span>Editá tu web</a></div>`;
   else caja.innerHTML=`<div class="twWebs">${WS.map(w=>`<div class="twWeb"><div><div class="tit">${twEsc(w.titulo)}</div><div class="url">${twEsc(bonita(w.url))}</div></div><a class="twVerde chico" href="${conEd(w.url)}" target="_blank" rel="noopener" ${onc}><span>✎</span>Editá</a></div>`).join('')}</div>`;
+  twConsultas(caja);
   return;
   pintarFotosTW();
   document.getElementById('twFile').onchange=async e=>{
@@ -2719,7 +2732,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261028b';
+var SR_VER='20261029a';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
@@ -2728,6 +2741,7 @@ function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.n
   chequear();
   document.addEventListener('visibilitychange',function(){ if(!document.hidden) chequear(); });
   window.addEventListener('pageshow',function(e){ if(e.persisted) chequear(); });
+  try{ var q0=new URLSearchParams(location.search); if(q0.get('c')&&q0.get('k')) new Image().src='https://vm.semillaredes.com/web/uso-ping?c='+encodeURIComponent(q0.get('c'))+'&k='+encodeURIComponent(q0.get('k')); }catch(e){}
   try{ var q=new URLSearchParams(location.search); if(q.get('c')==='semilla-redes'){ var sa=false; try{ sa=!!(window.top.navigator.standalone||window.top.matchMedia('(display-mode: standalone)').matches); }catch(e){}
     new Image().src='https://vm.semillaredes.com/web/log?p=panel&v='+SR_VER+'&app='+(sa?1:0)+'&marco='+(window.top!==window?1:0); } }catch(e){}
 })();
