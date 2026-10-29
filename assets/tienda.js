@@ -98,6 +98,16 @@
   function categoria(){
     if(path!=='/c/curso')return;
     [].forEach.call(document.querySelectorAll('h1,h2,.uk-h1,.uk-h2'),function(h){if(h.textContent.trim().toLowerCase()==='curso')h.textContent='Cursos';});
+    portadas();
+  }
+  // portadas de cursos con la estética nueva (por si Tiendup todavía muestra la vieja)
+  var PORTADAS={'curso-de-anuncios-en-meta-ads':'flyer-metaads'};
+  function portadas(){
+    [].forEach.call(document.querySelectorAll('a[href*="/curso/"]'),function(a){
+      var k=Object.keys(PORTADAS).filter(function(k){return a.getAttribute('href').indexOf(k)>=0;})[0];if(!k)return;
+      var card=a.closest('.uk-card')||a.parentElement;var img=card&&card.querySelector('img');
+      if(img&&img.src.indexOf(PORTADAS[k])<0){img.src=BASE+'/assets/tienda/'+PORTADAS[k]+'.webp';img.removeAttribute('srcset');img.removeAttribute('data-src');}
+    });
   }
 
   function curso(){
@@ -110,8 +120,9 @@
     var A=BASE+'/assets/tienda/';
     var art=path==='/curso/formacion-semilla'?'formacion-curso':'meta-hero';
     if(right){
+      // el video de presentación del curso de Meta Ads se saca (29/10/2026); en los demás cursos se mueve abajo
       var fr=right.querySelector('iframe');
-      if(fr){
+      if(fr&&path.indexOf('meta-ads')<0){
         var sec=document.createElement('section');sec.className='t-sec t-video';
         sec.innerHTML='<div class="t-wrap"><div class="t-sec-head"><h2>Mirá la presentación</h2></div><div class="t-vid"></div></div>';
         sec.querySelector('.t-vid').appendChild(fr);
