@@ -208,3 +208,10 @@ html.tienda .t-prod .wrap-product-data p,html.tienda .t-prod p{font-size:16px;li
 html.tienda .t-prod{padding-top:6px}
 .t-eje .t-card-b{padding-right:0}
 .t-eje h3{font-size:26px}
+
+/* tarjetas de curso/producto en listados: aire a los costados del texto */
+html.tienda .list-product-card .uk-card-body,
+html.tienda .uk-card-body.uk-padding-remove-horizontal{padding-left:22px!important;padding-right:22px!important;padding-top:18px!important;padding-bottom:22px!important}
+html.tienda .list-product-card .uk-card-body .uk-h4{line-height:1.2;margin-bottom:8px!important}
+html.tienda .list-product-card .uk-text-small{line-height:1.5;color:var(--t-muted)}
+html.tienda .list-product-card .uk-card-body{background:var(--t-paper);border:1px solid var(--t-line);border-top:0;border-radius:0 0 14px 14px;margin-top:-6px;position:relative}
