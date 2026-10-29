@@ -41,8 +41,9 @@ css=re.sub(r'(?m)^nav\{','#aud-lp nav{',css).replace('\nnav .wrap{','\n#aud-lp n
 css=re.sub(r'(?m)^footer\{','#aud-lp footer{',css).replace('\nfooter .wrap{','\n#aud-lp footer .wrap{')
 css=css.replace('  nav .wrap{height:60px}','  #aud-lp nav .wrap{height:60px}')
 css+='''
-html.aud-lp #page-content>*:not(#aud-lp){position:absolute!important;left:-10000px!important;top:0!important;width:1px!important;height:1px!important;overflow:hidden!important}
+html.aud-lp #page-content>*:not(#aud-lp):not(:first-child):not(.uk-hidden\\@m):not(.uk-offcanvas):not(footer):not(.from-tiendup-footer){position:absolute!important;left:-10000px!important;top:0!important;width:1px!important;height:1px!important;overflow:hidden!important}
 html.aud-lp .whatsapp-contact-float-button{display:none!important}
+#aud-lp>nav,#aud-lp>footer{display:none!important}
 html.aud-lp,html.aud-lp body{background:#F8F0E2!important}
 #aud-lp h1 .r,#aud-lp .cta h2 span{color:var(--red)!important}
 #aud-lp h2,#aud-lp h3{font-weight:800!important}
