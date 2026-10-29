@@ -11,6 +11,7 @@
   SITES.forEach(function(s){if(s.h.test(host))here=s.k;});
   if(!here)return;
   var home=SITES.filter(function(s){return s.k===here;})[0].u;
+  var APP=!!document.querySelector('script[src*="puente.js"][data-app]');
   var path=location.pathname.replace(/\/index\.html$/,'/');
   var esHome=path==='/';
 
@@ -38,7 +39,27 @@
     location.href=home;
   }
 
+  function montarApp(){
+    if(document.getElementById('pt-app'))return;
+    var c2='#pt-app{position:fixed;left:12px;bottom:14px;z-index:99999;display:flex;gap:6px;align-items:flex-end;font:600 13px/1 Inter,system-ui,-apple-system,sans-serif}'+
+    '#pt-app button,#pt-app a{background:#111C5A;color:#F4EFE5;border:0;border-radius:999px;padding:10px 14px;display:inline-flex;align-items:center;gap:5px;cursor:pointer;text-decoration:none;box-shadow:0 4px 16px rgba(17,28,90,.3);font:inherit;opacity:.92}'+
+    '#pt-app button:hover,#pt-app a:hover{background:#871C38;opacity:1}'+
+    '#pt-app svg{width:15px;height:15px}'+
+    '#pt-app .pt-m{position:relative}#pt-app .pt-pop{display:none;position:absolute;left:0;bottom:46px;flex-direction:column;gap:6px;min-width:170px}'+
+    '#pt-app .pt-pop.on{display:flex}#pt-app .pt-pop a{justify-content:space-between;border-radius:14px}#pt-app .pt-pop a.on{background:#871C38}';
+    var st2=document.createElement('style');st2.textContent=c2;document.head.appendChild(st2);
+    var d=document.createElement('div');d.id='pt-app';
+    var h='';
+    if(!esHome)h+='<button type="button" data-pt="vol" aria-label="Volver">'+CH+'Volver</button>';
+    h+='<div class="pt-m"><div class="pt-pop">'+SITES.map(function(x){return '<a href="'+x.u+'"'+(x.k===here?' class="on"':'')+'>'+x.n+'</a>';}).join('')+'</div><button type="button" data-pt="menu" aria-label="Ir a otro sitio">Agus · Semilla</button></div>';
+    d.innerHTML=h;document.body.appendChild(d);
+    var v=d.querySelector('[data-pt=vol]');if(v)v.addEventListener('click',volver);
+    var m=d.querySelector('[data-pt=menu]'),pop=d.querySelector('.pt-pop');
+    m.addEventListener('click',function(e){e.stopPropagation();pop.classList.toggle('on');});
+    document.addEventListener('click',function(){pop.classList.remove('on');});
+  }
   function montar(){
+    if(APP)return montarApp();
     if(document.getElementById('pt-bar'))return;
     var bar=document.createElement('div');bar.id='pt-bar';
     var h='<div class="pt-in">';

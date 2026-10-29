@@ -166,7 +166,7 @@
     up.parentElement.insertBefore(sec,up.nextElementSibling||null);
   }
 
-  function puente(){if(window.__puente||document.getElementById('pt-js'))return;var j=document.createElement('script');j.id='pt-js';j.src=BASE+'/assets/puente.js?v=1';document.head.appendChild(j);}
+  function puente(){if(window.__puente||document.getElementById('pt-js'))return;var j=document.createElement('script');j.id='pt-js';j.src=BASE+'/assets/puente.js?v=2';document.head.appendChild(j);}
   function init(){
     document.documentElement.classList.add('tienda');puente();
     try{header();footer();home();sobreMi();categoria();curso();clases();producto();}catch(e){console.warn('tienda',e);}

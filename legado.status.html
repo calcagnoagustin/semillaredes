@@ -29,4 +29,5 @@ section{padding:34px 0;border-bottom:1px solid var(--linea)}section h2{font-size
 <script>
 document.getElementById('print').addEventListener('click',()=>window.print());
 document.getElementById('copy').addEventListener('click',async()=>{const status=document.getElementById('copy-result');try{await navigator.clipboard.writeText(document.getElementById('context').innerText);status.textContent='Contexto copiado. Podés pegarlo en otra conversación.';}catch(e){status.textContent='No se pudo copiar automáticamente. Seleccioná el texto del documento para copiarlo.';}});
-</script></body></html>
+</script><script src="https://semillaredes.com/assets/puente.js?v=2" data-app defer></script>
+</body></html>
