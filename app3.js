@@ -558,7 +558,7 @@
     const dif=k=>{ const v=val(k), a=previo(k); return v==null||a==null?null:Number(v)-Number(a); };
     const serie=(k,n=8)=>R.filter(r=>r.metricas[k]!=null&&(new Date(r.hasta)-new Date(r.desde))/864e5>=3).slice(-n).map(r=>Number(r.metricas[k]));
     const repI=[...(d.reportes||[])].reverse().find(r=>r.metricas&&r.metricas.informe), I=repI?repI.metricas.informe:null;
-    const SALU={'semilla-redes':'Agus','animales-del-rock':'Mariana','animales-del-rock-2':'Mariana','mavela':'Mariana','maria-marta-crespo':'María Marta','berco-estudio':'María','federico-andahazi':'Federico','felipe-gonzalez':'Felipe','spam-studio':'Spam Studios','sin-fronteras-duo':'Sin Fronteras','andrea-guedella':'Andrea','betsy-grinblat':'Betsy','cheche-beraja':'Cheche','jimena-mercedes':'Jimena','los-soplafortune':'Soplafortune','koino':'Koino','lara-fichera':'Lara','yamila-beraja':'Yamila'};
+    const SALU={'semilla-redes':'Agus','animales-del-rock':'Mariana','animales-del-rock-2':'Mariana','mavela':'Mariana','maria-marta-crespo':'María Marta','berco-estudio':'María','federico-andahazi':'Federico','felipe-gonzalez':'Felipe','spam-studio':'Spam Studios','sin-fronteras-duo':'Sin Fronteras','andrea-guedella':'Andrea','betsy-grinblat':'Betsy','cheche-beraja':'Cheche','tuncha':'Cheche','jimena-mercedes':'Jimena','los-soplafortune':'Soplafortune','koino':'Koino','lara-fichera':'Lara','yamila-beraja':'Yamila'};
     const nombre=SALU[slug]?SALU[slug]:(d.cliente.nombre||'').replace(/\s+\d+$/,'').split(' ')[0];
     const ini=(d.cliente.nombre||'?').trim()[0].toUpperCase();
     const u=R[R.length-1];
@@ -1092,7 +1092,7 @@
       const pg=P.saldo==null?'':`<div class="pg">${px?`<div class="r1"><span>Próximo cobro</span><b>${fch(px.fecha)} · ${pl(px.monto)}</b></div>`:`<div class="r1"><span>Saldo a pagar</span><b>${pl(P.saldo)}</b></div>`}
         <p>${px?`Se cobra solo${met?` a la <b>${esc(met)}</b>`:''} cuando el saldo llega a ${pl(P.umbral)}${P.fecha_ciclo?` o el ${fd(P.fecha_ciclo)}, lo que pase primero`:''}. Hoy el saldo es de ${pl(P.saldo)}${P.promedio_diario?` y se gastan unos ${pl(P.promedio_diario)} por día`:''}, por eso la fecha es aproximada.`
           :`${P.prepago?'Cuenta prepaga: se descuenta de los fondos cargados.':`Se cobra solo${met?` a la <b>${esc(met)}</b>`:''} cuando el saldo llega al umbral de Meta o a fin del ciclo de facturación.`}`}</p></div>`;
-      const CJON=['yamila-beraja','maria-marta-crespo','sin-fronteras-duo','animales-del-rock'].includes(slug), moneyC=v=>v==null?'—':usd?'USD '+nf(v,2):'$ '+nf(v,0);
+      const CJON=['yamila-beraja','maria-marta-crespo','sin-fronteras-duo','animales-del-rock','tuncha'].includes(slug), moneyC=v=>v==null?'—':usd?'USD '+nf(v,2):'$ '+nf(v,0);
       const dia=CJON&&P.inversion_diaria!=null?`<div class="pg"><div class="r1"><span>Inversión diaria</span><b>${moneyC(P.inversion_diaria)}</b></div><p>Lo que está programado por día entre todos los conjuntos activos.</p></div>`:'';
       const m0=v=>v>=1000?(usd?'USD ':'$ ')+nf(v,0):moneyC(v);
       const vtaCard=(nom,sub,n,inv,costo,ing,cls)=>`<div class="card ${cls}"><div class="ct">${esc(nom)}</div><div class="cs">${sub}</div>

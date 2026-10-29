@@ -13,9 +13,14 @@
 <link rel="icon" type="image/png" href="/icono-192.png">
 <link rel="apple-touch-icon" href="/icono-180.png">
 <title>Cheche Beraja · Semilla IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 html,body{margin:0;height:100%;background:#F2EDE4;overflow:hidden;overscroll-behavior:none}
 iframe{border:0;width:100%;height:100%;display:block}
+.barra{display:flex;gap:8px;padding:11px 14px calc(11px + env(safe-area-inset-top));background:#1A2456;position:sticky;top:0;z-index:5;font-family:Inter,system-ui,sans-serif}
+.barra button{flex:1;border:0;background:#2E3970;color:#B9B4C4;font:inherit;font-size:14.5px;font-weight:600;border-radius:10px;padding:11px 8px;cursor:pointer}
+.barra button.on{background:#F2EDE4;color:#1A2456}
+.marco{height:calc(100% - 62px)}
 #instalar,#avisos{position:fixed;left:14px;right:14px;bottom:14px;background:#1A2456;color:#F2EDE4;border-radius:14px;padding:15px 18px;display:none;align-items:center;gap:12px;font-family:system-ui,sans-serif;box-shadow:0 8px 28px rgba(0,0,0,.25);z-index:99}
 #instalar img,#avisos img{width:42px;height:42px;border-radius:10px;flex:none}
 #popInst{position:fixed;inset:0;background:rgba(20,22,40,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:120;font-family:system-ui,-apple-system,sans-serif}
@@ -34,7 +39,8 @@ iframe{border:0;width:100%;height:100%;display:block}
 </style>
 </head>
 <body>
-<iframe id="marco" allow="microphone; camera" title="Cheche Beraja"></iframe>
+<div class="barra" id="barra"></div>
+<div class="marco"><iframe id="marco" allow="microphone; camera" title="Cheche Beraja"></iframe></div>
 
 <div id="instalar">
   <img src="/icono-192.png" alt="">
@@ -62,10 +68,22 @@ iframe{border:0;width:100%;height:100%;display:block}
 </div>
 
 <script>
-const BASE='https://semillaredes.com/cliente.html?c=cheche-beraja&k=1d299467e868';
+const PROYECTOS=[{"nombre":"Cheche Beraja","slug":"cheche-beraja","token":"1d299467e868"},{"nombre":"Tuncha","slug":"tuncha","token":"3121d5868ddd"}];
 const marco=document.getElementById('marco');
 try{ localStorage.setItem('sr_cliente_slug','checheberaja'); }catch(e){}
-function cargar(){ marco.src = BASE + '&v=' + Date.now() + (location.hash||''); }
+let actual=0;
+try{ const g=localStorage.getItem('sr_tab_checheberaja'); if(g!==null) actual=Number(g)||0; }catch(e){}
+if(!PROYECTOS[actual]) actual=0;
+function pintarBarra(){
+  document.getElementById('barra').innerHTML=PROYECTOS.map((p,i)=>`<button class="${i===actual?'on':''}" data-i="${i}">${p.nombre}</button>`).join('');
+  document.querySelectorAll('.barra button').forEach(b=>b.onclick=()=>{
+    actual=Number(b.dataset.i);
+    try{ localStorage.setItem('sr_tab_checheberaja',String(actual)); }catch(e){}
+    pintarBarra(); cargar();
+  });
+}
+function cargar(){ const p=PROYECTOS[actual]; marco.src='https://semillaredes.com/cliente.html?c='+p.slug+'&k='+p.token+'&v='+Date.now()+(location.hash||''); }
+pintarBarra();
 window.addEventListener('hashchange', cargar);
 cargar();
 
