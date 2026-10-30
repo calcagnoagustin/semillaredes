@@ -8,8 +8,7 @@
     ['Cursos','/c/curso'],
     ['Auditoría','/s/auditoria-inicial-con-agus'],
     ['Recursos<span class="dd"> (Drops)</span>',BASE+'/drops/'],
-    ['Sobre mí','/page/quien-soy'],
-    ['Blog','/blog']
+    ['Sobre mí','/page/quien-soy']
   ];
   var ARROW='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
   var MARK='<svg viewBox="0 0 44 44" fill="none"><g stroke="#D8434F" stroke-width="1.6"><line x1="22" y1="22" x2="4" y2="22"/><line x1="22" y1="22" x2="40" y2="22"/><line x1="22" y1="22" x2="22" y2="4"/><line x1="22" y1="22" x2="22" y2="40"/><line x1="22" y1="22" x2="8" y2="8"/><line x1="22" y1="22" x2="36" y2="36"/><line x1="22" y1="22" x2="36" y2="8"/><line x1="22" y1="22" x2="8" y2="36"/></g><path d="M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z" fill="#7B8A32"/><g fill="#D8434F"><circle cx="4" cy="22" r="2.6"/><circle cx="40" cy="22" r="2.6"/><circle cx="22" cy="4" r="2.6"/><circle cx="22" cy="40" r="2.6"/><circle cx="8" cy="8" r="2.6"/><circle cx="36" cy="36" r="2.6"/><circle cx="36" cy="8" r="2.6"/><circle cx="8" cy="36" r="2.6"/></g></svg>';
@@ -22,6 +21,12 @@
     return path===h||path.indexOf(h+'/')===0;
   }
   function liHtml(it){return '<li class="'+(activo(it[1])?'uk-active':'')+'"><a href="'+it[1]+'">'+it[0]+'</a></li>';}
+
+  function favicon(){
+    [].forEach.call(document.querySelectorAll('link[rel*="icon"]'),function(l){l.parentNode.removeChild(l);});
+    var i=document.createElement('link');i.rel='icon';i.type='image/svg+xml';i.href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cline x1='22' y1='22' x2='4' y2='22' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='40' y2='22' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='22' y2='4' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='22' y2='40' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='8' y2='8' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='36' y2='36' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='36' y2='8' stroke='%23C97080' stroke-width='1.5'/%3E%3Cline x1='22' y1='22' x2='8' y2='36' stroke='%23C97080' stroke-width='1.5'/%3E%3Cpath d='M22,10 C26,14 28,18 28,22 C28,26 26,30 22,34 C18,30 16,26 16,22 C16,18 18,14 22,10Z' fill='%237A8A42'/%3E%3Cline x1='22' y1='11' x2='22' y2='33' stroke='white' stroke-width='0.8' opacity='0.6'/%3E%3Cline x1='22' y1='16' x2='18' y2='19' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Cline x1='22' y1='16' x2='26' y2='19' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Cline x1='22' y1='22' x2='17' y2='23' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Cline x1='22' y1='22' x2='27' y2='23' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Cline x1='22' y1='27' x2='18' y2='29' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Cline x1='22' y1='27' x2='26' y2='29' stroke='white' stroke-width='0.5' opacity='0.5'/%3E%3Ccircle cx='4' cy='22' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='40' cy='22' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='22' cy='4' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='22' cy='40' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='8' cy='8' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='36' cy='36' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='36' cy='8' r='2.5' fill='%23C97080'/%3E%3Ccircle cx='8' cy='36' r='2.5' fill='%23C97080'/%3E%3C/svg%3E";document.head.appendChild(i);
+    var a=document.createElement('link');a.rel='apple-touch-icon';a.href=BASE+'/icon-180.png';document.head.appendChild(a);
+  }
 
   function header(){
     var nav=document.querySelector('nav.main-navbar');if(!nav||nav.getAttribute('data-t'))return;nav.setAttribute('data-t','1');
@@ -169,9 +174,9 @@
   function puente(){if(window.__puente||document.getElementById('pt-js'))return;var j=document.createElement('script');j.id='pt-js';j.src=BASE+'/assets/puente.js?v=2';document.head.appendChild(j);}
   function init(){
     document.documentElement.classList.add('tienda');puente();
-    try{header();footer();home();sobreMi();categoria();curso();clases();producto();}catch(e){console.warn('tienda',e);}
+    try{favicon();header();footer();home();sobreMi();categoria();curso();clases();producto();}catch(e){console.warn('tienda',e);}
   }
   document.documentElement.classList.add('tienda');
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-  window.addEventListener('load',function(){try{header();footer();home();sobreMi();categoria();curso();clases();producto();}catch(e){}});
+  window.addEventListener('load',function(){try{favicon();header();footer();home();sobreMi();categoria();curso();clases();producto();}catch(e){}});
 })();
