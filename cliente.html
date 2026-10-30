@@ -2732,7 +2732,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261030a';
+var SR_VER='20261030b';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
@@ -2741,7 +2741,7 @@ function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.n
   chequear();
   document.addEventListener('visibilitychange',function(){ if(!document.hidden) chequear(); });
   window.addEventListener('pageshow',function(e){ if(e.persisted) chequear(); });
-  try{ var q0=new URLSearchParams(location.search); if(q0.get('c')&&q0.get('k')) new Image().src='https://vm.semillaredes.com/web/uso-ping?c='+encodeURIComponent(q0.get('c'))+'&k='+encodeURIComponent(q0.get('k')); }catch(e){}
+  try{ var q0=new URLSearchParams(location.search); if(q0.get('c')&&q0.get('k')) var yo0=false; try{ yo0=localStorage.getItem('sr_yo')==='1'||localStorage.getItem('sr_semilla')==='1'; }catch(e){} new Image().src='https://vm.semillaredes.com/web/uso-ping?c='+encodeURIComponent(q0.get('c'))+'&k='+encodeURIComponent(q0.get('k'))+(yo0?'&yo=1':''); }catch(e){}
   try{ var q=new URLSearchParams(location.search); if(q.get('c')==='semilla-redes'){ var sa=false; try{ sa=!!(window.top.navigator.standalone||window.top.matchMedia('(display-mode: standalone)').matches); }catch(e){}
     new Image().src='https://vm.semillaredes.com/web/log?p=panel&v='+SR_VER+'&app='+(sa?1:0)+'&marco='+(window.top!==window?1:0); } }catch(e){}
 })();
