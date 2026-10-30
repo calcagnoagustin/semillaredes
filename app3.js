@@ -633,6 +633,11 @@
     if(!/class="desde"/.test(hero)){ const RV=(d.reportes||[]).filter(r=>r.metricas&&r.metricas.vta_ventas!=null&&(new Date(r.hasta)-new Date(r.desde))/864e5>=3).sort((a,b)=>a.desde<b.desde?-1:1);
       if(RV.length>1){ const tv=RV.reduce((a,r)=>a+Number(r.metricas.vta_ventas||0),0), ti=RV.reduce((a,r)=>a+Number(r.metricas.vta_ingreso||r.metricas.vta_ingreso_pixel||0),0), dd=new Date(RV[0].desde);
         hero+=`<div class="desde">Desde ${MESL[dd.getUTCMonth()]} con Semilla: <b>${nf(tv)} ventas</b>${ti?` y ${SIM}${nf(ti)} facturados`:''}.</div>`; } }
+    // 30/10 (Alan): el destacado de arriba es el total de merch DESDE EL INICIO de las campañas, nunca el período
+    if(slug==='alan-sutton'){ const MC=(d.campanas||[]).map(k=>k.metricas||{}).filter(M=>M.tipo==='destacada'&&M.ventas!=null);
+      if(MC.length){ const tv=MC.reduce((a,M)=>a+Number(M.ventas||0),0), ti=MC.reduce((a,M)=>a+Number(M.ingreso||0),0), tn=MC.reduce((a,M)=>a+Number(M.inversion||0),0), d0=MC.map(M=>M.desde).filter(Boolean).sort()[0];
+        hero=`<div class="e">Ventas de merch desde el inicio</div><div class="rg">Desde el ${fd(d0)} · ${MC.length===1?'1 campaña':'las '+MC.length+' campañas juntas'}</div><div class="p">${SIM}${nf(ti)}</div><div class="x">${nf(tv)} ${tv===1?'venta':'ventas'} con ${SIM}${nf(tn)} de publicidad${tv?`: <b>${SIM}${nf(tn/tv,2)} por venta</b>`:''}${tn?` y cada ${UNI} invertido volvió ${SIM}${nf(ti/tn,2)}`:''}. <span style="opacity:.8">(según el píxel de la tienda)</span></div>`;
+        DZ={e:'Resultado destacado',v:SIM+nf(ti),u:'en ventas de merch',k:'vta_ingreso',ic:'vta'}; } }
     // hitos: métricas que el cliente puede elegir (solo las que tiene medidas)
     const HMET={ig_followers_total:['Seguidores en Instagram','seguidores en Instagram'],ig_followers_nuevos:['Seguidores nuevos por período','seguidores nuevos en un período'],ig_visitas:['Visitas al perfil por período','visitas al perfil en un período'],
       sp_oyentes_perfil:['Oyentes mensuales en Spotify','oyentes mensuales en Spotify'],sp_monthly:['Oyentes mensuales activos en Spotify','oyentes mensuales activos en Spotify'],sp_followers:['Seguidores en Spotify','seguidores en Spotify'],sp_streams:['Reproducciones en Spotify por período','reproducciones en Spotify'],
