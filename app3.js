@@ -224,7 +224,7 @@
   #v3 .aviso-act{margin:10px 0 0;display:inline-block;padding:7px 12px;border-radius:999px;background:#EFE9DC;font:500 13px/1.3 Inter,sans-serif;color:#55525F}
   #v3 .dest .dh{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
   #v3 .dest .dh>div{background:#F3ECE0;border-radius:14px;padding:12px 14px}
-  #v3 .dest .dh b{display:block;font:700 34px/1 'Playfair Display',Georgia,serif;color:#2F7A4F}
+  #v3 .dest .dh b{display:block;font:700 30px/1 'Playfair Display',Georgia,serif;color:#2F7A4F;white-space:nowrap}#v3 .dest .dh b em{font-style:normal;font-size:17px;margin-right:3px}
   #v3 .dest .dh small{display:block;font-size:13px;font-weight:600;color:#55525F;margin-top:6px}
   #v3 .dest .gpr{border-top:1px solid #EDE6D8;padding-top:12px;margin-top:14px}
   #v3 .dest .gprh{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
@@ -650,7 +650,7 @@
     const DEST=(d.campanas||[]).filter(k=>(k.metricas||{}).tipo==='destacada').map(k=>{ const M=k.metricas||{}, on=M.estado==='activa';
       const fl=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
       const it=[]; let dh='', esc2='', gra=''; if(M.ventas!=null){ // 30/10 (Alan): ventas y costo por venta destacados, escalera de objetivos y gráfica desplegable
-        dh=`<div class="dh"><div><b>${nf(M.ventas)}</b><small>${M.ventas===1?'venta':'ventas'}</small></div><div><b>${M.costo_venta!=null?SIM+nf(M.costo_venta,2):'—'}</b><small>costo por venta</small></div></div>`;
+        dh=`<div class="dh"><div><b>${nf(M.ventas)}</b><small>${M.ventas===1?'venta':'ventas'}</small></div><div><b>${M.costo_venta!=null?(SIM.trim()?`<em>${SIM.trim()}</em>`:'')+nf(M.costo_venta,2):'—'}</b><small>costo por venta</small></div></div>`;
         it.push([M.ingreso?SIM+nf(M.ingreso,2):'—','facturados']); it.push([M.roas!=null?nf(M.roas,2)+'x':'—','retorno (ROAS)']); it.push([SIM+nf(M.inversion,2),'invertidos']); it.push([nf(M.carritos||0),'carritos']);
         const OB=(M.objetivos||[]).map(Number).filter(x=>x>0).sort((a,b)=>a-b);
         if(OB.length){ const v=Number(M.ventas)||0, i=OB.findIndex(o=>o>v), o=i<0?OB[OB.length-1]:OB[i], p=Math.min(100,Math.round(v/o*100));
