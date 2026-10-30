@@ -222,6 +222,28 @@
   #v3 .dest .dg b{display:block;font-size:22px;line-height:1.1;color:#24242C;font-weight:700}
   #v3 .dest .dg small{display:block;font-size:12.5px;color:#55525F;margin-top:3px}
   #v3 .aviso-act{margin:10px 0 0;display:inline-block;padding:7px 12px;border-radius:999px;background:#EFE9DC;font:500 13px/1.3 Inter,sans-serif;color:#55525F}
+  #v3 .dest .dh{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  #v3 .dest .dh>div{background:#F3ECE0;border-radius:14px;padding:12px 14px}
+  #v3 .dest .dh b{display:block;font:700 34px/1 'Playfair Display',Georgia,serif;color:#2F7A4F}
+  #v3 .dest .dh small{display:block;font-size:13px;font-weight:600;color:#55525F;margin-top:6px}
+  #v3 .dest .gpr{border-top:1px solid #EDE6D8;padding-top:12px;margin-top:14px}
+  #v3 .dest .gprh{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  #v3 .dest .gprh .e{font-size:11.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#55525F}
+  #v3 .dest .gprh .pc{font:700 22px/1 'Playfair Display',Georgia,serif;color:#2F7A4F}
+  #v3 .dest .gprn{margin-top:4px;font-size:15px;color:#24242C}#v3 .dest .gprn b{font-weight:700}
+  #v3 .dest .gbar{position:relative;height:14px;margin-top:10px;border-radius:999px;background:#ECE6D8;overflow:hidden}
+  #v3 .dest .gbar i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,#5FA777,#2F7A4F)}
+  #v3 .dest .gprf{margin-top:6px;font-size:12.5px;color:#6B6878}
+  #v3 .dest .gesc{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  #v3 .dest .gesc span{font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:999px;background:#ECE6D8;color:#8A8577}
+  #v3 .dest .gesc span.ok{background:#2F7A4F;color:#fff}#v3 .dest .gesc span.ya{background:#fff;border:1.5px solid #2F7A4F;color:#2F7A4F;padding:2.5px 7.5px}
+  #v3 .dest .gcur{border-top:1px solid #EDE6D8;padding-top:10px;margin-top:12px}
+  #v3 .dest .gcur summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600;color:#24242C}
+  #v3 .dest .gcur summary::-webkit-details-marker{display:none}
+  #v3 .dest .gcur .fl{font-size:12px;color:#8A8577;transition:transform .2s}#v3 .dest .gcur[open] .fl{transform:rotate(90deg)}
+  #v3 .dest .gsvg{width:100%;height:auto;display:block;margin-top:8px}
+  #v3 .dest .gst{margin:12px 0 0;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#55525F}
+  #v3 .dest .gnota{margin:4px 0 0;font-size:12px;color:#8A8577;line-height:1.4}
   #v3 .dest .dp{font-size:12px;color:#8A8698;margin-top:12px}
   #v3 .cjl{display:grid;gap:12px}
   #v3 .cjl .card{padding:16px}
@@ -627,12 +649,25 @@
     // --- Campaña destacada (sub_campanas con tipo 'destacada'): arriba de todo en Hoy, con sus números acumulados ---
     const DEST=(d.campanas||[]).filter(k=>(k.metricas||{}).tipo==='destacada').map(k=>{ const M=k.metricas||{}, on=M.estado==='activa';
       const fl=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
-      const it=[]; if(M.ventas!=null){ it.push([nf(M.ventas),M.ventas===1?'venta':'ventas']); it.push([M.ingreso?SIM+nf(M.ingreso,2):'—','facturados']); it.push([M.roas!=null?nf(M.roas,2)+'x':'—','retorno (ROAS)']); it.push([M.costo_venta!=null?SIM+nf(M.costo_venta,2):'—','por venta']); it.push([SIM+nf(M.inversion,2),'invertidos']); it.push([nf(M.carritos||0),'carritos']); }
+      const it=[]; let dh='', esc2='', gra=''; if(M.ventas!=null){ // 30/10 (Alan): ventas y costo por venta destacados, escalera de objetivos y gráfica desplegable
+        dh=`<div class="dh"><div><b>${nf(M.ventas)}</b><small>${M.ventas===1?'venta':'ventas'}</small></div><div><b>${M.costo_venta!=null?SIM+nf(M.costo_venta,2):'—'}</b><small>costo por venta</small></div></div>`;
+        it.push([M.ingreso?SIM+nf(M.ingreso,2):'—','facturados']); it.push([M.roas!=null?nf(M.roas,2)+'x':'—','retorno (ROAS)']); it.push([SIM+nf(M.inversion,2),'invertidos']); it.push([nf(M.carritos||0),'carritos']);
+        const OB=(M.objetivos||[]).map(Number).filter(x=>x>0).sort((a,b)=>a-b);
+        if(OB.length){ const v=Number(M.ventas)||0, i=OB.findIndex(o=>o>v), o=i<0?OB[OB.length-1]:OB[i], p=Math.min(100,Math.round(v/o*100));
+          esc2=`<div class="gpr"><div class="gprh"><span class="e">${i<0?'Escalera completa':'Objetivo '+(i+1)+' de '+OB.length}</span><span class="pc">${p}%</span></div>
+            <div class="gprn"><b>${nf(v)}</b> de ${nf(o)} ventas</div><div class="gbar" role="progressbar" aria-valuemin="0" aria-valuemax="${o}" aria-valuenow="${v}"><i style="width:${p}%"></i></div>
+            <div class="gprf">${i<0?'Cumpliste todos los objetivos':'Faltan '+nf(o-v)+(o-v===1?' venta':' ventas')+' para el próximo objetivo'}</div>
+            <div class="gesc">${OB.map((x,j)=>`<span class="${x<=v?'ok':j===i?'ya':''}">${nf(x)}</span>`).join('')}</div></div>`; }
+        const S=M.serie||[]; if(S.length>1){ const W=320,H=150,PX=28,PT=22,PB=26;
+          const lin=(vals,col,fmt)=>{ const ok=vals.map((x,i)=>[i,x]).filter(z=>z[1]!=null); if(ok.length<2) return ''; const v=ok.map(z=>z[1]), mn=Math.min(...v), mx=Math.max(...v), rg=(mx-mn)||1;
+            const X=i=>PX+i*(W-PX*2)/(S.length-1), Y=x=>PT+(1-(x-mn)/rg)*(H-PT-PB), paso=Math.ceil(ok.length/7);
+            return `<svg viewBox="0 0 ${W} ${H}" class="gsvg"><path d="${ok.map((z,k)=>(k?'L':'M')+X(z[0]).toFixed(1)+' '+Y(z[1]).toFixed(1)).join(' ')}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round"/>${ok.map((z,k)=>`<circle cx="${X(z[0]).toFixed(1)}" cy="${Y(z[1]).toFixed(1)}" r="3" fill="${col}"/>${(k%paso===0||k===ok.length-1)?`<text x="${X(z[0]).toFixed(1)}" y="${(Y(z[1])-8).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${col}" paint-order="stroke" stroke="#FBF8F2" stroke-width="4" stroke-linejoin="round">${fmt(z[1])}</text><text x="${X(z[0]).toFixed(1)}" y="${H-8}" text-anchor="middle" font-size="10" fill="#8A8577">${String(S[z[0]][0]).slice(8,10)}/${String(S[z[0]][0]).slice(5,7)}</text>`:''}`).join('')}</svg>`; };
+          gra=`<details class="gcur"><summary>Ver gráfica <span class="fl">▸</span></summary><p class="gst">Ventas acumuladas</p>${lin(S.map(z=>z[1]),'#2F7A4F',x=>nf(x))}<p class="gst">Costo por venta acumulado</p>${lin(S.map(z=>z[1]?z[2]/z[1]:null),VINO,x=>nf(x,2))}<p class="gnota">Al cierre de cada día, desde el inicio de la campaña. Costo por venta = inversión total ÷ ventas hasta ese día, en ${SIM.trim()||'USD'}.</p></details>`; } }
       else { if(M.visitas!=null) it.push([nf(M.visitas),M.resultado||'resultados']); if(M.alcance!=null) it.push([nf(M.alcance),'personas alcanzadas']);
       if(M.inversion!=null) it.push([SIM+nf(M.inversion),'invertidos']); if(M.costo_visita!=null) it.push([SIM+nf(M.costo_visita,2),'por '+String(M.resultado||'resultado').replace(/s(\s|$)/,'$1').replace(/es al /,' al ')]); }
       return `<div class="dest"><div class="de">Campaña destacada<span class="${on?'on':''}"><i></i>${on?'Activa':M.estado==='sin_circular'?'Sin circular':'Terminada'}</span></div>
         <h3>${esc(k.nombre)}</h3><div class="ds">${M.show?'Show el '+fl(M.show)+' · ':''}${M.desde?'Desde el '+fl(M.desde):''}${M.hasta?' hasta el '+fl(M.hasta):''}${M.diaria?' · '+SIM+nf(M.diaria)+' por día':''}</div>
-        ${it.length?`<div class="dg">${it.map(x=>`<div><b>${x[0]}</b><small>${esc(x[1])}</small></div>`).join('')}</div>`:'<div class="ds" style="margin-top:12px">Los números aparecen en la próxima actualización.</div>'}
+        ${dh}${it.length?`<div class="dg">${it.map(x=>`<div><b>${x[0]}</b><small>${esc(x[1])}</small></div>`).join('')}</div>`:'<div class="ds" style="margin-top:12px">Los números aparecen en la próxima actualización.</div>'}${esc2}${gra}
         <div class="dp">${(M.show||M.corte)?'Acumulado desde el '+fl(M.desde):'Acumulado de toda la campaña'}${M.ventas!=null?' · según el píxel de la tienda':''}${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; }).join('');
     // --- Shows de la gira en Hoy (Koino): entradas vendidas según el píxel de Meta, una tarjeta por fecha que todavía no pasó ---
     // 22/10: cuándo se actualizaron los números por última vez
@@ -662,7 +697,7 @@
           ${f.tickets?`<a class="gl" href="${esc(f.tickets)}" target="_blank" rel="noopener">Ver entradas →</a>`:''}
         </div>${prog(f)}${curvaCE(f.serie_costo)}</div>`; }).join('')}</div>`; })();
     const scrHoy=`
-      <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>${ACT}${({'alan-sutton':'Tu reporte se actualiza los jueves a las 7.'})[slug]?`<p class="aviso-act">${({'alan-sutton':'Tu reporte se actualiza los jueves a las 7.'})[slug]}</p>`:''}
+      <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>${ACT}${({'alan-sutton':'Las ventas de merch se actualizan todos los días. El reporte sale los jueves a las 7.'})[slug]?`<p class="aviso-act">${({'alan-sutton':'Las ventas de merch se actualizan todos los días. El reporte sale los jueves a las 7.'})[slug]}</p>`:''}
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g transform="translate(-4 44)"><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></g></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
       ${DEST}
       ${GIRA}
