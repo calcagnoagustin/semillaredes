@@ -472,8 +472,10 @@ table.histA th{font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;co
 @media(max-width:560px){ .despl>summary{padding:16px 14px 16px 16px;gap:8px} .despl>summary h2{font-size:19px} .despl .big b{font-size:21px} .despl .lbl{font-size:9.5px;letter-spacing:1.2px} }
 @media(max-width:560px){ .barras{gap:4px} .barras .val{font-size:12.5px} .barras .fec{font-size:11px} }
 
-.nom.conTh{display:flex;align-items:center;gap:12px;min-width:0}.nom.conTh>span{min-width:0}
+.fila2:has(.conTh){align-items:center!important}.fila2:has(.conTh)>span{align-self:center}
+.nom.conTh{display:flex;align-items:center;gap:12px;min-width:0}.nom.conTh>span{min-width:0;overflow-wrap:anywhere}
 .thC{width:52px;height:52px;flex:none;border-radius:10px;object-fit:cover;background:#F0ECE4;display:block}
+@media (max-width:600px){.nom.conTh{gap:8px}.thC{width:36px;height:36px;border-radius:8px}}
 .cdA{display:grid;gap:14px}
 .cdc{background:#fff;border:1px solid #E6E1D6;border-radius:16px;padding:16px 16px 6px}
 .cdh{display:flex;justify-content:space-between;align-items:center;gap:10px}
