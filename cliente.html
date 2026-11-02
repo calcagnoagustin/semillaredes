@@ -472,6 +472,8 @@ table.histA th{font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;co
 @media(max-width:560px){ .despl>summary{padding:16px 14px 16px 16px;gap:8px} .despl>summary h2{font-size:19px} .despl .big b{font-size:21px} .despl .lbl{font-size:9.5px;letter-spacing:1.2px} }
 @media(max-width:560px){ .barras{gap:4px} .barras .val{font-size:12.5px} .barras .fec{font-size:11px} }
 
+.nom.conTh{display:flex;align-items:center;gap:12px;min-width:0}.nom.conTh>span{min-width:0}
+.thC{width:52px;height:52px;flex:none;border-radius:10px;object-fit:cover;background:#F0ECE4;display:block}
 .cdA{display:grid;gap:14px}
 .cdc{background:#fff;border:1px solid #E6E1D6;border-radius:16px;padding:16px 16px 6px}
 .cdh{display:flex;justify-content:space-between;align-items:center;gap:10px}
@@ -807,7 +809,7 @@ function contenidosHTML(L,per,opt){
     const gc=`style="grid-template-columns:18px minmax(0,1fr) ${cols.map(z=>innerWidth<600?'calc('+(chW(z)-1)+'ch * '+(z[0]==='Costo c/u'?1:1.15)+')':z[2]).join(' ')};column-gap:${innerWidth<600?8:9}px"`;
     h+=`<div class="desglose"><h3>${c}${per?` <small style="display:block;font:500 13px/1.4 inherit;color:#8A8577;margin-top:3px"><span>Del</span> ${per[0]} <span>al</span> ${per[1]}</small>`:''}</h3>
       <div class="fila2 cab2 conj" ${gc}><span>#</span><span>Contenido</span>${cols.map(z=>`<span style="text-align:right">${z[0]}</span>`).join('')}</div>
-      ${X.map((x,k)=>`<div class="fila2 conj" ${gc}><span class="c">${k+1}</span><span class="nom">${x.url?`<a href="${x.url}" target="_blank" rel="noopener" style="color:inherit">${x.n}</a>`:x.n}${variosP&&x.p?`<small style="display:block;color:#8A8577;font-size:12px;font-weight:400">${x.p}</small>`:''}</span>${x.inv>0
+      ${X.map((x,k)=>`<div class="fila2 conj" ${gc}><span class="c">${k+1}</span><span class="nom${(window.__IMGA||{})[x.id]?' conTh':''}">${(window.__IMGA||{})[x.id]?`<img class="thC" src="${window.__IMGA[x.id]}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">`:''}<span>${x.url?`<a href="${x.url}" target="_blank" rel="noopener" style="color:inherit">${x.n}</a>`:x.n}${variosP&&x.p?`<small style="display:block;color:#8A8577;font-size:12px;font-weight:400">${x.p}</small>`:''}</span></span>${x.inv>0
         ?cols.map(z=>z[1](x)).join('')
         :`<span class="c" style="grid-column:span ${cols.length};text-align:right"><span>Recién activado</span></span>`}</div>`).join('')}
       ${esLead&&X.some(x=>x.vis)?`<p class="leyenda" style="margin-top:8px"><span>Sin registros todavía: el orden sale de las visitas a la página que trajo cada uno.</span></p>`:''}
@@ -924,6 +926,7 @@ function campDetalleA(d){
   return h+`</div>${M.actualizado_txt?`<p class="leyenda" style="margin-top:8px"><span>Números actualizados</span> <span>el</span> ${M.actualizado_txt.slice(0,5)} <span>a las</span> ${M.actualizado_txt.slice(6)}</p>`:''}`;
 }
 function pintarAudova(d){
+  try{ const K=(d.campanas||[]).find(k=>(k.metricas||{}).tipo==='detalle'); window.__IMGA=(K&&K.metricas.imgs)||{}; }catch(e){}   // 02/11: miniaturas de los anuncios en los rankings
   const R=d.reportes||[], u=R[R.length-1]||null;
   return `<h1>${d.cliente.nombre}</h1><p class="periodo">${u?`${fecha((u.metricas.cont_desde)||u.desde)} al ${fecha((u.metricas.cont_hasta)||u.hasta)}`:'Sin reportes cargados'}</p><p class="actA">Las métricas se actualizan todos los días. El reporte sale los jueves a las 7 am.</p>`+audovaSecciones(R,true)+campDetalleA(d);
 }
