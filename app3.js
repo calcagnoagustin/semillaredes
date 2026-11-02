@@ -689,6 +689,7 @@
       return `<div class="gpr"><div class="gprh"><span class="e">Venta total del show</span><span class="pc">${p}%</span></div>
         <div class="gprn"><b>${nf(v)}</b> de ${nf(o)} entradas</div><div class="gbar" role="progressbar" aria-valuemin="0" aria-valuemax="${o}" aria-valuenow="${v}"><i style="width:${p}%"></i></div>
         <div class="gprf">${fal?'Faltan '+nf(fal)+' entradas':'¡Objetivo cumplido!'} · se actualiza con las compras del píxel en ${esc(f.ticketera||'la ticketera')}</div></div>`; };
+    const ACTD=(()=>{ const a=[...R].reverse().map(r=>r.metricas&&r.metricas.actualizado).find(Boolean); return a?String(a).slice(8,10)+'/'+String(a).slice(5,7):''; })();   // 02/11 (Koino): fecha del invertido acumulado por show
     const GIRA=(()=>{ const hoyI=new Date().toISOString().slice(0,10); const L=(um.fechas||[]).filter(f=>f&&f.fecha&&String(f.fecha).slice(0,10)>=hoyI).sort((a,b)=>a.fecha<b.fecha?-1:1);
       if(!L.length) return '';
       const fl=x=>{ const z=String(x).slice(0,10).split('-'); return z[2]+'/'+z[1]; };
@@ -697,7 +698,7 @@
           <div class="gt">${esc(f.lugar||'')}${f.ciudad?' · '+esc(f.ciudad):''}</div>
           <div class="gs">${fl(f.fecha)} · ${dd===0?'es hoy':dd===1?'falta 1 día':'faltan '+dd+' días'}</div>
           <div class="gn"><b>${nf(e)}</b><span>${e===1?'entrada vendida':'entradas vendidas'}${f.objetivo?' con la campaña':''}${ep?` · +${nf(ep)} en el período`:''}</span></div>
-          ${Number(f.inv_acum||0)>0?`${e>0?`<div class="gc">Costo por entrada: <b>${SIM}${nf(Number(f.inv_acum)/e,2)}</b></div>`:''}<div class="gp">Inversión: ${SIM}${nf(Number(f.inv_acum),2)}${e>0?'':' · todavía sin entradas'}</div>`:''}
+          ${Number(f.inv_acum||0)>0?`<div class="gc">Invertido hasta ${ACTD?'el '+ACTD:'hoy'}: <b>${SIM}${nf(Number(f.inv_acum),2)}</b>${e>0?'':' · todavía sin entradas'}</div>${e>0?`<div class="gc">Costo por entrada: <b>${SIM}${nf(Number(f.inv_acum)/e,2)}</b></div>`:''}`:''}
           <div class="gp">Según el píxel de Meta${f.ticketera?' en '+esc(f.ticketera):''}${f.estado==='borrador'?' · la campaña todavía no está publicada':''}</div>
           ${f.tickets?`<a class="gl" href="${esc(f.tickets)}" target="_blank" rel="noopener">Ver entradas →</a>`:''}
         </div>${prog(f)}${curvaCE(f.serie_costo)}</div>`; }).join('')}</div>`; })();
