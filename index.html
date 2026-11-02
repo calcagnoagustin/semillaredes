@@ -467,21 +467,6 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
     </div>
   </section>
 
-  <!-- PRESENTACION -->
-  <section class="presenta">
-    <div class="wrap">
-      <div>
-        <h2>Conocé cómo<br>trabajamos.</h2>
-        <p>Una mirada integral sobre tu proyecto artístico.</p>
-        <a href="#" class="btn-link" id="verPres">Ver presentación →</a>
-      </div>
-      <div class="video-card" id="videoCard" role="button" tabindex="0" aria-label="Reproducir: El método Semilla">
-        <img src="https://i.ytimg.com/vi/Kvkkzss40Ws/maxresdefault.jpg" alt="El método Semilla — presentación en video" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/Kvkkzss40Ws/hqdefault.jpg'">
-        <div class="vc-over"><div class="t">El método Semilla</div><div class="play"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div></div>
-      </div>
-    </div>
-  </section>
-
   <!-- OPINIONES -->
   <section class="opiniones">
     <div class="wrap">
@@ -518,14 +503,6 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
   </footer>
 
   <script>
-    (function(){
-      var card=document.getElementById('videoCard'), link=document.getElementById('verPres');
-      function play(e){ if(e) e.preventDefault(); if(card.querySelector('iframe')) return;
-        card.innerHTML='<iframe src="https://www.youtube.com/embed/Kvkkzss40Ws?autoplay=1" title="El método Semilla" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
-        card.scrollIntoView({behavior:'smooth',block:'center'}); }
-      card.addEventListener('click',play); link.addEventListener('click',play);
-      card.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' ') play(e); });
-    })();
     document.querySelectorAll('.serv .it').forEach(function(b){ b.addEventListener('click',function(){
       var li=b.parentNode, open=li.classList.contains('open');
       document.querySelectorAll('.serv li.open').forEach(function(x){x.classList.remove('open');x.querySelector('.it').setAttribute('aria-expanded','false');});
