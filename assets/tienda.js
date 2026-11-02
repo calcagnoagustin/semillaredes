@@ -82,6 +82,7 @@
       card('Sesiones 1 a 1','Auditoría<br>con Agus','Una hora para ordenar tu proyecto, comunicación y estrategia digital.','Reservar sesión','/s/auditoria-inicial-con-agus','card-auditoria')+
       card('Curso online','Anuncios en<br>Meta Ads','Publicidad digital para músicos, artistas y proyectos culturales.','Ver curso','/curso/curso-de-anuncios-en-meta-ads-instagram-y-facebook-para-arte-y-cultura','card-metaads')+
       '</div></div></section>'+
+    '<section class="t-sec"><div class="t-wrap"><div class="t-sec-head"><h2>Lo que dicen<br>en Google</h2><p>Artistas, músicos y proyectos culturales que trabajaron con Semilla.</p></div><div data-semilla-resenas style="max-width:900px"></div></div></section>'+
     '<section class="t-sec alt"><div class="t-wrap"><div class="t-drops"><div class="t-drops-intro"><h2>Últimos drops</h2><p>Ideas, herramientas y reflexiones para artistas que quieren llevar su proyecto más lejos.</p><a class="more" href="'+BASE+'/drops/">Ver todos los drops →</a></div><div id="t-drops-list" style="display:contents"></div></div></div></section>';
     w.classList.add('t-home');
     drops(w.querySelector('#t-drops-list'));
@@ -171,9 +172,10 @@
     up.parentElement.insertBefore(sec,up.nextElementSibling||null);
   }
 
+  function resenas(){if(document.getElementById('rs-js'))return;var j=document.createElement('script');j.id='rs-js';j.src=BASE+'/assets/resenas.js?v=1';document.head.appendChild(j);}
   function puente(){if(window.__puente||document.getElementById('pt-js'))return;var j=document.createElement('script');j.id='pt-js';j.src=BASE+'/assets/puente.js?v=2';document.head.appendChild(j);}
   function init(){
-    document.documentElement.classList.add('tienda');puente();
+    document.documentElement.classList.add('tienda');puente();resenas();
     try{favicon();header();footer();home();sobreMi();categoria();curso();clases();producto();}catch(e){console.warn('tienda',e);}
   }
   document.documentElement.classList.add('tienda');
