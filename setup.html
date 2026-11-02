@@ -61,7 +61,15 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
   /* Semilla: precio destacado según país. Argentina => ARS grande; resto => USD grande. ?moneda=usd|ars fuerza. */
   (function(){try{var q=new URLSearchParams(location.search).get('moneda');var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone||'');var ar=/Argentina|Buenos_Aires/i.test(tz);if(q==='usd')ar=false;if(q==='ars')ar=true;if(!ar)document.documentElement.classList.add('intl');}catch(e){}})();
   </script>
-  <style>.p-intl{display:none}html.intl .p-ar{display:none}html.intl .p-intl{display:inline}html.intl div.p-intl{display:block}</style>
+  <style>.p-intl{display:none}html.intl .p-ar{display:none}html.intl .p-intl{display:inline}html.intl div.p-intl{display:block}
+    .plan.unico{display:grid;grid-template-columns:360px 1fr;column-gap:56px;align-items:start;padding:44px 44px 40px;margin-top:8px}
+    .u-precio{display:flex;flex-direction:column;align-items:flex-start}
+    .u-precio .monto{margin-top:14px}
+    .u-precio .periodo{font-weight:700;color:var(--olive);margin:8px 0 26px}
+    .u-wa{font-size:14px;color:var(--navy);margin-top:14px;font-weight:600}
+    .u-lista{display:grid;grid-template-columns:1fr 1fr;column-gap:28px;row-gap:14px;margin:6px 0 0}
+    @media (max-width:980px){.plan.unico{grid-template-columns:1fr;row-gap:28px;padding:34px 24px 28px}.u-lista{grid-template-columns:1fr}}
+</style>
   <style>
     :root{--cream:#F2EDE4;--cream-2:#EDE6DB;--navy:#1A2456;--wine:#8B1E3F;--wine-dark:#6E1631;--rose:#E2767C;--rose-soft:#F3D6D4;--olive:#87863A;--text:#2A2A2A;--muted:#5E5A52;--line:#D9D0C2;--white:#FBF8F2}
     *{margin:0;padding:0;box-sizing:border-box}
@@ -310,48 +318,20 @@ src="https://www.facebook.com/tr?id=953367820005998&ev=PageView&noscript=1"
 
   <section class="planes" id="planes">
     <div class="wrap">
-      <span class="eyebrow">Planes</span>
-      <h2>Elegí según tu proyecto.</h2>
-      <p class="sub">Si ya tenés identidad visual definida, el plan Estratégico es suficiente. Si arrancás de cero o querés un rediseño completo, el Estratégico + Diseño incluye todo.</p>
-      <div class="p-grid">
-        <div class="plan">
-          <span class="eyebrow">Plan 01</span>
-          <h3>Estratégico</h3>
-          <p class="tag">Para artistas con identidad visual ya definida.</p>
-          <div class="monto p-ar"><span class="cur">ARS</span>250.000<small> / mes</small></div>
-          <div class="monto p-intl"><span class="cur">USD</span>180<small> / mes</small></div>
-          <div class="periodo p-ar"><b>USD 180 por mes</b> · durante 6 meses de proceso</div>
-          <div class="periodo p-intl"><b>ARS 250.000 por mes</b> · durante 6 meses de proceso</div>
-          <ul class="checks">
-            <li>Apertura y configuración de cuentas</li>
-            <li>Modelo de negocio definido</li>
-            <li>Pauta publicitaria (Meta Ads + YouTube Ads)</li>
-            <li>Planner de contenido y estrategia</li>
-            <li>Reportes mensuales con métricas reales</li>
-            <li>1 reunión semanal (meses 1–4)</li>
-            <li>1 reunión quincenal (meses 5–6)</li>
-          </ul>
-          <a href="https://aguscalcagno.com/s/auditoria-inicial-con-agus" class="btn btn-wine" target="_blank" rel="noopener">Agendar una Reunión de Auditoría →</a>
-          <p class="nota">No incluye: costos de ads, hosting ni plantillas.</p>
-        </div>
-        <div class="plan dest">
-          <span class="badge">Más elegido</span>
-          <span class="eyebrow">Plan 02</span>
-          <h3>Estratégico + Diseño</h3>
-          <p class="tag">Para proyectos que arrancan de cero o necesitan identidad.</p>
+      <span class="eyebrow">Precio</span>
+      <h2>Un solo plan. Todo incluido.</h2>
+      <p class="sub">Te damos todo lo que tu proyecto necesita para salir a crecer: propuesta, diseño, contenidos, web y publicidad.</p>
+      <div class="plan dest unico">
+        <div class="u-precio">
+          <span class="eyebrow">Setup Inicial · 6 meses</span>
           <div class="monto p-ar"><span class="cur">ARS</span>350.000<small> / mes</small></div>
           <div class="monto p-intl"><span class="cur">USD</span>230<small> / mes</small></div>
-          <div class="periodo p-ar"><b>USD 230 por mes</b> · durante 6 meses de proceso</div>
-          <div class="periodo p-intl"><b>ARS 350.000 por mes</b> · durante 6 meses de proceso</div>
-          <ul class="checks">
-            <li>Todo lo del plan Estratégico</li>
-            <li>Identidad visual completa</li>
-            <li>12 contenidos iniciales para Instagram</li>
-            <li>Landing o web diseñada</li>
-          </ul>
+          <div class="periodo">Precio único · todo incluido</div>
           <a href="https://aguscalcagno.com/s/auditoria-inicial-con-agus" class="btn btn-wine" target="_blank" rel="noopener">Agendar una Reunión de Auditoría →</a>
-          <p class="nota">No incluye: costos de ads, hosting ni plantillas.</p>
+          <a href="https://wa.me/5492665242011?text=Hola%20Agus.%20Quiero%20m%C3%A1s%20sobre%20el%20Setup%20inicial" class="u-wa" target="_blank" rel="noopener">o escribime por WhatsApp</a>
+          <p class="nota">No incluye la inversión en publicidad.</p>
         </div>
+        <ul class="checks u-lista"><li>Te ayudamos a armar tu propuesta y tu modelo de negocio</li><li>Identidad visual y diseños iniciales</li><li>12 contenidos para tus redes</li><li>Landing de tu proyecto</li><li>Landings para tus lanzamientos o muestras</li><li>PDF de presentación y EPK</li><li>Pauta publicitaria en Meta y YouTube</li><li>Planner de contenido y estrategia</li><li>Reportes con métricas reales en la app</li><li>Apertura y configuración de cuentas</li><li>Reunión semanal (meses 1 a 4) y quincenal (meses 5 y 6)</li></ul>
       </div>
     </div>
   </section>
