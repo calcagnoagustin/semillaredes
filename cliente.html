@@ -471,6 +471,22 @@ table.histA th{font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;co
 .despl .cuerpo .tarj{margin-top:16px}
 @media(max-width:560px){ .despl>summary{padding:16px 14px 16px 16px;gap:8px} .despl>summary h2{font-size:19px} .despl .big b{font-size:21px} .despl .lbl{font-size:9.5px;letter-spacing:1.2px} }
 @media(max-width:560px){ .barras{gap:4px} .barras .val{font-size:12.5px} .barras .fec{font-size:11px} }
+
+.cdA{display:grid;gap:14px}
+.cdc{background:#fff;border:1px solid #E6E1D6;border-radius:16px;padding:16px 16px 6px}
+.cdh{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.cdn{font-weight:700;font-size:17px;color:#1A2456;line-height:1.25}
+.cde{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#6B6878;white-space:nowrap}
+.cde i{width:8px;height:8px;border-radius:50%;background:#A9A190}.cde.on i{background:#2F7A4F}
+.cds{font-size:13px;color:#6B6878;margin-top:3px}
+.cdk{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 4px}
+.cdk>div{background:#F5F2EC;border-radius:12px;padding:10px 10px 9px}
+.cdk b{display:block;font-size:19px;line-height:1.1;color:#1A2456;white-space:nowrap}
+.cdk small{display:block;font-size:11.5px;color:#6B6878;margin-top:4px;line-height:1.25}
+.adA{display:grid;grid-template-columns:60px 1fr;gap:12px;align-items:start;padding:10px 0;border-top:1px solid #EEE9DF}
+.adA img{width:60px;height:60px;border-radius:10px;object-fit:cover;display:block;background:#EEE}
+.adA .an{font-weight:600;font-size:14px;color:#24242C;line-height:1.3}
+.adA .am{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:4px;font-size:12.5px;color:#6B6878}.adA .am b{color:#24242C}
 </style>
 <script>
 /* SemillaIA · estadísticas internas de uso (tabla app_eventos, se ven en semillaredes.com/uso.html). No cuenta a Agus. */
@@ -872,9 +888,43 @@ function audovaSecciones(R,panel){
   }
   return h+'</div>';
 }
+// ===== 02/11 (Audova): todas las campañas en detalle, con "Ver más" (gráficos por día y anuncios). Datos: sub_campanas '<slug>-detalle' (detalle_campanas.py, diario) =====
+function campDetalleA(d){
+  const K=(d.campanas||[]).find(k=>(k.metricas||{}).tipo==='detalle'); const M=K&&K.metricas; if(!M||!(M.campanas||[]).length) return '';
+  const RES={'registros':['Registros','Costo por registro','Registros por día'],'leads':['Leads','Costo por lead','Leads por día'],
+    'visitas al perfil':['Visitas al perfil','Costo por visita al perfil','Visitas al perfil por día'],'visitas a la página':['Visitas a la página','Costo por visita','Visitas a la página por día'],'clics':['Clics','Costo por clic','Clics por día']};
+  let h=`<h2>Campañas en detalle</h2><p class="sub"><span>Todas las campañas desde que arrancaron. Tocá «Ver más» para ver los gráficos y los anuncios.</span></p><div class="cdA">`;
+  for(const c of M.campanas){
+    const r=RES[c.resultado]||RES.clics, on=c.estado==='activa';
+    const inner=`<div class="tarj">
+        ${card('Invertido', mon(c.inversion,2), null,2,true)}
+        ${card(r[0], fmt(c.resultados), null,0,true)}
+        ${c.costo_resultado!=null?card(r[1], mon(c.costo_resultado,2), null,2):''}
+        ${card('Personas alcanzadas', fmt(c.alcance), null,0)}
+        ${card('Impresiones', fmt(c.impresiones), null,0)}
+        ${card('Frecuencia', fmt(c.frecuencia,2), null,2)}
+        ${card('Clics al enlace', fmt(c.clics), null,0)}
+        ${card('CTR', fmt(c.ctr,2)+'%', null,2)}
+        ${c.cpc?card('Costo por clic', mon(c.cpc,2), null,2):''}
+        ${card('CPM (cada mil impresiones)', mon(c.cpm,2), null,2)}
+        ${c.visitas_pagina&&c.resultado!=='visitas a la página'?card('Visitas a la página', fmt(c.visitas_pagina), null,0):''}
+      </div>
+      ${c.resultado==='visitas al perfil'?`<p class="leyenda"><span>Meta no informa seguidores por campaña: se cuentan las visitas al perfil.</span></p>`:''}
+      ${graficoDia(c.dias||[],'res',r[2],'Resultados de cada día.','#1A2456')}
+      ${graficoDia(c.dias||[],'clics','Clics por día','Clics al enlace de cada día.','#518BAF')}
+      ${graficoDia(c.dias||[],'inv','Inversión por día','Cuánto se invirtió cada día.','#F15C32',true)}
+      ${(c.anuncios||[]).length?`<div class="desglose"><h3>Anuncios</h3><p class="leyenda"><span>Los anuncios de la campaña, ordenados por resultados.</span></p>${c.anuncios.map(a=>`<div class="adA">${a.img?`<img src="${a.img}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">`:'<div></div>'}<div><div class="an">${a.nombre}</div>
+        <div class="am"><span><b>${mon(a.inversion,2)}</b> <span>invertidos</span></span><span><b>${fmt(a.resultados)}</b> <span>${r[0].toLowerCase()}</span></span><span><b>${fmt(a.clics)}</b> <span>clics</span></span><span><b>${fmt(a.ctr,2)}%</b> CTR</span>${a.cpc?`<span><b>${mon(a.cpc,2)}</b> <span>por clic</span></span>`:''}</div></div></div>`).join('')}</div>`:''}`;
+    h+=`<div class="cdc"><div class="cdh"><div class="cdn">${c.nombre}</div><span class="cde ${on?'on':''}"><i></i><span>${on?'Activa':'Pausada'}</span></span></div>
+      <div class="cds"><span>Desde el</span> ${fecha(c.inicio)}${c.diaria?` · ${mon(c.diaria,0)} <span>por día</span>`:''}</div>
+      <div class="cdk"><div><b>${fmt(c.resultados)}</b><small>${r[0]}</small></div><div><b>${c.costo_resultado!=null?mon(c.costo_resultado,2):'—'}</b><small>${r[1]}</small></div><div><b>${mon(c.inversion,0)}</b><small>Invertido</small></div></div>
+      ${masA('Ver más',inner)}</div>`;
+  }
+  return h+`</div>${M.actualizado_txt?`<p class="leyenda" style="margin-top:8px"><span>Números actualizados</span> <span>el</span> ${M.actualizado_txt.slice(0,5)} <span>a las</span> ${M.actualizado_txt.slice(6)}</p>`:''}`;
+}
 function pintarAudova(d){
   const R=d.reportes||[], u=R[R.length-1]||null;
-  return `<h1>${d.cliente.nombre}</h1><p class="periodo">${u?`${fecha((u.metricas.cont_desde)||u.desde)} al ${fecha((u.metricas.cont_hasta)||u.hasta)}`:'Sin reportes cargados'}</p><p class="actA">Las métricas se actualizan todos los días. El reporte sale los jueves a las 7 am.</p>`+audovaSecciones(R,true);
+  return `<h1>${d.cliente.nombre}</h1><p class="periodo">${u?`${fecha((u.metricas.cont_desde)||u.desde)} al ${fecha((u.metricas.cont_hasta)||u.hasta)}`:'Sin reportes cargados'}</p><p class="actA">Las métricas se actualizan todos los días. El reporte sale los jueves a las 7 am.</p>`+audovaSecciones(R,true)+campDetalleA(d);
 }
 function pintarTrafico(d){
   MON=(d.cliente.moneda||'USD');
@@ -2044,6 +2094,7 @@ function pintarResto(d,h){
 
   // --- campañas con panel propio (p. ej. Festival de la Rosa): mismo dato que su URL aparte ---
   for(const K of (d.campanas||[])){
+    if(['detalle','destacada'].includes((K.metricas||{}).tipo)) continue;   // 02/11: los detalles van en su propia sección
     const M=K.metricas||{}, inv=Number(M.inversion||0), vv=K.vendido!=null?Number(K.vendido):null;
     const nfK=(v,dd=0)=>Number(v).toLocaleString('es-AR',{minimumFractionDigits:dd,maximumFractionDigits:dd});
     const monK=(v,dd=0)=>((d.cliente.moneda||'USD')==='ARS'?'$ ':'USD ')+nfK(v,dd);
@@ -2561,7 +2612,14 @@ function graficoDia(dias, campo, titulo, leyenda, color, esPlata){
 /* ===== Idioma: status en ingles para clientes con idioma 'auto' (se abre desde EE.UU.) o 'en' ===== */
 (function(){
 const DICT={
-'Cargando…':'Loading…','Este informe se actualiza todos los jueves.':'This report is updated every Thursday.',
+'Cargando…':'Loading…','Campañas en detalle':'Campaigns in detail','Todas las campañas desde que arrancaron. Tocá «Ver más» para ver los gráficos y los anuncios.':'Every campaign since it started. Tap “See more” for charts and ads.',
+'Ver más':'See more','Activa':'Active','Pausada':'Paused','Desde el':'Since','por día':'per day','Invertido':'Spent','Registros':'Sign-ups','Costo por registro':'Cost per sign-up','Registros por día':'Sign-ups per day',
+'Leads':'Leads','Costo por lead':'Cost per lead','Leads por día':'Leads per day','Visitas al perfil':'Profile visits','Costo por visita al perfil':'Cost per profile visit','Visitas al perfil por día':'Profile visits per day',
+'Visitas a la página':'Landing page views','Costo por visita':'Cost per visit','Visitas a la página por día':'Landing page views per day','Clics':'Clicks','Costo por clic':'Cost per click','Clics por día':'Clicks per day',
+'Personas alcanzadas':'People reached','Impresiones':'Impressions','Frecuencia':'Frequency','Clics al enlace':'Link clicks','CPM (cada mil impresiones)':'CPM (per 1,000 impressions)',
+'Meta no informa seguidores por campaña: se cuentan las visitas al perfil.':'Meta does not report followers per campaign: profile visits are counted instead.','Resultados de cada día.':'Results each day.',
+'Clics al enlace de cada día.':'Link clicks each day.','Inversión por día':'Spend per day','Cuánto se invirtió cada día.':'How much was spent each day.','Anuncios':'Ads',
+'Los anuncios de la campaña, ordenados por resultados.':"The campaign's ads, sorted by results.",'invertidos':'spent','registros':'sign-ups','leads':'leads','visitas al perfil':'profile visits','visitas a la página':'page views','clics':'clicks','por clic':'per click','Este informe se actualiza todos los jueves.':'This report is updated every Thursday.',
 'Este informe se actualiza todos los lunes.':'This report is updated every Monday.','Este informe se actualiza todos los martes.':'This report is updated every Tuesday.',
 'Este informe se actualiza todos los miércoles.':'This report is updated every Wednesday.','Este informe se actualiza todos los viernes.':'This report is updated every Friday.',
 'Los números que ves no son en vivo: corresponden al último período cerrado.':'These numbers are not live: they cover the last closed period.',
