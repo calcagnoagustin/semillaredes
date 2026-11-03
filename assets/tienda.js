@@ -172,7 +172,7 @@
     up.parentElement.insertBefore(sec,up.nextElementSibling||null);
   }
 
-  function resenas(){if(document.getElementById('rs-js'))return;var j=document.createElement('script');j.id='rs-js';j.src=BASE+'/assets/resenas.js?v=2';document.head.appendChild(j);}
+  function resenas(){if(document.getElementById('rs-js'))return;var j=document.createElement('script');j.id='rs-js';j.src=BASE+'/assets/resenas.js?v=3';document.head.appendChild(j);}
   function puente(){if(window.__puente||document.getElementById('pt-js'))return;var j=document.createElement('script');j.id='pt-js';j.src=BASE+'/assets/puente.js?v=2';document.head.appendChild(j);}
   function init(){
     document.documentElement.classList.add('tienda');puente();resenas();

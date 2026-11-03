@@ -49,6 +49,7 @@ html.aud-lp,html.aud-lp body{background:#F8F0E2!important}
 #aud-lp h2,#aud-lp h3{font-weight:800!important}
 #aud-lp .otra{display:block;text-align:center;font-size:12px;color:var(--muted);margin-top:6px;cursor:pointer;text-decoration:underline}
 '''
+css=re.sub(r'/\*.*?\*/','',css,flags=re.S)
 css=prefix_css(css)
 TU='https://aguscalcagno.com/s/auditoria-inicial-con-agus'
 body=body.replace('href="'+TU+'"','href="#comprar" data-comprar')

@@ -17,13 +17,24 @@
     ['Daniela Bermúdez','Excelente. Agustín sabe un montón y es muy generoso.'],
     ['Sandra Torres','Un espacio ideal para adquirir el conocimiento para artistas.']
   ];
+  var IMG='https://semillaredes.com/assets/clientes/';
+  var C=[
+    ['Alan Sutton y las Criaturitas','Música','722 mil seguidores','alan-sutton.webp?v=2','center 12%'],
+    ['Koino Yokan','Música','344 mil seguidores','koino.webp?v=2','center 30%'],
+    ['Federico Andahazi','Literatura','104 mil seguidores','federico-andahazi.webp?v=2','center 20%'],
+    ['Sin Fronteras Dúo','Música','31 mil seguidores','sin-fronteras-duo.webp','center'],
+    ['María Marta Crespo','Artes visuales','30,8 mil seguidores','maria-marta-crespo.webp','center'],
+    ['Lara Fichera','Música','27,8 mil seguidores','lara-fichera.webp','center 25%'],
+    ['Andrea Guedella','Fotografía','12 mil seguidores','andrea-guedella.webp?v=2','center 25%'],
+    ['Animales del Rock','Libros ilustrados','+500 ventas','animales-del-rock.webp','center']
+  ];
   var CSS='[data-semilla-resenas]{--_ink:var(--rs-ink,#1A2456);--_acc:var(--rs-accent,#87863A);--_mut:var(--rs-muted,#5E5A52);--_card:var(--rs-card,#FBF8F2);--_serif:var(--rs-serif,"Playfair Display",Georgia,serif);display:block;color:var(--_ink)}'+
   '.rs-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:18px 0;font-size:15px;color:var(--_mut)}'+
   '.rs-head b{font-family:var(--_serif);font-weight:900;font-size:34px;line-height:1;color:var(--_ink)}'+
   '.rs-st{color:#E2A93B;letter-spacing:3px;font-size:16px;line-height:1}'+
   '.rs-box{position:relative;background:var(--_card);border-radius:14px;padding:34px 38px 26px}'+
   '.rs-stage{display:grid}'+
-  '.rs-sl{grid-area:1/1;opacity:0;visibility:hidden;transition:opacity .7s ease,visibility .7s}'+
+  '.rs-sl{grid-area:1/1;opacity:0;visibility:hidden;transition:opacity .5s ease,visibility .5s}'+
   '.rs-sl.on{opacity:1;visibility:visible}'+
   '.rs-q{font-family:var(--_serif);font-style:italic;font-weight:600;font-size:clamp(20px,2.1vw,27px);line-height:1.42;color:var(--_ink);margin:0}'+
   '.rs-q:before{content:"\\201C"}.rs-q:after{content:"\\201D"}'+
@@ -44,12 +55,28 @@
   '[data-semilla-resenas=mini] .rs-mst{color:var(--_acc);letter-spacing:4px;margin:6px 0 4px;font-size:15px}'+
   '[data-semilla-resenas=mini] .rs-mwho{font-size:12.5px;color:var(--_mut)}[data-semilla-resenas=mini] .rs-mwho b{color:var(--_ink)}'+
   '[data-semilla-resenas=mini] .rs-foot{margin-top:10px}[data-semilla-resenas=mini] .rs-ver{font-size:12px}'+
-  '@media (max-width:700px){.rs-box{padding:26px 22px 20px}}';
+  '@media (max-width:700px){.rs-box{padding:26px 22px 20px}}'+
+  '.rs-cl-t{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--_mut);margin:30px 0 12px!important}'+
+  '[data-semilla-resenas]{min-width:0;max-width:100%}.rs-cl{max-width:100%;min-width:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}'+
+  '[data-semilla-resenas=clientes] .rs-cl{grid-template-columns:repeat(8,minmax(0,1fr));gap:8px}'+
+  '.rs-c{position:relative;aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:#1A2456}'+
+  '.rs-c img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}'+
+  '.rs-c span{position:absolute;left:0;right:0;bottom:0;padding:26px 8px 8px!important;background:linear-gradient(180deg,rgba(10,14,40,0),rgba(10,14,40,.88));color:#fff}'+
+  '.rs-c b{display:block;font-family:var(--_serif);font-weight:700;font-size:15px;line-height:1.15}'+
+  '[data-semilla-resenas=clientes] .rs-c b{font-size:12.5px}'+
+  '.rs-c i{display:inline-block;margin-top:5px!important;font-style:normal;font-size:11px;font-weight:700;background:#E2767C;color:#fff;border-radius:999px;padding:2px 7px!important;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;box-sizing:border-box}'+
+  '[data-semilla-resenas=clientes] .rs-c i{font-size:9px;padding:2px 5px!important;letter-spacing:-.01em}'+
+  '@media (max-width:900px){.rs-cl,[data-semilla-resenas=clientes] .rs-cl{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:128px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;-webkit-overflow-scrolling:touch}.rs-c{scroll-snap-align:start}.rs-c i{font-size:9.5px;padding:2px 5px!important}}'+
+  '[data-semilla-resenas=clientes] .rs-cl-t{margin-top:0}'
+;
   function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function ini(n){return n.replace(/[^A-Za-zÁÉÍÓÚÑáéíóúñ]/g,'').charAt(0).toUpperCase();}
+  function clientes(){return '<div class="rs-cl-t">Proyectos que crecen con Semilla</div><div class="rs-cl">'+C.map(function(c){return '<div class="rs-c"><img loading="lazy" alt="'+esc(c[0])+'" src="'+IMG+c[3]+'" style="object-position:'+c[4]+'"><span><b>'+esc(c[0])+'</b><i>'+esc(c[2])+'</i></span></div>';}).join('')+'</div>';}
   function montar(el){
     if(el.getAttribute('data-rs-ok'))return; el.setAttribute('data-rs-ok','1');
-    var mini=el.getAttribute('data-semilla-resenas')==='mini', h='';
+    var modo=el.getAttribute('data-semilla-resenas'), mini=modo==='mini', h='';
+    if(modo==='clientes'){el.innerHTML=clientes();return;}
+    var conCli=!mini&&el.getAttribute('data-clientes')!=='no';
     if(!mini) h+='<div class="rs-head"><b>'+NOTA+'</b><span class="rs-st" aria-label="5 estrellas">★★★★★</span><span>'+TOTAL+' reseñas en Google</span></div>';
     h+='<div class="rs-box"><div class="rs-stage" aria-live="polite">';
     R.forEach(function(r,i){
@@ -57,6 +84,7 @@
       else h+='<div class="rs-sl'+(i?'':' on')+'"><p class="rs-q">'+esc(r[1])+'</p><div class="rs-who"><span class="rs-av">'+ini(r[0])+'</span><span><b>'+esc(r[0])+'</b><small>Reseña en Google · ★★★★★</small></span></div></div>';
     });
     h+='</div><div class="rs-foot"><div class="rs-dots">'+R.map(function(_,i){return '<button type="button" aria-label="Reseña '+(i+1)+'"'+(i?'':' class="on"')+'></button>';}).join('')+'</div><a class="rs-ver" href="'+GOOGLE+'" target="_blank" rel="noopener">Ver todas en Google →</a></div></div>';
+    if(conCli) h+=clientes();
     el.innerHTML=h;
     var sl=el.querySelectorAll('.rs-sl'), dt=el.querySelectorAll('.rs-dots button'), i=0, t=null, quieto=false;
     function ir(k){sl[i].classList.remove('on');dt[i].classList.remove('on');i=(k+sl.length)%sl.length;sl[i].classList.add('on');dt[i].classList.add('on');}
