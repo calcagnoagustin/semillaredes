@@ -2799,7 +2799,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261103a';
+var SR_VER='20261103b';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
@@ -2808,7 +2808,7 @@ function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.n
   chequear();
   document.addEventListener('visibilitychange',function(){ if(!document.hidden) chequear(); });
   window.addEventListener('pageshow',function(e){ if(e.persisted) chequear(); });
-  try{ var q0=new URLSearchParams(location.search); if(q0.get('c')&&q0.get('k')) var yo0=false; try{ yo0=localStorage.getItem('sr_yo')==='1'||localStorage.getItem('sr_semilla')==='1'; }catch(e){} new Image().src='https://vm.semillaredes.com/web/uso-ping?c='+encodeURIComponent(q0.get('c'))+'&k='+encodeURIComponent(q0.get('k'))+(yo0?'&yo=1':''); }catch(e){}
+  try{ var q0=new URLSearchParams(location.search); if(q0.get('c')&&q0.get('k')) var yo0=false; try{ yo0=localStorage.getItem('sr_yo')==='1'||localStorage.getItem('sr_semilla')==='1'; }catch(e){} new Image().src='https://vm.semillaredes.com/web/uso-ping?c='+encodeURIComponent(q0.get('c'))+'&k='+encodeURIComponent(q0.get('k'))+(yo0?'&yo=1':'')+(function(){ try{ var w=window.top; return (w.matchMedia('(display-mode: standalone)').matches||w.navigator.standalone===true||window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true)?'&inst=1':''; }catch(e){ try{ return (window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true)?'&inst=1':''; }catch(x){ return ''; } } })(); }catch(e){}
   try{ var q=new URLSearchParams(location.search); if(q.get('c')==='semilla-redes'){ var sa=false; try{ sa=!!(window.top.navigator.standalone||window.top.matchMedia('(display-mode: standalone)').matches); }catch(e){}
     new Image().src='https://vm.semillaredes.com/web/log?p=panel&v='+SR_VER+'&app='+(sa?1:0)+'&marco='+(window.top!==window?1:0); } }catch(e){}
 })();
