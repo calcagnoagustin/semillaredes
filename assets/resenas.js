@@ -58,7 +58,7 @@
     });
     h+='</div><div class="rs-foot"><div class="rs-dots">'+R.map(function(_,i){return '<button type="button" aria-label="Reseña '+(i+1)+'"'+(i?'':' class="on"')+'></button>';}).join('')+'</div><a class="rs-ver" href="'+GOOGLE+'" target="_blank" rel="noopener">Ver todas en Google →</a></div></div>';
     el.innerHTML=h;
-    var sl=el.querySelectorAll('.rs-sl'), dt=el.querySelectorAll('.rs-dots button'), i=0, t=null, quieto=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var sl=el.querySelectorAll('.rs-sl'), dt=el.querySelectorAll('.rs-dots button'), i=0, t=null, quieto=false;
     function ir(k){sl[i].classList.remove('on');dt[i].classList.remove('on');i=(k+sl.length)%sl.length;sl[i].classList.add('on');dt[i].classList.add('on');}
     function play(){if(quieto)return;clearInterval(t);t=setInterval(function(){ir(i+1);},6500);}
     function stop(){clearInterval(t);}
