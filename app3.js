@@ -987,7 +987,7 @@
       const pintarLz=()=>{
         const form=LZF?`<div class="card lzf">
             <label>Links del lanzamiento</label>
-            <textarea id="v3lzl" rows="4" placeholder="Pegá los links, uno por línea: Spotify, YouTube, Apple Music, Deezer…">${esc((LZF.links||[]).join('\n'))}</textarea>
+            <textarea id="v3lzl" rows="4" placeholder="Pegá los links, uno por línea: Spotify, YouTube, Bandcamp, Apple Music, Deezer…">${esc((LZF.links||[]).join('\n'))}</textarea>
             <div class="lzc" id="v3lzc"></div>
             <div class="lz2"><div><label>Fecha de salida</label><input id="v3lzd" type="date" value="${esc(LZF.fecha||'')}"></div><div><label>Título <small>(opcional)</small></label><input id="v3lzt" placeholder="Se completa solo" value="${esc(LZF.titulo||'')}"></div></div>
             <button id="v3lzok" ${LZB?'disabled':''}>${LZB?'Armando tu landing…':(LZF.id?'Guardar y actualizar la landing':'Armar la landing')}</button>
@@ -1294,7 +1294,7 @@
     'scr:proyecto':{i:'Acá se ordena tu proyecto: hacia dónde vas (hitos), con qué contás (activos y web) y qué querés que sepamos (notas).'},
     'hitos':{d:'Las metas concretas hacia las que estás trabajando.',i:'Cada hito sigue una métrica real (seguidores, oyentes, ventas…) y se actualiza solo. Sumá uno con «Agregar hito».'},
     'gestioná tus tickets':{d:'Las entradas de tus shows, en el mismo lugar que el resto de tu proyecto.',i:'Muy pronto vas a poder vender y seguir las entradas de tus fechas desde la app: cuántas se vendieron, por qué canal y cuánto costó cada una.'},
-    'tus lanzamientos':{d:'Tus singles, EPs y discos, cada uno con su landing para compartir.',i:'Pegá los links de tu lanzamiento (Spotify, YouTube, Apple Music, Deezer…) y SemillaIA arma una landing con la portada, los colores del lanzamiento y todos los accesos. Compartila en tu bio, en historias y en tus anuncios.'},
+    'tus lanzamientos':{d:'Tus singles, EPs y discos, cada uno con su landing para compartir.',i:'Pegá los links de tu lanzamiento (Spotify, YouTube, Bandcamp, Apple Music, Deezer…) y SemillaIA arma una landing con la portada, los colores del lanzamiento y todos los accesos. Compartila en tu bio, en historias y en tus anuncios.'},
     'tus flyers':{d:'Flyers para tus fechas y lanzamientos, diseñados con ChatGPT.',i:'Elegís la fecha o el lanzamiento, le contás cómo lo imaginás y ChatGPT diseña el flyer con tus datos, tu foto o la portada. Tarda alrededor de un minuto. Revisá siempre los textos antes de publicarlo.'},
     'acumulado':{d:'Entradas, inversión y ventas del mes y desde que arrancó la campaña.',i:'Suma todos los períodos. Las ventas en plata salen del píxel de Meta en la ticketera (retorno por inversión). El mes toma los períodos que terminan en ese mes, por eso puede arrancar unos días antes.'},
     'tus activos':{d:'Todo lo que tu proyecto ya tiene: links, materiales y documentos.',i:'Tu Spotify, tu web, tu press kit, carpetas de fotos, la planilla de curadores… Tenerlo todo en un lugar nos deja usarlo en tu landing, tus reportes y tus campañas.'},
