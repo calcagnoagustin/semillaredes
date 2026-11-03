@@ -259,6 +259,7 @@
   #v3 .cjl .cf b{color:#24242C;font-weight:600}
   #v3 .mesn{background:#EDE6D8;border-radius:22px;padding:20px 16px 16px;margin:0 0 26px}
   #v3 .mesn .k{margin:0 2px;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:#7A1F3A}
+  #v3 .mesn h3::first-letter,#v3 .mesn .mr b::first-letter{text-transform:uppercase}
   #v3 .mesn h3{margin:6px 2px 0;font-family:'Playfair Display',Georgia,serif;font-size:26px;line-height:1.15;color:${NAVY}}
   #v3 .mesn .b{margin:6px 2px 14px;font-size:13.5px;color:#6B6878;line-height:1.45}
   #v3 .mesn .mg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -850,7 +851,7 @@
       const nomM=x=>{ const z=String(x.mes).split('-'); return MESL[+z[1]-1]+(+z[0]!==new Date().getFullYear()?' '+z[0]:''); };
       const K=[['ig_followers_nuevos','seguidores nuevos',v=>'+'+nf(v),1],['ig_visitas','visitas al perfil',v=>nf(v),1],['ig_conv','de las visitas se hicieron seguidoras',v=>nf(v,1)+'%',1],
         ['ig_inversion','invertido en publicidad',v=>SIM+nf(Math.round(v)),0],['ig_costo_follower','por seguidor',v=>SIM+nf(Math.round(v)),-1],['msj_mensajes','consultas por mensaje',v=>nf(v),1],
-        ['sp_oyentes_perfil','oyentes mensuales en Spotify',v=>nf(v),1],['sp_streams','reproducciones en Spotify',v=>nf(v),1],['sp_playlists','playlists nuevas',v=>nf(v),1],['yt_views','vistas en YouTube',v=>nf(v),1]].filter(k=>m[k[0]]!=null);
+        ['sp_oyentes_perfil','oyentes mensuales en Spotify',v=>nf(v),1],['sp_streams','reproducciones en Spotify',v=>nf(v),1],['sp_playlists','playlists en Spotify',v=>nf(v),1],['yt_views','vistas en YouTube',v=>nf(v),1]].filter(k=>m[k[0]]!=null);
       const dl=(k)=>{ if(!pm||pm[k[0]]==null||!Number(pm[k[0]])||!k[3]) return ''; const d=Math.round((m[k[0]]-pm[k[0]])/pm[k[0]]*100); if(!d) return '<i class="mz">= que '+nomM(pm)+'</i>';
         const bien=(d>0)===(k[3]>0); return `<i class="${bien?'mb':'mm'}">${d>0?'↑':'↓'} ${Math.abs(d)}% vs ${nomM(pm)}</i>`; };
       return `<div class="mesn"><p class="k">Reporte mensual</p><h3>${nomM(m)}</h3><p class="b">Del ${fd(m.desde)} al ${fd(m.hasta)} · el mes completo, aparte del reporte de cada semana.</p>
