@@ -257,6 +257,19 @@
   #v3 .cjl .cg.cv{grid-template-columns:.7fr 1.2fr 1.1fr}
   @media (max-width:380px){#v3 .cjl .cg.cv b{font-size:17px}}
   #v3 .cjl .cf b{color:#24242C;font-weight:600}
+  #v3 .mesn{background:#EDE6D8;border-radius:22px;padding:20px 16px 16px;margin:0 0 26px}
+  #v3 .mesn .k{margin:0 2px;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:#7A1F3A}
+  #v3 .mesn h3{margin:6px 2px 0;font-family:'Playfair Display',Georgia,serif;font-size:26px;line-height:1.15;color:${NAVY}}
+  #v3 .mesn .b{margin:6px 2px 14px;font-size:13.5px;color:#6B6878;line-height:1.45}
+  #v3 .mesn .mg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  #v3 .mesn .mg>div{background:#FBF8F2;border-radius:14px;padding:12px 13px}
+  #v3 .mesn .mg b{display:block;font-size:21px;line-height:1.1;color:#24242C;font-weight:700;white-space:nowrap}
+  #v3 .mesn .mg small{display:block;font-size:12.5px;color:#55525F;margin-top:4px;line-height:1.3}
+  #v3 .mesn .mg i{display:block;font-style:normal;font-size:12px;font-weight:600;margin-top:6px}#v3 .mesn .mb{color:#2F7A4F}#v3 .mesn .mm{color:#B5523B}#v3 .mesn .mz{color:#8A8577}
+  #v3 .mesn .mh{margin-top:12px;border-top:1px solid #DCD3C3;padding-top:10px}
+  #v3 .mesn .mh summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600;color:#24242C}
+  #v3 .mesn .mh summary::-webkit-details-marker{display:none}#v3 .mesn .mh .fl{font-size:12px;color:#8A8577;transition:transform .2s}#v3 .mesn .mh[open] .fl{transform:rotate(90deg)}
+  #v3 .mesn .mr{padding:10px 2px;border-top:1px solid #E2D9C9;font-size:13px;color:#55525F;line-height:1.45}#v3 .mesn .mr:first-of-type{border-top:0}#v3 .mesn .mr b{display:block;color:#24242C;font-size:14px}
   #v3 .cjt{background:#EDE6D8;border-radius:22px;padding:20px 16px 18px;margin:0 0 26px}
   #v3 .cjt .k{margin:0 2px;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:#7A1F3A}
   #v3 .cjt h3{margin:6px 2px 0;font-family:'Playfair Display',Georgia,serif;font-size:22px;line-height:1.15;color:${NAVY}}
@@ -831,10 +844,22 @@
       return `<div class="cjs"><h3>Seguimiento por conjunto de anuncios</h3><p class="bjc">Campaña de seguidores, período por período. Meta da las visitas al perfil por conjunto; los seguidores nuevos solo los cuenta Instagram en total.</p>${act.map(a=>{ const u=a.p[a.p.length-1];
         return `<div class="cj"><p class="nm">${esc(a.n)}</p><div class="ks"><div><b>${nf(u.v)}</b><span>visitas al perfil</span></div><div><b>${u.c!=null?sim+nf(u.c,2):'—'}</b><span>costo por visita</span></div><div><b>${u.iv!=null?sim+nf(u.iv,u.iv<100?2:0):'—'}</b><span>inversión</span></div></div>
           <p class="gl">Visitas al perfil</p>${graf(a.p,'v',VINO,v=>nf(v))}<p class="gl">Costo por visita</p>${graf(a.p,'c','#E2767C',v=>sim+nf(v,2))}${a.p.filter(p=>p.sg!=null).length>1?`<p class="gl">Seguidores (cargados de Ads Manager)</p>${graf(a.p,'sg',OLIVA,v=>nf(v))}`:''}</div>`; }).join('')}</div>`; })();
+    // 03/11 (Flor Scott): reporte mensual exacto (mensual.py guarda metricas.meses); si existe, reemplaza al estimado del mes
+    const MESN=(()=>{ const r=[...R].reverse().find(x=>x.metricas&&Array.isArray(x.metricas.meses)&&x.metricas.meses.length); if(!r) return '';
+      const L=[...r.metricas.meses].sort((a,b)=>a.mes<b.mes?-1:1), m=L[L.length-1], pm=L.length>1?L[L.length-2]:null;
+      const nomM=x=>{ const z=String(x.mes).split('-'); return MESL[+z[1]-1]+(+z[0]!==new Date().getFullYear()?' '+z[0]:''); };
+      const K=[['ig_followers_nuevos','seguidores nuevos',v=>'+'+nf(v),1],['ig_visitas','visitas al perfil',v=>nf(v),1],['ig_conv','de las visitas se hicieron seguidoras',v=>nf(v,1)+'%',1],
+        ['ig_inversion','invertido en publicidad',v=>SIM+nf(Math.round(v)),0],['ig_costo_follower','por seguidor',v=>SIM+nf(Math.round(v)),-1],['msj_mensajes','consultas por mensaje',v=>nf(v),1],
+        ['sp_oyentes_perfil','oyentes mensuales en Spotify',v=>nf(v),1],['sp_streams','reproducciones en Spotify',v=>nf(v),1],['sp_playlists','playlists nuevas',v=>nf(v),1],['yt_views','vistas en YouTube',v=>nf(v),1]].filter(k=>m[k[0]]!=null);
+      const dl=(k)=>{ if(!pm||pm[k[0]]==null||!Number(pm[k[0]])||!k[3]) return ''; const d=Math.round((m[k[0]]-pm[k[0]])/pm[k[0]]*100); if(!d) return '<i class="mz">= que '+nomM(pm)+'</i>';
+        const bien=(d>0)===(k[3]>0); return `<i class="${bien?'mb':'mm'}">${d>0?'↑':'↓'} ${Math.abs(d)}% vs ${nomM(pm)}</i>`; };
+      return `<div class="mesn"><p class="k">Reporte mensual</p><h3>${nomM(m)}</h3><p class="b">Del ${fd(m.desde)} al ${fd(m.hasta)} · el mes completo, aparte del reporte de cada semana.</p>
+        <div class="mg">${K.map(k=>`<div><b>${k[2](m[k[0]])}</b><small>${k[1]}</small>${dl(k)}</div>`).join('')}</div>
+        ${L.length>1?`<details class="mh"><summary>Meses anteriores <span class="fl">▸</span></summary>${L.slice(0,-1).reverse().map(x=>`<div class="mr"><b>${nomM(x)}</b><span>${K.filter(k=>x[k[0]]!=null).slice(0,4).map(k=>`${k[2](x[k[0]])} ${k[1]}`).join(' · ')}</span></div>`).join('')}</details>`:''}</div>`; })();
     const scrMet=`
       <div class="rep"><div><h1 class="v3t" style="font-size:31px">Tus métricas</h1><p class="bj">${I?`Del ${fd(I.desde)} al ${fd(I.hasta)}`:'Tus números, red por red'}</p></div>${I?`<button class="ir" id="v3rep" aria-label="Abrir reporte">${ico.flecha}</button>`:''}</div>
       ${imp?`<div class="card imp"><div>${ico.sol}</div><div><h4>Lo más importante</h4><p>${imp}</p></div></div>`:''}
-      ${MESP}
+      ${MESN||MESP}
       <div id="v3cjt"></div>
       ${u?`<div class="perh"><h3>Resumen del período</h3><span>Del ${fd(u.desde)} al ${fd(u.hasta)}</span></div>`:''}
       ${ACT}
