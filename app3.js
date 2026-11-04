@@ -1167,7 +1167,7 @@
       const pg=P.saldo==null?'':`<div class="pg">${px?`<div class="r1"><span>Próximo cobro</span><b>${fch(px.fecha)} · ${pl(px.monto)}</b></div>`:`<div class="r1"><span>Saldo a pagar</span><b>${pl(P.saldo)}</b></div>`}
         <p>${px?`Se cobra solo${met?` a la <b>${esc(met)}</b>`:''} cuando el saldo llega a ${pl(P.umbral)}${P.fecha_ciclo?` o el ${fd(P.fecha_ciclo)}, lo que pase primero`:''}. Hoy el saldo es de ${pl(P.saldo)}${P.promedio_diario?` y se gastan unos ${pl(P.promedio_diario)} por día`:''}, por eso la fecha es aproximada.`
           :`${P.prepago?'Cuenta prepaga: se descuenta de los fondos cargados.':`Se cobra solo${met?` a la <b>${esc(met)}</b>`:''} cuando el saldo llega al umbral de Meta o a fin del ciclo de facturación.`}`}</p></div>`;
-      const CJON=['yamila-beraja','maria-marta-crespo','sin-fronteras-duo','animales-del-rock','tuncha'].includes(slug), moneyC=v=>v==null?'—':usd?'USD '+nf(v,2):'$ '+nf(v,0);
+      const CJON=['yamila-beraja','maria-marta-crespo','sin-fronteras-duo','animales-del-rock','tuncha','bodegon-para'].includes(slug), moneyC=v=>v==null?'—':usd?'USD '+nf(v,2):'$ '+nf(v,0);
       const dia=CJON&&P.inversion_diaria!=null?`<div class="pg"><div class="r1"><span>Inversión diaria</span><b>${moneyC(P.inversion_diaria)}</b></div><p>Lo que está programado por día entre todos los conjuntos activos.</p></div>`:'';
       const m0=v=>v>=1000?(usd?'USD ':'$ ')+nf(v,0):moneyC(v);
       const vtaCard=(nom,sub,n,inv,costo,ing,cls)=>`<div class="card ${cls}"><div class="ct">${esc(nom)}</div><div class="cs">${sub}</div>
