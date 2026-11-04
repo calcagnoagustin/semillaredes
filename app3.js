@@ -414,6 +414,7 @@
   #v3 .rit .ci{width:42px;height:42px}
   #v3 .rit h3{margin:0 0 4px;font:600 18px/23px 'Playfair Display',serif;color:${NAVY}}
   #v3 .rit p{margin:0;font-size:14.5px;line-height:1.5;color:#55525F}
+  #v3 .rej{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px;font-size:12.5px;color:#8A8577}#v3 .rej a{display:inline-flex;align-items:center;padding:4px 10px;border-radius:99px;background:#F2EDE3;color:${NAVY};font-weight:600;text-decoration:none;line-height:1.2}
   #v3 .rit p b{color:#3A3846;font-weight:600}
   #v3 .rit .ci{margin-top:-9.5px}   /* centro del círculo = centro de la primera línea del título (23px) */
   #v3 .rit>div>p:first-child{margin-top:.6px}
@@ -926,7 +927,8 @@
     const icoH=h=>{ if(h.tipo==='mal') return rIco.mal; const t=String(h.t||h).toLowerCase();
       return /venta|factur|vend/.test(t)?rIco.vta:/mensaje|consulta|conversaci/.test(t)?rIco.msj:/youtube|video|spotify|oyente|reproduc/.test(t)?rIco.play:rIco.sube; };
     const HZ=I?(I.hallazgos||[]).map(h=>typeof h==='object'?h:{t:h,tipo:'bien'}):[];
-    const RC=I?(I.recomendaciones||[]):[], RT=(I&&I.recos_titulos)||[];
+    const RC=I?(I.recomendaciones||[]):[], RT=(I&&I.recos_titulos)||[], RE=(I&&I.recos_ejemplos)||[];
+    const ejH=L=>(L&&L.length)?`<div class="rej">Ejemplos:${L.map((u,i)=>`<a href="${esc(u)}" target="_blank" rel="noopener">Ver ${i+1}</a>`).join('')}</div>`:'';   // 04/11: links a las publicaciones de las que habla
     const nPal=(n,s,p)=>n+' '+(n===1?s:p);
     const pegaM=t=>String(t||'').replace(/(\$|USD) (?=[\d−-])/g,'$1&nbsp;');
     const hoja2='<svg class="rhoja" width="150" height="190" viewBox="0 0 150 190" aria-hidden="true"><circle cx="104" cy="70" r="66" fill="#EAE2D0" opacity=".55"/><path d="M146 188C122 150 104 104 66 8" fill="none" stroke="#77763A" stroke-width="2" stroke-linecap="round"/>'
@@ -935,10 +937,10 @@
       <div class="rph">${hoja2}<h1 class="v3t rpt">Reporte</h1>${I?`<div class="rpr"><span>Del ${fd(I.desde)} al ${fd(I.hasta)}</span><i></i></div>`:''}<p class="rps">Lo principal, explicado y con próximos pasos.</p></div>
       ${I?`${DZ?`<div class="card rdz"><span class="ci ok">${DZ.ic==='vta'?rIco.vta:DZ.ic==='msj'?rIco.msj:rIco.barras}</span><div class="e">${DZ.e}</div><div class="hd"><div class="v"><b>${DZ.v}</b> <span>${DZ.u}</span></div></div>${dzBar||dzD?`<div class="gr">${dzBar}${dzD?`<span class="pl ${dzD[0]==='+'?'':'baja'}">${dzD}</span><small>vs. período anterior</small>`:''}</div>`:''}<p class="tx">${pegaM(DZ.t)}</p></div>`:''}
         <div class="rsh">${ico.sol}<h2>Lo principal</h2><i></i><span>${nPal(HZ.length,'punto','puntos')}</span></div>
-        ${HZ.map(h=>`<div class="card rit"><span class="ci ${h.tipo==='mal'?'ma':'ok'}">${icoH(h)}</span><div>${h.titulo?`<h3>${esc(h.titulo)}</h3>`:''}<p>${pegaM(h.t)}</p></div></div>`).join('')}
+        ${HZ.map(h=>`<div class="card rit"><span class="ci ${h.tipo==='mal'?'ma':'ok'}">${icoH(h)}</span><div>${h.titulo?`<h3>${esc(h.titulo)}</h3>`:''}<p>${pegaM(h.t)}</p>${ejH(h.ejemplos)}</div></div>`).join('')}
         ${(I.evaluacion||[]).length?`<div class="rsh">${ico.barras||ico.sol}<h2>Evaluación a fondo</h2><i></i></div><div class="card rev">${I.evaluacion.map(e=>`<div><h3>${esc(e.titulo)}</h3><p>${pegaM(e.t)}</p></div>`).join('')}</div>`:''}
         <div class="rsh">${ico.hoja}<h2>Qué hacer</h2><i></i><span>${nPal(RC.length,'acción','acciones')}</span></div>
-        ${RC.map((r,i)=>{ const a=window.srAccion&&window.srAccion(r); return `<div class="card rit rq${a?' con':''}"${a?` data-v3acc="${a.k}" role="button" tabindex="0" aria-label="${esc(a.t)}"`:''}><span class="ci nu">${i+1}</span><div>${RT[i]?`<h3>${esc(RT[i])}</h3>`:''}<p>${pegaM(esc(r))}</p></div>${a?`<span class="ch">${ico.ch}</span>`:''}</div>`; }).join('')}
+        ${RC.map((r,i)=>{ const a=window.srAccion&&window.srAccion(r); return `<div class="card rit rq${a?' con':''}"${a?` data-v3acc="${a.k}" role="button" tabindex="0" aria-label="${esc(a.t)}"`:''}><span class="ci nu">${i+1}</span><div>${RT[i]?`<h3>${esc(RT[i])}</h3>`:''}<p>${pegaM(esc(r))}</p>${ejH(RE[i])}</div>${a?`<span class="ch">${ico.ch}</span>`:''}</div>`; }).join('')}
         ${I.reunion?`<div class="rru">${ico.luz}<i></i><div><h4>En la próxima reunión con Agus</h4><p>${pegaM(esc(I.reunion.charAt(0).toUpperCase()+I.reunion.slice(1)))}</p></div></div>`:''}
         <div class="rbt"><button id="v3rep2" class="pri">Ver detalles ${ico.flecha}</button><button id="v3pdf" class="sec"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></svg>Descargar reporte</button></div>`
         :'<div class="card vacio" style="margin-top:18px">Cuando salga tu primer reporte lo vas a ver acá.</div>'}`;
