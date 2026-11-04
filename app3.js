@@ -723,9 +723,12 @@
         return `<div class="card">${f.img?`<img src="${esc(f.img)}" alt="${esc(f.ciudad||'')}">`:'<div></div>'}<div>
           <div class="gt">${esc(f.lugar||'')}${f.ciudad?' · '+esc(f.ciudad):''}</div>
           <div class="gs">${fl(f.fecha)} · ${dd===0?'es hoy':dd===1?'falta 1 día':'faltan '+dd+' días'}</div>
-          <div class="gn"><b>${nf(e)}</b><span>${e===1?'entrada vendida':'entradas vendidas'}${f.objetivo?' con la campaña':''}${ep?` · +${nf(ep)} en el período`:''}</span></div>
+          ${f.entradas_est!=null?`<div class="gn"><b>${nf(f.entradas_est)}</b><span>entradas vendidas desde que arrancó la campaña${f.camp_desde?' ('+fl(f.camp_desde)+')':''}</span></div>
+          ${Number(f.inv_acum||0)>0?`<div class="gc">Invertido hasta ${ACTD?'el '+ACTD:'hoy'}: <b>${SIM}${nf(Number(f.inv_acum),2)}</b></div>${f.costo_entrada_est?`<div class="gc">Costo por entrada: <b>${SIM}${nf(Number(f.costo_entrada_est),2)}</b></div>`:''}`:''}
+          <div class="gp">Estimado con el píxel de Meta${f.ticketera?' en '+esc(f.ticketera):''}: ${nf(f.compras_pixel_camp||0)} compras × ${nf(f.entradas_x_compra||1,2)} entradas por compra (entrada a ${SIM}${nf(f.precio)}), redondeado para arriba. Meta atribuye directamente ${nf(e)} ${e===1?'compra':'compras'} (≈ ${nf(f.entradas_pauta_est||e)} entradas) a los anuncios; sin el píxel de servidor en la ticketera ve solo una parte.${f.estado==='borrador'?' La campaña todavía no está publicada.':''}</div>`
+          :`<div class="gn"><b>${nf(e)}</b><span>${e===1?'entrada vendida':'entradas vendidas'}${f.objetivo?' con la campaña':''}${ep?` · +${nf(ep)} en el período`:''}</span></div>
           ${Number(f.inv_acum||0)>0?`<div class="gc">Invertido hasta ${ACTD?'el '+ACTD:'hoy'}: <b>${SIM}${nf(Number(f.inv_acum),2)}</b>${e>0?'':' · todavía sin entradas'}</div>${e>0?`<div class="gc">Costo por entrada: <b>${SIM}${nf(Number(f.inv_acum)/e,2)}</b></div>`:''}`:''}
-          <div class="gp">Según el píxel de Meta${f.ticketera?' en '+esc(f.ticketera):''}${f.estado==='borrador'?' · la campaña todavía no está publicada':''}</div>
+          <div class="gp">Según el píxel de Meta${f.ticketera?' en '+esc(f.ticketera):''}${f.estado==='borrador'?' · la campaña todavía no está publicada':''}</div>`}
           ${f.tickets?`<a class="gl" href="${esc(f.tickets)}" target="_blank" rel="noopener">Ver entradas →</a>`:''}
         </div>${prog(f)}${curvaCE(f.serie_costo)}</div>`; }).join('')}</div>`; })();
     const scrHoy=`
@@ -1313,7 +1316,7 @@
   const INFO={
     'scr:hoy':{i:'Tu pantalla de inicio: lo más importante de tu proyecto de un vistazo. Se actualiza sola con tus redes conectadas.'},
     'métricas principales':{d:'Los tres números que más importan hoy para tu proyecto.',i:'Se actualizan solos con tus redes conectadas. La flecha compara con el período anterior. En «Ver todas» tenés el detalle red por red.'},
-    'próximos shows':{d:'Tus próximas fechas con entradas a la venta y cómo viene cada una.',i:'Las entradas vendidas salen del píxel de Meta instalado en la ticketera. El costo por entrada es lo invertido en anuncios dividido las entradas vendidas.'},
+    'próximos shows':{d:'Tus próximas fechas con entradas a la venta y cómo viene cada una.',i:'Las entradas vendidas se estiman con el píxel de Meta instalado en la ticketera: todas las compras desde que arrancó la campaña, pasadas a entradas con el precio de la entrada y redondeadas para arriba. El costo por entrada es lo invertido en anuncios dividido esas entradas.'},
     'conjuntos de anuncios':{d:'Cómo rinde cada grupo de anuncios que está corriendo.',i:'Cada conjunto es un público con su propio presupuesto diario. Mirá cuántos resultados trae y cuánto cuesta cada uno.'},
     'cuenta publicitaria':{i:'El estado de tu cuenta de anuncios de Meta: si está activa, cuántas campañas corren y cuándo se cobra.'},
     'tu progreso del período':{i:'Lo que más creció en tu proyecto desde el reporte anterior. La flecha te lleva al reporte completo.'},
