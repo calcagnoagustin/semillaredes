@@ -244,6 +244,14 @@
   #v3 .dest .gsvg{width:100%;height:auto;display:block;margin-top:8px}
   #v3 .dest .gst{margin:12px 0 0;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#55525F}
   #v3 .dest .gnota{margin:4px 0 0;font-size:12px;color:#8A8577;line-height:1.4}
+  #v3 .ctas .cta{grid-template-areas:'l l' 's s' 'e n'}#v3 .ctas .cta .sub{grid-area:s;margin-top:-4px;font:500 12.5px/1.3 Inter,sans-serif;color:#8A8577}
+  #v3 .cru .cc{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  #v3 .cru .cc>div{border-radius:14px;padding:12px 14px;background:#F3ECE0}
+  #v3 .cru .cc .k{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;line-height:1.3}
+  #v3 .cru .cc b{display:block;font:700 26px/1 'Playfair Display',Georgia,serif;margin-top:8px;white-space:nowrap}
+  #v3 .cru .cc small{display:block;font-size:12.5px;color:#55525F;margin-top:6px;line-height:1.35}
+  #v3 .cru .ley{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:12px;color:#55525F}
+  #v3 .cru .ley span{display:inline-flex;align-items:center;gap:6px}#v3 .cru .ley i{display:block;width:16px;height:3px;border-radius:2px}
   #v3 .dest .dp{font-size:12px;color:#8A8698;margin-top:12px}
   #v3 .cjl{display:grid;gap:12px}
   #v3 .cjl .card{padding:16px}
@@ -652,7 +660,8 @@
     const tiene=k=>val(k)!=null;
     const MET=[['ig_followers_total','seguidores','ig'],[SPK,'oyentes mensuales','sp'],['yt_views','vistas','yt'],['msj_mensajes','mensajes','msj'],['msj_conversiones','ventas','msj'],['tk_tickets','entradas','tk'],['stm_wishlist','wishlists en Steam','stm'],['vta_visitas','visitas a la tienda','vtv'],['ig_conv','conversión de visitas','ig'],['vta_ventas','ventas','vta'],['vta_roas_pixel','retorno por dólar','vta'],['vta_costo_venta','costo por venta','vta'],['frm_visitas','visitas a la formación','frm'],['frm_mensajes','consultas','frm'],['ig_visitas','visitas al perfil','ig']].filter(([k])=>tiene(k)&&!(k==='vta_visitas'&&tiene('vta_ventas'))).map(([k,l,ic])=>({k,l,ic}));
     // --- Campaña destacada (sub_campanas con tipo 'destacada'): arriba de todo en Hoy, con sus números acumulados ---
-    const DEST=(d.campanas||[]).filter(k=>(k.metricas||{}).tipo==='destacada').map(k=>{ const M=k.metricas||{}, on=M.estado==='activa';
+    const SIMG=SIM;   // 04/11 (MMC): cada campaña destacada con la moneda de su cuenta
+    const DEST=(d.campanas||[]).filter(k=>(k.metricas||{}).tipo==='destacada').map(k=>{ const M=k.metricas||{}, on=M.estado==='activa', SIM=M.moneda?(M.moneda==='USD'?'USD ':'$ '):SIMG;
       const fl=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
       const it=[]; let dh='', esc2='', gra=''; if(M.ventas!=null){ // 30/10 (Alan): ventas y costo por venta destacados, escalera de objetivos y gráfica desplegable
         dh=`<div class="dh"><div><b>${nf(M.ventas)}</b><small>${M.ventas===1?'venta':'ventas'}</small></div><div><b>${M.costo_venta!=null?(SIM.trim()?`<em>${SIM.trim()}</em>`:'')+nf(M.costo_venta,2):'—'}</b><small>costo por venta</small></div></div>`;
@@ -671,9 +680,26 @@
       else { if(M.visitas!=null) it.push([nf(M.visitas),M.resultado||'resultados']); if(M.alcance!=null) it.push([nf(M.alcance),'personas alcanzadas']);
       if(M.inversion!=null) it.push([SIM+nf(M.inversion),'invertidos']); if(M.costo_visita!=null) it.push([SIM+nf(M.costo_visita,2),'por '+String(M.resultado||'resultado').replace(/s(\s|$)/,'$1').replace(/es al /,' al ')]); }
       return `<div class="dest"><div class="de">Campaña destacada<span class="${on?'on':''}"><i></i>${on?'Activa':M.estado==='sin_circular'?'Sin circular':'Terminada'}</span></div>
-        <h3>${esc(k.nombre)}</h3><div class="ds">${M.show?'Show el '+fl(M.show)+' · ':''}${M.desde?'Desde el '+fl(M.desde):''}${M.hasta?' hasta el '+fl(M.hasta):''}${M.diaria?' · '+SIM+nf(M.diaria)+' por día':''}</div>
+        <h3>${esc(k.nombre)}</h3><div class="ds">${M.etiqueta?esc(M.etiqueta)+' · ':''}${M.show?'Show el '+fl(M.show)+' · ':''}${M.desde?'Desde el '+fl(M.desde):''}${M.hasta?' hasta el '+fl(M.hasta):''}${M.diaria?' · '+SIM+nf(M.diaria)+' por día':''}</div>
         ${dh}${it.length?`<div class="dg">${it.map(x=>`<div><b>${x[0]}</b><small>${esc(x[1])}</small></div>`).join('')}</div>`:'<div class="ds" style="margin-top:12px">Los números aparecen en la próxima actualización.</div>'}${esc2}${gra}
         <div class="dp">${(M.show||M.corte)?'Acumulado desde el '+fl(M.desde):'Acumulado de toda la campaña'}${M.ventas!=null?' · según el píxel de la tienda':''}${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; }).join('');
+    // --- 04/11 (MMC): cruce del costo por seguidor entre dos campañas de cuentas distintas, con gráfica desplegable ---
+    const CRU=(d.campanas||[]).filter(k=>(k.metricas||{}).tipo==='cruce').map(k=>{ const M=k.metricas||{}, C2=M.campanas||[], D=M.dias||[], R0=M.referencia;
+      const fl=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'', COL={nueva:'#2F7A4F',vieja:VINO}, u=v=>v==null?'—':'USD '+nf(v,2);
+      const cc=C2.map(z=>`<div><div class="k" style="color:${COL[z.clave]||NAVY}">${esc(z.cuenta)}</div><b style="color:${COL[z.clave]||NAVY}">${u(z.costo)}</b><small>${z.costo==null?'todavía sin seguidores':'por seguidor · '+nf(z.seguidores)+(z.seguidores===1?' seguidor':' seguidores')} · ${u(z.usd)} invertidos</small></div>`).join('');
+      const SR=C2.map(z=>({z,v:D.map(x=>(x[z.clave]||{}).costo_acum??null)})), V=SR.flatMap(q=>q.v).filter(x=>x!=null).concat(R0&&R0.costo?[R0.costo]:[]);
+      let svg='';
+      if(D.length>=2&&SR.some(q=>q.v.filter(x=>x!=null).length>=2)){ const W=320,H=170,PX=30,PT=24,PB=26, mx=Math.max(...V)*1.15, mn=0, rg=(mx-mn)||1;
+        const X=i=>PX+i*(W-PX*2)/(D.length-1), Y=x=>PT+(1-(x-mn)/rg)*(H-PT-PB), paso=Math.ceil(D.length/7);
+        const ref=R0&&R0.costo?`<line x1="${PX}" x2="${W-PX}" y1="${Y(R0.costo).toFixed(1)}" y2="${Y(R0.costo).toFixed(1)}" stroke="#A9A190" stroke-width="1.5" stroke-dasharray="4 4"/>`:'';
+        const lin=SR.map(q=>{ const ok=q.v.map((x,i)=>[i,x]).filter(z=>z[1]!=null), col=COL[q.z.clave]||NAVY; if(!ok.length) return '';
+          return `<path d="${ok.map((z,j)=>(j?'L':'M')+X(z[0]).toFixed(1)+' '+Y(z[1]).toFixed(1)).join(' ')}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round"/>${ok.map(z=>`<circle cx="${X(z[0]).toFixed(1)}" cy="${Y(z[1]).toFixed(1)}" r="3" fill="${col}"/>`).join('')}<text x="${X(ok[ok.length-1][0]).toFixed(1)}" y="${(Y(ok[ok.length-1][1])-8).toFixed(1)}" text-anchor="end" font-size="10.5" font-weight="700" fill="${col}" paint-order="stroke" stroke="#FBF8F2" stroke-width="4" stroke-linejoin="round">${nf(ok[ok.length-1][1],2)}</text>`; }).join('');
+        const ejes=D.map((x,i)=>(i%paso===0||i===D.length-1)?`<text x="${X(i).toFixed(1)}" y="${H-8}" text-anchor="middle" font-size="10" fill="#8A8577">${fl(x.f)}</text>`:'').join('');
+        svg=`<svg viewBox="0 0 ${W} ${H}" class="gsvg">${ref}${lin}${ejes}</svg>`; }
+      const ley=`<div class="ley">${C2.map(z=>`<span><i style="background:${COL[z.clave]||NAVY}"></i>${esc(z.cuenta)}</span>`).join('')}${R0&&R0.costo?`<span><i style="background:repeating-linear-gradient(90deg,#A9A190 0 4px,transparent 4px 8px)"></i>Referencia: cuenta anterior sola</span>`:''}</div>`;
+      const gra=`<details class="gcur"><summary>Ver gráfica <span class="fl">▸</span></summary><p class="gst">Costo por seguidor acumulado</p>${svg||'<p class="gnota">La curva se arma día a día: los primeros puntos aparecen cuando las dos cuentas tengan al menos dos días con seguidores.</p>'}${ley}
+        <p class="gnota">Al cierre de cada día, desde el ${fl(M.desde)}. Meta no informa seguidores por campaña: los seguidores nuevos de Instagram de cada día se reparten entre las dos campañas según las visitas al perfil que trajo cada una. Los pesos se pasan a dólares al oficial del día${M.fx_hoy?` (hoy USD 1 = $ ${nf(M.fx_hoy,0)})`:''}.</p></details>`;
+      return `<div class="dest cru"><div class="de">Costo por seguidor</div><h3>Cuenta nueva vs. anterior</h3><div class="ds">Desde el ${fl(M.desde)}, cuando arrancó la cuenta nueva · en dólares</div><div class="cc">${cc}</div>${R0&&R0.costo?`<p class="gnota" style="margin-top:10px">Referencia: del ${fl(R0.desde)} al ${fl(R0.hasta)}, con la cuenta anterior sola, cada seguidor costó ${u(R0.costo)}.</p>`:''}${gra}<div class="dp">Estimado${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; }).join('');
     // --- Shows de la gira en Hoy (Koino): entradas vendidas según el píxel de Meta, una tarjeta por fecha que todavía no pasó ---
     // 22/10: cuándo se actualizaron los números por última vez
     const ACT=(()=>{ const a=[...R].reverse().map(r=>r.metricas&&r.metricas.actualizado).find(Boolean); if(!a) return ''; const z=String(a); const hoyS=new Date().toLocaleDateString('en-CA',{timeZone:'America/Argentina/Buenos_Aires'});
@@ -705,7 +731,8 @@
     const scrHoy=`
       <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>${ACT}${({'alan-sutton':'Tus números y las ventas de merch se actualizan todos los días. El reporte sale los jueves a las 7.'})[slug]?`<p class="aviso-act">${({'alan-sutton':'Tus números y las ventas de merch se actualizan todos los días. El reporte sale los jueves a las 7.'})[slug]}</p>`:''}
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g transform="translate(-4 44)"><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></g></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
-      ${DEST}
+      <div id="v3ctas"></div>
+      ${DEST}${CRU}
       ${GIRA}
       <div class="tit2"><h3>Métricas principales</h3><button data-ir="metricas">Ver todas</button></div>
       <div class="met">${MET.slice(0,3).map(m=>`<div class="card"><div class="ic">${ico[m.ic]}</div><div class="v ${m.k==='vta_costo_venta'?'ch':''}">${m.k==='ig_conv'?nf(val(m.k),1)+'%':m.k==='vta_costo_venta'?SIM.trim()+' '+nf(val(m.k),2):m.k==='vta_roas_pixel'?nf(val(m.k),1)+'x':nf(val(m.k),Number.isInteger(Number(val(m.k)))?0:1)}</div><div class="l">${Number(val(m.k))===1?m.l.replace(/^consultas$/,'consulta').replace(/^mensajes$/,'mensaje').replace(/^ventas$/,'venta').replace(/^seguidores$/,'seguidor'):m.l}</div><div class="d">${m.k==='ig_conv'?dPt(m.k):dK(m.k,m.k==='vta_costo_venta')}</div></div>`).join('')}</div>
@@ -1146,6 +1173,11 @@
       if(ctEl) ctEl.innerHTML=CV.length?(()=>{ const T=CV.reduce((a,z)=>({n:a.n+(z.resultados||0),i:a.i+(z.inversion||0),g:a.g+(z.ingreso||0)}),{n:0,i:0,g:0});
         return `<div class="cjt"><p class="k">Desde el inicio · acumulado</p><h3>Campaña de ventas por conjunto</h3><p class="b">El total de cada conjunto desde que arrancó hasta hoy. No es el resumen del período: eso está más abajo.</p>
           <div class="cjl">${CV.map(z=>vtaCard(z.nombre,z.fin?`Del ${fd(z.inicio)} al ${fd(z.fin)}`:`Del ${fd(z.inicio)} a hoy`,z.resultados,z.inversion,z.costo,z.ingreso,'')).join('')}${CV.length>1?vtaCard('Total de la campaña',`Los ${CV.length} conjuntos juntos`,T.n,T.i,T.n?T.i/T.n:null,T.g,'tt'):''}</div></div>`; })():'';
+      const ctasEl=document.getElementById('v3ctas');   // 04/11 (MMC): dos cuentas publicitarias, cada una con su estado, arriba de todo en Hoy
+      if(ctasEl&&(c.cuentas||[]).length>1){ ctasEl.innerHTML=`<div class="tit2"><h3>Tus cuentas publicitarias</h3></div><div class="ctas">${c.cuentas.map(x=>{ const Q=x.pago||{}, us=Q.moneda==='USD', pq=v=>v==null?'—':us?'USD '+nf(v,2):'$ '+nf(v,0), mq=String(Q.metodo||'').replace(/\s*\*+\s*/,' ••'), N=(x.nombres||[]).filter(Boolean);
+        return `<div class="cta"><span class="l">${esc(x.nombre||'Cuenta publicitaria')}</span><span class="sub">${us?'En dólares':'En pesos'}${mq?' · se paga con la '+esc(mq):''}</span><span class="e ${x.activa?'on':''}"><i></i>${x.activa?'Activa':esc(String(x.estado||'').charAt(0).toUpperCase()+String(x.estado||'').slice(1))}</span><span class="n">${x.campanas} ${x.campanas===1?'campaña corriendo':'campañas corriendo'}</span>${N.length?`<div class="cn">${N.map(z=>`<span>${esc(z)}</span>`).join('')}</div>`:''}
+          ${Q.inversion_diaria!=null?`<div class="pg"><div class="r1"><span>Inversión diaria</span><b>${pq(Q.inversion_diaria)}</b></div></div>`:''}${Q.saldo!=null?`<div class="pg"><div class="r1"><span>${Q.proximo?'Próximo cobro':'Saldo a pagar'}</span><b>${Q.proximo?fch(Q.proximo.fecha)+' · '+pq(Q.proximo.monto):pq(Q.saldo)}</b></div>${Q.proximo?`<p>Fecha aproximada. Hoy el saldo es de ${pq(Q.saldo)}.</p>`:''}</div>`:''}</div>`; }).join('')}</div>`;
+        el.innerHTML=''; return; }
       el.innerHTML=`<div class="cta"><span class="l">Cuenta publicitaria</span><span class="e ${c.activa?'on':''}"><i></i>${c.activa?'Activa':esc(c.estado.charAt(0).toUpperCase()+c.estado.slice(1))}</span><span class="n">${c.campanas} ${c.campanas===1?'campaña corriendo':'campañas corriendo'}</span>${(()=>{ // 23/10: nombres de las campañas, sutil; no va si ya hay campañas destacadas en Hoy
         const N=(c.nombres||[]).filter(Boolean); if(!N.length||document.querySelector('#v3 .dest, #v3 .gira')) return '';
         return `<div class="cn">${N.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`; })()}${dia}${pg}</div>`; };
