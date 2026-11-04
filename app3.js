@@ -103,10 +103,10 @@
   #v3 .tit2 a,#v3 .tit2 button{font-size:14px;color:${OLIVA};text-decoration:none;background:none;border:0;cursor:pointer;font-family:inherit;padding:0}
   #v3 .card{background:#FBF8F2;border:1px solid #E8E1D3;border-radius:18px}
   #v3 .etp{padding:18px 18px 16px}
-  #v3 .etp .st{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  #v3 .etp .st{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
   #v3 .etp .st button{background:none;border:0;padding:0;text-align:left;cursor:pointer;font-family:inherit;color:#A29E92}
   #v3 .etp .st i{display:block;height:5px;border-radius:99px;background:#E2DCCF;margin-bottom:8px}
-  #v3 .etp .st b{display:block;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700}
+  #v3 .etp .st b{display:block;font-size:12.5px;font-weight:700;white-space:nowrap}
   #v3 .etp .st button.pas i{background:${OLIVA};opacity:.45}#v3 .etp .st button.pas{color:#6E6B62}
   #v3 .etp .st button.on i{background:${OLIVA}}#v3 .etp .st button.on{color:${NAVY}}
   #v3 .etp .nm{font-family:'Playfair Display',serif;font-size:23px;font-weight:600;color:${NAVY};margin:16px 0 4px}
@@ -760,7 +760,7 @@
     const ETAPA_FIJA={};
     const ETK='sr_etapa_'+slug, ETel=(()=>{ if(ETAPA_FIJA[slug]) return {n:ETAPA_FIJA[slug],fija:1}; let v=null; try{ v=+localStorage.getItem(ETK)||null; }catch(e){} return v?{n:v}:null; })();
     const ETP=(()=>{ const cur=ETel&&ETel.n, E=cur?ETAPAS[cur-1]:null, EJ=['Modelo de negocio','Comunicación','Publicidad'];
-      const st=`<div class="st">${ETAPAS.map((x,i)=>`<button type="button" class="${cur===i+1?'on':cur>i+1?'pas':''}" data-etp="${i+1}"${ETel&&ETel.fija?' disabled':''}><i></i><b>${i+1}. ${x.n}</b></button>`).join('')}</div>`;
+      const st=`<div class="st">${ETAPAS.map((x,i)=>`<button type="button" class="${cur===i+1?'on':cur>i+1?'pas':''}" data-etp="${i+1}"${ETel&&ETel.fija?' disabled':''}><i></i><b>${x.n}</b></button>`).join('')}</div>`;
       const cuerpo=E?`<div class="nm">${E.n}</div><p class="ds">${E.d}</p><div class="ej">${E.e.map((t,i)=>`<div><small>${EJ[i]}</small><p>${t}</p></div>`).join('')}</div>`
         :`<p class="q">El Método Semilla tiene tres etapas. Saber en cuál estás te dice dónde poner la energía. ¿En cuál estás?</p><div class="el">${ETAPAS.map((x,i)=>`<button type="button" data-etp="${i+1}"><b>${x.n}</b>${x.d}</button>`).join('')}</div>`;
       return `<div class="tit2"><h3>Tu etapa</h3>${E&&!ETel.fija?'<button type="button" data-etp="0">Cambiar</button>':''}</div><div class="card etp">${st}${cuerpo}</div>`; })();
