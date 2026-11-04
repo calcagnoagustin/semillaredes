@@ -34,7 +34,7 @@ iframe{border:0;width:100%;height:100%;display:block}
 </style>
 </head>
 <body>
-<iframe id="marco" allow="microphone; camera" title="Jimena Pesado"></iframe>
+<iframe id="marco" title="Jimena Pesado"></iframe>
 
 <div id="instalar">
   <img src="/icono-192.png" alt="">
@@ -150,7 +150,17 @@ async function suscribir(){
     body:JSON.stringify({p_slug:'jimena-pesado',p_k:'b2288a4951eb',p_sub:sub.toJSON(),p_ua:navigator.userAgent})});
 }
 const pushOK=('serviceWorker' in navigator)&&('PushManager' in window)&&('Notification' in window);
-if(pushOK){
+// 04/11: link para activar avisos (…/?avisos=1): muestra el cartel enseguida aunque antes lo hayan cerrado
+const forzarAv=/[?&]avisos=1/.test(location.search);
+if(forzarAv){ try{ localStorage.removeItem('sr_push_off'); localStorage.removeItem(CLAVE_INST); }catch(e){} oculto=null;
+  const tx=document.getElementById('msjAv'), bt=document.getElementById('btnAv');
+  if(esIOS && !yaInstalada){ setTimeout(()=>{ abrirPop(); document.getElementById('piTxt').innerHTML='En iPhone los avisos llegan solo con la app instalada. <b>Instalala y después abrila desde el ícono</b>: ahí te aparece el botón para activar los avisos.'; }, 600); }
+  else if(!pushOK){ cajaAv.style.display='flex'; tx.textContent='Este navegador no permite avisos. Abrí el link en Chrome (Android) o instalá la app (iPhone).'; bt.style.display='none'; }
+  else if(Notification.permission==='denied'){ cajaAv.style.display='flex'; tx.innerHTML='Los avisos están bloqueados en este celular. Entrá a <b>Ajustes del navegador → Notificaciones</b>, permitilos para semillaredes.com y volvé a abrir este link.'; bt.style.display='none'; }
+  else if(Notification.permission==='granted'){ suscribir().then(()=>{ cajaAv.style.display='flex'; tx.textContent='Listo: los avisos ya están activados en este celular.'; bt.style.display='none'; setTimeout(()=>cajaAv.style.display='none',3500); }).catch(()=>{}); }
+  else setTimeout(()=>{ pop.style.display='none'; caja.style.display='none'; cajaAv.style.display='flex'; }, 400);
+}
+if(pushOK && !forzarAv){
   if(Notification.permission==='granted') suscribir().catch(()=>{});   // vuelve a registrar el celular por si cambio
   else if(Notification.permission==='default' && !localStorage.getItem('sr_push_off') && (yaInstalada || !esIOS)){
     setTimeout(()=>{ if(caja.style.display!=='flex' && pop.style.display!=='flex') cajaAv.style.display='flex'; }, 3000);
