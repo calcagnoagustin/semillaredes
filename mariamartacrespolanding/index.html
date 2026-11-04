@@ -58,7 +58,8 @@ h1{font-size:clamp(54px,12vw,96px);line-height:.95;margin:0 0 14px}
 .hero .acc{display:flex;flex-direction:column;align-items:flex-start;gap:16px}
 .hero .acc .btn{width:100%;max-width:420px}
 .hero .cap{font:400 11px/1.4 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--gris);margin:30px 0 0}
-@media(min-width:900px){.hero .wrap{grid-template-columns:1fr 1.05fr;padding:0 0 0 24px;align-items:stretch}.hero .txt{order:1;padding:72px 48px 56px 0;display:flex;flex-direction:column;justify-content:center}.hero .img{order:2}.hero .img img{height:100%;aspect-ratio:auto;min-height:560px}.hero .acc{flex-direction:row;align-items:center;gap:26px}.hero .acc .btn{width:auto}}
+.hero picture{display:block}
+@media(min-width:900px){.hero{position:relative;overflow:hidden;min-height:clamp(600px,50vw,900px);display:flex;align-items:center}.hero .img{position:absolute;inset:0}.hero .img picture,.hero .img img{width:100%;height:100%}.hero .img img{aspect-ratio:auto;object-fit:cover;object-position:right 40%}.hero .wrap{position:static;width:100%;grid-template-columns:1fr;padding:0 24px}.hero .txt{position:relative;z-index:1;order:1;max-width:520px;padding:72px 0 64px}.hero .acc{flex-direction:row;align-items:center;gap:26px}.hero .acc .btn{width:auto}}
 /* strip */
 .strip{background:var(--marfil);border-bottom:1px solid var(--linea)}
 .strip .wrap{display:flex;justify-content:center;flex-wrap:wrap;padding:0}
@@ -159,7 +160,7 @@ footer a{color:inherit}
       <div class="acc"><a class="btn" href="#obras" data-e="12">Explorar obras ↗</a><a class="lnk" href="https://wa.me/5491153316752?text=Hola%20Mar%C3%ADa%20Marta%2C%20quiero%20imaginar%20una%20obra%20en%20mi%20pared" target="_blank" rel="noopener" data-e="13">Imaginala en tu pared</a></div>
       <p class="cap" data-e="14">Abundancia · 120 × 120 cm</p>
     </div>
-    <div class="img"><img src="img/hero.jpg" alt="Abundancia, obra de María Marta Crespo, en un living" data-e="15"></div>
+    <div class="img"><picture><source media="(min-width:900px)" srcset="img/hero-ancho.jpg"><img src="img/hero.jpg" alt="Abundancia, obra de María Marta Crespo, en un living" data-e="15"></picture></div>
   </div>
 </header>
 <div class="strip"><div class="wrap"><div>Obras originales</div><div>Contacto directo con la artista</div><div>Envíos al país y al exterior</div></div></div>
