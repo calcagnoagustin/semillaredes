@@ -19,6 +19,8 @@
   #v3 .cab .ia{font:800 21px/1 Inter,system-ui,sans-serif;color:${NAVY};letter-spacing:-.3px}
   #v3 .cab .ia b{color:${OLIVA};font-weight:700}
   #v3 .cab .esp{flex:1}
+  #v3 .etq{display:flex;width:max-content;align-items:center;gap:4px;margin:-6px 0 10px;padding:0 6px 0 8px;height:19px;border:1px solid #D9D3BE;border-radius:999px;background:none;color:#6E6B5A;font:600 10.5px/1 Inter,sans-serif;letter-spacing:.3px;white-space:nowrap;cursor:pointer}
+  #v3 .etq svg{width:11px;height:11px;display:block;opacity:.7}
   #v3 .cab .camp{position:relative;border:0;background:none;padding:6px;cursor:pointer;color:${VINO}}
   #v3 .cab .camp i{position:absolute;top:4px;right:4px;width:9px;height:9px;border-radius:50%;background:#E2767C;border:2px solid #F2EDE4;display:none}
   #v3 .cab .camp.nuevo i{display:block}
@@ -102,22 +104,6 @@
   #v3 .tit2 h2{margin:0;font-family:'Playfair Display',serif;font-size:23px;font-weight:600;color:${NAVY}}
   #v3 .tit2 a,#v3 .tit2 button{font-size:14px;color:${OLIVA};text-decoration:none;background:none;border:0;cursor:pointer;font-family:inherit;padding:0}
   #v3 .card{background:#FBF8F2;border:1px solid #E8E1D3;border-radius:18px}
-  #v3 .etp{padding:18px 18px 16px}
-  #v3 .etp .st{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-  #v3 .etp .st button{background:none;border:0;padding:0;text-align:left;cursor:pointer;font-family:inherit;color:#A29E92}
-  #v3 .etp .st i{display:block;height:5px;border-radius:99px;background:#E2DCCF;margin-bottom:8px}
-  #v3 .etp .st b{display:block;font-size:12.5px;font-weight:700;white-space:nowrap}
-  #v3 .etp .st button.pas i{background:${OLIVA};opacity:.45}#v3 .etp .st button.pas{color:#6E6B62}
-  #v3 .etp .st button.on i{background:${OLIVA}}#v3 .etp .st button.on{color:${NAVY}}
-  #v3 .etp .nm{font-family:'Playfair Display',serif;font-size:23px;font-weight:600;color:${NAVY};margin:16px 0 4px}
-  #v3 .etp .ds{font-size:15px;line-height:1.45;color:#4A4852;margin:0}
-  #v3 .etp .ej{display:grid;gap:12px;margin:14px 0 0;padding:14px 0 0;border-top:1px solid #E8E1D3}
-  #v3 .etp .ej small{display:block;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${OLIVA};margin-bottom:3px}
-  #v3 .etp .ej p{margin:0;font-size:14.5px;line-height:1.45;color:#3A3846}
-  #v3 .etp .q{font-size:15px;line-height:1.45;color:#4A4852;margin:14px 0 0}
-  #v3 .etp .el{display:grid;gap:8px;margin-top:12px}
-  #v3 .etp .el button{text-align:left;background:#fff;border:1px solid #E8E1D3;border-radius:12px;padding:11px 14px;font-family:inherit;font-size:14px;line-height:1.4;color:#4A4852;cursor:pointer}
-  #v3 .etp .el button b{display:block;color:${NAVY};font-size:15px;margin-bottom:2px}
   #v3 .hero{margin-top:18px;background:${NAVY};color:#F2EDE4;border-radius:20px;padding:20px 20px 18px;position:relative;overflow:hidden}
   #v3 .hero .e{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:.9}
   #v3 .hero .p{font-family:'Playfair Display',serif;font-size:56px;line-height:1;margin:14px 0 10px;font-weight:600}
@@ -749,26 +735,16 @@
           <div class="gp">Según el píxel de Meta${f.ticketera?' en '+esc(f.ticketera):''}${f.estado==='borrador'?' · la campaña todavía no está publicada':''}</div>`}
           ${f.tickets?`<a class="gl" href="${esc(f.tickets)}" target="_blank" rel="noopener">Ver entradas →</a>`:''}
         </div>${prog(f)}${curvaCE(f.serie_costo)}</div>`; }).join('')}</div>`; })();
-    // 04/11: etapas del Método Semilla en el inicio. ETAPA_FIJA la define Agus por proyecto; si no hay, la elige el artista (queda en este dispositivo).
-    const ETAPAS=[
-      {n:'Descubrimiento',d:'Conocer tu proyecto y probar hacia afuera: qué podés ofrecer, tus objetivos y tus posibilidades reales.',
-       e:['Definí qué podés ofrecer y armá un producto mínimo para probarlo.','Probá formatos de contenido y fijate cuáles conectan.','Campañas chicas para aprender quién responde.']},
-      {n:'Desarrollo',d:'Ya tenés algo para vender, pero todavía no crece solo. Es momento de pulir.',
-       e:['Ajustá tu oferta, las condiciones y los precios.','Contá con claridad qué vendés y cómo se compra.','Medí el costo por resultado y quedate con lo que rinde.']},
-      {n:'Escalabilidad',d:'Lo que funciona, multiplicado. Si invertís 1 y vuelven 5, ¿qué pasa si invertís 10?',
-       e:['Proyectá costos, equipo y capacidad antes de crecer.','Estandarizá y automatizá lo que se repite.','Subí la inversión de a poco en lo que ya probó retorno.']}];
-    const ETAPA_FIJA={};
-    const ETK='sr_etapa_'+slug, ETel=(()=>{ if(ETAPA_FIJA[slug]) return {n:ETAPA_FIJA[slug],fija:1}; let v=null; try{ v=+localStorage.getItem(ETK)||null; }catch(e){} return v?{n:v}:null; })();
-    const ETP=(()=>{ const cur=ETel&&ETel.n, E=cur?ETAPAS[cur-1]:null, EJ=['Modelo de negocio','Comunicación','Publicidad'];
-      const st=`<div class="st">${ETAPAS.map((x,i)=>`<button type="button" class="${cur===i+1?'on':cur>i+1?'pas':''}" data-etp="${i+1}"${ETel&&ETel.fija?' disabled':''}><i></i><b>${x.n}</b></button>`).join('')}</div>`;
-      const cuerpo=E?`<div class="nm">${E.n}</div><p class="ds">${E.d}</p><div class="ej">${E.e.map((t,i)=>`<div><small>${EJ[i]}</small><p>${t}</p></div>`).join('')}</div>`
-        :`<p class="q">El Método Semilla tiene tres etapas. Saber en cuál estás te dice dónde poner la energía. ¿En cuál estás?</p><div class="el">${ETAPAS.map((x,i)=>`<button type="button" data-etp="${i+1}"><b>${x.n}</b>${x.d}</button>`).join('')}</div>`;
-      return `<div class="tit2"><h3>Tu etapa</h3>${E&&!ETel.fija?'<button type="button" data-etp="0">Cambiar</button>':''}</div><div class="card etp">${st}${cuerpo}</div>`; })();
+    // 04/11: etapa del Método Semilla, sutil arriba del saludo. Por ahora solo en estos proyectos (Agus decide cuándo se suma el resto).
+    const ETAPA={'hernan-onirico':2,'semilla-redes':2};
+    const ETX=[['Descubrimiento','Conocer tu proyecto y probar hacia afuera: qué podés ofrecer, tus objetivos y tus posibilidades reales.'],['Desarrollo','Ya tenés algo para vender, pero todavía no crece solo. Es momento de pulir la oferta, los precios, la comunicación y las métricas.'],['Escalabilidad','Lo que funciona, multiplicado. Es momento de proyectar costos, equipo y automatización para crecer.']];
+    const ETQ=ETAPA[slug]?(()=>{ const n=ETAPA[slug], x=ETX[n-1];
+      const info=`${x[0]}: ${x[1]} Es la etapa ${n} de 3 del Método Semilla (Descubrimiento, Desarrollo y Escalabilidad).`;
+      return `<button type="button" class="etq" data-info="${esc(info)}" aria-label="Tu etapa: ${x[0]}. Más info">${x[0]}<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.6" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="10" cy="6.2" r="1.3" fill="currentColor"/><path d="M10 9v5.6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></button>`; })():'';
     const scrHoy=`
-      <h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>${ACT}${({'alan-sutton':'Tus números y las ventas de merch se actualizan todos los días. El reporte sale los jueves a las 7.','bodegon-para':'Tus números se actualizan todos los días. El reporte sale los jueves a las 7.'})[slug]?`<p class="aviso-act">${({'alan-sutton':'Tus números y las ventas de merch se actualizan todos los días. El reporte sale los jueves a las 7.','bodegon-para':'Tus números se actualizan todos los días. El reporte sale los jueves a las 7.'})[slug]}</p>`:''}
+      ${ETQ}<h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>${ACT}${({'alan-sutton':'Tus números y las ventas de merch se actualizan todos los días. El reporte sale los jueves a las 7.','bodegon-para':'Tus números se actualizan todos los días. El reporte sale los jueves a las 7.'})[slug]?`<p class="aviso-act">${({'alan-sutton':'Tus números y las ventas de merch se actualizan todos los días. El reporte sale los jueves a las 7.','bodegon-para':'Tus números se actualizan todos los días. El reporte sale los jueves a las 7.'})[slug]}</p>`:''}
       <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g transform="translate(-4 44)"><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></g></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
       <div id="v3ctas"></div>
-      ${ETP}
       ${DEST}${CRU}
       ${GIRA}
       <div class="tit2"><h3>Métricas principales</h3><button data-ir="metricas">Ver todas</button></div>
@@ -1225,6 +1201,7 @@
 
     // --- eventos ---
     document.querySelectorAll('#v3 [data-ir], #v3nav [data-ir]').forEach(b=>b.onclick=()=>ir(b.dataset.ir,true));
+    raiz.querySelectorAll('.etq').forEach(b=>b.onclick=e=>{ e.stopPropagation(); infAbrir(b); window.SRE&&window.SRE('etapa_info',{}); });
     const abre=()=>{ verRep(); raiz.querySelector('#v3camp').classList.remove('nuevo'); };
     raiz.querySelector('#v3camp').onclick=()=>notifAbrir();
     raiz.querySelector('#v3av').onclick=()=>perfilAbrir();
@@ -1240,7 +1217,6 @@
       else if(a==='fecha'){ FFORM=true; TAB='actividades'; armar(window.__D); setTimeout(()=>{ const f=document.getElementById('v3ft'); f&&f.scrollIntoView({block:'center'}); },60); }
       else if(a==='chat'){ const cb=document.getElementById('v3chatb'); cb&&cb.click(); } });
     raiz.querySelectorAll('[data-filtro]').forEach(b=>b.onclick=()=>{ FILTRO=b.dataset.filtro; armar(window.__D); });
-    raiz.querySelectorAll('[data-etp]').forEach(b=>b.onclick=()=>{ const n=+b.dataset.etp; try{ if(n) localStorage.setItem('sr_etapa_'+slug,String(n)); else localStorage.removeItem('sr_etapa_'+slug); }catch(e){} window.SRE&&window.SRE('etapa',{n}); armar(window.__D); });
     raiz.querySelectorAll('[data-v3acc]').forEach(b=>b.onclick=()=>window.V3IR(b.dataset.v3acc));
     raiz.querySelectorAll('[data-red]').forEach(b=>b.onclick=()=>{ SUBRED=b.dataset.red; armar(window.__D); });
     raiz.querySelectorAll('[data-tab]').forEach(s=>s.onclick=()=>s.classList.toggle('ab'));
