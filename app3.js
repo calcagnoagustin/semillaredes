@@ -186,6 +186,7 @@
   #v3 .lista .alb.on{border-color:${VINO};color:${VINO};background:#F7EDEF}
   #v3 .lista .alform{padding:4px 14px 14px 54px;border-top:0}
   #v3 .lista .alform label{display:block;font:600 13px/1.3 Inter,sans-serif;color:#24242C;margin:0 0 8px}
+  #v3 .lista .alform select{width:100%;box-sizing:border-box;border:1px solid #E1D9C9;border-radius:12px;padding:10px 12px;font:500 15px Inter,sans-serif;color:#24242C;background:#fff;margin-top:12px;appearance:auto}
   #v3 .lista .alform input{width:100%;box-sizing:border-box;border:1px solid #E1D9C9;border-radius:12px;padding:10px 12px;font:500 15px Inter,sans-serif;color:#24242C;background:#fff}
   #v3 .lista .alform .alacc{display:flex;gap:8px;margin-top:10px}
   #v3 .lista .alform button{border:0;background:${OLIVA};color:#fff;border-radius:999px;padding:10px 16px;font:600 13.5px Inter,sans-serif;cursor:pointer}
@@ -770,11 +771,12 @@
       <div class="pills">${Object.keys(lab).map(k=>`<button class="${k===FILTRO?'on':''}" data-filtro="${k}">${lab[k]} · ${T.filter(t=>enG(t,k)).length}</button>`).join('')}</div>
       <div class="card lista">
         ${TT.length?TT.map(t=>{ const hecha=t.estado==='hecha', al=t.alarma&&!hecha?new Date(t.alarma):null, alOn=al&&!t.alarma_enviada;
-          const alTxt=al?`${DS[al.getDay()].toLowerCase()} ${String(al.getDate()).padStart(2,'0')}/${String(al.getMonth()+1).padStart(2,'0')} · ${String(al.getHours()).padStart(2,'0')}:${String(al.getMinutes()).padStart(2,'0')}`:'';
+          const REPN={diaria:'todos los días',cada2:'día por medio',habiles:'de lunes a viernes',semanal:'todas las semanas',mensual:'todos los meses'};   // 04/11: alarmas recurrentes
+          const alTxt=al&&t.alarma_repite&&REPN[t.alarma_repite]?`${REPN[t.alarma_repite]} · ${String(al.getHours()).padStart(2,'0')}:${String(al.getMinutes()).padStart(2,'0')} (próxima ${String(al.getDate()).padStart(2,'0')}/${String(al.getMonth()+1).padStart(2,'0')})`:al?`${DS[al.getDay()].toLowerCase()} ${String(al.getDate()).padStart(2,'0')}/${String(al.getMonth()+1).padStart(2,'0')} · ${String(al.getHours()).padStart(2,'0')}:${String(al.getMinutes()).padStart(2,'0')}`:'';
           const loc=x=>{ const z=new Date(x.getTime()-x.getTimezoneOffset()*6e4); return z.toISOString().slice(0,16); };
           return `<div class="fila tarea ${t.estado}"><button class="ck ${t.estado}" data-tck="${t.id}" data-est="${t.estado}" aria-label="Cambiar estado">${hecha?ico.tilde:''}</button><div class="tw">${EDon('tarea',t.id)?EDF([{v:t.titulo,ph:'Tarea',area:1}]):`<span class="tx" data-tab="1">${esc(t.titulo)}</span>
             <div class="tacc">${hecha?'':`<button class="est ${t.estado==='en_curso'?'on':''}" data-tcur="${t.id}" data-est="${t.estado}">En curso</button><button class="alb ${alOn?'on':''}" data-tal="${t.id}" aria-label="Poner alarma">${ico.alarma}</button>${al?`<small class="alt ${alOn?'on':''}">${alOn?alTxt:'Avisado · '+alTxt}</small>`:''}`}<span class="sp"></span>${IB('tarea',t.id)}</div>`}</div></div>
-          ${ALFORM===t.id?`<div class="alform"><label>¿Cuándo te avisamos?</label><input type="datetime-local" id="v3alv" value="${al?loc(al):loc(new Date(Date.now()+864e5))}"><div class="alacc"><button id="v3alok" data-id="${t.id}">Guardar alarma</button>${al?`<button class="sec" id="v3alno" data-id="${t.id}">Quitar</button>`:''}</div><p>Te llega un aviso al celular a esa hora y queda en tus notificaciones.</p></div>`:''}`; }).join('')
+          ${ALFORM===t.id?`<div class="alform"><label>¿Cuándo te avisamos?</label><input type="datetime-local" id="v3alv" value="${al?loc(al):loc(new Date(Date.now()+864e5))}"><select id="v3alr" aria-label="Repetir">${[['','No se repite'],['diaria','Todos los días'],['cada2','Día por medio'],['habiles','De lunes a viernes'],['semanal','Todas las semanas'],['mensual','Todos los meses']].map(o=>`<option value="${o[0]}"${(t.alarma_repite||'')===o[0]?' selected':''}>${o[1]}</option>`).join('')}</select><div class="alacc"><button id="v3alok" data-id="${t.id}">Guardar alarma</button>${al?`<button class="sec" id="v3alno" data-id="${t.id}">Quitar</button>`:''}</div><p>Te llega un aviso al celular a esa hora y queda en tus notificaciones. Si la repetís, te sigue avisando hasta que marques la tarea como hecha o quites la alarma.</p></div>`:''}`; }).join('')
           :`<div class="vacio">${FILTRO==='hecha'?'Todavía no hay tareas hechas.':'No hay tareas pendientes. ¡Buen trabajo!'}</div>`}
         <div class="add"><span class="mas">+</span><input id="v3tarea" placeholder="Agregar tarea"><button id="v3tadd">Sumar</button></div>
       </div>
@@ -1226,7 +1228,7 @@
         if((t==='tarea'||t==='nota'||t==='activo')&&!v(0)){ alert('No puede quedar vacío'); return; } eok.disabled=true; r=await rpc('sub_editar',{p_slug:slug,p_k:tok,p_tipo:t,p_id:ED.id,p_datos:D}); }
       window.SRE&&window.SRE('editar',{tipo:t}); if(r&&r.ok){ if(t==='fecha') webFechas(); ED=null; recargar(); } else { eok.disabled=false; alert('No se pudo guardar. Probá de nuevo.'); } };
     raiz.querySelectorAll('[data-tal]').forEach(b=>b.onclick=()=>{ ALFORM=ALFORM===b.dataset.tal?null:b.dataset.tal; armar(window.__D); setTimeout(()=>{ const i=document.getElementById('v3alv'); i&&i.scrollIntoView({block:'center'}); },60); });
-    const alGuardar=async(b,valor)=>{ b.disabled=true; window.SRE&&window.SRE('tarea_alarma',{on:!!valor}); const r=await rpc('sub_tarea_alarma',{p_slug:slug,p_k:tok,p_id:b.dataset.id,p_alarma:valor});
+    const alGuardar=async(b,valor)=>{ b.disabled=true; window.SRE&&window.SRE('tarea_alarma',{on:!!valor}); const rp=valor?((raiz.querySelector('#v3alr')||{}).value||null):null; const r=await rpc('sub_tarea_alarma',{p_slug:slug,p_k:tok,p_id:b.dataset.id,p_alarma:valor,p_repite:rp});
       if(r&&r.ok){ ALFORM=null; recargar(); } else { b.disabled=false; alert('No se pudo guardar la alarma. Probá de nuevo.'); } };
     const alok=raiz.querySelector('#v3alok'); if(alok) alok.onclick=()=>{ const v=raiz.querySelector('#v3alv').value; if(!v){ alert('Elegí el día y la hora'); return; } const f=new Date(v); if(f<new Date()){ alert('Elegí un momento que todavía no pasó'); return; } alGuardar(alok,f.toISOString()); };
     const alno=raiz.querySelector('#v3alno'); if(alno) alno.onclick=()=>alGuardar(alno,null);
@@ -1262,7 +1264,7 @@
     const t0=bt.innerHTML; bt.disabled=true; bt.lastChild.textContent='Generando…';
     const raiz=document.getElementById('v3'), nom=(window.__D&&window.__D.cliente&&window.__D.cliente.nombre)||'', hoy=new Date();
     const DS=['dom','lun','mar','mié','jue','vie','sáb'], f2=x=>String(x).padStart(2,'0');
-    const alt=t=>{ if(!t.alarma||t.estado==='hecha') return ''; const a=new Date(t.alarma); return `<span class="tal">Recordatorio: ${DS[a.getDay()]} ${f2(a.getDate())}/${f2(a.getMonth()+1)} · ${f2(a.getHours())}:${f2(a.getMinutes())}</span>`; };
+    const alt=t=>{ if(!t.alarma||t.estado==='hecha') return ''; const a=new Date(t.alarma); const RPN={diaria:'todos los días',cada2:'día por medio',habiles:'de lunes a viernes',semanal:'todas las semanas',mensual:'todos los meses'}[t.alarma_repite]; return `<span class="tal">Recordatorio: ${RPN?RPN+' a las '+f2(a.getHours())+':'+f2(a.getMinutes()):`${DS[a.getDay()]} ${f2(a.getDate())}/${f2(a.getMonth()+1)} · ${f2(a.getHours())}:${f2(a.getMinutes())}`}</span>`; };
     const fila=t=>`<div class="tfi ${t.estado}"><span class="tck">${t.estado==='hecha'?'✓':''}</span><div><div class="ttx">${esc(t.titulo)}</div>${t.estado==='en_curso'?'<span class="tec">En curso</span>':''}${alt(t)}</div></div>`;
     const P=T.filter(t=>t.estado!=='hecha').sort((a,b)=>(b.estado==='en_curso')-(a.estado==='en_curso')), H=T.filter(t=>t.estado==='hecha');
     const w=document.createElement('div'); w.className='v3exp';
