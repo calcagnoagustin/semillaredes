@@ -736,7 +736,10 @@
           ${f.tickets?`<a class="gl" href="${esc(f.tickets)}" target="_blank" rel="noopener">Ver entradas →</a>`:''}
         </div>${prog(f)}${curvaCE(f.serie_costo)}</div>`; }).join('')}</div>`; })();
     // 04/11: etapa del Método Semilla, sutil arriba del saludo. Por ahora solo en estos proyectos (Agus decide cuándo se suma el resto).
-    const ETAPA={'hernan-onirico':2,'semilla-redes':2};
+    // Etapas acordadas con Agus el 04/11 (Cerro de Oro y JUABRU sin definir). Solo se MUESTRA en ETAPA_VIS hasta que Agus diga.
+    const ETAPAS_TODAS={'hernan-onirico':1,'hernan-onirico-2':1,'betsy-grinblat':1,'yamila-beraja':1,'audova':1,'spam-studio':1,'felipe-gonzalez':1,'lu-glass':1,'marcos-cifuentes':1,'flor-scott':1,'los-soplafortune':1,'mavela':1,'sin-fronteras-duo':1,'eupatridas':1,'eupatridas-1':1,'cacatua-negra':1,'cacatua-negra-1':1,'mynk':1,'urieldepaz':1,'lzkphoto':1,'juanmarinoph':1,'jimena-mercedes':1,'jimena-pesado':1,'semilla-redes':2,'federico-andahazi':2,'maria-marta-crespo':2,'berco-estudio':2,'piku-yoga':2,'flor-del-valle':2,'lara-fichera':2,'andrea-guedella':2,'silvina':2,'alamesa':2,'bodegon-para':2,'tuncha':2,'abel-maldonado':2,'cheche-beraja':2,'koino':3,'animales-del-rock':3,'animales-del-rock-2':3,'alan-sutton':3};
+    const ETAPA_VIS=['hernan-onirico','semilla-redes'];
+    const ETAPA=Object.fromEntries(ETAPA_VIS.filter(k=>ETAPAS_TODAS[k]).map(k=>[k,ETAPAS_TODAS[k]]));
     const ETX=[['Descubrimiento','Conocer tu proyecto y probar hacia afuera: qué podés ofrecer, tus objetivos y tus posibilidades reales.'],['Desarrollo','Ya tenés algo para vender, pero todavía no crece solo. Es momento de pulir la oferta, los precios, la comunicación y las métricas.'],['Escalabilidad','Lo que funciona, multiplicado. Es momento de proyectar costos, equipo y automatización para crecer.']];
     const ETQ=ETAPA[slug]?(()=>{ const n=ETAPA[slug], x=ETX[n-1];
       const info=`${x[0]}: ${x[1]} Es la etapa ${n} de 3 del Método Semilla (Descubrimiento, Desarrollo y Escalabilidad).`;
