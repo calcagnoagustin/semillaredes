@@ -155,6 +155,16 @@ body.sadhana .beta{color:#fff;border-color:rgba(255,255,255,.75);background:tran
 .camp .que{font-size:13px;color:var(--mute);margin:0 0 12px}
 .camp .graf{background:none;border:0;border-top:1px solid var(--linea);border-radius:0;padding:14px 0 0;margin-top:14px}
 .camp .graf h3{font-family:inherit;font-size:14px;font-weight:700;color:var(--navy);margin:0 0 2px}
+.ansem{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.ansem .an{position:relative;background:#fff;border:1px solid var(--linea);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.ansem .an img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#EFE9DC}
+.ansem .an .cu{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.ansem .an .nm{font-weight:700;color:var(--navy);font-size:15px;line-height:1.25}
+.ansem .an .cp{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--oliva);font-weight:700}
+.ansem .an .cm{display:flex;align-items:baseline;gap:6px}.ansem .an .cm b{font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);font-weight:600}.ansem .an .cm span{font-size:12.5px;color:var(--mute)}
+.ansem .an .ds{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:12px;color:var(--mute);line-height:1.3}.ansem .an .ds span{display:flex;flex-direction:column}.ansem .an .ds b{color:var(--navy);font-size:14px}
+.ansem .an a{margin-top:auto;font-size:13px;font-weight:600;color:var(--navy);text-decoration:none}
+.ansem .an.mejor{border:1.5px solid var(--oliva)}.ansem .an .tag{position:absolute;top:10px;left:10px;box-shadow:0 1px 4px rgba(0,0,0,.15);font-size:11px;font-weight:700;background:#ECEAD6;color:#5F6A30;border-radius:99px;padding:3px 9px}
 .camp .nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
 .camp .n{border-left:2px solid var(--linea);padding-left:11px}
 .camp .n .l{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--oliva);font-weight:700}
@@ -1726,6 +1736,14 @@ function pintarMensajes(d){
         return cm.some(v=>v!=null)?grafico('Costo por mensaje de '+titulo,'Cuánto costó cada consulta en cada período, en USD. Mientras más baja la línea, mejor.',cm,et,'#87863A',true):''; })()}
     </div>`;
   });
+  { // 05/11: contenidos de la semana (anuncios que corrieron en los últimos 7 días) con captura y costo por mensaje
+    const K=(d.campanas||[]).map(k=>k.metricas||{}).find(M=>M.tipo==='anuncios'), A=K?(K.anuncios||[]).filter(z=>Number(z.inversion)>=0.5):[];
+    if(A.length){ const best=A.filter(z=>z.costo!=null).reduce((b,z)=>!b||z.costo<b.costo?z:b,null);
+      h+=`<h2>Contenidos de la semana</h2><p class="sub">Cada anuncio que corrió del ${fecha(K.desde)} al ${fecha(K.hasta)}, ordenados del costo por mensaje más bajo al más alto.</p><div class="ansem">${A.map(z=>`<div class="an ${best&&z.id===best.id?'mejor':''}">${z.img?`<img src="${z.img}" alt="" loading="lazy">`:''}<div class="cu">${best&&z.id===best.id?'<span class="tag">El más eficiente</span>':''}<div class="cp">${(z.campania||'').replace(/^RESERVAS /i,'Reservas ').toLowerCase().replace(/^./,c=>c.toUpperCase())}${/famosos/i.test(z.conjunto||'')?' · Famosos':''}</div><div class="nm">${z.nombre||''}</div>
+        <div class="cm"><b>${z.costo!=null?fmt(z.costo,2):'—'}</b><span>USD por mensaje</span></div>
+        <div class="ds"><span><b>${fmt(z.mensajes)}</b> ${z.mensajes===1?'mensaje':'mensajes'}</span><span><b>${fmt(z.inversion,2)}</b> USD invertidos</span><span><b>${fmt(z.alcance)}</b> personas</span></div>
+        ${z.link?`<a href="${z.link}" target="_blank" rel="noopener">Ver en Instagram →</a>`:''}</div></div>`).join('')}</div><p class="sub" style="margin-top:8px">Actualizado el ${K.actualizado_txt||''} hs.</p>`; }
+  }
   if(u) h+=contenidosHTML(u.metricas.contenidos,[fecha(u.metricas.cont_desde||u.desde),fecha(u.metricas.cont_hasta||u.hasta)]);
 
   if(R.length>1){
