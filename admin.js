@@ -111,6 +111,9 @@ const SECCIONES = {
   clases: { t: 'Clases', b: 'Subir y ordenar las clases de la Formación.', f: () => secPronto('Clases', ['Subir el video de cada clase a un servidor propio (sin logo ni descarga de YouTube).', 'Ordenar por módulo y pilar del Método: Modelo de negocio, Comunicación, Publicidad.', 'Elegir qué tier ve cada clase.', 'Reemplazar la clase anterior cuando la vuelta al sol avanza.']) },
   drops: { t: 'Drops', b: 'El newsletter semanal.', f: () => secPronto('Drops', ['Escribir y programar el drop de cada viernes.', 'Subir el audio para WhatsApp.', 'Ver quién lo abrió desde la app.']) },
   playbook: { t: 'Playbook', b: 'Las reglas del Método que usa la IA.', f: () => secPronto('Playbook', ['Revisar reglas candidatas que detecta la auditoría.', 'Promover, editar o descartar.', 'Por ahora sigue en el panel del playbook.']) },
+  finanzas: { t: 'Balance', b: 'Ingresos, costos y ganancia mes a mes, desde la planilla Clientes 2026.', f: secFinanzas },
+  notificaciones: { t: 'Notificaciones', b: 'Avisos de los auditores y del sistema.', f: secNotificaciones },
+  uso: { t: 'Uso de la app', b: 'Quién entra, cuánto y qué mira. Lo mismo que el termómetro, acá adentro.', f: secUso },
   seguridad: { t: 'Seguridad', b: 'Quién puede entrar y cómo se verifica.', f: secSeguridad },
   auditoria: { t: 'Auditoría', b: 'Cada acción hecha desde este panel.', f: secAuditoria },
 };
@@ -143,7 +146,7 @@ async function secInicio() {
   const cobros = r.proximos_cobros || [];
   $('contenido').innerHTML = `
     <div class="cifras">
-      <div class="cifra"><div class="ic">${ICO.plata}</div><b>${ars(r.mrr_ars)}</b><span>por mes en suscripciones activas</span></div>
+      <div class="cifra"><div class="ic">${ICO.plata}</div><b>${ars(r.mrr_ars)}</b><span>por mes cargado en el panel · ${ars(r.mrr_mp)} Mercado Pago + ${ars(r.mrr_transf)} transferencia</span></div>
       <div class="cifra"><div class="ic">${ICO.gente}</div><b>${r.subs_activas}</b><span>suscripciones activas · ${r.subs_cortesia} de cortesía</span></div>
       <div class="cifra"><div class="ic">${ICO.caja}</div><b>${r.clientes_activos}</b><span>clientes con panel</span></div>
       <div class="cifra"><div class="ic">${ICO.gorro}</div><b>${r.alumnos_activos}<small style="font-size:14px;color:var(--mute)">/${r.alumnos}</small></b><span>alumnos con acceso</span></div>
@@ -151,7 +154,7 @@ async function secInicio() {
       <div class="cifra ${r.transf_pendientes ? 'alerta' : ''}"><div class="ic">${ICO.doc}</div><b>${r.transf_pendientes}<small style="font-size:14px;color:var(--mute)">/${r.transf_total}</small></b><span>transferencias pendientes este mes</span></div>
       <div class="cifra"><div class="ic">${ICO.escudo}</div><b>${r.leads_30d}</b><span>auditorías en 30 días</span></div>
     </div>
-    ${r.mrr_usd ? `<p style="margin:-6px 0 14px;color:var(--mute);font-size:12.5px">Además ${ars(r.mrr_usd, 'USD')} por mes en clientes que pagan en dólares por transferencia.</p>` : ''}
+    ${r.fin_ultimo || r.fin_mes_actual ? `<div class="bloque"><div class="enc"><h2>El negocio según la planilla</h2><a href="#finanzas">Ver balance →</a></div><p>La planilla Clientes 2026 es la fuente de verdad; esto se sincroniza solo.</p><div class="cifras" style="margin:0">${r.fin_ultimo ? `<div class="cifra"><b>${ars(r.fin_ultimo.ingresos)}</b><span>facturado en ${mesNombre(r.fin_ultimo.mes)} (cerrado)</span></div><div class="cifra"><b>${ars(r.fin_ultimo.ganancia)}</b><span>ganancia · costos ${ars(r.fin_ultimo.costos)} · ${r.fin_ultimo.clientes} clientes</span></div>` : ''}${r.fin_mes_actual ? `<div class="cifra"><b>${ars(r.fin_mes_actual.ingresos)}</b><span>previsto para ${mesNombre(r.fin_mes_actual.mes)} (en curso)</span></div>` : ''}</div></div>` : ''}
     ${(r.transf_pendientes_lista || []).length ? `<div class="bloque"><div class="enc"><h2>Transferencias pendientes de ${MESES[new Date().getMonth()]}</h2><a href="#suscripciones">Ir a suscripciones →</a></div><p>Todavía no se marcaron como pagadas.</p><table class="resp">${r.transf_pendientes_lista.map((t) => `<tr><td><b>${esc(t.nombre)}</b><div class="sub">${t.dia ? 'acordado el día ' + t.dia : ''}</div></td><td class="num">${ars(t.monto, t.moneda)}</td><td class="meta"><button class="ok" data-pagar="${t.id}">Marcar pagado</button></td></tr>`).join('')}</table></div>` : ''}
     <div class="bloque">
       <div class="enc"><h2>Próximos cobros</h2><a href="#suscripciones">Ver todos →</a></div><p>${r.cobros_7d} en los próximos siete días.</p>
@@ -160,7 +163,7 @@ async function secInicio() {
     ${r.webhooks_error ? `<div class="aviso vino">Hubo ${r.webhooks_error} avisos de Mercado Pago con error en la última semana. Revisalos en <a href="#auditoria">Auditoría</a>.</div>` : ''}
     <div class="grid2">
       <div class="bloque"><h2>Atajos</h2><p>Lo que más se usa.</p>
-        <div class="atajos"><a href="#suscripciones"><button class="sec">${ICO.mas}Crear suscripción</button></a><a href="#planes"><button class="sec">${ICO.link}Link de pago</button></a><a href="#suscripciones"><button class="sec">${ICO.regalo}Dar una cortesía</button></a><a href="#auditoria"><button class="sec">${ICO.doc}Reporte de cobros</button></a><a href="panel-clientes.html" target="_blank" rel="noopener"><button class="sec">${ICO.gente}Panel de clientes (viejo)</button></a><a href="panel-alumnos.html" target="_blank" rel="noopener"><button class="sec">${ICO.gorro}Panel de alumnos (viejo)</button></a></div>
+        <div class="atajos"><a href="#suscripciones"><button class="sec">${ICO.mas}Crear suscripción</button></a><a href="#planes"><button class="sec">${ICO.link}Link de pago</button></a><a href="#suscripciones"><button class="sec">${ICO.regalo}Dar una cortesía</button></a><a href="#auditoria"><button class="sec">${ICO.doc}Reporte de cobros</button></a><a href="#alumnos"><button class="sec">${ICO.gorro}Alta de alumno</button></a><a href="#notificaciones"><button class="sec">${ICO.escudo}Notificaciones${r.notif_no_leidas ? ' (' + r.notif_no_leidas + ')' : ''}</button></a></div>
       </div>
       <div class="bloque"><h2>Estado del sistema</h2><p>Pagos, avisos y seguridad.</p>
         <dl class="lista-k"><dt>Mercado Pago</dt><dd>App «Semilla Pagos», credenciales de producción activas</dd><dt>Avisos de pago</dt><dd>${r.webhooks_error ? '<span class="chip rejected">con errores</span>' : '<span class="chip activa">funcionando</span>'}</dd><dt>Tu sesión</dt><dd>${estadoSeg.tiene_factor ? '<span class="chip activa">2 factores</span>' : '<span class="chip pendiente">sin segundo factor</span> <a href="#seguridad">activar</a>'}</dd></dl>
@@ -313,7 +316,7 @@ async function secPlanes() {
 /* ---------- Clientes / Alumnos / Leads ---------- */
 async function secClientes() {
   const r = await rpc('adm_clientes'); if (noAut(r)) return; const L = r.items || [];
-  $('acciones').innerHTML = '<a href="panel-clientes.html" target="_blank" rel="noopener"><button class="sec">Abrir panel de clientes</button></a>';
+  $('acciones').innerHTML = '';
   $('contenido').innerHTML = `<div class="filtros"><input id="c-q" placeholder="Buscar"><span class="cnt">${L.filter((c) => c.activo && !c.interno).length} activos</span></div>
     <div class="bloque" style="padding:0;overflow:auto"><table class="resp"><thead><tr><th>Proyecto</th><th>Tipo</th><th>Plan</th><th>Conexiones</th><th>Último reporte</th><th></th></tr></thead><tbody id="t-cli"></tbody></table></div>`;
   const pintar = () => { const q = $('c-q').value.toLowerCase(); $('t-cli').innerHTML = L.filter((c) => !q || c.nombre.toLowerCase().includes(q)).map((c) => `<tr><td><b>${esc(c.nombre)}</b>${c.interno ? ' <span class="chip">interno</span>' : ''}${!c.activo ? ' <span class="chip cancelada">inactivo</span>' : ''}<div class="sub"><span class="solo-movil">${esc(c.tipo || '')}${c.plan ? ' · ' + esc(c.plan) : ''}</span><span class="solo-desk">${esc(c.instagram || '')}</span></div></td><td class="oc">${esc(c.tipo || '')}</td><td class="oc">${c.plan ? esc(c.plan) : '<span style="color:var(--mute)">—</span>'}</td><td class="oc">${c.conexiones}</td><td class="meta">${fecha(c.ultimo_reporte)}</td><td class="oc" style="color:var(--mute);font-size:12px">${esc(c.slug)}</td></tr>`).join(''); };
@@ -321,9 +324,31 @@ async function secClientes() {
 }
 async function secAlumnos() {
   const r = await rpc('adm_alumnos'); if (noAut(r)) return; const L = r.items || [];
-  $('acciones').innerHTML = '<a href="panel-alumnos.html" target="_blank" rel="noopener"><button class="sec">Abrir panel de alumnos</button></a>';
+  $('acciones').innerHTML = '<button id="btn-alu">Nuevo alumno</button>';
+  $('btn-alu').onclick = () => {
+    abrirLateral(`<h2>Nuevo alumno</h2><p style="color:var(--mute);margin:2px 0 14px">Se le crea su panel en la app. El acceso queda activo hasta la fecha de vencimiento.</p>
+      <div class="campo"><label>Nombre</label><input id="al-nombre"></div><div class="campo"><label>Email</label><input id="al-email" type="email"></div><div class="campo"><label>Proyecto</label><input id="al-proy"></div><div class="campo"><label>Vence</label><input id="al-vence" type="date"></div><button id="al-ok">Crear alumno</button>`);
+    $('al-ok').onclick = async () => { const r = await rpc('adm_alumno_alta', { p_nombre: $('al-nombre').value.trim(), p_email: $('al-email').value.trim(), p_proyecto: $('al-proy').value.trim() || null, p_vence: $('al-vence').value || null }); if (r.ok === false) return toast(r.error || 'No se pudo crear', true); toast('Alumno creado'); cerrarLateral(); navegar(); };
+  };
   $('contenido').innerHTML = `<div class="aviso">Los alumnos todavía pagan por Tiendup. Cuando pasemos la Formación al sistema nuevo, acá se vinculan sus suscripciones de Mercado Pago.</div>
-    <div class="bloque" style="padding:0;overflow:auto"><table><thead><tr><th>Alumno</th><th>Proyecto</th><th>Acceso</th><th>Vence</th><th>Plan nuevo</th></tr></thead><tbody>${L.map((a) => `<tr><td><b>${esc(a.nombre)}</b><div style="font-size:12px;color:var(--mute)">${esc(a.email || '')}</div></td><td>${esc(a.proyecto || '')}</td><td>${a.activa ? '<span class="chip activa">activo</span>' : '<span class="chip cancelada">sin acceso</span>'}</td><td>${fecha(a.vence_en)}</td><td>${a.plan ? esc(a.plan) : '—'}</td></tr>`).join('') || '<tr><td colspan="5"><div class="vacio">Sin alumnos cargados.</div></td></tr>'}</tbody></table></div>`;
+    <div class="bloque" style="padding:0;overflow:auto"><table class="resp"><thead><tr><th>Alumno</th><th>Proyecto</th><th>Acceso</th><th>Vence</th><th>Panel</th><th></th></tr></thead><tbody>${L.map((a) => `<tr><td><b>${esc(a.nombre)}</b><div class="sub">${esc(a.email || '')}${a.proyecto ? ' · ' + esc(a.proyecto) : ''}</div></td><td class="oc">${esc(a.proyecto || '')}</td><td class="meta">${a.activa ? '<span class="chip activa">activo</span>' : '<span class="chip cancelada">sin acceso</span>'} ${fecha(a.vence_en)}</td><td class="oc">${fecha(a.vence_en)}</td><td class="oc">${a.link ? `<a href="${esc(a.link)}" target="_blank" rel="noopener">abrir</a>` : '—'}</td><td class="oc" style="white-space:nowrap"><button class="lnk" data-alu-est="${a.id}" data-on="${a.activa ? '0' : '1'}">${a.activa ? 'Quitar acceso' : 'Dar acceso'}</button> <button class="lnk" data-alu-del="${a.id}">Borrar</button></td></tr>`).join('') || '<tr><td colspan="6"><div class="vacio">Sin alumnos cargados.</div></td></tr>'}</tbody></table></div>`;
+  document.querySelectorAll('[data-alu-est]').forEach((b) => b.onclick = async () => { const r = await rpc('adm_alumno_estado', { p_id: b.dataset.aluEst, p_activa: b.dataset.on === '1' }); if (r.ok === false) return toast(r.error, true); toast('Acceso actualizado'); navegar(); });
+  document.querySelectorAll('[data-alu-del]').forEach((b) => b.onclick = async () => { if (!confirm('¿Borrar este alumno y su panel?')) return; const r = await rpc('adm_alumno_borrar', { p_id: b.dataset.aluDel }); if (r.ok === false) return toast(r.error, true); toast('Alumno borrado'); navegar(); });
+}
+async function secFinanzas() {
+  const r = await rpc('adm_finanzas'); if (noAut(r)) return; const M = r.meses || []; const y = r.anio || {};
+  const pct = (a, b) => b ? Math.round((a / b) * 100) + '%' : '—';
+  $('contenido').innerHTML = `<div class="cifras"><div class="cifra"><b>${ars(y.ingresos)}</b><span>facturado en ${y.meses || 0} meses cerrados de 2026</span></div><div class="cifra"><b>${ars(y.ganancia)}</b><span>ganancia acumulada · margen ${pct(y.ganancia, y.ingresos)}</span></div><div class="cifra"><b>${ars(y.costos)}</b><span>costos acumulados</span></div></div>
+    <div class="bloque" style="padding:0;overflow:auto"><div style="padding:16px 18px 6px"><h2>Mes a mes</h2><p>Mismos números que la hoja ANUAL de la planilla. El mes en curso es provisorio.</p></div><table><thead><tr><th>Mes</th><th class="num">Facturación</th><th class="num">Costos</th><th class="num">Ganancia</th><th class="num">Margen</th><th class="num">Clientes</th><th></th></tr></thead><tbody>${M.map((m) => `<tr><td><b>${mesNombre(m.mes)}</b></td><td class="num">${ars(m.ingresos)}</td><td class="num">${ars(m.costos)}</td><td class="num">${ars(m.ganancia)}</td><td class="num">${pct(m.ganancia, m.ingresos)}</td><td class="num">${m.clientes ?? '—'}</td><td>${m.cerrado ? '' : '<span class="chip pendiente">en curso</span>'}</td></tr>`).join('')}</tbody></table></div>
+    <div class="aviso">Lo que falta para que el balance viva acá sin la planilla: cargar costos mensuales (equipo, impuestos, herramientas) y que cada cobro —Mercado Pago, transferencia o Tiendup— sume solo. El auditor contable semanal compara ambas fuentes y avisa las diferencias.</div>`;
+}
+async function secNotificaciones() {
+  const r = await rpc('adm_notificaciones', { p_limit: 100 }); if (noAut(r)) return; const L = r.items || [];
+  $('acciones').innerHTML = L.some((n) => !n.leida_en) ? '<button class="sec" id="n-todas">Marcar todas como leídas</button>' : '';
+  if ($('n-todas')) $('n-todas').onclick = async () => { await rpc('adm_notificacion_leer', {}); navegar(); };
+  const nivel = { critico: 'rejected', atencion: 'pendiente', info: '' };
+  $('contenido').innerHTML = L.length ? L.map((n) => `<div class="bloque" style="${n.leida_en ? 'opacity:.7' : ''}"><div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap"><span class="chip ${nivel[n.nivel] || ''}">${esc(n.nivel)}</span><span class="chip">${esc(n.origen)}</span><span class="sub" style="margin-left:auto">${fecha(n.cuando, true)}</span></div><h3 style="margin:8px 0 4px">${esc(n.titulo)}</h3><p style="margin:0;color:var(--tinta)">${esc(n.detalle || '')}</p>${n.link ? `<p style="margin:8px 0 0"><a href="${esc(n.link)}" ${n.link.startsWith('http') ? 'target="_blank" rel="noopener"' : ''}>Ir →</a></p>` : ''}${!n.leida_en ? `<p style="margin:8px 0 0"><button class="lnk" data-leer="${n.id}">Marcar leída</button></p>` : ''}</div>`).join('') : '<div class="vacio"><b>Sin avisos</b>Los auditores escriben acá cuando encuentran algo.</div>';
+  document.querySelectorAll('[data-leer]').forEach((b) => b.onclick = async () => { await rpc('adm_notificacion_leer', { p_id: Number(b.dataset.leer) }); navegar(); });
 }
 async function secLeads() {
   const r = await rpc('adm_leads', { p_limit: 200 }); if (noAut(r)) return; const L = r.items || [];
@@ -331,6 +356,26 @@ async function secLeads() {
 }
 function secPronto(nombre, items) {
   $('contenido').innerHTML = `<div class="bloque pronto-bloque"><h2>${esc(nombre)} llega en la próxima etapa</h2><p>Lo que va a poder hacerse acá:</p><ul>${items.map((i) => '<li>' + esc(i) + '</li>').join('')}</ul></div>`;
+}
+
+/* ---------- Uso de la app ---------- */
+async function secUso() {
+  const d = await rpc('adm_uso'); if (noAut(d)) return;
+  const R = d.resumen || {}, C = (d.clientes || []).filter((c) => !c.interno), A = d.alumnos || {};
+  const pct = (a, b) => b ? Math.round((a / b) * 100) + '%' : '—';
+  const hace = (t) => { if (!t) return 'nunca'; const dd = Math.round((Date.now() - new Date(t)) / 864e5); return dd === 0 ? 'hoy' : dd === 1 ? 'ayer' : 'hace ' + dd + ' días'; };
+  const estado = (t) => { if (!t) return 'cancelada'; const dd = (Date.now() - new Date(t)) / 864e5; return dd <= 7 ? 'activa' : dd <= 30 ? 'pendiente' : 'cancelada'; };
+  const PANT = { hoy: 'Inicio', proyecto: 'Proyecto', actividades: 'Actividades', metricas: 'Métricas', ia: 'Reporte' };
+  const maduros = R.reportes_maduros || 0;
+  const k = (v, l) => `<div class="cifra"><b>${v}</b><span>${l}</span></div>`;
+  const P = d.pantallas || [], maxP = Math.max(1, ...P.map((p) => p.n)); const S = d.semanas || []; const K = d.cohortes || [];
+  $('contenido').innerHTML = `
+    <div class="cifras">${k(R.activos_1d || 0, 'activos hoy · de ' + (R.proyectos || 0) + ' proyectos')}${k(R.activos_7d || 0, 'activos en 7 días · ' + pct(R.activos_7d || 0, R.proyectos || 0))}${k(R.activos_30d || 0, 'activos en 30 días · ' + pct(R.activos_30d || 0, R.proyectos || 0))}${k(R.sesiones_7d || 0, 'sesiones en 7 días' + (R.min_por_sesion != null ? ' · ' + R.min_por_sesion + ' min cada una' : ''))}${k(maduros ? pct(R.reportes_maduros_abiertos || 0, maduros) : '—', 'reportes abiertos a los 7 días')}${k(R.chats_30d || 0, 'chats con SemillaIA en 30 días')}${k(R.en_app_instalada || 0, 'con la app instalada · ' + (R.con_push || 0) + ' con avisos')}${k(A.activos_7d || 0, 'alumnos activos en 7 días · de ' + (A.total || 0))}</div>
+    <div class="bloque" style="padding:0;overflow:auto"><div style="padding:16px 18px 6px"><h2>Por proyecto</h2><p>Verde entró en 7 días, amarillo en 30, rojo hace más, gris nunca.</p></div><table class="resp"><thead><tr><th>Proyecto</th><th>Última vez</th><th class="num">Ses. 7d</th><th class="num">Ses. 30d</th><th class="num">Reportes</th><th class="num">Chats</th><th class="num">Tareas</th><th>Instalada</th></tr></thead><tbody>${C.map((c) => `<tr><td><span class="chip ${estado(c.ultima)}" style="padding:2px 6px">●</span> <b>${esc(c.nombre)}</b>${c.app_nueva === false ? ' <span class="chip">app clásica</span>' : ''}<div class="sub solo-movil">${hace(c.ultima)} · ${c.ses_30d || 0} sesiones en 30 días</div></td><td class="oc">${hace(c.ultima)}</td><td class="num oc">${c.ses_7d || 0}</td><td class="num">${c.ses_30d || 0}</td><td class="num oc">${c.rep_30d ? c.rep_abiertos + '/' + c.rep_30d : '—'}</td><td class="num oc">${c.chats_30d || 0}</td><td class="num oc">${c.tareas_30d || 0}</td><td class="oc">${c.instalada ? 'sí' : '—'}${c.push ? ' · avisos' : ''}</td></tr>`).join('')}</tbody></table></div>
+    <div class="grid2"><div class="bloque"><h2>Qué pantallas miran</h2><p>Visitas por pantalla, últimos 30 días.</p>${P.length ? P.map((p) => `<div style="display:grid;grid-template-columns:110px 1fr 40px;gap:8px;align-items:center;margin:6px 0;font-size:13px"><span>${esc(PANT[p.p] || p.p)}</span><span style="height:8px;border-radius:4px;background:var(--oliva);width:${Math.max(3, p.n / maxP * 100)}%"></span><span class="num">${p.n}</span></div>`).join('') : '<div class="vacio">Todavía sin datos.</div>'}</div>
+    <div class="bloque"><h2>Activos por semana</h2><p>Proyectos distintos que entraron.</p>${S.length ? '<table>' + S.slice().reverse().map((s) => `<tr><td>${fecha(s.semana)}</td><td class="num">${s.activos} activos</td><td class="num">${s.sesiones} sesiones</td></tr>`).join('') + '</table>' : '<div class="vacio">Todavía sin datos.</div>'}</div></div>
+    <div class="bloque"><h2>Retención</h2><p>De los proyectos que entraron por primera vez cada semana, cuántos volvieron. Meta para inversores: 40% a la semana 4.</p>${K.length ? '<table><thead><tr><th>Primera semana</th><th class="num">Proyectos</th><th class="num">Sem. 1</th><th class="num">Sem. 2</th><th class="num">Sem. 4</th></tr></thead><tbody>' + K.slice().reverse().map((x) => { const lleg = (n) => (Date.now() - new Date(x.semana + 'T00:00:00')) / 864e5 >= n * 7 + 7; const c = (v, n) => lleg(n) ? pct(v, x.nuevos) + ' <span class="sub">(' + v + ')</span>' : '<span class="sub">falta</span>'; return `<tr><td>${fecha(x.semana)}</td><td class="num">${x.nuevos}</td><td class="num">${c(x.s1, 1)}</td><td class="num">${c(x.s2, 2)}</td><td class="num">${c(x.s4, 4)}</td></tr>`; }).join('') + '</tbody></table>' : '<div class="vacio">Todavía sin datos.</div>'}</div>
+    <p class="sub">${d.desde ? 'Se mide desde el ' + fecha(d.desde) + '.' : ''} Una sesión es una visita; más de 30 minutos sin actividad cuenta como otra. Tus entradas no se cuentan.</p>`;
 }
 
 /* ---------- Seguridad ---------- */
