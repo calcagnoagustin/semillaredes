@@ -618,7 +618,11 @@
     const FACT=(()=>{ const v=(d.cliente&&d.cliente.ventas)||{}; const k=Object.keys(v).find(k=>/^Facturaci/i.test(k)&&k.includes(fdm(ultR.desde))&&k.includes(fdm(ultR.hasta))); return k?Number(v[k].ingreso)||0:0; })();
     const vIng=FACT||Nm('vta_ingreso')||Nm('vta_ingreso_pixel'), vRoas=(FACT&&Nm('vta_inversion'))?FACT/Nm('vta_inversion'):Nm('vta_ingreso')?Nm('vta_roas'):Nm('vta_roas_pixel');
     const vGan=FACT&&Nm('vta_inversion')?Math.round(FACT*0.75-Nm('vta_inversion')):Nm('vta_ganancia');
-    if(Nm('vta_ventas')>0&&vIng>0)
+    const CONSULTAS=['jimena-mercedes','jimena-pesado'];   // 05/11: vende cursos, lo que importa son las consultas (seguidores van abajo)
+    if(CONSULTAS.includes(slug)&&Nm('msj_mensajes')>0)
+      DZ={e:'Resultado destacado',v:nf(um.msj_mensajes),u:Nm('msj_mensajes')===1?'consulta':'consultas',k:'msj_mensajes',ic:'msj'},
+      hero=`<div class="e">Consultas del período</div><div class="p">${nf(um.msj_mensajes)}</div><div class="x">${Nm('msj_mensajes')===1?'persona te escribió':'personas te escribieron'}${um.msj_nombre?' por <b>'+esc(um.msj_nombre)+'</b>':''}${Nm('msj_costo_mensaje')?`, a ${SIM}${nf(um.msj_costo_mensaje)} cada una`:''}.${Nm('ig_followers_nuevos')>0?` Además sumaste ${nf(um.ig_followers_nuevos)} seguidores.`:''}</div>`;
+    else if(Nm('vta_ventas')>0&&vIng>0)
       DZ={e:'Resultado destacado',v:SIM+nf(vIng),u:'en ventas',k:Nm('vta_ingreso')?'vta_ingreso':'vta_ingreso_pixel',ic:'vta'},
       hero=`<div class="e">Ventas del período</div><div class="p">${SIM}${nf(vIng)}</div><div class="x">${nf(um.vta_ventas)} ${Nm('vta_ventas')===1?'venta':'ventas'}${Nm('vta_inversion')?` con ${SIM}${nf(um.vta_inversion)} de publicidad`:''}${vRoas?`: cada ${UNI} invertido volvió ${SIM}${nf(vRoas,2)}.`:'.'}${vGan>0?` Ganancia neta: <b>${SIM}${nf(vGan)}</b>.`:''}${um.vta_ventas_fuente==='pixel'&&!FACT?' <span style="opacity:.8">(según el píxel de Meta)</span>':''}</div>`;
     else if(Nm('msj_conversiones')>0&&Nm('msj_ingreso')>0)
@@ -664,6 +668,7 @@
     const hito=H.sort((a,b)=>hAv(b)-hAv(a))[0];
     const tiene=k=>val(k)!=null;
     const MET=[['ig_followers_total','seguidores','ig'],[SPK,'oyentes mensuales','sp'],['yt_views','vistas','yt'],['msj_mensajes','mensajes','msj'],['msj_conversiones','ventas','msj'],['tk_tickets','entradas','tk'],['stm_wishlist','wishlists en Steam','stm'],['vta_visitas','visitas a la tienda','vtv'],['ig_conv','conversión de visitas','ig'],['vta_ventas','ventas','vta'],['vta_roas_pixel','retorno por dólar','vta'],['vta_costo_venta','costo por venta','vta'],['frm_visitas','visitas a la formación','frm'],['frm_mensajes','consultas','frm'],['ig_visitas','visitas al perfil','ig']].filter(([k])=>tiene(k)&&!(k==='vta_visitas'&&tiene('vta_ventas'))).map(([k,l,ic])=>({k,l,ic}));
+    if(CONSULTAS.includes(slug)) MET.sort((x,y)=>(y.k==='msj_mensajes')-(x.k==='msj_mensajes'));
     // --- Campaña destacada (sub_campanas con tipo 'destacada'): arriba de todo en Hoy, con sus números acumulados ---
     const SIMG=SIM;   // 04/11 (MMC): cada campaña destacada con la moneda de su cuenta
     const DEST=(d.campanas||[]).filter(k=>(k.metricas||{}).tipo==='destacada').map(k=>{ const M=k.metricas||{}, on=M.estado==='activa', SIM=M.moneda?(M.moneda==='USD'?'USD ':'$ '):SIMG;
