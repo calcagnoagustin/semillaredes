@@ -8,6 +8,8 @@
   else return;
   var path=location.pathname.replace(/\/index\.html$/,'/');
   if(path==='/')return;
+  // 05/11 (Agus): nunca en la app de clientes/alumnos (ya tiene su propia barra de navegación)
+  if(/^\/(cliente|alumno|app)(\.html)?\/?$/.test(path)||/^\/alumno\//.test(path))return;
 
   var st=document.createElement('style');
   st.textContent='#pt-fab{position:fixed;left:14px;bottom:16px;z-index:99999;display:inline-flex;align-items:center;gap:6px;background:#111C5A;color:#F4EFE5;border:0;border-radius:999px;padding:11px 16px 11px 12px;font:600 13.5px/1 Inter,system-ui,-apple-system,sans-serif;box-shadow:0 6px 20px rgba(17,28,90,.28);cursor:pointer;opacity:.94}'+
@@ -22,6 +24,7 @@
   }
   function montar(){
     if(document.getElementById('pt-fab'))return;
+    if(document.querySelector('#v3,iframe[src*="cliente.html"],iframe[src*="alumno"],meta[name="apple-mobile-web-app-capable"]'))return;
     var f=document.createElement('button');f.id='pt-fab';f.type='button';f.setAttribute('aria-label','Volver');
     f.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Volver';
     f.addEventListener('click',volver);document.body.appendChild(f);

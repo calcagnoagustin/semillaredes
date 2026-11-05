@@ -357,6 +357,8 @@
   #v3 .dos svg{width:100%;height:44px;display:block}
   #v3 .recos{margin-top:16px;padding:6px 0}
   #v3 .recos .h{display:flex;align-items:center;gap:10px;padding:10px 16px 8px;font-family:'Playfair Display',serif;font-size:19px;color:${NAVY};font-weight:600}
+  #v3 .recos .icsub{margin:-4px 16px 10px;font:500 13px/1.35 Inter,sans-serif;color:#6F6B7C}
+  #v3 .rsub{margin:-4px 0 14px;font:500 13.5px/1.4 Inter,sans-serif;color:#6F6B7C}
   #v3 .recos .r{display:grid;grid-template-columns:32px 1fr;column-gap:12px;align-items:start;padding:12px 16px;border-top:1px solid #EDE6D8}
   #v3 .recos .r .k{width:32px;height:32px;border-radius:50%;background:#3E4A2A;color:#fff;display:grid;place-items:center;font:700 14px/1 Inter,sans-serif}
   #v3 .recos .r p{margin:0;font-size:15px;line-height:1.45;padding-top:5px}
@@ -909,7 +911,7 @@
         return `<div class="tit2"><h2>Seguidores por país</h2></div><div class="card lista pais">${L.map(z=>{ const n=Number(z.seguidores)||0; return `<div class="fila"><span class="tx"><b>${esc(DN?DN.of(z.nombre):z.nombre)}</b><i style="width:${Math.max(3,Math.round(n/mx*100))}%"></i></span><span class="rt"><b>${nf(n)}</b>${tot?`<small>${nf(n/tot*100,1)}%</small>`:''}</span></div>`; }).join('')}<p class="pie">Seguidores totales de la cuenta según Instagram${ur.hasta?`, al ${fd(ur.hasta)}`:''}.</p></div>`; })():''}
       ${SUBRED==='ig'?(()=>{ const ur=[...R].reverse().find(r=>r.metricas&&r.metricas.ig_ciudades_camp&&r.metricas.ig_ciudades_camp.length); if(!ur) return ''; const L=ur.metricas.ig_ciudades_camp, tot=Number(ur.metricas.ig_followers_total)||0, mn=ur.metricas.ig_ciudades_min, mx=Math.max(...L.map(z=>Number(z.seguidores)||0))||1;
         return `<div class="tit2"><h2>Seguidores por ciudad</h2></div><div class="card lista pais">${L.map(z=>{ const n=z.seguidores==null?null:Number(z.seguidores); return `<div class="fila"><span class="tx"><b>${esc(z.nombre)}</b><i style="width:${n==null?3:Math.max(3,Math.round(n/mx*100))}%"></i></span><span class="rt"><b>${n==null?(mn?'menos de '+nf(mn):'—'):nf(n)}</b>${n!=null&&tot?`<small>${nf(n/tot*100,1)}%</small>`:''}</span></div>`; }).join('')}<p class="pie">Las ciudades donde se pauta la campaña de seguidores. Seguidores totales según Instagram${ur.hasta?`, al ${fd(ur.hasta)}`:''}${L.some(z=>z.seguidores==null)?`; Instagram solo informa las ciudades con más de ${nf(mn)} seguidores`:''}.</p></div>`; })():''}
-      ${recs.length?`<div class="card recos"><div class="h">${ico.hoja}Recomendaciones SemillaIA</div>${recs.slice(0,3).map((r,i)=>`<div class="r"><span class="k">${i+1}</span><p>${esc(String(r).replace(/<[^>]+>/g,''))}${accB(r)}</p></div>`).join('')}</div>`:''}
+      ${recs.length?`<div class="card recos"><div class="h">${ico.hoja}Recomendaciones</div><p class="icsub">En base a la Inteligencia Colectiva de artistas</p>${recs.slice(0,3).map((r,i)=>`<div class="r"><span class="k">${i+1}</span><p>${esc(String(r).replace(/<[^>]+>/g,''))}${accB(r)}</p></div>`).join('')}</div>`:''}
       <details class="todo" id="v3todo"><summary>Ver todas las métricas</summary></details>`;
 
     // --- Proyecto ---
@@ -962,7 +964,7 @@
         <div class="rsh">${ico.sol}<h2>Lo principal</h2><i></i><span>${nPal(HZ.length,'punto','puntos')}</span></div>
         ${HZ.map(h=>`<div class="card rit"><span class="ci ${h.tipo==='mal'?'ma':'ok'}">${icoH(h)}</span><div>${h.titulo?`<h3>${esc(h.titulo)}</h3>`:''}<p>${pegaM(h.t)}</p>${ejH(h.ejemplos)}</div></div>`).join('')}
         ${(I.evaluacion||[]).length?`<div class="rsh">${ico.barras||ico.sol}<h2>Evaluación a fondo</h2><i></i></div><div class="card rev">${I.evaluacion.map(e=>`<div><h3>${esc(e.titulo)}</h3><p>${pegaM(e.t)}</p></div>`).join('')}</div>`:''}
-        <div class="rsh">${ico.hoja}<h2>Qué hacer</h2><i></i><span>${nPal(RC.length,'acción','acciones')}</span></div>
+        <div class="rsh">${ico.hoja}<h2>Qué hacer</h2><i></i><span>${nPal(RC.length,'acción','acciones')}</span></div><p class="rsub">Recomendaciones en base a la Inteligencia Colectiva de artistas.</p>
         ${RC.map((r,i)=>{ const a=window.srAccion&&window.srAccion(r); return `<div class="card rit rq${a?' con':''}"${a?` data-v3acc="${a.k}" role="button" tabindex="0" aria-label="${esc(a.t)}"`:''}><span class="ci nu">${i+1}</span><div>${RT[i]?`<h3>${esc(RT[i])}</h3>`:''}<p>${pegaM(esc(r))}</p>${ejH(RE[i])}</div>${a?`<span class="ch">${ico.ch}</span>`:''}</div>`; }).join('')}
         ${I.reunion?`<div class="rru">${ico.luz}<i></i><div><h4>En la próxima reunión con Agus</h4><p>${pegaM(esc(I.reunion.charAt(0).toUpperCase()+I.reunion.slice(1)))}</p></div></div>`:''}
         <div class="rbt"><button id="v3rep2" class="pri">Ver detalles ${ico.flecha}</button><button id="v3pdf" class="sec"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></svg>Descargar reporte</button></div>`
@@ -1373,7 +1375,7 @@
     'públicos de la campaña':{d:'Cómo rinde cada público al que le mostramos los anuncios.',i:'Cada público es un grupo de personas (por intereses, lugar o comportamiento). Así vemos dónde conviene poner más presupuesto.'},
     'seguidores por país':{d:'Dónde está la gente que te sigue.',i:'Sale de Instagram. Sirve para decidir dónde tocar, dónde pautar y en qué idioma hablarle a tu público.'},
     'seguidores por ciudad':{d:'En qué ciudades está la gente que te sigue.',i:'Sale de Instagram. Sirve para decidir dónde tocar y dónde pautar.'},
-    'recomendaciones semillaia':{i:'Acciones concretas que SemillaIA te sugiere a partir de tus números de este período.'},
+    'recomendaciones semillaia':{i:'Acciones concretas en base a la Inteligencia Colectiva de artistas: lo que les funcionó a otros artistas de la comunidad, aplicado a tus números de este período.'},
     'scr:ia':{i:'Tu reporte del período: lo principal, explicado y con próximos pasos. Se arma con tus redes conectadas y lo revisa el equipo de Semilla Redes.'},
     'lo principal':{i:'Los puntos que más pesaron en el período, los buenos y los que hay que mejorar.'},
     'tus conexiones':{d:'Las redes que SemillaIA lee para armar tus métricas y tus reportes.',i:'Conectá Instagram, Spotify, YouTube y Meta. Solo leemos tus datos: nunca publicamos ni cambiamos nada en tus cuentas.'},

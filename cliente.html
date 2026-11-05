@@ -2203,7 +2203,7 @@ function pintarResto(d,h){
   const RC=d.recomendaciones&&d.recomendaciones.recomendaciones;
   const hayInforme=(d.reportes||[]).some(r=>r.metricas&&r.metricas.informe);
   if(RC&&RC.length&&!hayInforme){
-    h+=`<h2>Consejos de la Inteligencia colectiva</h2><p class="sub">Surgen de la experiencia de otros artistas de la comunidad y los procesa una inteligencia artificial entrenada en el Método Semilla. Todos los domingos el bot te manda nuevas recomendaciones.</p><p class="iasello"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 C18 7 18 17 12 21 C6 17 6 7 12 3 Z" fill="#87863A"/></svg>Procesado con IA, entrenada en el Método Semilla</p>
+    h+=`<h2>Consejos de la Inteligencia Colectiva de artistas</h2><p class="sub">Surgen de la experiencia de otros artistas de la comunidad y los procesa una inteligencia artificial entrenada en el Método Semilla. Todos los domingos el bot te manda nuevas recomendaciones.</p><p class="iasello"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 C18 7 18 17 12 21 C6 17 6 7 12 3 Z" fill="#87863A"/></svg>Procesado con IA, entrenada en el Método Semilla</p>
       <div class="reco">
         <div class="cab"><h3>Tres cosas para arrancar</h3>
         ${d.recomendaciones_fecha?`<span class="cuando">${new Date(d.recomendaciones_fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</span>`:''}</div>
@@ -2346,7 +2346,7 @@ function desplegarSecciones(d){
   if(d.cliente.tipo==='semilla') return;           // Semilla ya se arma con paneles
   if(!(new URLSearchParams(location.search).get('v2')||PANELES_V2.has(slug))) return;
   const app=$('app'); if(!app) return;
-  const NO=['Historial','Hitos','Próximas fechas','Tarea para el hogar','Tus activos','Tus notas','Consejos de la Inteligencia colectiva','Ventas','Waitlist'];
+  const NO=['Historial','Hitos','Próximas fechas','Tarea para el hogar','Tus activos','Tus notas','Consejos de la Inteligencia Colectiva de artistas','Ventas','Waitlist'];
   const hs=[...app.children].filter(e=>e.tagName==='H2');
   hs.forEach(h=>{
     const t=h.textContent.trim();
@@ -2383,7 +2383,7 @@ function armarIndice(){
   app.querySelectorAll('h2 .volver').forEach(x=>x.remove());
   const hs=[...app.querySelectorAll('h2')];
   if(hs.length<3) return;
-  const corto={'Próximas fechas':'Fechas','Consejos de la Inteligencia colectiva':'Consejos','Tarea para el hogar':'Tareas','Ventas':'Ventas','Tus activos':'Activos','Tus notas':'Notas'};
+  const corto={'Próximas fechas':'Fechas','Consejos de la Inteligencia Colectiva de artistas':'Consejos','Tarea para el hogar':'Tareas','Ventas':'Ventas','Tus activos':'Activos','Tus notas':'Notas'};
   const nav=document.createElement('nav'); nav.className='indice'; nav.id='indice'; nav.setAttribute('aria-label','Secciones');
   nav.innerHTML='<div class="fila">'+hs.map((h,i)=>{
     const t=[...h.childNodes].filter(n=>!(n.classList&&n.classList.contains('perT'))).map(n=>n.textContent).join('').trim(); h.id='sec-'+t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); if(hs.some((o,j)=>j<i&&o.id===h.id)) h.id+='-'+i;
@@ -2681,7 +2681,7 @@ const DICT={
 'Tus enlaces a mano: carpetas, materiales, links importantes. Podés sumar los tuyos.':'Your links at hand: folders, materials, important links. You can add your own.',
 'Todavía no hay enlaces. Pegá el primero acá abajo.':'No links yet. Paste the first one below.','Agregar activo':'Add asset','Tus notas':'Your notes',
 'Dejanos cualquier cosa que quieras que tengamos en cuenta: una idea, una duda, algo que haya pasado en estos días.':'Leave us anything you want us to keep in mind: an idea, a question, something that happened these days.',
-'Guardar nota':'Save note','Editar tarea':'Edit task','Editar nota':'Edit note','Editar activo':'Edit asset','Editar meta':'Edit milestone','Editar venta':'Edit sale','Tarea':'Task','Nota':'Note','Nombre':'Name','Link':'Link','Descripción':'Description','Nombre de la meta':'Milestone name','Número a alcanzar':'Number to reach','Fecha':'Date','Qué se vendió':'What was sold','Monto':'Amount','Cancelar':'Cancel','Consejos de la Inteligencia colectiva':'Tips from the collective intelligence',
+'Guardar nota':'Save note','Editar tarea':'Edit task','Editar nota':'Edit note','Editar activo':'Edit asset','Editar meta':'Edit milestone','Editar venta':'Edit sale','Tarea':'Task','Nota':'Note','Nombre':'Name','Link':'Link','Descripción':'Description','Nombre de la meta':'Milestone name','Número a alcanzar':'Number to reach','Fecha':'Date','Qué se vendió':'What was sold','Monto':'Amount','Cancelar':'Cancel','Consejos de la Inteligencia Colectiva de artistas':'Tips from the Collective Intelligence of artists',
 'Surgen de la experiencia de otros artistas de la comunidad y los procesa una inteligencia artificial entrenada en el Método Semilla. Todos los domingos el bot te manda nuevas recomendaciones.':'They come from the experience of others in the community, processed by an AI trained on the Semilla Method. Every Sunday you get new recommendations.',
 'Tres cosas para arrancar':'Three things to start with','Se actualiza todos los domingos. Cualquier duda, hablamos en la reunión.':'Updated every Sunday. Any questions, we can talk at the meeting.',
 'Cualquier duda sobre estos números, escribile a Agus.':'Any questions about these numbers, write to Agus.','Este link no es válido. Pedile uno nuevo a Agus.':'This link is not valid. Ask Agus for a new one.',
