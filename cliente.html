@@ -2615,7 +2615,8 @@ function ponerReporte(d){
     bt.textContent='Descargar';
   };
   fondo.onclick=e=>{ if(e.target===fondo) cerrar(); };
-  if(location.hash==='#reporte' || nuevo) abrir();
+  if(location.hash==='#ventas'){ const go=n=>{ if(window.V3IR&&document.querySelector('#v3 .scr')&&window.srBuscar&&window.srBuscar('ventas')) { window.srIr('ventas'); setTimeout(()=>{ const bx=document.querySelector('#app .ventaBox')||document.querySelector('.ventaBox'); if(bx) window.scrollTo({top:Math.max(0,bx.getBoundingClientRect().top+scrollY-90),behavior:'smooth'}); },700); } else if(n<60) setTimeout(()=>go(n+1),250); }; go(0); }   // 05/11: link directo para que el cliente cargue sus ventas
+  else if(location.hash==='#reporte' || nuevo) abrir();
 }
 function graficoDia(dias, campo, titulo, leyenda, color, esPlata){
   const vals=dias.map(d=>Number(d[campo]||0));
@@ -2824,7 +2825,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261104f';
+var SR_VER='20261105b';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
