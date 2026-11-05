@@ -145,6 +145,7 @@ table{font-size:13px}
   <a href="#facturacion">18 · Facturación</a>
   <a href="#youtube">19 · YouTube</a>
   <a href="#semillaia-app">20 · SemillaIA APP</a>
+  <a href="#pagos">21 · Pagos y Administración</a>
   <a href="#registro">14 · Registro</a>
 </nav>
 
@@ -205,6 +206,18 @@ table{font-size:13px}
 
 <h3>Escalera de valor</h3>
 <p class="small">Membresía gratuita → Formación Semilla (grupo) → Mentoría individual → Setup Inicial → Anuncios profesionales → Desarrollo continuo</p>
+<h3>Tiers de la app (definidos 05/11/2026, todos mensuales, en pesos)</h3>
+<table>
+<tr><th>Tier</th><th>Qué incluye</th><th>Precio</th></tr>
+<tr><td><b>Gratuito</b></td><td>Acceso básico a la app: panel del proyecto con reporte mensual, drops y comunidad.</td><td>$0</td></tr>
+<tr><td><b>Pro</b></td><td>Skills avanzados de la app: reportes semanales, recomendaciones de IA del Método, buscador de playlists, herramientas de contenido.</td><td>$30.000</td></tr>
+<tr><td><b>Publicidad Viva</b></td><td>Pro + hasta 2 correcciones de campañas por mes por el equipo.</td><td>$60.000</td></tr>
+<tr><td><b>Reunión Mensual</b></td><td>Publicidad Viva + una reunión 1:1 por mes con Agus.</td><td>$90.000</td></tr>
+<tr><td><b>Mentoría</b></td><td>4 encuentros 1:1 por mes + todo lo anterior.</td><td>$200.000</td></tr>
+<tr><td><b>Setup Inicial</b></td><td>De 0 a 100 en 180 días (identidad, web, contenidos, pauta, activos, planificación) + app.</td><td>$350.000</td></tr>
+<tr><td><b>Anuncios Avanzados</b></td><td>Servicio de agencia: campañas Meta/YouTube/Spotify gestionadas, públicos, embudos, optimización, reporte semanal.</td><td>$550.000</td></tr>
+</table>
+<p class="small">Los clientes del exterior siguen pagando en dólares por transferencia (montos en la planilla Clientes 2026). La auditoría con Agus queda como pago único aparte, a definir.</p>
 
 <table>
 <tr><th>Producto</th><th>Qué es</th><th>Precio</th><th>Estado</th></tr>
@@ -803,9 +816,29 @@ table{font-size:13px}
 
 <!-- 14 -->
 <section id="registro">
+<h2 id="pagos">21 · Pagos propios y Administración</h2>
+<p>Desde el <b>05/11/2026</b> Semilla procesa sus propios cobros con <b>Mercado Pago</b> (app «Semilla Pagos», suscripciones con o sin cuenta de MP, tarjeta de crédito o débito) y los gestiona desde un panel de administración propio en <code>semillaredes.com/admin.html</code>. Tiendup deja de ser el centro: los alumnos se migran al sistema nuevo en la próxima etapa.</p>
+<h3>Qué hay</h3>
+<table>
+<tr><td><b>Planes</b></td><td>Los 7 tiers de la sección 03 existen como planes en Mercado Pago, cada uno con su link de pago para mandar por WhatsApp.</td></tr>
+<tr><td><b>Suscripciones</b></td><td>Cada cliente o alumno tiene una suscripción con medio de pago: Mercado Pago (automático, con avisos), transferencia (se marca mes a mes en el panel) o cortesía (acceso sin cobro). 8 clientes ya vinculados a sus suscripciones de MP existentes; 9 clientes por transferencia cargados desde la planilla Clientes 2026; Piku Yoga con cortesía de Mentoría.</td></tr>
+<tr><td><b>Upsell / downsell</b></td><td>Desde el panel se cambia el plan de cualquiera; si paga por MP, el monto se actualiza allá para el próximo cobro. Queda historial de cambios.</td></tr>
+<tr><td><b>Administración</b></td><td>Inicio (ingresos, próximos cobros, transferencias pendientes), Suscripciones, Planes y links, Clientes, Alumnos, Leads, Seguridad, Auditoría. Clases, Drops y Playbook con lugar reservado.</td></tr>
+</table>
+<h3>Seguridad (regla: no puede fallar)</h3>
+<table>
+<tr><td><b>Ingreso</b></td><td>Solo cuentas en la lista de administradores, con Google o enlace al mail. Sin contraseñas compartidas.</td></tr>
+<tr><td><b>Segundo factor</b></td><td>Código de app autenticadora, activo en la cuenta de Agus desde el 05/11. Puede hacerse obligatorio para todos desde Seguridad.</td></tr>
+<tr><td><b>Permisos</b></td><td>Cada operación se verifica en la base de datos (función <code>es_admin</code>), no en el navegador. Las claves de Mercado Pago y de la base viven en el servidor.</td></tr>
+<tr><td><b>Auditoría</b></td><td>Cada acción del panel y cada aviso de Mercado Pago quedan registrados con quién y cuándo.</td></tr>
+<tr><td><b>Pendiente</b></td><td>Los paneles viejos (panel.html, panel-clientes, panel-alumnos, panel-setup, playbook.html) todavía usan una contraseña compartida: se migran al panel nuevo y se borran esos tokens. Reintentar el webhook en el panel de MP. Auditor automático de seguridad y seguro contra incidentes en evaluación.</td></tr>
+</table>
+<p class="small">Detalle técnico en los docs del proyecto <code>claude/pagos-mercadopago.md</code> y <code>claude/panel-admin.md</code>.</p>
+
 <h2>14 · Registro de actualizaciones</h2>
 <table>
 <tr><th>Fecha</th><th>Cambio</th></tr>
+<tr><td><b>05/11/2026</b></td><td><b>Pagos propios + panel de administración.</b> App «Semilla Pagos» en Mercado Pago con credenciales de producción; 7 tiers definidos (Gratuito, Pro $30k, Publicidad Viva $60k, Reunión Mensual $90k, Mentoría $200k, Setup Inicial $350k, Anuncios Avanzados $550k, todos mensuales) creados como planes con link de pago; webhook y tablas de suscripciones/pagos en Supabase; 8 clientes vinculados a sus suscripciones de MP, 9 clientes por transferencia desde la planilla (6 ya pagaron noviembre), Piku Yoga con cortesía. Panel <code>admin.html</code> con login Google + segundo factor, auditoría y diseño propio (escritorio y celular). Ver secciones 03 y 21.</td></tr>
 <tr><td><b>27/10/2026</b></td><td><b>Versiones de la app.</b> Cada actualización lleva número y se ve arriba en la app: 2.0 para todos, 2.1 (landing, curadores, Drop con audio) para Berco Estudio, Hernán, Sopla, María Marta, Piku y Semilla. <b>Tus flyers con ChatGPT</b> armado en prueba (solo Semilla y Eupatridas), falta la clave de OpenAI. Propuesta de <b>tiers</b> en doc aparte. Ver sección 20.</td></tr>
 <tr><td><b>29/10/2026</b></td><td><b>Nada cruzado entre artistas.</b> Conectar un Instagram que no es el cargado por Semilla pide un código <code>SEMILLA-NNNN</code> en la bio (se verifica con business_discovery); un @ o un Spotify ya conectado a otro proyecto se rechaza; el Spotify tiene que coincidir con el nombre del proyecto o su Instagram. Tus lanzamientos: el link de Spotify/YouTube tiene que ser del artista del proyecto (music:musician / canal), si no, no arma la landing. Código en <code>conexiones/conexiones.py</code> (proyecto, lanzamiento_propio).</td></tr>
 <tr><td><b>27/10/2026</b></td><td><b>2.1 para todos.</b> Lista completa de Agus con todo; el resto con «Por tiempo limitado» en las funciones avanzadas. Conexiones habilitadas para todos y lo público (Instagram, Spotify) conectado solo. Ver sección 20.</td></tr>
