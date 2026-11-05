@@ -87,7 +87,11 @@ function pintarYo() {
   $('yo-punto').className = 'punto' + (ok ? ' ok' : '');
   $('yo-estado').textContent = ok ? 'Sesión verificada con 2 factores' : (estadoSeg.autorizado ? 'Sin segundo factor' : 'Acceso limitado');
 }
-sb.auth.onAuthStateChange((ev) => { if (ev === 'SIGNED_OUT') { $('app').classList.add('oculto'); $('login').classList.remove('oculto'); } });
+let arrancando = false;
+sb.auth.onAuthStateChange((ev) => {
+  if (ev === 'SIGNED_OUT') { $('app').classList.add('oculto'); $('login').classList.remove('oculto'); }
+  if (ev === 'SIGNED_IN' && $('app').classList.contains('oculto') && !arrancando) { arrancando = true; arrancar().finally(() => arrancando = false); }
+});
 
 /* ---------- Cierre por inactividad ---------- */
 let idleT; function reiniciarIdle() { clearTimeout(idleT); idleT = setTimeout(async () => { await sb.auth.signOut(); location.reload(); }, IDLE_MIN * 60e3); }
@@ -110,7 +114,7 @@ const SECCIONES = {
 async function navegar() {
   const k = (location.hash || '#inicio').slice(1); const s = SECCIONES[k] || SECCIONES.inicio;
   document.querySelectorAll('nav a.item').forEach((a) => a.classList.toggle('on', a.dataset.sec === k));
-  $('titulo').textContent = s.t; $('bajada').textContent = s.b; $('acciones').innerHTML = ''; $('nav').classList.remove('abierta');
+  cerrarLateral(); $('titulo').textContent = s.t; $('bajada').textContent = s.b; $('acciones').innerHTML = ''; $('nav').classList.remove('abierta');
   $('contenido').innerHTML = '<div class="vacio">Cargando…</div>';
   try { await s.f(); } catch (e) { console.error(e); $('contenido').innerHTML = '<div class="vacio"><b>No se pudo cargar</b>' + esc(e.message || e) + '</div>'; }
 }
