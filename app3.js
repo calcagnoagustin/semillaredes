@@ -417,7 +417,7 @@
   #v3 .rit .ci{width:42px;height:42px}
   #v3 .rit h3{margin:0 0 4px;font:600 18px/23px 'Playfair Display',serif;color:${NAVY}}
   #v3 .rit p{margin:0;font-size:14.5px;line-height:1.5;color:#55525F}
-  #v3 .rej{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px;font-size:12.5px;color:#8A8577}#v3 .rej a{display:inline-flex;align-items:center;padding:4px 10px;border-radius:99px;background:#F2EDE3;color:${NAVY};font-weight:600;text-decoration:none;line-height:1.2}
+  #v3 .rej{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px} #v3 .rej a.rejc{display:inline-flex;align-items:center;gap:10px;padding:5px 14px 5px 5px;border:1px solid #E2DACA;border-radius:12px;background:#F4EFE6;color:#1A2456;font-weight:600;font-size:13.5px;line-height:1.2;text-decoration:none} #v3 .rej .mi{width:44px;height:44px;flex:none;border-radius:8px;overflow:hidden;background:#E8E1D3} #v3 .rej .mi img{width:100%;height:100%;object-fit:cover;display:block}
   #v3 .rit p b{color:#3A3846;font-weight:600}
   #v3 .rit .ci{margin-top:-9.5px}   /* centro del círculo = centro de la primera línea del título (23px) */
   #v3 .rit>div>p:first-child{margin-top:.6px}
@@ -941,7 +941,7 @@
       return /venta|factur|vend/.test(t)?rIco.vta:/mensaje|consulta|conversaci/.test(t)?rIco.msj:/youtube|video|spotify|oyente|reproduc/.test(t)?rIco.play:rIco.sube; };
     const HZ=I?(I.hallazgos||[]).map(h=>typeof h==='object'?h:{t:h,tipo:'bien'}):[];
     const RC=I?(I.recomendaciones||[]):[], RT=(I&&I.recos_titulos)||[], RE=(I&&I.recos_ejemplos)||[];
-    const ejH=L=>(L&&L.length)?`<div class="rej">Ejemplos:${L.map((u,i)=>`<a href="${esc(u)}" target="_blank" rel="noopener">Ver ${i+1}</a>`).join('')}</div>`:'';   // 04/11: links a las publicaciones de las que habla
+    const ejH=L=>((L,c,k)=>(L&&L.length)?`<div class="rej">${L.map((u,i)=>`<a class="rejc" href="${String(u).replace(/"/g,'&quot;')}" target="_blank" rel="noopener"><span class="mi"><img loading="lazy" alt="" src="https://vm.semillaredes.com/web/mini?c=${encodeURIComponent(c)}&k=${encodeURIComponent(k)}&u=${encodeURIComponent(u)}" onerror="this.remove()"></span><span class="tx">${L.length===1?'Este contenido':['Este contenido','Este otro','Y este'][i]||'Este también'}</span></a>`).join('')}</div>`:'')(L,slug,tok);   // 05/11: «Este contenido» con miniatura de la publicación
     const nPal=(n,s,p)=>n+' '+(n===1?s:p);
     const pegaM=t=>String(t||'').replace(/(\$|USD) (?=[\d−-])/g,'$1&nbsp;');
     const hoja2='<svg class="rhoja" width="150" height="190" viewBox="0 0 150 190" aria-hidden="true"><circle cx="104" cy="70" r="66" fill="#EAE2D0" opacity=".55"/><path d="M146 188C122 150 104 104 66 8" fill="none" stroke="#77763A" stroke-width="2" stroke-linecap="round"/>'

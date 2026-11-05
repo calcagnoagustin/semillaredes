@@ -370,7 +370,7 @@ table.histA th{font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;co
 .srFlash{animation:srFl 1.8s ease}@keyframes srFl{0%,60%{background:#F6EFC8}100%{background:transparent}}
 .repCaja ol.hz li::before{content:'✓';background:#E7F0DC;color:#4E6B24;font-size:13px}
 .repCaja ol.hz li.mal::before{content:'!';background:#F8E1E2;color:#9B2C36}
-.repCaja .rej{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px;font-size:12.5px;color:#8A8577}.repCaja .rej a{padding:3px 10px;border-radius:99px;background:#F2EDE3;color:#1A2456;font-weight:600;text-decoration:none}
+.repCaja .rej{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px} .repCaja .rej a.rejc{display:inline-flex;align-items:center;gap:10px;padding:5px 14px 5px 5px;border:1px solid #E2DACA;border-radius:12px;background:#F4EFE6;color:#1A2456;font-weight:600;font-size:13.5px;line-height:1.2;text-decoration:none} .repCaja .rej .mi{width:44px;height:44px;flex:none;border-radius:8px;overflow:hidden;background:#E8E1D3} .repCaja .rej .mi img{width:100%;height:100%;object-fit:cover;display:block}
 .repCaja .evf div{padding:12px 0;border-top:1px solid #E6DECF}.evf div:first-child{border-top:0;padding-top:4px}.evf b{display:block;font-size:15px;margin-bottom:4px}.evf p{margin:0;font-size:14.5px;line-height:1.55;color:#4F4C58}
 .reu{background:var(--crema);border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.5;color:var(--navy);margin-top:4px}
 .repCaja .reu b{font-weight:700}
@@ -2543,7 +2543,7 @@ function srIr(k){
 }
 window.srBuscar=srBuscar; window.srIrA=srIrA;
 window.srAccion=srAccion; window.srIr=srIr;
-const repEj=L=>(L&&L.length)?`<div class="rej">Ejemplos:${L.map((u,i)=>`<a href="${String(u).replace(/"/g,'&quot;')}" target="_blank" rel="noopener">Ver ${i+1}</a>`).join('')}</div>`:'';   // 04/11: links a las publicaciones de las que habla el reporte
+const repEj=L=>{ const q=new URLSearchParams(location.search); return ((L,c,k)=>(L&&L.length)?`<div class="rej">${L.map((u,i)=>`<a class="rejc" href="${String(u).replace(/"/g,'&quot;')}" target="_blank" rel="noopener"><span class="mi"><img loading="lazy" alt="" src="https://vm.semillaredes.com/web/mini?c=${encodeURIComponent(c)}&k=${encodeURIComponent(k)}&u=${encodeURIComponent(u)}" onerror="this.remove()"></span><span class="tx">${L.length===1?'Este contenido':['Este contenido','Este otro','Y este'][i]||'Este también'}</span></a>`).join('')}</div>`:'')(L,q.get('c')||'',q.get('k')||''); };   // 05/11: «Este contenido» con miniatura
 const srBtnAcc=x=>{ const a=srAccion(x); return a?`<button class="srAcc" type="button" data-sracc="${a.k}">${a.t} →</button>`:''; };
 function iniRep(R){   // 22/10 (Audova): metricas desde el inicio dentro del reporte
   const U=(R[R.length-1]||{}).metricas||{}; if(!U.ini_desde) return '';
@@ -2801,7 +2801,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261104f';
+var SR_VER='20261105a';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
