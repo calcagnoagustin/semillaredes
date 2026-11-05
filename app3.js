@@ -117,6 +117,7 @@
   #v3 .cta .n{grid-area:n;font:500 14.5px/1 Inter,sans-serif;color:${NAVY}}
   #v3 .cta .cn{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
   #v3 .cta .cn span{font:500 12.5px/1.3 Inter,sans-serif;color:#6F6B7C;background:#F2EDE3;border-radius:99px;padding:4px 10px}
+  #v3 .cta .ira{grid-column:1/-1;margin-top:6px;padding-top:12px;border-top:1px solid #EAE3D5;font:600 13.5px/1.3 Inter,sans-serif;color:${NAVY};text-decoration:none}#v3 .cta .ira:hover{text-decoration:underline}
   #v3 .cta .pg{grid-column:1/-1;margin-top:6px;padding-top:12px;border-top:1px solid #EAE3D5}
   #v3 .cta .pg .r1{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
   #v3 .cta .pg .r1 span{font:500 14.5px/1.2 Inter,sans-serif;color:#55525F}
@@ -1191,14 +1192,15 @@
       if(ctEl) ctEl.innerHTML=CV.length?(()=>{ const T=CV.reduce((a,z)=>({n:a.n+(z.resultados||0),i:a.i+(z.inversion||0),g:a.g+(z.ingreso||0)}),{n:0,i:0,g:0});
         return `<div class="cjt"><p class="k">Desde el inicio · acumulado</p><h3>Campaña de ventas por conjunto</h3><p class="b">El total de cada conjunto desde que arrancó hasta hoy. No es el resumen del período: eso está más abajo.</p>
           <div class="cjl">${CV.map(z=>vtaCard(z.nombre,z.fin?`Del ${fd(z.inicio)} al ${fd(z.fin)}`:`Del ${fd(z.inicio)} a hoy`,z.resultados,z.inversion,z.costo,z.ingreso,'')).join('')}${CV.length>1?vtaCard('Total de la campaña',`Los ${CV.length} conjuntos juntos`,T.n,T.i,T.n?T.i/T.n:null,T.g,'tt'):''}</div></div>`; })():'';
+      const IRA=a=>a?`<a class="ira" href="https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=${encodeURIComponent(a)}" target="_blank" rel="noopener">Abrir la cuenta publicitaria en Meta →</a>`:'';   // 05/11: link directo al Administrador de anuncios
       const ctasEl=document.getElementById('v3ctas');   // 04/11 (MMC): dos cuentas publicitarias, cada una con su estado, arriba de todo en Hoy
       if(ctasEl&&(c.cuentas||[]).length>1){ ctasEl.innerHTML=`<div class="tit2"><h3>Tus cuentas publicitarias</h3></div><div class="ctas">${c.cuentas.map(x=>{ const Q=x.pago||{}, us=Q.moneda==='USD', pq=v=>v==null?'—':us?'USD '+nf(v,2):'$ '+nf(v,0), mq=String(Q.metodo||'').replace(/\s*\*+\s*/,' ••'), N=(x.nombres||[]).filter(Boolean);
         return `<div class="cta"><span class="l">${esc(x.nombre||'Cuenta publicitaria')}</span><span class="sub">${us?'En dólares':'En pesos'}${mq?' · se paga con la '+esc(mq):''}</span><span class="e ${x.activa?'on':''}"><i></i>${x.activa?'Activa':esc(String(x.estado||'').charAt(0).toUpperCase()+String(x.estado||'').slice(1))}</span><span class="n">${x.campanas} ${x.campanas===1?'campaña corriendo':'campañas corriendo'}</span>${N.length?`<div class="cn">${N.map(z=>`<span>${esc(z)}</span>`).join('')}</div>`:''}
-          ${Q.inversion_diaria!=null?`<div class="pg"><div class="r1"><span>Inversión diaria</span><b>${pq(Q.inversion_diaria)}</b></div></div>`:''}${Q.saldo!=null?`<div class="pg"><div class="r1"><span>${Q.proximo?'Próximo cobro':'Saldo a pagar'}</span><b>${Q.proximo?fch(Q.proximo.fecha)+' · '+pq(Q.proximo.monto):pq(Q.saldo)}</b></div>${Q.proximo?`<p>Fecha aproximada. Hoy el saldo es de ${pq(Q.saldo)}.</p>`:''}</div>`:''}</div>`; }).join('')}</div>`;
+          ${Q.inversion_diaria!=null?`<div class="pg"><div class="r1"><span>Inversión diaria</span><b>${pq(Q.inversion_diaria)}</b></div></div>`:''}${Q.saldo!=null?`<div class="pg"><div class="r1"><span>${Q.proximo?'Próximo cobro':'Saldo a pagar'}</span><b>${Q.proximo?fch(Q.proximo.fecha)+' · '+pq(Q.proximo.monto):pq(Q.saldo)}</b></div>${Q.proximo?`<p>Fecha aproximada. Hoy el saldo es de ${pq(Q.saldo)}.</p>`:''}</div>`:''}${IRA(x.act)}</div>`; }).join('')}</div>`;
         el.innerHTML=''; return; }
       el.innerHTML=`<div class="cta"><span class="l">Cuenta publicitaria</span><span class="e ${c.activa?'on':''}"><i></i>${c.activa?'Activa':esc(c.estado.charAt(0).toUpperCase()+c.estado.slice(1))}</span><span class="n">${c.campanas} ${c.campanas===1?'campaña corriendo':'campañas corriendo'}</span>${(()=>{ // 23/10: nombres de las campañas, sutil; no va si ya hay campañas destacadas en Hoy
         const N=(c.nombres||[]).filter(Boolean); if(!N.length||document.querySelector('#v3 .dest, #v3 .gira')) return '';
-        return `<div class="cn">${N.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`; })()}${dia}${pg}</div>`; };
+        return `<div class="cn">${N.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`; })()}${dia}${pg}${IRA(c.act)}</div>`; };
     if(window.__V3CTA) pintaCta(window.__V3CTA);
     else fetch('https://vm.semillaredes.com/web/cuenta?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(c=>{ window.__V3CTA=c; pintaCta(c); }).catch(()=>{});
 
