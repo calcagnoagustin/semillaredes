@@ -82,7 +82,7 @@ async function arrancar() {
     pintarYo(); location.hash = '#seguridad'; navegar(); toast('Activá tu segundo factor para operar el panel', true); return;
   }
   $('login').classList.add('oculto'); $('app').classList.remove('oculto');
-  pintarYo(); navegar(); reiniciarIdle();
+  pintarYo(); navegar(); reiniciarIdle(); cargarChat(); clearInterval(chatT); chatT = setInterval(cargarChat, 180e3);
 }
 function pintarYo() {
   $('yo-mail').textContent = estadoSeg.email;
@@ -448,5 +448,56 @@ async function secAuditoria() {
     <div class="bloque" style="padding:0;overflow:auto"><div style="padding:16px 18px 6px"><h2>Avisos de Mercado Pago</h2><p>Cada notificación que llegó y si se procesó.</p></div><table><thead><tr><th>Cuándo</th><th>Tipo</th><th>Estado</th></tr></thead><tbody>${(w.items || []).map((i) => `<tr><td style="white-space:nowrap">${fecha(i.recibido_en, true)}</td><td>${esc(i.tipo || '')}${i.accion ? ' <span style="color:var(--mute)">' + esc(i.accion) + '</span>' : ''}</td><td>${i.error ? '<span class="chip rejected" title="' + esc(i.error) + '">error</span>' : i.procesado ? '<span class="chip activa">ok</span>' : '<span class="chip">ignorado</span>'}</td></tr>`).join('') || '<tr><td colspan="3"><div class="vacio">Todavía no llegó ningún aviso.</div></td></tr>'}</tbody></table></div>
   </div>`;
 }
+
+/* ---------- Chat flotante ---------- */
+const CHAT_K = 'sr_chat_visto';
+let chatAbierto = false, chatT = null, chatUltimo = 0;
+const ESTADO_PED = { pendiente: 'en cola', en_curso: 'Claude lo está haciendo', espera_ok: 'espera tu ok', hecho: 'hecho', descartado: 'descartado' };
+function chatVisto() { try { return Number(localStorage.getItem(CHAT_K) || 0); } catch (e) { return 0; } }
+function chatMarcarVisto(id) { try { localStorage.setItem(CHAT_K, String(id)); } catch (e) { /* nada */ } chatGlobo(0); }
+function chatGlobo(n) { const g = $('burbuja-globo'); g.textContent = n > 9 ? '9+' : String(n); g.classList.toggle('on', n > 0); }
+function pintarChat(items) {
+  const c = $('chat-msjs'); const abajo = c.scrollHeight - c.scrollTop - c.clientHeight < 40;
+  if (!items.length) { c.innerHTML = '<div class="vacio-chat">Acá podés preguntar lo que quieras del negocio con datos reales, o pedir cambios en el panel, la app o la base. Los cambios los hace Claude y te contesta acá mismo.</div>'; return; }
+  c.innerHTML = items.map((m) => {
+    const quien = m.rol === 'claude' ? '<span class="quien">Claude</span>' : '';
+    let ped = '';
+    if (m.pedido_id && m.rol !== 'agus') {
+      ped = `<div class="ped"><span class="chip ${m.pedido_estado === 'hecho' ? 'approved' : m.pedido_estado === 'espera_ok' ? 'pendiente' : m.pedido_estado === 'descartado' ? 'rejected' : 'fecha'}">pedido #${m.pedido_id} · ${ESTADO_PED[m.pedido_estado] || m.pedido_estado}</span>`;
+      if (m.pedido_estado === 'espera_ok') ped += `<button class="lnk" data-ok="${m.pedido_id}">Dale, hacelo</button><button class="lnk sec" data-desc="${m.pedido_id}">Descartar</button>`;
+      ped += '</div>';
+    }
+    return `<div class="m ${m.rol}">${quien}${esc(m.texto)}${ped}</div>`;
+  }).join('');
+  c.querySelectorAll('[data-ok]').forEach((b) => b.onclick = async () => { b.disabled = true; await rpc('adm_chat_agregar', { p_texto: 'OK, hacelo.', p_pedido_id: Number(b.dataset.ok) }); const r = await rpc('adm_pedido_set', { p_id: Number(b.dataset.ok), p_estado: 'pendiente' }); if (!r.ok) return toast(r.error, true); toast('Listo, Claude lo ejecuta en la próxima pasada'); cargarChat(); });
+  c.querySelectorAll('[data-desc]').forEach((b) => b.onclick = async () => { b.disabled = true; const r = await rpc('adm_pedido_set', { p_id: Number(b.dataset.desc), p_estado: 'descartado' }); if (!r.ok) return toast(r.error, true); toast('Pedido descartado'); cargarChat(); });
+  if (abajo || chatAbierto) c.scrollTop = c.scrollHeight;
+}
+async function cargarChat() {
+  const items = await rpc('adm_chat_listar', { p_limit: 80 }); if (!Array.isArray(items)) return;
+  chatUltimo = items.length ? items[items.length - 1].id : 0;
+  if (chatAbierto) { pintarChat(items); chatMarcarVisto(chatUltimo); }
+  else { const v = chatVisto(); chatGlobo(items.filter((m) => m.id > v && m.rol !== 'agus').length + items.filter((m) => m.pedido_estado === 'espera_ok' && m.rol !== 'agus').length); }
+}
+function abrirChat() { chatAbierto = true; $('chat').classList.add('abierto'); $('chat').setAttribute('aria-hidden', 'false'); cargarChat(); setTimeout(() => $('chat-texto').focus(), 60); clearInterval(chatT); chatT = setInterval(cargarChat, 45e3); }
+function cerrarChat() { chatAbierto = false; $('chat').classList.remove('abierto'); $('chat').setAttribute('aria-hidden', 'true'); clearInterval(chatT); chatT = setInterval(cargarChat, 180e3); }
+$('burbuja').onclick = () => chatAbierto ? cerrarChat() : abrirChat();
+$('chat-cerrar').onclick = cerrarChat;
+$('chat-texto').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('chat-form').requestSubmit(); } });
+$('chat-texto').addEventListener('input', function () { this.style.height = 'auto'; this.style.height = Math.min(120, this.scrollHeight) + 'px'; });
+$('chat-form').onsubmit = async (e) => {
+  e.preventDefault(); const t = $('chat-texto').value.trim(); if (!t) return;
+  $('chat-texto').value = ''; $('chat-texto').style.height = 'auto'; $('chat-enviar').disabled = true;
+  const c = $('chat-msjs'); if (c.querySelector('.vacio-chat')) c.innerHTML = '';
+  c.insertAdjacentHTML('beforeend', `<div class="m agus">${esc(t)}</div><div class="m ia pensando" id="chat-pensando">pensando…</div>`); c.scrollTop = c.scrollHeight;
+  try {
+    const { data: { session } } = await sb.auth.getSession(); if (!session) throw new Error('sin sesión');
+    const r = await fetch(SB_URL + '/functions/v1/admin-chat', { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: SB_KEY, Authorization: 'Bearer ' + session.access_token }, body: JSON.stringify({ mensaje: t }) });
+    const d = await r.json().catch(() => ({ error: 'respuesta inválida' }));
+    if (d.error) throw new Error(d.error);
+    reiniciarIdle();
+  } catch (err) { toast(String(err.message || err), true); }
+  $('chat-enviar').disabled = false; await cargarChat(); $('chat-texto').focus();
+};
 
 arrancar();
