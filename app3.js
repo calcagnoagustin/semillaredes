@@ -19,6 +19,8 @@
   #v3 .cab .ia{font:800 21px/1 Inter,system-ui,sans-serif;color:${NAVY};letter-spacing:-.3px}
   #v3 .cab .ia b{color:${OLIVA};font-weight:700}
   #v3 .cab .esp{flex:1}
+  #v3 .reu{display:inline-flex;align-items:center;gap:7px;margin:8px 0 0;padding:6px 12px 6px 10px;border-radius:999px;background:#ECEAD6;color:#4E5726;font:500 13px/1.2 Inter,sans-serif;white-space:nowrap;max-width:100%}
+  #v3 .reu svg{width:15px;height:15px;flex:none;display:block}#v3 .reu b{font-weight:700}
   #v3 .etq{display:flex;width:max-content;align-items:center;gap:4px;margin:-6px 0 10px;padding:0 6px 0 8px;height:19px;border:1px solid #D9D3BE;border-radius:999px;background:none;color:#6E6B5A;font:600 10.5px/1 Inter,sans-serif;letter-spacing:.3px;white-space:nowrap;cursor:pointer}
   #v3 .etq svg{width:11px;height:11px;display:block;opacity:.7}
   #v3 .cab .camp{position:relative;border:0;background:none;padding:6px;cursor:pointer;color:${VINO}}
@@ -758,7 +760,7 @@
       return `<button type="button" class="etq" data-info="${esc(info)}" aria-label="Etapa de ${x[0]}. Más info">Etapa de ${x[0]}<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.6" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="10" cy="6.2" r="1.3" fill="currentColor"/><path d="M10 9v5.6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></button>`; })():'';
     const scrHoy=`
       ${ETQ}<h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>${ACT}${({'alan-sutton':'Tus números y las ventas de merch se actualizan todos los días. El reporte sale los jueves a las 7.','bodegon-para':'Tus números se actualizan todos los días. El reporte sale los jueves a las 7.'})[slug]?`<p class="aviso-act">${({'alan-sutton':'Tus números y las ventas de merch se actualizan todos los días. El reporte sale los jueves a las 7.','bodegon-para':'Tus números se actualizan todos los días. El reporte sale los jueves a las 7.'})[slug]}</p>`:''}
-      <div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g transform="translate(-4 44)"><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></g></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
+      <div id="v3reu"></div><div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g transform="translate(-4 44)"><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></g></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
       <div id="v3ctas"></div>
       ${DEST}${CRU}
       ${GIRA}
@@ -1217,6 +1219,15 @@
 
     // --- eventos ---
     document.querySelectorAll('#v3 [data-ir], #v3nav [data-ir]').forEach(b=>b.onclick=()=>ir(b.dataset.ir,true));
+    // 05/11: próxima reunión con Semilla (del calendario de Agus). Chiquito, abajo del saludo.
+    (()=>{ const el=document.getElementById('v3reu'); if(!el) return; const pinta=p=>{ if(!p||!p.inicio){ el.innerHTML=''; return; }
+        const i=new Date(p.inicio), h=i.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'America/Argentina/Buenos_Aires'});
+        const dia=x=>x.toLocaleDateString('en-CA',{timeZone:'America/Argentina/Buenos_Aires'}), hoy=new Date(), man=new Date(Date.now()+864e5);
+        const DS=['dom','lun','mar','mié','jue','vie','sáb'], f=i.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',timeZone:'America/Argentina/Buenos_Aires'});
+        const cuando=dia(i)===dia(hoy)?`hoy a las ${h}`:dia(i)===dia(man)?`mañana a las ${h}`:`${DS[i.getDay()]} ${f} · ${h} hs`;
+        el.innerHTML=`<div class="reu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></svg><span>Próxima reunión: <b>${cuando}</b></span></div>`; };
+      if(window.__V3REU!==undefined){ pinta(window.__V3REU); return; }
+      fetch('https://vm.semillaredes.com/web/reunion?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(r=>{ window.__V3REU=r&&r.proxima||null; pinta(window.__V3REU); }).catch(()=>{}); })();
     raiz.querySelectorAll('.etq').forEach(b=>b.onclick=e=>{ e.stopPropagation(); infAbrir(b); window.SRE&&window.SRE('etapa_info',{}); });
     const abre=()=>{ verRep(); raiz.querySelector('#v3camp').classList.remove('nuevo'); };
     raiz.querySelector('#v3camp').onclick=()=>notifAbrir();
