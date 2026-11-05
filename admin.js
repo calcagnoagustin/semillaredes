@@ -10,7 +10,10 @@ const sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const ars = (n) => n == null ? '—' : '$' + Math.round(Number(n)).toLocaleString('es-AR');
+const ars = (n, m) => n == null ? '—' : (m === 'USD' ? 'US$ ' : '$') + Math.round(Number(n)).toLocaleString('es-AR');
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const mesNombre = (d) => { const x = new Date(d + 'T12:00:00'); return MESES[x.getMonth()] + ' ' + x.getFullYear(); };
+const MEDIO = { mercadopago: 'Mercado Pago', transferencia: 'transferencia', cortesia: 'cortesía', tiendup: 'Tiendup' };
 const fecha = (d, conHora) => { if (!d) return '—'; const x = new Date(d); return x.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', ...(conHora ? { hour: '2-digit', minute: '2-digit' } : {}) }); };
 const dias = (d) => d ? Math.round((new Date(d) - Date.now()) / 864e5) : null;
 
@@ -145,11 +148,14 @@ async function secInicio() {
       <div class="cifra"><div class="ic">${ICO.caja}</div><b>${r.clientes_activos}</b><span>clientes con panel</span></div>
       <div class="cifra"><div class="ic">${ICO.gorro}</div><b>${r.alumnos_activos}<small style="font-size:14px;color:var(--mute)">/${r.alumnos}</small></b><span>alumnos con acceso</span></div>
       <div class="cifra ${r.pagos_rechazados_30d ? 'alerta' : ''}"><div class="ic">${ICO.cal}</div><b>${r.pagos_rechazados_30d}</b><span>pagos rechazados en 30 días</span></div>
+      <div class="cifra ${r.transf_pendientes ? 'alerta' : ''}"><div class="ic">${ICO.doc}</div><b>${r.transf_pendientes}<small style="font-size:14px;color:var(--mute)">/${r.transf_total}</small></b><span>transferencias pendientes este mes</span></div>
       <div class="cifra"><div class="ic">${ICO.escudo}</div><b>${r.leads_30d}</b><span>auditorías en 30 días</span></div>
     </div>
+    ${r.mrr_usd ? `<p style="margin:-6px 0 14px;color:var(--mute);font-size:12.5px">Además ${ars(r.mrr_usd, 'USD')} por mes en clientes que pagan en dólares por transferencia.</p>` : ''}
+    ${(r.transf_pendientes_lista || []).length ? `<div class="bloque"><div class="enc"><h2>Transferencias pendientes de ${MESES[new Date().getMonth()]}</h2><a href="#suscripciones">Ir a suscripciones →</a></div><p>Todavía no se marcaron como pagadas.</p><table class="resp">${r.transf_pendientes_lista.map((t) => `<tr><td><b>${esc(t.nombre)}</b><div class="sub">${t.dia ? 'acordado el día ' + t.dia : ''}</div></td><td class="num">${ars(t.monto, t.moneda)}</td><td class="meta"><button class="ok" data-pagar="${t.id}">Marcar pagado</button></td></tr>`).join('')}</table></div>` : ''}
     <div class="bloque">
       <div class="enc"><h2>Próximos cobros</h2><a href="#suscripciones">Ver todos →</a></div><p>${r.cobros_7d} en los próximos siete días.</p>
-      ${cobros.length ? '<div class="cinta">' + cobros.map((c) => { const d = dias(c.fecha); return `<div class="dia ${d != null && d <= 3 ? 'pronto' : ''}"><div class="f"><span class="chip fecha">${fecha(c.fecha)}</span> ${d === 0 ? 'hoy' : d === 1 ? 'mañana' : 'en ' + d + ' días'}</div><div class="n" title="${esc(c.nombre)}">${esc(c.nombre)}</div><div class="m">${ars(c.monto)}</div><div class="p">${esc(c.plan)}</div></div>`; }).join('') + '</div>' : '<div class="vacio">No hay cobros programados.</div>'}
+      ${cobros.length ? '<div class="cinta">' + cobros.map((c) => { const d = dias(c.fecha); return `<div class="dia ${d != null && d <= 3 ? 'pronto' : ''}"><div class="f"><span class="chip fecha">${fecha(c.fecha)}</span> ${d === 0 ? 'hoy' : d === 1 ? 'mañana' : 'en ' + d + ' días'}</div><div class="n" title="${esc(c.nombre)}">${esc(c.nombre)}</div><div class="m">${ars(c.monto, c.moneda)}</div><div class="p">${esc(c.plan)}</div></div>`; }).join('') + '</div>' : '<div class="vacio">No hay cobros programados.</div>'}
     </div>
     ${r.webhooks_error ? `<div class="aviso vino">Hubo ${r.webhooks_error} avisos de Mercado Pago con error en la última semana. Revisalos en <a href="#auditoria">Auditoría</a>.</div>` : ''}
     <div class="grid2">
@@ -160,27 +166,28 @@ async function secInicio() {
         <dl class="lista-k"><dt>Mercado Pago</dt><dd>App «Semilla Pagos», credenciales de producción activas</dd><dt>Avisos de pago</dt><dd>${r.webhooks_error ? '<span class="chip rejected">con errores</span>' : '<span class="chip activa">funcionando</span>'}</dd><dt>Tu sesión</dt><dd>${estadoSeg.tiene_factor ? '<span class="chip activa">2 factores</span>' : '<span class="chip pendiente">sin segundo factor</span> <a href="#seguridad">activar</a>'}</dd></dl>
       </div>
     </div>`;
+  document.querySelectorAll('[data-pagar]').forEach((b) => b.onclick = async () => { b.disabled = true; const x = await rpc('adm_transferencia_marcar', { p_suscripcion_id: b.dataset.pagar, p_periodo: new Date().toISOString().slice(0, 8) + '01', p_pagado: true }); if (!x.ok) return toast(x.error, true); toast('Marcado como pagado'); navegar(); });
 }
 
 /* ---------- Suscripciones ---------- */
-let SUBS = [], PLANES = [], CLIENTES = [], ALUMNOS = [];
+let SUBS = [], PLANES = [], CLIENTES = [], ALUMNOS = [], mesActual = new Date().toISOString().slice(0, 8) + '01';
 async function cargarBase() {
   const [p, c, a] = await Promise.all([rpc('adm_planes'), rpc('adm_clientes'), rpc('adm_alumnos')]);
   PLANES = p.planes || []; CLIENTES = c.items || []; ALUMNOS = a.items || [];
 }
 async function secSuscripciones() {
   const r = await rpc('adm_suscripciones'); if (noAut(r)) return; await cargarBase();
-  SUBS = r.items || [];
+  SUBS = r.items || []; mesActual = r.mes_actual || mesActual;
   $('acciones').innerHTML = '<button id="btn-nueva">Nueva suscripción</button><button class="sec" id="btn-mp">Ver suscripciones en Mercado Pago</button>';
   $('btn-nueva').onclick = formNuevaSub; $('btn-mp').onclick = verMP;
   $('contenido').innerHTML = `
-    <div class="filtros"><input id="f-q" placeholder="Buscar por nombre o plan"><select id="f-e"><option value="">Todos los estados</option><option value="activa">Activas</option><option value="pendiente">Pendientes</option><option value="cancelada">Canceladas</option><option value="cortesia">Cortesías</option></select><span class="cnt" id="f-cnt"></span></div>
+    <div class="filtros"><input id="f-q" placeholder="Buscar por nombre o plan"><select id="f-e"><option value="">Todos los estados</option><option value="activa">Activas</option><option value="pendiente">Pendientes</option><option value="cancelada">Canceladas</option><option value="cortesia">Cortesías</option><option value="transferencia">Por transferencia</option><option value="transf_pend">Transferencia pendiente</option></select><span class="cnt" id="f-cnt"></span></div>
     <div class="bloque" style="padding:0;overflow:auto"><table class="resp"><thead><tr><th>Quién</th><th>Plan</th><th class="num">Monto</th><th>Estado</th><th>Próximo cobro</th><th>Último pago</th></tr></thead><tbody id="t-subs"></tbody></table></div>`;
   const pintar = () => {
     const q = $('f-q').value.toLowerCase(), e = $('f-e').value;
-    const L = SUBS.filter((s) => (!q || (s.quien.nombre + ' ' + s.plan.nombre + ' ' + (s.email_pagador || '')).toLowerCase().includes(q)) && (!e || (e === 'cortesia' ? s.cortesia : s.estado === e)));
+    const L = SUBS.filter((s) => (!q || (s.quien.nombre + ' ' + s.plan.nombre + ' ' + (s.email_pagador || '')).toLowerCase().includes(q)) && (!e || (e === 'cortesia' ? s.cortesia : e === 'transferencia' ? s.medio === 'transferencia' : e === 'transf_pend' ? (s.medio === 'transferencia' && s.mes_pagado === false) : s.estado === e)));
     $('f-cnt').textContent = L.length + ' de ' + SUBS.length;
-    $('t-subs').innerHTML = L.length ? L.map((s) => `<tr class="click" data-id="${s.id}"><td><b>${esc(s.quien.nombre)}</b><div class="sub"><span class="solo-movil">${esc(s.plan.nombre)}${s.cortesia ? ' <span class="chip cortesia">cortesía</span>' : ''}</span><span class="solo-desk">${esc(s.quien.tipo)}${s.email_pagador ? ' · ' + esc(s.email_pagador) : ''}</span></div></td><td class="oc">${esc(s.plan.nombre)}${s.cortesia ? ' <span class="chip cortesia">cortesía</span>' : ''}</td><td class="num">${s.cortesia ? '—' : ars(s.monto)}</td><td class="meta"><span class="chip ${esc(s.estado)}">${esc(s.estado)}</span> <span class="solo-movil">${s.cortesia ? '' : fecha(s.proximo_cobro)}</span></td><td class="oc">${s.cortesia ? '—' : fecha(s.proximo_cobro)}</td><td class="oc">${s.ultimo_pago_estado ? `<span class="chip ${esc(s.ultimo_pago_estado)}">${esc(s.ultimo_pago_estado)}</span> ${fecha(s.ultimo_pago_en)}` : '—'}</td></tr>`).join('') : '<tr><td colspan="6"><div class="vacio"><b>Nada por acá</b>Probá con otro filtro.</div></td></tr>';
+    $('t-subs').innerHTML = L.length ? L.map((s) => `<tr class="click" data-id="${s.id}"><td><b>${esc(s.quien.nombre)}</b><div class="sub"><span class="solo-movil">${esc(s.plan.nombre)}${s.cortesia ? ' <span class="chip cortesia">cortesía</span>' : ''}</span><span class="solo-desk">${esc(s.quien.tipo)}${s.email_pagador ? ' · ' + esc(s.email_pagador) : ''}</span></div></td><td class="oc">${esc(s.plan.nombre)}${s.cortesia ? ' <span class="chip cortesia">cortesía</span>' : ''}</td><td class="num">${s.cortesia ? '—' : ars(s.monto, s.moneda)}</td><td class="meta"><span class="chip ${esc(s.estado)}">${esc(s.estado)}</span> ${s.medio === 'transferencia' ? `<span class="chip ${s.mes_pagado ? 'approved' : 'pendiente'}">${s.mes_pagado ? 'mes pagado' : 'mes pendiente'}</span>` : ''} <span class="solo-movil">${s.cortesia || s.medio === 'transferencia' ? '' : fecha(s.proximo_cobro)}</span></td><td class="oc">${s.medio === 'transferencia' ? (s.dia_cobro ? 'día ' + s.dia_cobro + ' · transferencia' : 'transferencia') : s.cortesia ? '—' : fecha(s.proximo_cobro)}</td><td class="oc">${s.ultimo_pago_estado ? `<span class="chip ${esc(s.ultimo_pago_estado)}">${esc(s.ultimo_pago_estado)}</span> ${fecha(s.ultimo_pago_en)}` : '—'}</td></tr>`).join('') : '<tr><td colspan="6"><div class="vacio"><b>Nada por acá</b>Probá con otro filtro.</div></td></tr>';
     document.querySelectorAll('#t-subs tr.click').forEach((tr) => tr.onclick = () => detalleSub(tr.dataset.id));
   };
   $('f-q').oninput = pintar; $('f-e').onchange = pintar; pintar();
@@ -190,7 +197,14 @@ function detalleSub(id) {
   const s = SUBS.find((x) => x.id === id); if (!s) return;
   abrirLateral(`
     <h2>${esc(s.quien.nombre)}</h2><p style="color:var(--mute);margin:2px 0 14px">${esc(s.quien.tipo)} · <span class="chip ${esc(s.estado)}">${esc(s.estado)}</span> ${s.cortesia ? '<span class="chip cortesia">cortesía</span>' : ''}</p>
-    <dl class="lista-k"><dt>Plan</dt><dd>${esc(s.plan.nombre)}</dd><dt>Monto</dt><dd>${s.cortesia ? 'sin cobro' : ars(s.monto) + ' por mes'}</dd><dt>Próximo cobro</dt><dd>${s.cortesia ? '—' : fecha(s.proximo_cobro)}</dd><dt>Desde</dt><dd>${fecha(s.inicio)}</dd><dt>Paga con</dt><dd>${s.mp_preapproval_id ? 'Mercado Pago <span class="copiar"><span>' + esc(s.mp_preapproval_id) + '</span></span>' : (s.cortesia ? 'nadie, es cortesía' : 'todavía no vinculado')}</dd>${s.notas ? '<dt>Notas</dt><dd>' + esc(s.notas) + '</dd>' : ''}</dl>
+    <dl class="lista-k"><dt>Plan</dt><dd>${esc(s.plan.nombre)}</dd><dt>Monto</dt><dd>${s.cortesia ? 'sin cobro' : ars(s.monto, s.moneda) + ' por mes'}</dd><dt>Paga con</dt><dd>${s.medio === 'transferencia' ? 'Transferencia' + (s.dia_cobro ? ', acordado el día ' + s.dia_cobro : '') : s.mp_preapproval_id ? 'Mercado Pago <span class="copiar"><span>' + esc(s.mp_preapproval_id) + '</span></span>' : (s.cortesia ? 'nadie, es cortesía' : 'Mercado Pago, todavía no vinculado')}</dd>${s.medio !== 'transferencia' && !s.cortesia ? '<dt>Próximo cobro</dt><dd>' + fecha(s.proximo_cobro) + '</dd>' : ''}<dt>Desde</dt><dd>${fecha(s.inicio)}</dd>${s.notas ? '<dt>Notas</dt><dd>' + esc(s.notas) + '</dd>' : ''}</dl>
+    ${s.medio === 'transferencia' ? `<div class="sep"></div><h3>Pagos por transferencia</h3><p style="color:var(--mute);margin:4px 0 10px">Marcá cada mes cuando llegue la transferencia.</p>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px"><input type="month" id="t-mes" value="${mesActual.slice(0, 7)}" style="width:auto"><button class="${s.mes_pagado ? 'sec' : 'ok'}" id="t-marcar">Marcar como pagado</button><button class="lnk" id="t-desmarcar">Quitar</button></div>
+      ${s.transferencias.length ? '<table>' + s.transferencias.map((t) => `<tr><td>${mesNombre(t.periodo)}</td><td class="num">${ars(t.monto, t.moneda)}</td><td><span class="chip approved">pagado ${fecha(t.pagado_en)}</span></td></tr>`).join('') + '</table>' : '<p style="color:var(--mute)">Ningún mes marcado todavía.</p>'}` : ''}
+    <div class="sep"></div>
+    <h3>Datos del cobro</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 10px"><div><label>Medio</label><select id="d-medio"><option value="mercadopago" ${s.medio === 'mercadopago' ? 'selected' : ''}>Mercado Pago</option><option value="transferencia" ${s.medio === 'transferencia' ? 'selected' : ''}>Transferencia</option><option value="tiendup" ${s.medio === 'tiendup' ? 'selected' : ''}>Tiendup</option></select></div><div><label>Día de cobro</label><input id="d-dia" type="number" min="1" max="31" value="${s.dia_cobro || ''}"></div><div><label>Monto</label><input id="d-monto" type="number" value="${s.monto ?? ''}"></div><div><label>Moneda</label><select id="d-moneda"><option ${s.moneda === 'ARS' ? 'selected' : ''}>ARS</option><option ${s.moneda === 'USD' ? 'selected' : ''}>USD</option></select></div></div>
+    <button class="sec" id="d-guardar">Guardar datos</button>
     <div class="sep"></div>
     <h3>Cambiar de plan</h3><p style="color:var(--mute);margin:4px 0 10px">Si paga por Mercado Pago, el monto se actualiza allá en el próximo cobro.</p>
     <div class="campo"><select id="d-plan">${opcionesPlanes(s.plan.codigo)}</select></div>
@@ -215,6 +229,13 @@ function detalleSub(id) {
     if (r.error) { toast(r.error, true); $('d-cambiar').disabled = false; return; }
     toast('Plan cambiado'); cerrarLateral(); navegar();
   };
+  if ($('t-marcar')) { const per = () => $('t-mes').value + '-01';
+    $('t-marcar').onclick = async () => { const r = await rpc('adm_transferencia_marcar', { p_suscripcion_id: s.id, p_periodo: per(), p_pagado: true }); if (!r.ok) return toast(r.error, true); toast('Mes marcado como pagado'); cerrarLateral(); navegar(); };
+    $('t-desmarcar').onclick = async () => { const r = await rpc('adm_transferencia_marcar', { p_suscripcion_id: s.id, p_periodo: per(), p_pagado: false }); if (!r.ok) return toast(r.error, true); toast('Mes quitado'); cerrarLateral(); navegar(); }; }
+  $('d-guardar').onclick = async () => {
+    const r = await rpc('adm_suscripcion_set', { p_id: s.id, p_medio: $('d-medio').value, p_dia_cobro: Number($('d-dia').value) || null, p_monto: $('d-monto').value === '' ? null : Number($('d-monto').value), p_moneda: $('d-moneda').value });
+    if (!r.ok) return toast(r.error, true); toast('Guardado'); cerrarLateral(); navegar();
+  };
   $('d-cort-guardar').onclick = async () => {
     const r = await rpc('adm_suscripcion_set', { p_id: s.id, p_cortesia: $('d-cort').checked, p_cortesia_hasta: $('d-cort-hasta').value || null, p_estado: $('d-cort').checked ? 'activa' : null });
     if (!r.ok) return toast(r.error, true); toast('Cortesía guardada'); cerrarLateral(); navegar();
@@ -230,13 +251,16 @@ function formNuevaSub() {
     <div class="campo"><label>Plan</label><select id="n-plan">${opcionesPlanes('pro')}</select></div>
     <div class="campo"><label>Cliente</label><select id="n-cli"><option value="">—</option>${CLIENTES.map((c) => `<option value="${c.id}">${esc(c.nombre)}</option>`).join('')}</select></div>
     <div class="campo"><label>o alumno</label><select id="n-alu"><option value="">—</option>${ALUMNOS.map((a) => `<option value="${a.id}">${esc(a.nombre)}</option>`).join('')}</select></div>
-    <label class="chk"><input type="checkbox" id="n-cort" checked> Es cortesía (sin cobro)</label>
-    <div class="campo" style="margin-top:10px"><label>Notas</label><input id="n-notas"></div>
+    <div class="campo"><label>o nombre libre (si todavía no está cargado)</label><input id="n-alias" placeholder="Nombre del cliente"></div>
+    <div class="campo"><label>Cómo paga</label><select id="n-medio"><option value="cortesia">Cortesía (sin cobro)</option><option value="transferencia">Transferencia</option><option value="mercadopago">Mercado Pago (se vincula cuando pague por el link)</option></select></div>
+    <div id="n-cobro" class="oculto" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px"><div><label>Monto</label><input id="n-monto" type="number"></div><div><label>Moneda</label><select id="n-moneda"><option>USD</option><option>ARS</option></select></div><div><label>Día de cobro</label><input id="n-dia" type="number" min="1" max="31"></div></div>
+    <div class="campo"><label>Notas</label><input id="n-notas"></div>
     <button id="n-crear">Crear</button>`);
+  $('n-medio').onchange = () => $('n-cobro').classList.toggle('oculto', $('n-medio').value !== 'transferencia');
   $('n-crear').onclick = async () => {
-    const cli = $('n-cli').value || null, alu = $('n-alu').value || null;
-    if (!cli && !alu) return toast('Elegí un cliente o un alumno', true);
-    const r = await rpc('adm_suscripcion_alta', { p_plan_codigo: $('n-plan').value, p_cliente_id: cli, p_alumno_id: alu, p_cortesia: $('n-cort').checked, p_notas: $('n-notas').value.trim() || null });
+    const cli = $('n-cli').value || null, alu = $('n-alu').value || null, alias = $('n-alias').value.trim() || null, medio = $('n-medio').value;
+    if (!cli && !alu && !alias) return toast('Elegí un cliente, un alumno o escribí un nombre', true);
+    const r = await rpc('adm_suscripcion_alta', { p_plan_codigo: $('n-plan').value, p_cliente_id: cli, p_alumno_id: alu, p_alias: alias, p_cortesia: medio === 'cortesia', p_medio: medio === 'cortesia' ? null : medio, p_monto: medio === 'transferencia' && $('n-monto').value ? Number($('n-monto').value) : null, p_moneda: medio === 'transferencia' ? $('n-moneda').value : null, p_dia_cobro: medio === 'transferencia' && $('n-dia').value ? Number($('n-dia').value) : null, p_notas: $('n-notas').value.trim() || null });
     if (!r.ok) return toast(r.error, true); toast('Creada'); cerrarLateral(); navegar();
   };
 }
@@ -273,9 +297,9 @@ async function secPlanes() {
   $('contenido').innerHTML = '<div class="aviso">Si cambiás un monto, tocá «Actualizar en Mercado Pago» para que el link cobre el nuevo valor. Las suscripciones ya activas no cambian solas.</div>' + PLANES.map((p) => `
     <div class="bloque" data-plan="${p.id}">
       <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start">
-        <div style="flex:1;min-width:240px"><h2>${esc(p.nombre)} ${p.activo ? '' : '<span class="chip">inactivo</span>'}</h2><p>${esc(p.descripcion || '')} · ${p.suscriptos} suscripto${p.suscriptos === 1 ? '' : 's'}</p>
+        <div style="flex:1;min-width:240px"><h2>${esc(p.nombre)} <span style="font-family:Inter;font-size:14px;color:var(--mute);font-weight:500">${p.monto > 0 ? ars(p.monto, p.moneda) + ' por mes' : 'gratis'} · ${p.suscriptos} suscripto${p.suscriptos === 1 ? '' : 's'}</span> ${p.activo ? '' : '<span class="chip">inactivo</span>'}</h2><p style="color:var(--tinta);max-width:60ch;margin:6px 0 12px">${esc(p.descripcion || '')}</p>
           ${p.link ? `<div class="copiar"><span>${esc(p.link)}</span><button class="lnk" data-copy="${esc(p.link)}">Copiar</button></div>` : '<span class="chip">gratis, sin link</span>'}</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;min-width:280px"><div><label>Nombre</label><input data-f="nombre" value="${esc(p.nombre)}"></div><div><label>Monto ARS</label><input data-f="monto" type="number" value="${p.monto}"></div><div style="grid-column:1/-1"><label>Descripción</label><input data-f="descripcion" value="${esc(p.descripcion || '')}"></div><label class="chk"><input type="checkbox" data-f="activo" ${p.activo ? 'checked' : ''}> Activo</label><button data-save="${p.id}" class="sec">Guardar</button></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;min-width:280px"><div><label>Nombre</label><input data-f="nombre" value="${esc(p.nombre)}"></div><div><label>Monto ARS</label><input data-f="monto" type="number" value="${p.monto}"></div><div style="grid-column:1/-1"><label>Qué incluye</label><textarea data-f="descripcion" style="min-height:90px">${esc(p.descripcion || '')}</textarea></div><label class="chk"><input type="checkbox" data-f="activo" ${p.activo ? 'checked' : ''}> Activo</label><button data-save="${p.id}" class="sec">Guardar</button></div>
       </div>
     </div>`).join('');
   document.querySelectorAll('[data-copy]').forEach((b) => b.onclick = () => navigator.clipboard.writeText(b.dataset.copy).then(() => toast('Link copiado')));
