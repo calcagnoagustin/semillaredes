@@ -142,11 +142,11 @@ const ICO = {
 };
 /* ---------- Inicio ---------- */
 async function secInicio() {
-  const r = await rpc('adm_resumen'); if (noAut(r)) return;
+  const [r, M] = await Promise.all([rpc('adm_resumen'), rpc('adm_mes')]); if (noAut(r)) return;
   const cobros = r.proximos_cobros || [];
   $('contenido').innerHTML = `
     <div class="cifras">
-      <div class="cifra"><div class="ic">${ICO.plata}</div><b>${ars(r.mrr_ars)}</b><span>por mes cargado en el panel · ${ars(r.mrr_mp)} Mercado Pago + ${ars(r.mrr_transf)} transferencia</span></div>
+      <div class="cifra"><div class="ic">${ICO.plata}</div><b>${ars(M.recibido)}</b><span>cobrado en ${MESES[new Date().getMonth()]} · de ${ars(M.previsto)} previstos (${ars(r.mrr_mp)} Mercado Pago + ${ars(r.mrr_transf)} transferencia)</span></div>
       <div class="cifra"><div class="ic">${ICO.gente}</div><b>${r.subs_activas}</b><span>suscripciones activas · ${r.subs_cortesia} de cortesía</span></div>
       <div class="cifra"><div class="ic">${ICO.caja}</div><b>${r.clientes_activos}</b><span>clientes con panel</span></div>
       <div class="cifra"><div class="ic">${ICO.gorro}</div><b>${r.alumnos_activos}<small style="font-size:14px;color:var(--mute)">/${r.alumnos}</small></b><span>alumnos con acceso</span></div>
@@ -154,8 +154,8 @@ async function secInicio() {
       <div class="cifra ${r.transf_pendientes ? 'alerta' : ''}"><div class="ic">${ICO.doc}</div><b>${r.transf_pendientes}<small style="font-size:14px;color:var(--mute)">/${r.transf_total}</small></b><span>transferencias pendientes este mes</span></div>
       <div class="cifra"><div class="ic">${ICO.escudo}</div><b>${r.leads_30d}</b><span>auditorías en 30 días</span></div>
     </div>
-    ${r.fin_ultimo || r.fin_mes_actual ? `<div class="bloque"><div class="enc"><h2>El negocio según la planilla</h2><a href="#finanzas">Ver balance →</a></div><p>La planilla Clientes 2026 es la fuente de verdad; esto se sincroniza solo.</p><div class="cifras" style="margin:0">${r.fin_ultimo ? `<div class="cifra"><b>${ars(r.fin_ultimo.ingresos)}</b><span>facturado en ${mesNombre(r.fin_ultimo.mes)} (cerrado)</span></div><div class="cifra"><b>${ars(r.fin_ultimo.ganancia)}</b><span>ganancia · costos ${ars(r.fin_ultimo.costos)} · ${r.fin_ultimo.clientes} clientes</span></div>` : ''}${r.fin_mes_actual ? `<div class="cifra"><b>${ars(r.fin_mes_actual.ingresos)}</b><span>previsto para ${mesNombre(r.fin_mes_actual.mes)} (en curso)</span></div>` : ''}</div></div>` : ''}
-    ${(r.transf_pendientes_lista || []).length ? `<div class="bloque"><div class="enc"><h2>Transferencias pendientes de ${MESES[new Date().getMonth()]}</h2><a href="#suscripciones">Ir a suscripciones →</a></div><p>Todavía no se marcaron como pagadas.</p><table class="resp">${r.transf_pendientes_lista.map((t) => `<tr><td><b>${esc(t.nombre)}</b><div class="sub">${t.dia ? 'acordado el día ' + t.dia : ''}</div></td><td class="num">${ars(t.monto, t.moneda)}</td><td class="meta"><button class="ok" data-pagar="${t.id}">Marcar pagado</button></td></tr>`).join('')}</table></div>` : ''}
+    ${bloqueMes(M)}
+
     <div class="bloque">
       <div class="enc"><h2>Próximos cobros</h2><a href="#suscripciones">Ver todos →</a></div><p>${r.cobros_7d} en los próximos siete días.</p>
       ${cobros.length ? '<div class="cinta">' + cobros.map((c) => { const d = dias(c.fecha); return `<div class="dia ${d != null && d <= 3 ? 'pronto' : ''}"><div class="f"><span class="chip fecha">${fecha(c.fecha)}</span> ${d === 0 ? 'hoy' : d === 1 ? 'mañana' : 'en ' + d + ' días'}</div><div class="n" title="${esc(c.nombre)}">${esc(c.nombre)}</div><div class="m">${ars(c.monto, c.moneda)}</div><div class="p">${esc(c.plan)}</div></div>`; }).join('') + '</div>' : '<div class="vacio">No hay cobros programados.</div>'}
@@ -170,6 +170,24 @@ async function secInicio() {
       </div>
     </div>`;
   document.querySelectorAll('[data-pagar]').forEach((b) => b.onclick = async () => { b.disabled = true; const x = await rpc('adm_transferencia_marcar', { p_suscripcion_id: b.dataset.pagar, p_periodo: new Date().toISOString().slice(0, 8) + '01', p_pagado: true }); if (!x.ok) return toast(x.error, true); toast('Marcado como pagado'); navegar(); });
+}
+
+function bloqueMes(M) {
+  if (!M || M.ok === false) return '';
+  const P = M.planilla || {}, mesN = mesNombre(M.mes);
+  const fila = (x, pagado) => `<tr><td><b>${esc(x.nombre)}</b><div class="sub">${esc(MEDIO[x.medio] || x.medio)}${pagado ? (x.fecha ? ' · ' + fecha(x.fecha) : '') : (x.fecha_prevista ? ' · previsto ' + fecha(x.fecha_prevista) : '')}</div></td><td class="num">${ars(x.monto)}</td><td class="meta">${pagado ? '<span class="chip approved">pagó</span>' : x.atrasado ? '<span class="chip rejected">atrasado</span>' : '<span class="chip pendiente">falta</span>'}${!pagado && x.medio === 'transferencia' ? ` <button class="lnk" data-pagar="${x.id}">Marcar pagado</button>` : ''}</td></tr>`;
+  return `<div class="bloque"><div class="enc"><h2>${mesN.charAt(0).toUpperCase() + mesN.slice(1)}: qué entró y qué falta</h2><a href="#finanzas">Ver balance →</a></div><p>Lo cobrado sale de Mercado Pago y de las transferencias marcadas; lo previsto, de las suscripciones activas; costos y ganancia, de la planilla.</p>
+    <div class="cifras" style="margin:0 0 14px">
+      <div class="cifra"><b>${ars(M.recibido)}</b><span>pagos recibidos · ${M.n_pagados} de ${M.n_total}</span></div>
+      <div class="cifra ${Number(M.falta) > 0 ? 'alerta' : ''}"><b>${ars(M.falta)}</b><span>pagos que faltan · ${M.n_total - M.n_pagados}</span></div>
+      <div class="cifra"><b>${ars(M.previsto)}</b><span>pagos previstos (suscripciones activas)</span></div>
+      <div class="cifra"><b>${P.ingresos != null ? ars(P.ingresos) : '—'}</b><span>facturación prevista según planilla</span></div>
+      <div class="cifra"><b>${P.costos != null ? ars(P.costos) : '—'}</b><span>costos previstos</span></div>
+      <div class="cifra"><b>${P.ganancia != null ? ars(P.ganancia) : '—'}</b><span>ganancia prevista</span></div>
+    </div>
+    ${P.ingresos != null && Math.abs(Number(P.ingresos) - Number(M.previsto)) > 1000 ? `<div class="aviso">La planilla prevé ${ars(P.ingresos)} y el panel tiene cargados ${ars(M.previsto)}: diferencia de ${ars(Number(P.ingresos) - Number(M.previsto))}. El auditor contable la detalla los lunes.</div>` : ''}
+    <div class="grid2"><div class="bloque" style="padding:0;overflow:auto;margin:0"><div style="padding:14px 16px 4px"><h3>Faltan (${(M.faltan || []).length})</h3></div><table class="resp">${(M.faltan || []).map((x) => fila(x, false)).join('') || '<tr><td><div class="vacio">Nadie debe este mes.</div></td></tr>'}</table></div>
+    <div class="bloque" style="padding:0;overflow:auto;margin:0"><div style="padding:14px 16px 4px"><h3>Pagaron (${(M.pagados || []).length})</h3></div><table class="resp">${(M.pagados || []).map((x) => fila(x, true)).join('') || '<tr><td><div class="vacio">Todavía nadie.</div></td></tr>'}</table></div></div></div>`;
 }
 
 /* ---------- Suscripciones ---------- */
