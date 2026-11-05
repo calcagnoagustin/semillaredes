@@ -153,6 +153,8 @@ body.sadhana .beta{color:#fff;border-color:rgba(255,255,255,.75);background:tran
 .camp{background:#fff;border:1px solid var(--linea);border-radius:14px;padding:18px 20px;margin-bottom:12px}
 .camp h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);margin:0 0 2px}
 .camp .que{font-size:13px;color:var(--mute);margin:0 0 12px}
+.camp .graf{background:none;border:0;border-top:1px solid var(--linea);border-radius:0;padding:14px 0 0;margin-top:14px}
+.camp .graf h3{font-family:inherit;font-size:14px;font-weight:700;color:var(--navy);margin:0 0 2px}
 .camp .nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
 .camp .n{border-left:2px solid var(--linea);padding-left:11px}
 .camp .n .l{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--oliva);font-weight:700}
@@ -1719,6 +1721,9 @@ function pintarMensajes(d){
         <div class="n"><div class="l">Invertido</div><div class="v">${fmt(invc,0)}</div><div class="d">USD · ${fmt(m[c.p+'_inv_diaria'])} por día</div></div>
       </div>
       <div class="zona"><span>PBA <b>${fmt(m[c.p+'_pba'])}</b></span><span>·</span><span>CABA <b>${fmt(m[c.p+'_caba'])}</b></span></div>
+      ${(()=>{ // 05/11: costo por mensaje de esta campaña, período por período
+        const cm=R.map(r=>{ const x=r.metricas, v=x[c.p+'_costo_mensaje']; if(v!=null) return Number(v); const i=Number(x[c.p+'_inversion']), n=Number(x[c.p+'_mensajes']); return (i&&n)?Math.round(i/n*100)/100:null; });
+        return cm.some(v=>v!=null)?grafico('Costo por mensaje de '+titulo,'Cuánto costó cada consulta en cada período, en USD. Mientras más baja la línea, mejor.',cm,et,'#87863A',true):''; })()}
     </div>`;
   });
   if(u) h+=contenidosHTML(u.metricas.contenidos,[fecha(u.metricas.cont_desde||u.desde),fecha(u.metricas.cont_hasta||u.hasta)]);
