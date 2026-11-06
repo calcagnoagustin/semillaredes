@@ -150,6 +150,11 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:now
 .secreto{font-family:ui-monospace,monospace;font-size:12px;word-break:break-all;color:var(--mute)}
 .chk{display:flex;gap:10px;align-items:center;font-size:13.5px}.chk input{width:auto}
 
+/* ---------- Pestañas ---------- */
+.tabs{display:flex;gap:6px;margin:0 0 16px;border-bottom:1px solid var(--linea)}
+.tab{background:transparent;color:var(--mute);border-radius:0;padding:8px 14px;border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:600}
+.tab.on{color:var(--navy);border-bottom-color:var(--navy)}
+
 /* ---------- Planes ---------- */
 .plan{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:flex-start}
 .plan-info{flex:1;min-width:240px}
@@ -332,6 +337,6 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:now
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
-<script src="admin.js?v=20261105i"></script>
+<script src="admin.js?v=20261106a"></script>
 </body>
 </html>

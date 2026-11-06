@@ -107,7 +107,7 @@ const SECCIONES = {
   planes: { t: 'Planes y links de pago', b: 'Los tiers de Semilla y el link de cada uno para mandar por WhatsApp.', f: secPlanes },
   clientes: { t: 'Clientes', b: 'Proyectos con panel en la app.', f: secClientes },
   alumnos: { t: 'Alumnos', b: 'Personas en la Formación Semilla.', f: secAlumnos },
-  leads: { t: 'Leads', b: 'Artistas que completaron la auditoría con IA.', f: secLeads },
+  leads: { t: 'Leads', b: 'Los que entran solos por la auditoría y los que salimos a buscar.', f: secLeadsTabs },
   clases: { t: 'Clases', b: 'Subir y ordenar las clases de la Formación.', f: () => secPronto('Clases', ['Subir el video de cada clase a un servidor propio (sin logo ni descarga de YouTube).', 'Ordenar por módulo y pilar del Método: Modelo de negocio, Comunicación, Publicidad.', 'Elegir qué tier ve cada clase.', 'Reemplazar la clase anterior cuando la vuelta al sol avanza.']) },
   drops: { t: 'Drops', b: 'El newsletter semanal.', f: () => secPronto('Drops', ['Escribir y programar el drop de cada viernes.', 'Subir el audio para WhatsApp.', 'Ver quién lo abrió desde la app.']) },
   playbook: { t: 'Playbook', b: 'Las reglas del Método que usa la IA.', f: () => secPronto('Playbook', ['Revisar reglas candidatas que detecta la auditoría.', 'Promover, editar o descartar.', 'Por ahora sigue en el panel del playbook.']) },
@@ -374,7 +374,7 @@ async function secLeads() {
   const igUrl = (v) => /^https?:/i.test(v) ? v : 'https://www.instagram.com/' + String(v).replace(/^@/, '').replace(/^instagram\//i, '') + '/';
   const wa = (v) => 'https://wa.me/' + String(v).replace(/\D/g, '').replace(/^0+/, '');
   const contacto = (l) => [l.email ? `<a href="mailto:${esc(l.email)}">${esc(l.email)}</a>` : '', l.whatsapp ? `<a href="${wa(l.whatsapp)}" target="_blank" rel="noopener">${esc(l.whatsapp)}</a>` : ''].filter(Boolean).join('<br>');
-  $('contenido').innerHTML = `<div class="bloque" style="padding:0;overflow:auto"><table class="resp leads"><thead><tr><th>Fecha</th><th>Proyecto</th><th>Tipo</th><th>Instagram</th><th>Contacto</th><th>Prioridad</th></tr></thead><tbody>${L.map((l) => `<tr>
+  ($('leads-cont') || $('contenido')).innerHTML = `<div class="bloque" style="padding:0;overflow:auto"><table class="resp leads"><thead><tr><th>Fecha</th><th>Proyecto</th><th>Tipo</th><th>Instagram</th><th>Contacto</th><th>Prioridad</th></tr></thead><tbody>${L.map((l) => `<tr>
     <td class="oc">${fecha(l.created_at)}</td>
     <td><b>${esc(l.proyecto || '—')}</b><div class="sub">${esc(l.tipo || '')}<span class="solo-movil"> · ${fecha(l.created_at)}</span></div><div class="solo-movil contacto">${l.instagram ? `<a href="${esc(igUrl(l.instagram))}" target="_blank" rel="noopener">${esc(igHandle(l.instagram))}</a>${l.ig_seguidores ? ' <span style="color:var(--mute)">' + Number(l.ig_seguidores).toLocaleString('es-AR') + '</span>' : ''}<br>` : ''}${contacto(l)}</div></td>
     <td class="oc">${esc(l.tipo || '')}</td>
@@ -457,6 +457,37 @@ async function secAuditoria() {
     <div class="bloque" style="padding:0;overflow:auto"><div style="padding:16px 18px 6px"><h2>Acciones</h2><p>Lo último que se hizo desde el panel.</p></div><table><thead><tr><th>Cuándo</th><th>Quién</th><th>Acción</th><th></th></tr></thead><tbody>${(a.items || []).map((i) => `<tr><td style="white-space:nowrap">${fecha(i.cuando, true)}</td><td style="font-size:12.5px">${esc((i.usuario || '').split('@')[0])}</td><td>${esc(i.accion)}<div style="font-size:11.5px;color:var(--mute);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(JSON.stringify(i.detalle || ''))}">${esc(JSON.stringify(i.detalle || ''))}</div></td><td>${i.ok ? '' : '<span class="chip rejected">error</span>'}</td></tr>`).join('') || '<tr><td colspan="4"><div class="vacio">Sin acciones todavía.</div></td></tr>'}</tbody></table></div>
     <div class="bloque" style="padding:0;overflow:auto"><div style="padding:16px 18px 6px"><h2>Avisos de Mercado Pago</h2><p>Cada notificación que llegó y si se procesó.</p></div><table><thead><tr><th>Cuándo</th><th>Tipo</th><th>Estado</th></tr></thead><tbody>${(w.items || []).map((i) => `<tr><td style="white-space:nowrap">${fecha(i.recibido_en, true)}</td><td>${esc(i.tipo || '')}${i.accion ? ' <span style="color:var(--mute)">' + esc(i.accion) + '</span>' : ''}</td><td>${i.error ? '<span class="chip rejected" title="' + esc(i.error) + '">error</span>' : i.procesado ? '<span class="chip activa">ok</span>' : '<span class="chip">ignorado</span>'}</td></tr>`).join('') || '<tr><td colspan="3"><div class="vacio">Todavía no llegó ningún aviso.</div></td></tr>'}</tbody></table></div>
   </div>`;
+}
+
+/* ---------- Leads: pestañas + Prospección ---------- */
+let leadsTab = 'prospeccion';
+async function secLeadsTabs() {
+  const tabs = `<div class="tabs"><button class="tab ${leadsTab === 'prospeccion' ? 'on' : ''}" data-tab="prospeccion">Prospección</button><button class="tab ${leadsTab === 'auditorias' ? 'on' : ''}" data-tab="auditorias">Auditorías</button></div><div id="leads-cont"></div>`;
+  $('contenido').innerHTML = tabs;
+  $('contenido').querySelectorAll('[data-tab]').forEach((b) => b.onclick = () => { leadsTab = b.dataset.tab; secLeadsTabs(); });
+  if (leadsTab === 'auditorias') await secLeads(); else await secProspeccion();
+}
+const EST_P = { nuevo: ['nuevo', 'fecha'], contactar: ['para contactar', 'pendiente'], contactado: ['contactado', 'pendiente'], respondio: ['respondió', 'approved'], reunion: ['reunión', 'approved'], cliente: ['cliente', 'approved'], descartado: ['descartado', 'rejected'] };
+async function secProspeccion() {
+  const d = await rpc('adm_prospectos'); if (noAut(d)) return; const P = d.items || [], R = d.resumen || {};
+  const fb = (p) => p.fb_page_id ? `<a href="https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=AR&view_all_page_id=${esc(p.fb_page_id)}" target="_blank" rel="noopener">ver anuncios</a>` : '';
+  const ig = (p) => p.instagram ? `<a href="https://www.instagram.com/${esc(String(p.instagram).replace(/^@/, ''))}/" target="_blank" rel="noopener">@${esc(String(p.instagram).replace(/^@/, ''))}</a>` : '';
+  const fila = (p) => `<tr data-id="${p.id}"><td><b>${esc(p.nombre)}</b><div class="sub">${esc(p.tipo || '')}${p.ciudad ? ' · ' + esc(p.ciudad) : ''}${p.tamano ? ' · ' + esc(p.tamano) : ''}</div><div class="sub" style="color:var(--tinta);margin-top:4px">${esc(p.senal || '')}</div><div class="sub" style="margin-top:4px">${[fb(p), ig(p), p.web ? `<a href="${esc(p.web)}" target="_blank" rel="noopener">web</a>` : ''].filter(Boolean).join(' · ')}</div>${p.notas ? `<div class="sub" style="margin-top:4px;font-style:italic">${esc(p.notas)}</div>` : ''}</td><td class="num">${p.score ?? ''}</td><td class="meta"><span class="chip ${(EST_P[p.estado] || [])[1] || ''}">${(EST_P[p.estado] || [p.estado])[0]}</span> <button class="lnk" data-ver="${p.id}">Editar</button></td></tr>`;
+  const grupos = [['Nuevos', P.filter((p) => p.estado === 'nuevo')], ['Para contactar', P.filter((p) => p.estado === 'contactar')], ['En charla', P.filter((p) => ['contactado', 'respondio', 'reunion'].includes(p.estado))], ['Clientes', P.filter((p) => p.estado === 'cliente')], ['Descartados', P.filter((p) => p.estado === 'descartado')]];
+  $('leads-cont').innerHTML = `
+    <div class="cifras"><div class="cifra"><b>${R.nuevos || 0}</b><span>nuevos para mirar</span></div><div class="cifra"><b>${R.contactar || 0}</b><span>para contactar</span></div><div class="cifra"><b>${R.en_charla || 0}</b><span>en charla</span></div><div class="cifra"><b>${R.clientes || 0}</b><span>cerrados</span></div></div>
+    <p class="sub" style="margin:0 0 14px">Cada lunes Claude busca productoras, salas, festivales y artistas que ya están pagando pauta (Biblioteca de anuncios de Meta, carteleras y ticketeras) y los deja acá como «nuevos». El score mide tamaño y señal de presupuesto: más alto, más vale la pena el contacto.</p>
+    ${grupos.map(([t, L]) => L.length ? `<div class="bloque" style="padding:0;overflow:auto"><div style="padding:14px 16px 4px"><h3>${t} (${L.length})</h3></div><table class="resp"><thead><tr><th>Quién</th><th class="num">Score</th><th>Estado</th></tr></thead><tbody>${L.map(fila).join('')}</tbody></table></div>` : '').join('') || '<div class="vacio">Todavía no hay prospectos. El lunes aparecen los primeros.</div>'}`;
+  $('leads-cont').querySelectorAll('[data-ver]').forEach((b) => b.onclick = () => {
+    const p = P.find((x) => String(x.id) === b.dataset.ver); if (!p) return;
+    abrirLateral(`<h2>${esc(p.nombre)}</h2><p class="sub">${esc(p.tipo || '')}${p.ciudad ? ' · ' + esc(p.ciudad) : ''} · score ${p.score ?? '—'}</p><p>${esc(p.senal || '')}</p>
+      <label>Estado</label><select id="pr-e">${Object.keys(EST_P).map((k) => `<option value="${k}" ${p.estado === k ? 'selected' : ''}>${EST_P[k][0]}</option>`).join('')}</select>
+      <label style="margin-top:10px">Contacto (mail, WhatsApp, quién decide)</label><input id="pr-c" value="${esc(p.contacto || '')}">
+      <label style="margin-top:10px">Notas</label><textarea id="pr-n" style="min-height:110px">${esc(p.notas || '')}</textarea>
+      <div style="display:flex;gap:8px;margin-top:14px"><button id="pr-ok">Guardar</button><button class="sec" id="pr-x">Cerrar</button></div>`);
+    $('pr-x').onclick = cerrarLateral;
+    $('pr-ok').onclick = async () => { const r = await rpc('adm_prospecto_set', { p_id: p.id, p_estado: $('pr-e').value, p_notas: $('pr-n').value, p_contacto: $('pr-c').value }); if (!r.ok) return toast(r.error, true); toast('Guardado'); cerrarLateral(); secLeadsTabs(); };
+  });
 }
 
 /* ---------- Chat flotante ---------- */
