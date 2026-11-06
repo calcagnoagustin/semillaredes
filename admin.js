@@ -5,7 +5,7 @@
 
 const SB_URL = 'https://fdrxsjphlvvwwknnrjtx.supabase.co';
 const SB_KEY = 'sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
-const IDLE_MIN = 20;
+const IDLE_MIN = 480; // 8 horas sin actividad
 const sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'pkce' } });
 
 const $ = (id) => document.getElementById(id);
@@ -52,18 +52,27 @@ $('form-mail').onsubmit = async (e) => {
 $('den-volver').onclick = () => vista('paso-login');
 $('mfa-salir').onclick = salir;
 $('btn-salir').onclick = salir;
-async function salir() { await sb.auth.signOut(); location.hash = ''; location.reload(); }
+async function salir() { try { localStorage.removeItem(IDLE_K); } catch (e) { /* nada */ } await sb.auth.signOut(); location.hash = ''; location.reload(); }
 
+let mfaEnCurso = false, mfaFactorId = null;
 $('form-mfa').onsubmit = async (e) => {
   e.preventDefault();
-  const m = $('msg-mfa'); m.textContent = '';
-  const { data: f } = await sb.auth.mfa.listFactors();
-  const totp = (f?.totp || []).find((x) => x.status === 'verified');
-  if (!totp) { m.className = 'msg err'; m.textContent = 'No hay un factor configurado.'; return; }
-  const { error } = await sb.auth.mfa.challengeAndVerify({ factorId: totp.id, code: $('mfa-codigo').value.trim() });
-  if (error) { m.className = 'msg err'; m.textContent = 'Código incorrecto. Probá de nuevo.'; $('mfa-codigo').value = ''; $('mfa-codigo').focus(); return; }
-  await arrancar();
+  if (mfaEnCurso) return;
+  const code = $('mfa-codigo').value.replace(/\D/g, '');
+  const m = $('msg-mfa'), btn = $('form-mfa').querySelector('button[type=submit]');
+  if (code.length !== 6) { m.className = 'msg err'; m.textContent = 'Son seis dígitos.'; return; }
+  mfaEnCurso = true; btn.disabled = true; btn.textContent = 'Verificando…'; m.textContent = '';
+  try {
+    if (!mfaFactorId) { const { data: f } = await sb.auth.mfa.listFactors(); mfaFactorId = ((f?.totp || []).find((x) => x.status === 'verified') || {}).id || null; }
+    if (!mfaFactorId) { m.className = 'msg err'; m.textContent = 'No hay un factor configurado.'; return; }
+    const { error } = await sb.auth.mfa.challengeAndVerify({ factorId: mfaFactorId, code });
+    if (error) { m.className = 'msg err'; m.textContent = /expired|invalid|incorrect/i.test(error.message) ? 'Código incorrecto o vencido. Probá con el siguiente.' : error.message; $('mfa-codigo').value = ''; $('mfa-codigo').focus(); return; }
+    btn.textContent = 'Entrando…'; reiniciarIdle();
+    await arrancar();
+  } catch (err) { m.className = 'msg err'; m.textContent = 'No pude verificar: ' + (err.message || err); }
+  finally { mfaEnCurso = false; btn.disabled = false; if (btn.textContent !== 'Entrando…' || $('app').classList.contains('oculto')) btn.textContent = 'Verificar'; }
 };
+$('mfa-codigo').addEventListener('input', function () { this.value = this.value.replace(/\D/g, '').slice(0, 6); if (this.value.length === 6 && !mfaEnCurso) $('form-mfa').requestSubmit(); });
 
 /* ---------- Arranque / control de acceso ---------- */
 let estadoSeg = null;
@@ -75,7 +84,10 @@ async function arrancar() {
   // refresco para que el JWT traiga aal2 si corresponde
   await sb.auth.refreshSession();
   estadoSeg = await rpc('adm_estado_seguridad');
-  if (!estadoSeg.ok || !estadoSeg.es_admin_email) { await sb.auth.signOut(); vista('paso-denegado'); $('login').classList.remove('oculto'); return; }
+  if (!estadoSeg.ok) { // error de red o de servidor: no cerramos la sesión, avisamos y dejamos reintentar
+    $('login').classList.add('oculto'); $('app').classList.remove('oculto'); toast('No pude verificar la sesión (' + (estadoSeg.error || 'sin respuesta') + '). Tocá para reintentar.', true); $('toast').onclick = () => { $('toast').onclick = null; arrancar(); }; return; }
+  if (!estadoSeg.es_admin_email) { await sb.auth.signOut(); vista('paso-denegado'); $('login').classList.remove('oculto'); return; }
+  if (idleVencido()) { await sb.auth.signOut(); location.reload(); return; }
   if (!estadoSeg.autorizado) {
     // es admin pero la MFA es obligatoria y no la tiene: solo puede entrar a Seguridad para enrolarse
     $('login').classList.add('oculto'); $('app').classList.remove('oculto');
@@ -93,12 +105,19 @@ function pintarYo() {
 let arrancando = false;
 sb.auth.onAuthStateChange((ev) => {
   if (ev === 'SIGNED_OUT') { $('app').classList.add('oculto'); $('login').classList.remove('oculto'); }
+  if (ev === 'SIGNED_IN') reiniciarIdle();
   if (ev === 'SIGNED_IN' && $('app').classList.contains('oculto') && !arrancando) { arrancando = true; arrancar().finally(() => arrancando = false); }
 });
 
 /* ---------- Cierre por inactividad ---------- */
-let idleT; function reiniciarIdle() { clearTimeout(idleT); idleT = setTimeout(async () => { await sb.auth.signOut(); location.reload(); }, IDLE_MIN * 60e3); }
-['click', 'keydown', 'mousemove', 'touchstart', 'scroll'].forEach((ev) => document.addEventListener(ev, () => { if (!$('app').classList.contains('oculto')) reiniciarIdle(); }, { passive: true }));
+const IDLE_K = 'sr_ultima_actividad';
+function reiniciarIdle() { try { localStorage.setItem(IDLE_K, String(Date.now())); } catch (e) { /* nada */ } }
+function idleVencido() { let t = 0; try { t = Number(localStorage.getItem(IDLE_K) || 0); } catch (e) { /* nada */ } return t > 0 && Date.now() - t > IDLE_MIN * 60e3; }
+async function controlarIdle() { if ($('app').classList.contains('oculto')) return; if (idleVencido()) { await sb.auth.signOut(); location.reload(); } }
+let idleMarca = 0;
+['click', 'keydown', 'touchstart', 'scroll'].forEach((ev) => document.addEventListener(ev, () => { const n = Date.now(); if (n - idleMarca > 30e3 && !$('app').classList.contains('oculto')) { idleMarca = n; reiniciarIdle(); } }, { passive: true }));
+setInterval(controlarIdle, 60e3);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') controlarIdle(); });
 
 /* ---------- Navegación ---------- */
 const SECCIONES = {
@@ -425,7 +444,7 @@ async function secSeguridad() {
     <div class="bloque"><h2>Administradores</h2><p>Solo estas cuentas pueden entrar. Para sumar o sacar una, pedíselo al equipo técnico.</p>
       ${(s.admins || []).map((a) => `<div style="padding:6px 0;border-bottom:1px solid var(--linea)">${esc(a)}${a === s.email ? ' <span class="chip activa">sos vos</span>' : ''}</div>`).join('')}</div>
     <div class="bloque"><h2>Cómo está protegido el panel</h2>
-      <dl class="lista-k"><dt>Ingreso</dt><dd>Google o enlace al mail; sin contraseñas compartidas.</dd><dt>Permisos</dt><dd>Cada operación se verifica en la base de datos, no en el navegador.</dd><dt>Registro</dt><dd>Cada acción queda en <a href="#auditoria">Auditoría</a> con quién y cuándo.</dd><dt>Sesión</dt><dd>Se cierra sola a los ${IDLE_MIN} minutos sin actividad.</dd><dt>Claves</dt><dd>Las de Mercado Pago y la base viven en el servidor; esta página no las tiene.</dd></dl></div>`;
+      <dl class="lista-k"><dt>Ingreso</dt><dd>Google o enlace al mail; sin contraseñas compartidas.</dd><dt>Permisos</dt><dd>Cada operación se verifica en la base de datos, no en el navegador.</dd><dt>Registro</dt><dd>Cada acción queda en <a href="#auditoria">Auditoría</a> con quién y cuándo.</dd><dt>Sesión</dt><dd>Se cierra sola tras ${IDLE_MIN / 60} horas sin actividad, o cuando tocás Salir.</dd><dt>Claves</dt><dd>Las de Mercado Pago y la base viven en el servidor; esta página no las tiene.</dd></dl></div>`;
   if ($('s-oblig')) $('s-oblig').onchange = async () => { const r = await rpc('adm_set_mfa_obligatoria', { p_on: $('s-oblig').checked }); if (!r.ok) { toast(r.error, true); $('s-oblig').checked = !$('s-oblig').checked; } else toast(r.mfa_obligatoria ? 'Segundo factor obligatorio para todos' : 'Ya no es obligatorio'); };
   if ($('s-enrolar')) $('s-enrolar').onclick = enrolar;
   if ($('s-quitar')) $('s-quitar').onclick = async () => {
