@@ -303,6 +303,7 @@
   #v3 .gira .gp{font-size:12px;color:#8A8698;margin-top:4px}
   #v3 .gira .gc{font-size:13.5px;color:#55525F;margin-top:6px}
   #v3 .gira .gc b{color:#24242C;font-weight:700}
+  #v3 .gira .gpd{margin-top:8px}
   #v3 .gira .gpr{grid-column:1/-1;border-top:1px solid #EDE6D8;padding-top:12px}
   #v3 .gira .gprh{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
   #v3 .gira .gprh .e{font-size:11.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#55525F}
@@ -747,6 +748,7 @@
           :`<div class="gn"><b>${nf(e)}</b><span>${e===1?'entrada vendida':'entradas vendidas'}${f.objetivo?' con la campaña':''}${ep?` · +${nf(ep)} en el período`:''}</span></div>
           ${Number(f.inv_acum||0)>0?`<div class="gc">Invertido hasta ${ACTD?'el '+ACTD:'hoy'}: <b>${SIM}${nf(Number(f.inv_acum),2)}</b>${e>0?'':' · todavía sin entradas'}</div>${e>0?`<div class="gc">Costo por entrada: <b>${SIM}${nf(Number(f.inv_acum)/e,2)}</b></div>`:''}`:''}
           <div class="gp">Según el píxel de Meta${f.ticketera?' en '+esc(f.ticketera):''}${f.estado==='borrador'?' · la campaña todavía no está publicada':''}</div>`}
+          ${Number(f.pres||0)>0?`<div class="gc gpd">Presupuesto diario: <b>${SIM}${nf(Number(f.pres),2)}</b>${f.estado==='pausada'?' · campaña pausada':f.estado==='borrador'?' · previsto':''}</div>`:''}
           ${f.tickets?`<a class="gl" href="${esc(f.tickets)}" target="_blank" rel="noopener">Ver entradas →</a>`:''}
         </div>${prog(f)}${curvaCE(f.serie_costo)}</div>`; }).join('')}</div>`; })();
     // 04/11: etapa del Método Semilla, sutil arriba del saludo. Por ahora solo en estos proyectos (Agus decide cuándo se suma el resto).
