@@ -1,4 +1,4 @@
-// Service worker de Semilla — v4 (con avisos push)
+// Service worker de Semilla — v4.1 (con avisos push)
 // Regla: el HTML y los datos SIEMPRE se piden a la red.
 // El cache solo sirve de respaldo cuando no hay internet.
 const CACHE = 'semilla-v4';
