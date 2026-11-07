@@ -54,6 +54,42 @@ $('mfa-salir').onclick = salir;
 $('btn-salir').onclick = salir;
 async function salir() { try { localStorage.removeItem(IDLE_K); } catch (e) { /* nada */ } await sb.auth.signOut(); location.hash = ''; location.reload(); }
 
+/* ---------- Passkeys (Face ID / huella) ---------- */
+const b64u = { enc: (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''), dec: (s) => { s = s.replace(/-/g, '+').replace(/_/g, '/'); s += '='.repeat((4 - s.length % 4) % 4); return Uint8Array.from(atob(s), (c) => c.charCodeAt(0)); } };
+const hayPasskeys = () => !!(window.PublicKeyCredential && navigator.credentials);
+async function pk(op, extra) {
+  const { data: { session } } = await sb.auth.getSession(); if (!session) throw new Error('sin sesión');
+  const r = await fetch(SB_URL + '/functions/v1/admin-passkey', { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: SB_KEY, Authorization: 'Bearer ' + session.access_token }, body: JSON.stringify({ op, ...(extra || {}) }) });
+  const d = await r.json().catch(() => ({ error: 'respuesta inválida' })); if (d.error) throw new Error(d.error); return d;
+}
+async function passkeyEntrar() {
+  const o = await pk('login_opciones');
+  const cred = await navigator.credentials.get({ publicKey: { ...o, challenge: b64u.dec(o.challenge), allowCredentials: (o.allowCredentials || []).map((c) => ({ ...c, id: b64u.dec(c.id) })) } });
+  const r = cred.response;
+  await pk('login_verificar', { response: { id: cred.id, rawId: b64u.enc(cred.rawId), type: cred.type, clientExtensionResults: cred.getClientExtensionResults ? cred.getClientExtensionResults() : {}, authenticatorAttachment: cred.authenticatorAttachment || undefined, response: { clientDataJSON: b64u.enc(r.clientDataJSON), authenticatorData: b64u.enc(r.authenticatorData), signature: b64u.enc(r.signature), userHandle: r.userHandle ? b64u.enc(r.userHandle) : undefined } } });
+}
+async function passkeyRegistrar(nombre) {
+  const o = await pk('registro_opciones');
+  const cred = await navigator.credentials.create({ publicKey: { ...o, challenge: b64u.dec(o.challenge), user: { ...o.user, id: b64u.dec(o.user.id) }, excludeCredentials: (o.excludeCredentials || []).map((c) => ({ ...c, id: b64u.dec(c.id) })) } });
+  const r = cred.response;
+  await pk('registro_verificar', { nombre, response: { id: cred.id, rawId: b64u.enc(cred.rawId), type: cred.type, clientExtensionResults: cred.getClientExtensionResults ? cred.getClientExtensionResults() : {}, authenticatorAttachment: cred.authenticatorAttachment || undefined, response: { clientDataJSON: b64u.enc(r.clientDataJSON), attestationObject: b64u.enc(r.attestationObject), transports: r.getTransports ? r.getTransports() : [] } } });
+}
+function nombreDispositivo() { const u = navigator.userAgent; if (/iPhone/.test(u)) return 'iPhone'; if (/iPad/.test(u)) return 'iPad'; if (/Android/.test(u)) return 'Android'; if (/Macintosh/.test(u)) return 'Mac'; if (/Windows/.test(u)) return 'Windows'; return 'Dispositivo'; }
+function mostrarPasoMfa(e) {
+  vista('paso-mfa'); $('login').classList.remove('oculto'); $('app').classList.add('oculto');
+  const conPk = !!(e.tiene_passkey && hayPasskeys()), conCodigo = !!e.tiene_factor;
+  $('mfa-passkey').classList.toggle('oculto', !conPk); $('mfa-o').classList.toggle('oculto', !(conPk && conCodigo)); $('form-mfa').classList.toggle('oculto', !conCodigo);
+  $('mfa-titulo').textContent = conPk ? 'Confirmá que sos vos' : 'Código de verificación';
+  $('mfa-bajada').textContent = conPk ? (conCodigo ? 'Usá Face ID o la huella de este dispositivo, o el código de tu app.' : 'Usá Face ID o la huella de este dispositivo.') : 'Abrí tu app de autenticación e ingresá el código de seis dígitos.';
+  if (!conPk && conCodigo) setTimeout(() => $('mfa-codigo').focus(), 50);
+}
+$('mfa-passkey').onclick = async () => {
+  const b = $('mfa-passkey'), m = $('msg-mfa'); b.disabled = true; b.textContent = 'Verificando…'; m.textContent = '';
+  try { await passkeyEntrar(); reiniciarIdle(); b.textContent = 'Entrando…'; await arrancar(); }
+  catch (err) { m.className = 'msg err'; m.textContent = /NotAllowed|abort|cancel/i.test(err.name + err.message) ? 'No se confirmó. Probá de nuevo o usá el código.' : 'No pude verificar: ' + (err.message || err); }
+  finally { b.disabled = false; if ($('app').classList.contains('oculto')) b.textContent = 'Entrar con Face ID / huella'; }
+};
+
 let mfaEnCurso = false, mfaFactorId = null;
 $('form-mfa').onsubmit = async (e) => {
   e.preventDefault();
@@ -79,15 +115,13 @@ let estadoSeg = null;
 async function arrancar() {
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { $('login').classList.remove('oculto'); $('app').classList.add('oculto'); vista('paso-login'); return; }
-  const { data: lvl } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
-  if (lvl && lvl.nextLevel === 'aal2' && lvl.currentLevel !== 'aal2') { vista('paso-mfa'); $('login').classList.remove('oculto'); $('app').classList.add('oculto'); setTimeout(() => $('mfa-codigo').focus(), 50); return; }
-  // refresco para que el JWT traiga aal2 si corresponde
   await sb.auth.refreshSession();
   estadoSeg = await rpc('adm_estado_seguridad');
   if (!estadoSeg.ok) { // error de red o de servidor: no cerramos la sesión, avisamos y dejamos reintentar
     $('login').classList.add('oculto'); $('app').classList.remove('oculto'); toast('No pude verificar la sesión (' + (estadoSeg.error || 'sin respuesta') + '). Tocá para reintentar.', true); $('toast').onclick = () => { $('toast').onclick = null; arrancar(); }; return; }
   if (!estadoSeg.es_admin_email) { await sb.auth.signOut(); vista('paso-denegado'); $('login').classList.remove('oculto'); return; }
   if (idleVencido()) { await sb.auth.signOut(); location.reload(); return; }
+  if (!estadoSeg.autorizado && (estadoSeg.tiene_passkey || estadoSeg.tiene_factor)) { mostrarPasoMfa(estadoSeg); return; }
   if (!estadoSeg.autorizado) {
     // es admin pero la MFA es obligatoria y no la tiene: solo puede entrar a Seguridad para enrolarse
     $('login').classList.add('oculto'); $('app').classList.remove('oculto');
@@ -432,8 +466,13 @@ async function secSeguridad() {
   $('contenido').innerHTML = `
     <div class="grid2">
       <div class="bloque">
-        <h2>Segundo factor</h2><p>Un código de seis dígitos de tu app de autenticación (Google Authenticator, 1Password, Authy) cada vez que entrás.</p>
+        <h2>Código de la app</h2><p>Un código de seis dígitos de tu app de autenticación (Google Authenticator, 1Password, Authy). Es el respaldo si no tenés a mano un dispositivo con Face ID / huella.</p>
         ${factores.length ? `<div class="aviso ok">Activo en esta cuenta desde ${fecha(factores[0].created_at)}.</div><button class="peligro" id="s-quitar">Quitar segundo factor</button>` : `<div class="aviso">Tu cuenta entra solo con Google. Activá el segundo factor para que nadie pueda operar el panel aunque consiga tu sesión.</div><button id="s-enrolar">Activar segundo factor</button><div id="s-enrol"></div>`}
+      </div>
+      <div class="bloque">
+        <h2>Face ID / huella</h2><p>Registrá este dispositivo una vez y después entrás con tu cara o tu huella, sin escribir el código. Cada dispositivo se registra por separado.</p>
+        ${(s.passkeys || []).length ? (s.passkeys || []).map((p) => `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--linea)"><div><b>${esc(p.nombre || 'Dispositivo')}</b><div class="sub">desde ${fecha(p.creado_en)}${p.ultimo_uso ? ' · último uso ' + fecha(p.ultimo_uso) : ''}</div></div><button class="lnk" data-pk-borrar="${p.id}">Quitar</button></div>`).join('') : '<div class="aviso">Todavía no registraste ningún dispositivo.</div>'}
+        ${hayPasskeys() ? `<div style="margin-top:12px"><button id="s-pk-agregar">Registrar este dispositivo (${esc(nombreDispositivo())})</button></div>` : '<p class="sub" style="margin-top:10px">Este navegador no soporta Face ID / huella para webs.</p>'}
       </div>
       <div class="bloque">
         <h2>Exigir segundo factor a todos</h2><p>Cuando está encendido, ningún administrador puede operar sin segundo factor, aunque esté logueado.</p>
@@ -444,9 +483,16 @@ async function secSeguridad() {
     <div class="bloque"><h2>Administradores</h2><p>Solo estas cuentas pueden entrar. Para sumar o sacar una, pedíselo al equipo técnico.</p>
       ${(s.admins || []).map((a) => `<div style="padding:6px 0;border-bottom:1px solid var(--linea)">${esc(a)}${a === s.email ? ' <span class="chip activa">sos vos</span>' : ''}</div>`).join('')}</div>
     <div class="bloque"><h2>Cómo está protegido el panel</h2>
-      <dl class="lista-k"><dt>Ingreso</dt><dd>Google o enlace al mail; sin contraseñas compartidas.</dd><dt>Permisos</dt><dd>Cada operación se verifica en la base de datos, no en el navegador.</dd><dt>Registro</dt><dd>Cada acción queda en <a href="#auditoria">Auditoría</a> con quién y cuándo.</dd><dt>Sesión</dt><dd>Se cierra sola tras ${IDLE_MIN / 60} horas sin actividad, o cuando tocás Salir.</dd><dt>Claves</dt><dd>Las de Mercado Pago y la base viven en el servidor; esta página no las tiene.</dd></dl></div>`;
+      <dl class="lista-k"><dt>Ingreso</dt><dd>Google o enlace al mail, más Face ID / huella o el código de la app; sin contraseñas compartidas.</dd><dt>Permisos</dt><dd>Cada operación se verifica en la base de datos, no en el navegador.</dd><dt>Registro</dt><dd>Cada acción queda en <a href="#auditoria">Auditoría</a> con quién y cuándo.</dd><dt>Sesión</dt><dd>Se cierra sola tras ${IDLE_MIN / 60} horas sin actividad, o cuando tocás Salir.</dd><dt>Claves</dt><dd>Las de Mercado Pago y la base viven en el servidor; esta página no las tiene.</dd></dl></div>`;
   if ($('s-oblig')) $('s-oblig').onchange = async () => { const r = await rpc('adm_set_mfa_obligatoria', { p_on: $('s-oblig').checked }); if (!r.ok) { toast(r.error, true); $('s-oblig').checked = !$('s-oblig').checked; } else toast(r.mfa_obligatoria ? 'Segundo factor obligatorio para todos' : 'Ya no es obligatorio'); };
   if ($('s-enrolar')) $('s-enrolar').onclick = enrolar;
+  if ($('s-pk-agregar')) $('s-pk-agregar').onclick = async () => {
+    const nombre = prompt('Nombre para este dispositivo', nombreDispositivo()); if (nombre === null) return;
+    $('s-pk-agregar').disabled = true;
+    try { await passkeyRegistrar(nombre.trim() || nombreDispositivo()); toast('Dispositivo registrado: la próxima vez entrás con Face ID / huella'); navegar(); }
+    catch (err) { toast(/NotAllowed|abort|cancel/i.test(err.name + err.message) ? 'No se completó el registro' : String(err.message || err), true); $('s-pk-agregar').disabled = false; }
+  };
+  $('contenido').querySelectorAll('[data-pk-borrar]').forEach((b) => b.onclick = async () => { if (!confirm('¿Quitar este dispositivo?')) return; const r = await rpc('adm_passkey_borrar', { p_id: Number(b.dataset.pkBorrar) }); if (!r.ok) return toast(r.error, true); toast('Dispositivo quitado'); navegar(); });
   if ($('s-quitar')) $('s-quitar').onclick = async () => {
     if (!confirm('Vas a quitar el segundo factor. El panel queda protegido solo por tu Google. ¿Seguro?')) return;
     const { error } = await sb.auth.mfa.unenroll({ factorId: factores[0].id }); if (error) return toast(error.message, true);
