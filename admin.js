@@ -66,7 +66,16 @@ async function pk(op, extra) {
 let pkPre = null; // opciones de login pedidas por adelantado
 function precargarPasskey() { pkPre = pk('login_opciones').then((o) => ({ o, t: Date.now() })).catch(() => null); return pkPre; }
 let pkListas = null; // opciones ya resueltas, para usarlas sin await dentro del toque
+let pkEnCurso = false;
+function diagPk(fase, err) { try { pk('diag', { fase, nombre: err && err.name, mensaje: err && err.message, v: '20261107f' }).catch(() => {}); } catch (e) { /* nada */ } }
 async function passkeyEntrar(oDirecto) {
+  if (pkEnCurso) throw Object.assign(new Error('ya hay una lectura en curso'), { name: 'Ocupado' });
+  pkEnCurso = true;
+  try { return await passkeyEntrarUna(oDirecto); }
+  catch (err) { if (err.name !== 'Ocupado') diagPk('login', err); throw err; }
+  finally { pkEnCurso = false; }
+}
+async function passkeyEntrarUna(oDirecto) {
   const o = oDirecto || await pk('login_opciones');
   const cred = await navigator.credentials.get({ publicKey: { ...o, challenge: b64u.dec(o.challenge), allowCredentials: (o.allowCredentials || []).map((c) => ({ ...c, id: b64u.dec(c.id) })) } });
   const r = cred.response;
@@ -81,6 +90,7 @@ async function passkeyRegistrar(nombre) {
 function nombreDispositivo() { const u = navigator.userAgent; if (/iPhone/.test(u)) return 'iPhone'; if (/iPad/.test(u)) return 'iPad'; if (/Android/.test(u)) return 'Android'; if (/Macintosh/.test(u)) return 'Mac'; if (/Windows/.test(u)) return 'Windows'; return 'Dispositivo'; }
 function mostrarPasoMfa(e) {
   if (enDesbloqueo) return;
+  if (e && e.tiene_passkey && hayPasskeys() && !pkListas) precargarPasskey().then((r) => { if (r) pkListas = r.o; });
   vista('paso-mfa'); $('login').classList.remove('oculto'); $('app').classList.add('oculto');
   const conPk = !!(e.tiene_passkey && hayPasskeys()), conCodigo = !!e.tiene_factor;
   $('mfa-passkey').classList.toggle('oculto', !conPk); $('mfa-o').classList.toggle('oculto', !(conPk && conCodigo)); $('form-mfa').classList.toggle('oculto', !conCodigo);
@@ -89,10 +99,10 @@ function mostrarPasoMfa(e) {
   if (!conPk && conCodigo) setTimeout(() => $('mfa-codigo').focus(), 50);
 }
 $('mfa-passkey').onclick = async () => {
-  const b = $('mfa-passkey'), m = $('msg-mfa'); b.disabled = true; b.textContent = 'Verificando…'; m.textContent = '';
-  try { await passkeyEntrar(); marcarDesbloqueo(); b.textContent = 'Entrando…'; pkAutoIntentado = true; await arrancar(); }
+  const b = $('mfa-passkey'), m = $('msg-mfa'); const o = pkListas; pkListas = null; b.disabled = true; b.textContent = 'Verificando…'; m.textContent = '';
+  try { await passkeyEntrar(o || undefined); marcarDesbloqueo(); b.textContent = 'Entrando…'; pkAutoIntentado = true; await arrancar(); }
   catch (err) { m.className = 'msg err'; m.textContent = /NotAllowed|abort|cancel/i.test(err.name + err.message) ? 'No se confirmó. Probá de nuevo o usá el código.' : 'No pude verificar: ' + (err.message || err); }
-  finally { b.disabled = false; if ($('app').classList.contains('oculto')) b.textContent = 'Entrar con Face ID / huella'; }
+  finally { b.disabled = false; if ($('app').classList.contains('oculto')) { b.textContent = 'Entrar con Face ID / huella'; precargarPasskey().then((r) => { if (r) pkListas = r.o; }); } }
 };
 
 let mfaEnCurso = false, mfaFactorId = null;
@@ -131,6 +141,8 @@ async function alTocar(ev) {
   if (ev && ev.target && ev.target.closest && ev.target.closest('#toque-codigo')) return;
   if (toqueEnCurso) return; toqueEnCurso = true;
   const o = pkListas; // sin await: el toque sigue "vivo" para Safari
+  if (!o) { toqueEnCurso = false; $('toque-msg').textContent = 'Un segundo y tocá de nuevo…'; precargarPasskey().then((r) => { if (r) { pkListas = r.o; $('toque-msg').textContent = ''; } }); return; }
+  pkListas = null;
   $('toque-msg').textContent = 'Verificando…';
   try {
     await passkeyEntrar(o || undefined);
