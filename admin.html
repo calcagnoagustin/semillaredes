@@ -150,6 +150,12 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:now
 .secreto{font-family:ui-monospace,monospace;font-size:12px;word-break:break-all;color:var(--mute)}
 .chk{display:flex;gap:10px;align-items:center;font-size:13.5px}.chk input{width:auto}
 
+#login.solo-velo .tarjeta-login{background:transparent;box-shadow:none;border:0}
+#login.solo-velo #logo-login,#login.solo-velo .pie-login{display:none}
+#login.solo-velo #paso-verificando p{color:rgba(255,255,255,.7)}
+.spin{width:28px;height:28px;border-radius:50%;border:3px solid rgba(255,255,255,.25);border-top-color:#fff;margin:0 auto;animation:gira .8s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+
 /* ---------- Pestañas ---------- */
 .tabs{display:flex;gap:6px;margin:0 0 16px;border-bottom:1px solid var(--linea)}
 .tab{background:transparent;color:var(--mute);border-radius:0;padding:8px 14px;border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:600}
@@ -280,6 +286,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:now
       <div class="msg" id="msg-mfa"></div>
       <button class="lnk" id="mfa-salir" style="margin-top:8px">Salir</button>
     </div>
+    <div id="paso-verificando" class="oculto" style="text-align:center;padding:10px 0"><div class="spin"></div><p style="margin:14px 0 0;color:var(--mute)">Verificando…</p></div>
     <div id="paso-denegado" class="oculto">
       <h1>Sin acceso</h1>
       <p>Esta cuenta no está en la lista de administradores. Se cerró la sesión.</p>
@@ -340,6 +347,6 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:now
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
-<script src="admin.js?v=20261107b"></script>
+<script src="admin.js?v=20261107c"></script>
 </body>
 </html>

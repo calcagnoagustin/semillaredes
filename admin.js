@@ -37,7 +37,7 @@ async function mp(op, args) {
 }
 
 /* ---------- Login ---------- */
-const vista = (id) => { ['paso-login', 'paso-mfa', 'paso-denegado'].forEach((x) => $(x).classList.toggle('oculto', x !== id)); };
+const vista = (id) => { ['paso-login', 'paso-mfa', 'paso-denegado', 'paso-verificando'].forEach((x) => $(x).classList.toggle('oculto', x !== id)); $('login').classList.toggle('solo-velo', id === 'paso-verificando'); };
 
 $('btn-google').onclick = async () => {
   const ret = location.origin + location.pathname;
@@ -86,7 +86,7 @@ function mostrarPasoMfa(e) {
 }
 $('mfa-passkey').onclick = async () => {
   const b = $('mfa-passkey'), m = $('msg-mfa'); b.disabled = true; b.textContent = 'Verificando…'; m.textContent = '';
-  try { await passkeyEntrar(); marcarDesbloqueo(); b.textContent = 'Entrando…'; await arrancar(); }
+  try { await passkeyEntrar(); marcarDesbloqueo(); b.textContent = 'Entrando…'; pkAutoIntentado = true; await arrancar(); }
   catch (err) { m.className = 'msg err'; m.textContent = /NotAllowed|abort|cancel/i.test(err.name + err.message) ? 'No se confirmó. Probá de nuevo o usá el código.' : 'No pude verificar: ' + (err.message || err); }
   finally { b.disabled = false; if ($('app').classList.contains('oculto')) b.textContent = 'Entrar con Face ID / huella'; }
 };
@@ -113,11 +113,22 @@ $('mfa-codigo').addEventListener('input', function () { this.value = this.value.
 
 /* ---------- Arranque / control de acceso ---------- */
 let estadoSeg = null;
+const PK_K = 'sr_tiene_passkey';
+let pkAutoIntentado = false;
+async function autoPasskey() {
+  // Face ID de una: sin pantalla previa; si el navegador no deja sin un toque, caemos a la pantalla con el botón
+  pkAutoIntentado = true;
+  $('login').classList.remove('oculto'); $('app').classList.add('oculto'); vista('paso-verificando');
+  try { await passkeyEntrar(); marcarDesbloqueo(); return true; }
+  catch (err) { return false; }
+}
 async function arrancar() {
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { $('login').classList.remove('oculto'); $('app').classList.add('oculto'); vista('paso-login'); return; }
-  await sb.auth.refreshSession();
+  let tienePk = false; try { tienePk = localStorage.getItem(PK_K) === '1'; } catch (e) { /* nada */ }
+  if (tienePk && hayPasskeys() && bloqueado() && !pkAutoIntentado) { await autoPasskey(); }
   estadoSeg = await rpc('adm_estado_seguridad');
+  if (estadoSeg.ok) { try { localStorage.setItem(PK_K, estadoSeg.tiene_passkey ? '1' : '0'); } catch (e) { /* nada */ } }
   if (!estadoSeg.ok) { // error de red o de servidor: no cerramos la sesión, avisamos y dejamos reintentar
     $('login').classList.add('oculto'); $('app').classList.remove('oculto'); toast('No pude verificar la sesión (' + (estadoSeg.error || 'sin respuesta') + '). Tocá para reintentar.', true); $('toast').onclick = () => { $('toast').onclick = null; arrancar(); }; return; }
   if (!estadoSeg.es_admin_email) { await sb.auth.signOut(); vista('paso-denegado'); $('login').classList.remove('oculto'); return; }
@@ -157,7 +168,13 @@ function bloqueado() {
   return t > 0 && Date.now() - t > BLOQUEO_MIN * 60e3;
 }
 let ocultoDesde = 0;
-function bloquearAhora() { if ($('app').classList.contains('oculto') || !estadoSeg || !(estadoSeg.tiene_passkey || estadoSeg.tiene_factor)) return; try { sessionStorage.removeItem(DESB_K); } catch (e) { /* nada */ } cerrarLateral(); if (typeof cerrarChat === 'function') cerrarChat(); mostrarPasoMfa(estadoSeg); }
+async function bloquearAhora() {
+  if ($('app').classList.contains('oculto') || !estadoSeg || !(estadoSeg.tiene_passkey || estadoSeg.tiene_factor)) return;
+  try { sessionStorage.removeItem(DESB_K); } catch (e) { /* nada */ }
+  cerrarLateral(); if (typeof cerrarChat === 'function') cerrarChat();
+  if (estadoSeg.tiene_passkey && hayPasskeys()) { pkAutoIntentado = false; if (await autoPasskey()) { $('login').classList.add('oculto'); $('app').classList.remove('oculto'); return; } }
+  mostrarPasoMfa(estadoSeg);
+}
 function controlarBloqueo() { if ($('app').classList.contains('oculto')) return; if (bloqueado()) bloquearAhora(); }
 let idleMarca = 0;
 ['click', 'keydown', 'touchstart', 'scroll'].forEach((ev) => document.addEventListener(ev, () => { const n = Date.now(); if (n - idleMarca > 30e3 && !$('app').classList.contains('oculto')) { idleMarca = n; reiniciarIdle(); } }, { passive: true }));
