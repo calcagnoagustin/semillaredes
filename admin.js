@@ -176,6 +176,8 @@ async function autoPasskey() {
   // Al abrir: Face ID de una, sin toque (lo permiten la compu y algunas versiones de Safari).
   // Si el navegador no lo deja: en un dispositivo de confianza entra igual; si no, un toque.
   pkAutoIntentado = true;
+  // iPhone/iPad: Safari siempre muestra su hoja de "Usar llave de acceso"; en un dispositivo de confianza no la pedimos al abrir
+  if (esIOS()) { if (confiable()) return true; return await mostrarToque(); }
   $('login').classList.remove('oculto'); $('app').classList.add('oculto'); vista('paso-verificando');
   try { await passkeyEntrar(); marcarDesbloqueo(); return true; } catch (err) { /* sigue abajo */ }
   if (confiable()) return true;
