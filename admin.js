@@ -80,6 +80,7 @@ async function passkeyRegistrar(nombre) {
 }
 function nombreDispositivo() { const u = navigator.userAgent; if (/iPhone/.test(u)) return 'iPhone'; if (/iPad/.test(u)) return 'iPad'; if (/Android/.test(u)) return 'Android'; if (/Macintosh/.test(u)) return 'Mac'; if (/Windows/.test(u)) return 'Windows'; return 'Dispositivo'; }
 function mostrarPasoMfa(e) {
+  if (enDesbloqueo) return;
   vista('paso-mfa'); $('login').classList.remove('oculto'); $('app').classList.add('oculto');
   const conPk = !!(e.tiene_passkey && hayPasskeys()), conCodigo = !!e.tiene_factor;
   $('mfa-passkey').classList.toggle('oculto', !conPk); $('mfa-o').classList.toggle('oculto', !(conPk && conCodigo)); $('form-mfa').classList.toggle('oculto', !conCodigo);
@@ -149,11 +150,13 @@ async function autoPasskey() {
   }
   return await mostrarToque();
 }
+let enDesbloqueo = false;
 async function arrancar() {
+  if (enDesbloqueo) return;
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { $('login').classList.remove('oculto'); $('app').classList.add('oculto'); vista('paso-login'); return; }
   let tienePk = false; try { tienePk = localStorage.getItem(PK_K) === '1'; } catch (e) { /* nada */ }
-  if (tienePk && hayPasskeys() && bloqueado() && !pkAutoIntentado) { const okPk = await autoPasskey(); if (!okPk) { estadoSeg = await rpc('adm_estado_seguridad'); if (estadoSeg.ok) { mostrarPasoMfa(estadoSeg); return; } } }
+  if (tienePk && hayPasskeys() && bloqueado() && !pkAutoIntentado) { enDesbloqueo = true; let okPk = false; try { okPk = await autoPasskey(); } finally { enDesbloqueo = false; } if (!okPk) { estadoSeg = await rpc('adm_estado_seguridad'); if (estadoSeg.ok) { mostrarPasoMfa(estadoSeg); return; } } }
   estadoSeg = await rpc('adm_estado_seguridad');
   if (estadoSeg.ok) { try { localStorage.setItem(PK_K, estadoSeg.tiene_passkey ? '1' : '0'); } catch (e) { /* nada */ } }
   if (!estadoSeg.ok) { // error de red o de servidor: no cerramos la sesión, avisamos y dejamos reintentar
@@ -180,7 +183,7 @@ let arrancando = false;
 sb.auth.onAuthStateChange((ev) => {
   if (ev === 'SIGNED_OUT') { $('app').classList.add('oculto'); $('login').classList.remove('oculto'); }
   if (ev === 'SIGNED_IN') reiniciarIdle();
-  if (ev === 'SIGNED_IN' && $('app').classList.contains('oculto') && !arrancando) { arrancando = true; arrancar().finally(() => arrancando = false); }
+  if (ev === 'SIGNED_IN' && $('app').classList.contains('oculto') && !arrancando && !enDesbloqueo) { arrancando = true; arrancar().finally(() => arrancando = false); }
 });
 
 /* ---------- Cierre por inactividad ---------- */
@@ -199,7 +202,8 @@ async function bloquearAhora() {
   if ($('app').classList.contains('oculto') || !estadoSeg || !(estadoSeg.tiene_passkey || estadoSeg.tiene_factor)) return;
   try { sessionStorage.removeItem(DESB_K); } catch (e) { /* nada */ }
   cerrarLateral(); if (typeof cerrarChat === 'function') cerrarChat();
-  if (estadoSeg.tiene_passkey && hayPasskeys()) { pkAutoIntentado = false; if (await autoPasskey()) { $('login').classList.add('oculto'); $('app').classList.remove('oculto'); return; } }
+  if (enDesbloqueo) return;
+  if (estadoSeg.tiene_passkey && hayPasskeys()) { pkAutoIntentado = false; enDesbloqueo = true; let ok = false; try { ok = await autoPasskey(); } finally { enDesbloqueo = false; } if (ok) { $('login').classList.add('oculto'); $('app').classList.remove('oculto'); return; } }
   mostrarPasoMfa(estadoSeg);
 }
 function controlarBloqueo() { if ($('app').classList.contains('oculto')) return; if (bloqueado()) bloquearAhora(); }
