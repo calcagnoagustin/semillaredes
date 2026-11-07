@@ -55,7 +55,7 @@ function cerrarReverif(ok) { $('reverif').classList.remove('on'); $('rv-codigo')
 
 
 /* ---------- Login ---------- */
-const vista = (id) => { ['paso-login', 'paso-mfa', 'paso-denegado', 'paso-verificando', 'paso-toque'].forEach((x) => $(x).classList.toggle('oculto', x !== id)); $('login').classList.toggle('solo-velo', id === 'paso-verificando' || id === 'paso-toque'); };
+const vista = (id) => { $('login').classList.remove('arrancando'); ['paso-login', 'paso-mfa', 'paso-denegado', 'paso-verificando', 'paso-toque'].forEach((x) => $(x).classList.toggle('oculto', x !== id)); $('login').classList.toggle('solo-velo', id === 'paso-verificando' || id === 'paso-toque'); };
 
 $('btn-google').onclick = async () => {
   const ret = location.origin + location.pathname;
