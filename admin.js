@@ -5,7 +5,8 @@
 
 const SB_URL = 'https://fdrxsjphlvvwwknnrjtx.supabase.co';
 const SB_KEY = 'sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17';
-const IDLE_MIN = 480; // 8 horas sin actividad
+const BLOQUEO_MIN = 15; // minutos sin usar el panel antes de volver a pedir cara / huella / código
+const BLOQUEO_FONDO_MIN = 3; // minutos en segundo plano (otra app, pantalla apagada)
 const sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'pkce' } });
 
 const $ = (id) => document.getElementById(id);
@@ -52,7 +53,7 @@ $('form-mail').onsubmit = async (e) => {
 $('den-volver').onclick = () => vista('paso-login');
 $('mfa-salir').onclick = salir;
 $('btn-salir').onclick = salir;
-async function salir() { try { localStorage.removeItem(IDLE_K); } catch (e) { /* nada */ } await sb.auth.signOut(); location.hash = ''; location.reload(); }
+async function salir() { try { sessionStorage.removeItem(DESB_K); localStorage.removeItem(IDLE_K); } catch (e) { /* nada */ } await sb.auth.signOut(); location.hash = ''; location.reload(); }
 
 /* ---------- Passkeys (Face ID / huella) ---------- */
 const b64u = { enc: (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''), dec: (s) => { s = s.replace(/-/g, '+').replace(/_/g, '/'); s += '='.repeat((4 - s.length % 4) % 4); return Uint8Array.from(atob(s), (c) => c.charCodeAt(0)); } };
@@ -79,13 +80,13 @@ function mostrarPasoMfa(e) {
   vista('paso-mfa'); $('login').classList.remove('oculto'); $('app').classList.add('oculto');
   const conPk = !!(e.tiene_passkey && hayPasskeys()), conCodigo = !!e.tiene_factor;
   $('mfa-passkey').classList.toggle('oculto', !conPk); $('mfa-o').classList.toggle('oculto', !(conPk && conCodigo)); $('form-mfa').classList.toggle('oculto', !conCodigo);
-  $('mfa-titulo').textContent = conPk ? 'Confirmá que sos vos' : 'Código de verificación';
+  $('mfa-titulo').textContent = conPk ? 'Confirmá que sos vos' : 'Código de verificación'; $('mfa-passkey').textContent = 'Entrar con Face ID / huella';
   $('mfa-bajada').textContent = conPk ? (conCodigo ? 'Usá Face ID o la huella de este dispositivo, o el código de tu app.' : 'Usá Face ID o la huella de este dispositivo.') : 'Abrí tu app de autenticación e ingresá el código de seis dígitos.';
   if (!conPk && conCodigo) setTimeout(() => $('mfa-codigo').focus(), 50);
 }
 $('mfa-passkey').onclick = async () => {
   const b = $('mfa-passkey'), m = $('msg-mfa'); b.disabled = true; b.textContent = 'Verificando…'; m.textContent = '';
-  try { await passkeyEntrar(); reiniciarIdle(); b.textContent = 'Entrando…'; await arrancar(); }
+  try { await passkeyEntrar(); marcarDesbloqueo(); b.textContent = 'Entrando…'; await arrancar(); }
   catch (err) { m.className = 'msg err'; m.textContent = /NotAllowed|abort|cancel/i.test(err.name + err.message) ? 'No se confirmó. Probá de nuevo o usá el código.' : 'No pude verificar: ' + (err.message || err); }
   finally { b.disabled = false; if ($('app').classList.contains('oculto')) b.textContent = 'Entrar con Face ID / huella'; }
 };
@@ -103,7 +104,7 @@ $('form-mfa').onsubmit = async (e) => {
     if (!mfaFactorId) { m.className = 'msg err'; m.textContent = 'No hay un factor configurado.'; return; }
     const { error } = await sb.auth.mfa.challengeAndVerify({ factorId: mfaFactorId, code });
     if (error) { m.className = 'msg err'; m.textContent = /expired|invalid|incorrect/i.test(error.message) ? 'Código incorrecto o vencido. Probá con el siguiente.' : error.message; $('mfa-codigo').value = ''; $('mfa-codigo').focus(); return; }
-    btn.textContent = 'Entrando…'; reiniciarIdle();
+    btn.textContent = 'Entrando…'; marcarDesbloqueo();
     await arrancar();
   } catch (err) { m.className = 'msg err'; m.textContent = 'No pude verificar: ' + (err.message || err); }
   finally { mfaEnCurso = false; btn.disabled = false; if (btn.textContent !== 'Entrando…' || $('app').classList.contains('oculto')) btn.textContent = 'Verificar'; }
@@ -120,15 +121,16 @@ async function arrancar() {
   if (!estadoSeg.ok) { // error de red o de servidor: no cerramos la sesión, avisamos y dejamos reintentar
     $('login').classList.add('oculto'); $('app').classList.remove('oculto'); toast('No pude verificar la sesión (' + (estadoSeg.error || 'sin respuesta') + '). Tocá para reintentar.', true); $('toast').onclick = () => { $('toast').onclick = null; arrancar(); }; return; }
   if (!estadoSeg.es_admin_email) { await sb.auth.signOut(); vista('paso-denegado'); $('login').classList.remove('oculto'); return; }
-  if (idleVencido()) { await sb.auth.signOut(); location.reload(); return; }
   if (!estadoSeg.autorizado && (estadoSeg.tiene_passkey || estadoSeg.tiene_factor)) { mostrarPasoMfa(estadoSeg); return; }
+  // sesión válida pero el panel está bloqueado: pedimos cara / huella / código sin cerrar nada
+  if (estadoSeg.autorizado && (estadoSeg.tiene_passkey || estadoSeg.tiene_factor) && bloqueado()) { mostrarPasoMfa(estadoSeg); return; }
   if (!estadoSeg.autorizado) {
     // es admin pero la MFA es obligatoria y no la tiene: solo puede entrar a Seguridad para enrolarse
     $('login').classList.add('oculto'); $('app').classList.remove('oculto');
     pintarYo(); location.hash = '#seguridad'; navegar(); toast('Activá tu segundo factor para operar el panel', true); return;
   }
   $('login').classList.add('oculto'); $('app').classList.remove('oculto');
-  pintarYo(); navegar(); reiniciarIdle(); cargarChat(); clearInterval(chatT); chatT = setInterval(cargarChat, 180e3);
+  pintarYo(); navegar(); marcarDesbloqueo(); cargarChat(); clearInterval(chatT); chatT = setInterval(cargarChat, 180e3);
 }
 function pintarYo() {
   $('yo-mail').textContent = estadoSeg.email;
@@ -145,13 +147,25 @@ sb.auth.onAuthStateChange((ev) => {
 
 /* ---------- Cierre por inactividad ---------- */
 const IDLE_K = 'sr_ultima_actividad';
+const DESB_K = 'sr_desbloqueado_en';
+// última actividad (localStorage) y último desbloqueo (sessionStorage: muere al cerrar la pestaña, así cada apertura pide la cara)
 function reiniciarIdle() { try { localStorage.setItem(IDLE_K, String(Date.now())); } catch (e) { /* nada */ } }
-function idleVencido() { let t = 0; try { t = Number(localStorage.getItem(IDLE_K) || 0); } catch (e) { /* nada */ } return t > 0 && Date.now() - t > IDLE_MIN * 60e3; }
-async function controlarIdle() { if ($('app').classList.contains('oculto')) return; if (idleVencido()) { await sb.auth.signOut(); location.reload(); } }
+function marcarDesbloqueo() { try { sessionStorage.setItem(DESB_K, String(Date.now())); } catch (e) { /* nada */ } reiniciarIdle(); }
+function bloqueado() {
+  let d = 0, t = 0; try { d = Number(sessionStorage.getItem(DESB_K) || 0); t = Number(localStorage.getItem(IDLE_K) || 0); } catch (e) { /* nada */ }
+  if (!d) return true; // pestaña nueva o recargada: siempre se pide
+  return t > 0 && Date.now() - t > BLOQUEO_MIN * 60e3;
+}
+let ocultoDesde = 0;
+function bloquearAhora() { if ($('app').classList.contains('oculto') || !estadoSeg || !(estadoSeg.tiene_passkey || estadoSeg.tiene_factor)) return; try { sessionStorage.removeItem(DESB_K); } catch (e) { /* nada */ } cerrarLateral(); if (typeof cerrarChat === 'function') cerrarChat(); mostrarPasoMfa(estadoSeg); }
+function controlarBloqueo() { if ($('app').classList.contains('oculto')) return; if (bloqueado()) bloquearAhora(); }
 let idleMarca = 0;
 ['click', 'keydown', 'touchstart', 'scroll'].forEach((ev) => document.addEventListener(ev, () => { const n = Date.now(); if (n - idleMarca > 30e3 && !$('app').classList.contains('oculto')) { idleMarca = n; reiniciarIdle(); } }, { passive: true }));
-setInterval(controlarIdle, 60e3);
-document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') controlarIdle(); });
+setInterval(controlarBloqueo, 30e3);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') { ocultoDesde = Date.now(); return; }
+  if (ocultoDesde && Date.now() - ocultoDesde > BLOQUEO_FONDO_MIN * 60e3) bloquearAhora(); else controlarBloqueo();
+});
 
 /* ---------- Navegación ---------- */
 const SECCIONES = {
@@ -483,7 +497,7 @@ async function secSeguridad() {
     <div class="bloque"><h2>Administradores</h2><p>Solo estas cuentas pueden entrar. Para sumar o sacar una, pedíselo al equipo técnico.</p>
       ${(s.admins || []).map((a) => `<div style="padding:6px 0;border-bottom:1px solid var(--linea)">${esc(a)}${a === s.email ? ' <span class="chip activa">sos vos</span>' : ''}</div>`).join('')}</div>
     <div class="bloque"><h2>Cómo está protegido el panel</h2>
-      <dl class="lista-k"><dt>Ingreso</dt><dd>Google o enlace al mail, más Face ID / huella o el código de la app; sin contraseñas compartidas.</dd><dt>Permisos</dt><dd>Cada operación se verifica en la base de datos, no en el navegador.</dd><dt>Registro</dt><dd>Cada acción queda en <a href="#auditoria">Auditoría</a> con quién y cuándo.</dd><dt>Sesión</dt><dd>Se cierra sola tras ${IDLE_MIN / 60} horas sin actividad, o cuando tocás Salir.</dd><dt>Claves</dt><dd>Las de Mercado Pago y la base viven en el servidor; esta página no las tiene.</dd></dl></div>`;
+      <dl class="lista-k"><dt>Ingreso</dt><dd>Google o enlace al mail, más Face ID / huella o el código de la app; sin contraseñas compartidas.</dd><dt>Permisos</dt><dd>Cada operación se verifica en la base de datos, no en el navegador.</dd><dt>Registro</dt><dd>Cada acción queda en <a href="#auditoria">Auditoría</a> con quién y cuándo.</dd><dt>Sesión</dt><dd>Queda abierta; el panel se bloquea al abrirlo, tras ${BLOQUEO_MIN} minutos sin usarlo o ${BLOQUEO_FONDO_MIN} minutos en segundo plano, y se destraba con la cara, la huella o el código. Solo se cierra cuando tocás Salir.</dd><dt>Claves</dt><dd>Las de Mercado Pago y la base viven en el servidor; esta página no las tiene.</dd></dl></div>`;
   if ($('s-oblig')) $('s-oblig').onchange = async () => { const r = await rpc('adm_set_mfa_obligatoria', { p_on: $('s-oblig').checked }); if (!r.ok) { toast(r.error, true); $('s-oblig').checked = !$('s-oblig').checked; } else toast(r.mfa_obligatoria ? 'Segundo factor obligatorio para todos' : 'Ya no es obligatorio'); };
   if ($('s-enrolar')) $('s-enrolar').onclick = enrolar;
   if ($('s-pk-agregar')) $('s-pk-agregar').onclick = async () => {
