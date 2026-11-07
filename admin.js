@@ -173,11 +173,12 @@ async function alTocar(ev) {
 $('paso-toque').addEventListener('click', alTocar);
 $('toque-codigo').onclick = (e) => { e.stopPropagation(); if (toqueResolver) { const r = toqueResolver; toqueResolver = null; r(false); } };
 async function autoPasskey() {
+  // Al abrir: Face ID de una, sin toque (lo permiten la compu y algunas versiones de Safari).
+  // Si el navegador no lo deja: en un dispositivo de confianza entra igual; si no, un toque.
   pkAutoIntentado = true;
-  if (!esIOS()) { // en compu Chrome/Edge permiten abrir la passkey sin toque
-    $('login').classList.remove('oculto'); $('app').classList.add('oculto'); vista('paso-verificando');
-    try { await passkeyEntrar(); marcarDesbloqueo(); return true; } catch (err) { /* seguimos con el toque */ }
-  }
+  $('login').classList.remove('oculto'); $('app').classList.add('oculto'); vista('paso-verificando');
+  try { await passkeyEntrar(); marcarDesbloqueo(); return true; } catch (err) { /* sigue abajo */ }
+  if (confiable()) return true;
   return await mostrarToque();
 }
 let enDesbloqueo = false;
@@ -186,7 +187,7 @@ async function arrancar() {
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { $('login').classList.remove('oculto'); $('app').classList.add('oculto'); vista('paso-login'); return; }
   let tienePk = false; try { tienePk = localStorage.getItem(PK_K) === '1'; } catch (e) { /* nada */ }
-  if (tienePk && hayPasskeys() && bloqueado() && !pkAutoIntentado) { enDesbloqueo = true; let okPk = false; try { okPk = await autoPasskey(); } finally { enDesbloqueo = false; } if (!okPk) { estadoSeg = await rpc('adm_estado_seguridad'); if (estadoSeg.ok) { mostrarPasoMfa(estadoSeg); return; } } }
+  if (tienePk && hayPasskeys() && !pkAutoIntentado) { enDesbloqueo = true; let okPk = false; try { okPk = await autoPasskey(); } finally { enDesbloqueo = false; } if (!okPk) { estadoSeg = await rpc('adm_estado_seguridad'); if (estadoSeg.ok) { mostrarPasoMfa(estadoSeg); return; } } }
   estadoSeg = await rpc('adm_estado_seguridad');
   if (estadoSeg.ok) { try { localStorage.setItem(PK_K, estadoSeg.tiene_passkey ? '1' : '0'); } catch (e) { /* nada */ } }
   if (!estadoSeg.ok) { // error de red o de servidor: no cerramos la sesión, avisamos y dejamos reintentar
