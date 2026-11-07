@@ -37,7 +37,7 @@ async function mp(op, args) {
 }
 
 /* ---------- Login ---------- */
-const vista = (id) => { ['paso-login', 'paso-mfa', 'paso-denegado', 'paso-verificando'].forEach((x) => $(x).classList.toggle('oculto', x !== id)); $('login').classList.toggle('solo-velo', id === 'paso-verificando'); };
+const vista = (id) => { ['paso-login', 'paso-mfa', 'paso-denegado', 'paso-verificando', 'paso-toque'].forEach((x) => $(x).classList.toggle('oculto', x !== id)); $('login').classList.toggle('solo-velo', id === 'paso-verificando' || id === 'paso-toque'); };
 
 $('btn-google').onclick = async () => {
   const ret = location.origin + location.pathname;
@@ -63,8 +63,11 @@ async function pk(op, extra) {
   const r = await fetch(SB_URL + '/functions/v1/admin-passkey', { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: SB_KEY, Authorization: 'Bearer ' + session.access_token }, body: JSON.stringify({ op, ...(extra || {}) }) });
   const d = await r.json().catch(() => ({ error: 'respuesta inválida' })); if (d.error) throw new Error(d.error); return d;
 }
-async function passkeyEntrar() {
-  const o = await pk('login_opciones');
+let pkPre = null; // opciones de login pedidas por adelantado
+function precargarPasskey() { pkPre = pk('login_opciones').then((o) => ({ o, t: Date.now() })).catch(() => null); return pkPre; }
+let pkListas = null; // opciones ya resueltas, para usarlas sin await dentro del toque
+async function passkeyEntrar(oDirecto) {
+  const o = oDirecto || await pk('login_opciones');
   const cred = await navigator.credentials.get({ publicKey: { ...o, challenge: b64u.dec(o.challenge), allowCredentials: (o.allowCredentials || []).map((c) => ({ ...c, id: b64u.dec(c.id) })) } });
   const r = cred.response;
   await pk('login_verificar', { response: { id: cred.id, rawId: b64u.enc(cred.rawId), type: cred.type, clientExtensionResults: cred.getClientExtensionResults ? cred.getClientExtensionResults() : {}, authenticatorAttachment: cred.authenticatorAttachment || undefined, response: { clientDataJSON: b64u.enc(r.clientDataJSON), authenticatorData: b64u.enc(r.authenticatorData), signature: b64u.enc(r.signature), userHandle: r.userHandle ? b64u.enc(r.userHandle) : undefined } } });
@@ -115,18 +118,42 @@ $('mfa-codigo').addEventListener('input', function () { this.value = this.value.
 let estadoSeg = null;
 const PK_K = 'sr_tiene_passkey';
 let pkAutoIntentado = false;
+function esIOS() { return /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); }
+async function mostrarToque() {
+  // Pantalla mínima: un toque en cualquier lado abre Face ID. Las opciones se piden antes para que salte al instante.
+  $('login').classList.remove('oculto'); $('app').classList.add('oculto'); vista('paso-toque'); $('toque-msg').textContent = '';
+  pkListas = null; precargarPasskey().then((r) => { if (r && Date.now() - r.t < 4 * 60e3) pkListas = r.o; });
+  return new Promise((resolve) => { toqueResolver = resolve; });
+}
+let toqueResolver = null, toqueEnCurso = false;
+async function alTocar(ev) {
+  if (ev && ev.target && ev.target.closest && ev.target.closest('#toque-codigo')) return;
+  if (toqueEnCurso) return; toqueEnCurso = true;
+  const o = pkListas; // sin await: el toque sigue "vivo" para Safari
+  $('toque-msg').textContent = 'Verificando…';
+  try {
+    await passkeyEntrar(o || undefined);
+    marcarDesbloqueo(); pkAutoIntentado = true; if (toqueResolver) { const r = toqueResolver; toqueResolver = null; r(true); }
+  } catch (err) {
+    $('toque-msg').textContent = /NotAllowed|abort|cancel/i.test((err.name || '') + (err.message || '')) ? 'No se leyó. Tocá de nuevo.' : 'No pude verificar. Tocá de nuevo.';
+    pkListas = null; precargarPasskey().then((r) => { if (r) pkListas = r.o; });
+  } finally { toqueEnCurso = false; }
+}
+$('paso-toque').addEventListener('click', alTocar);
+$('toque-codigo').onclick = (e) => { e.stopPropagation(); if (toqueResolver) { const r = toqueResolver; toqueResolver = null; r(false); } };
 async function autoPasskey() {
-  // Face ID de una: sin pantalla previa; si el navegador no deja sin un toque, caemos a la pantalla con el botón
   pkAutoIntentado = true;
-  $('login').classList.remove('oculto'); $('app').classList.add('oculto'); vista('paso-verificando');
-  try { await passkeyEntrar(); marcarDesbloqueo(); return true; }
-  catch (err) { return false; }
+  if (!esIOS()) { // en compu Chrome/Edge permiten abrir la passkey sin toque
+    $('login').classList.remove('oculto'); $('app').classList.add('oculto'); vista('paso-verificando');
+    try { await passkeyEntrar(); marcarDesbloqueo(); return true; } catch (err) { /* seguimos con el toque */ }
+  }
+  return await mostrarToque();
 }
 async function arrancar() {
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { $('login').classList.remove('oculto'); $('app').classList.add('oculto'); vista('paso-login'); return; }
   let tienePk = false; try { tienePk = localStorage.getItem(PK_K) === '1'; } catch (e) { /* nada */ }
-  if (tienePk && hayPasskeys() && bloqueado() && !pkAutoIntentado) { await autoPasskey(); }
+  if (tienePk && hayPasskeys() && bloqueado() && !pkAutoIntentado) { const okPk = await autoPasskey(); if (!okPk) { estadoSeg = await rpc('adm_estado_seguridad'); if (estadoSeg.ok) { mostrarPasoMfa(estadoSeg); return; } } }
   estadoSeg = await rpc('adm_estado_seguridad');
   if (estadoSeg.ok) { try { localStorage.setItem(PK_K, estadoSeg.tiene_passkey ? '1' : '0'); } catch (e) { /* nada */ } }
   if (!estadoSeg.ok) { // error de red o de servidor: no cerramos la sesión, avisamos y dejamos reintentar
