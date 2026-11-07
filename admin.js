@@ -24,17 +24,35 @@ function cerrarLateral() { $('lateral').classList.remove('abierto'); $('lateral'
 $('lateral-cerrar').onclick = cerrarLateral; $('velo').onclick = cerrarLateral;
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarLateral(); });
 
-async function rpc(fn, args) {
+async function rpc(fn, args, reintento) {
   const { data, error } = await sb.rpc(fn, args || {});
   if (error) { console.error(fn, error); return { ok: false, error: error.message }; }
+  if (data && data.error === 'reverificar' && !reintento) { if (await reverificar()) return rpc(fn, args, true); return { ok: false, error: 'Necesitás confirmar con Face ID para hacer esto.' }; }
   return data ?? { ok: false, error: 'sin respuesta' };
 }
-async function mp(op, args) {
+async function mp(op, args, reintento) {
   const { data: { session } } = await sb.auth.getSession();
   if (!session) return { error: 'sin sesión' };
   const r = await fetch(SB_URL + '/functions/v1/mp-admin', { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: SB_KEY, Authorization: 'Bearer ' + session.access_token }, body: JSON.stringify({ op, ...(args || {}) }) });
-  return r.json().catch(() => ({ error: 'respuesta inválida' }));
+  const d = await r.json().catch(() => ({ error: 'respuesta inválida' }));
+  if (d && d.error === 'reverificar' && !reintento) { if (await reverificar()) return mp(op, args, true); return { error: 'Necesitás confirmar con Face ID para hacer esto.' }; }
+  return d;
 }
+
+/* ---------- Reverificación para acciones delicadas (como Mercado Pago) ---------- */
+let reverifResolver = null;
+function reverificar() {
+  return new Promise((resolve) => {
+    reverifResolver = resolve;
+    const conPk = !!(estadoSeg && estadoSeg.tiene_passkey && hayPasskeys());
+    $('rv-pk').classList.toggle('oculto', !conPk); $('rv-cod').classList.toggle('oculto', conPk); $('rv-msg').textContent = '';
+    $('reverif').classList.add('on');
+    if (conPk && !pkListas) precargarPasskey().then((r2) => { if (r2) pkListas = r2.o; });
+    if (!conPk) setTimeout(() => $('rv-codigo').focus(), 60);
+  });
+}
+function cerrarReverif(ok) { $('reverif').classList.remove('on'); $('rv-codigo').value = ''; const r = reverifResolver; reverifResolver = null; if (r) r(ok); }
+
 
 /* ---------- Login ---------- */
 const vista = (id) => { ['paso-login', 'paso-mfa', 'paso-denegado', 'paso-verificando', 'paso-toque'].forEach((x) => $(x).classList.toggle('oculto', x !== id)); $('login').classList.toggle('solo-velo', id === 'paso-verificando' || id === 'paso-toque'); };
@@ -53,7 +71,7 @@ $('form-mail').onsubmit = async (e) => {
 $('den-volver').onclick = () => vista('paso-login');
 $('mfa-salir').onclick = salir;
 $('btn-salir').onclick = salir;
-async function salir() { try { sessionStorage.removeItem(DESB_K); localStorage.removeItem(IDLE_K); } catch (e) { /* nada */ } await sb.auth.signOut(); location.hash = ''; location.reload(); }
+async function salir() { try { sessionStorage.removeItem(DESB_K); localStorage.removeItem(IDLE_K); localStorage.removeItem(CONF_K); } catch (e) { /* nada */ } await sb.auth.signOut(); location.hash = ''; location.reload(); }
 
 /* ---------- Passkeys (Face ID / huella) ---------- */
 const b64u = { enc: (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''), dec: (s) => { s = s.replace(/-/g, '+').replace(/_/g, '/'); s += '='.repeat((4 - s.length % 4) % 4); return Uint8Array.from(atob(s), (c) => c.charCodeAt(0)); } };
@@ -183,7 +201,7 @@ async function arrancar() {
     pintarYo(); location.hash = '#seguridad'; navegar(); toast('Activá tu segundo factor para operar el panel', true); return;
   }
   $('login').classList.add('oculto'); $('app').classList.remove('oculto');
-  pintarYo(); navegar(); marcarDesbloqueo(); cargarChat(); clearInterval(chatT); chatT = setInterval(cargarChat, 180e3);
+  pintarYo(); navegar(); marcarDesbloqueo(); cargarChat(); if (estadoSeg.tiene_passkey && hayPasskeys()) precargarPasskey().then((r) => { if (r) pkListas = r.o; }); clearInterval(chatT); chatT = setInterval(cargarChat, 180e3);
 }
 function pintarYo() {
   $('yo-mail').textContent = estadoSeg.email;
@@ -203,8 +221,11 @@ const IDLE_K = 'sr_ultima_actividad';
 const DESB_K = 'sr_desbloqueado_en';
 // última actividad (localStorage) y último desbloqueo (sessionStorage: muere al cerrar la pestaña, así cada apertura pide la cara)
 function reiniciarIdle() { try { localStorage.setItem(IDLE_K, String(Date.now())); } catch (e) { /* nada */ } }
-function marcarDesbloqueo() { try { sessionStorage.setItem(DESB_K, String(Date.now())); } catch (e) { /* nada */ } reiniciarIdle(); }
+const CONF_K = 'sr_confiable_hasta', CONF_DIAS = 30;
+function marcarDesbloqueo() { try { sessionStorage.setItem(DESB_K, String(Date.now())); localStorage.setItem(CONF_K, String(Date.now() + CONF_DIAS * 864e5)); } catch (e) { /* nada */ } reiniciarIdle(); }
+function confiable() { try { return Number(localStorage.getItem(CONF_K) || 0) > Date.now(); } catch (e) { return false; } }
 function bloqueado() {
+  if (confiable()) return false; // este dispositivo ya se verificó: abre directo
   let d = 0, t = 0; try { d = Number(sessionStorage.getItem(DESB_K) || 0); t = Number(localStorage.getItem(IDLE_K) || 0); } catch (e) { /* nada */ }
   if (!d) return true; // pestaña nueva o recargada: siempre se pide
   return t > 0 && Date.now() - t > BLOQUEO_MIN * 60e3;
@@ -557,7 +578,7 @@ async function secSeguridad() {
     <div class="bloque"><h2>Administradores</h2><p>Solo estas cuentas pueden entrar. Para sumar o sacar una, pedíselo al equipo técnico.</p>
       ${(s.admins || []).map((a) => `<div style="padding:6px 0;border-bottom:1px solid var(--linea)">${esc(a)}${a === s.email ? ' <span class="chip activa">sos vos</span>' : ''}</div>`).join('')}</div>
     <div class="bloque"><h2>Cómo está protegido el panel</h2>
-      <dl class="lista-k"><dt>Ingreso</dt><dd>Google o enlace al mail, más Face ID / huella o el código de la app; sin contraseñas compartidas.</dd><dt>Permisos</dt><dd>Cada operación se verifica en la base de datos, no en el navegador.</dd><dt>Registro</dt><dd>Cada acción queda en <a href="#auditoria">Auditoría</a> con quién y cuándo.</dd><dt>Sesión</dt><dd>Queda abierta; el panel se bloquea al abrirlo, tras ${BLOQUEO_MIN} minutos sin usarlo o ${BLOQUEO_FONDO_MIN} minutos en segundo plano, y se destraba con la cara, la huella o el código. Solo se cierra cuando tocás Salir.</dd><dt>Claves</dt><dd>Las de Mercado Pago y la base viven en el servidor; esta página no las tiene.</dd></dl></div>`;
+      <dl class="lista-k"><dt>Ingreso</dt><dd>Google o enlace al mail, más Face ID / huella o el código de la app; sin contraseñas compartidas.</dd><dt>Permisos</dt><dd>Cada operación se verifica en la base de datos, no en el navegador.</dd><dt>Registro</dt><dd>Cada acción queda en <a href="#auditoria">Auditoría</a> con quién y cuándo.</dd><dt>Sesión</dt><dd>Este dispositivo queda de confianza ${CONF_DIAS} días después de verificarte: el panel abre directo. Para cambiar planes, suscripciones, cobros de Mercado Pago, alumnos o seguridad te pide Face ID, como Mercado Pago. Solo se cierra cuando tocás Salir.</dd><dt>Claves</dt><dd>Las de Mercado Pago y la base viven en el servidor; esta página no las tiene.</dd></dl></div>`;
   if ($('s-oblig')) $('s-oblig').onchange = async () => { const r = await rpc('adm_set_mfa_obligatoria', { p_on: $('s-oblig').checked }); if (!r.ok) { toast(r.error, true); $('s-oblig').checked = !$('s-oblig').checked; } else toast(r.mfa_obligatoria ? 'Segundo factor obligatorio para todos' : 'Ya no es obligatorio'); };
   if ($('s-enrolar')) $('s-enrolar').onclick = enrolar;
   if ($('s-pk-agregar')) $('s-pk-agregar').onclick = async () => {
@@ -628,6 +649,28 @@ async function secProspeccion() {
     $('pr-ok').onclick = async () => { const r = await rpc('adm_prospecto_set', { p_id: p.id, p_estado: $('pr-e').value, p_notas: $('pr-n').value, p_contacto: $('pr-c').value }); if (!r.ok) return toast(r.error, true); toast('Guardado'); cerrarLateral(); secLeadsTabs(); };
   });
 }
+
+/* hoja de reverificación */
+$('rv-pk').onclick = async () => {
+  const o = pkListas; // sin await antes de Face ID
+  if (!o) { $('rv-msg').textContent = 'Un segundo y tocá de nuevo…'; precargarPasskey().then((r) => { if (r) { pkListas = r.o; $('rv-msg').textContent = ''; } }); return; }
+  pkListas = null; $('rv-msg').textContent = 'Verificando…';
+  try { await passkeyEntrar(o); marcarDesbloqueo(); cerrarReverif(true); }
+  catch (err) { $('rv-msg').textContent = 'No se leyó. Tocá de nuevo.'; precargarPasskey().then((r) => { if (r) pkListas = r.o; }); }
+};
+$('rv-codigo').addEventListener('input', async function () {
+  this.value = this.value.replace(/\D/g, '').slice(0, 6); if (this.value.length !== 6) return;
+  $('rv-msg').textContent = 'Verificando…';
+  try {
+    const { data: f } = await sb.auth.mfa.listFactors(); const fid = ((f?.totp || []).find((x) => x.status === 'verified') || {}).id;
+    const { error } = await sb.auth.mfa.challengeAndVerify({ factorId: fid, code: this.value });
+    if (error) { $('rv-msg').textContent = 'Código incorrecto o vencido.'; this.value = ''; return; }
+    await sb.auth.refreshSession(); marcarDesbloqueo(); cerrarReverif(true);
+  } catch (err) { $('rv-msg').textContent = 'No pude verificar.'; }
+});
+$('rv-cancelar').onclick = () => cerrarReverif(false);
+// opciones de Face ID siempre listas mientras el panel está abierto, para que la hoja responda al instante
+setInterval(() => { if (!$('app').classList.contains('oculto') && estadoSeg && estadoSeg.tiene_passkey && hayPasskeys()) precargarPasskey().then((r) => { if (r) pkListas = r.o; }); }, 4 * 60e3);
 
 /* ---------- Chat flotante ---------- */
 const CHAT_K = 'sr_chat_visto';
