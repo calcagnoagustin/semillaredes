@@ -2451,7 +2451,7 @@ function bloqueProductos(d, L, u, inv, camp, R, et){
     ${L.map(p=>{ const v=vk(p)||{}, ing=v.moneda_cargada==='ARS'&&v.ingreso_ars!=null?null:v.ingreso;
       return `<div class="pfila"><span class="p">${p}</span><input type="text" inputmode="numeric" data-pc="${p}" placeholder="${v.ventas!=null?v.ventas:'0'}" aria-label="Ventas de ${p}"><input type="text" inputmode="decimal" data-pm="${p}" placeholder="${v.ingreso!=null?num(v.ingreso,0):'0'}" aria-label="Facturado de ${p}"></div>`; }).join('')}
     <div class="pfila ptot"><span>Total</span><span class="pn" data-ptv>${num(tv)}</span><span class="pn" data-pti>${num(ti)}</span></div>
-    <div class="pacc"><button data-pguardar="${camp}" data-per="${per}">Guardar</button></div>
+    <div class="pacc"><button data-pguardar="${camp}" data-per="${per}" data-inv="${inv}">Guardar</button></div>
     <p class="vnota" data-pnota="1">${cargado?'Lo que ya cargaste aparece en gris: escribí solo lo que quieras cambiar, lo vacío queda como estaba.':'Si cobraste en pesos, elegí pesos y lo pasamos a dólares con el dólar MEP del día.'}</p>
     </div></div>`;
   if(cargado){
@@ -2470,7 +2470,7 @@ function bloqueProductos(d, L, u, inv, camp, R, et){
     h+=grafico(p, `Facturado en cada período. ${tot} ${tot===1?'venta':'ventas'} en total.`, S, et, PCOL[i%PCOL.length]); });
   return h;
 }
-document.addEventListener('input', e=>{ const t=e.target; if(!t.matches('[data-pc],[data-pm]')) return;
+document.addEventListener('input', e=>{ const t=e.target; if(!t.matches('[data-pc],[data-pm]')) return; const bg=t.closest('.prodF').querySelector('[data-pguardar]'); if(bg&&bg.dataset.ok){ delete bg.dataset.ok; bg.textContent='Guardar'; }
   const box=t.closest('.prodF'); const val=(el,k)=>{ const x=(el.value||'').trim(); const pl=el.placeholder; const s=(x||pl||'0').replace(/[^\d.,]/g,''); const n=parseFloat(s.includes(',')?s.replace(/\./g,'').replace(',','.'):s.replace(/\./g,'')); return isNaN(n)?0:n; };
   let tv=0, ti=0; box.querySelectorAll('[data-pc]').forEach(el=>tv+=val(el)); box.querySelectorAll('[data-pm]').forEach(el=>ti+=val(el));
   const sel=box.querySelector('[data-pmon]'); const ars=sel&&sel.value==='ARS';
@@ -2482,6 +2482,10 @@ document.addEventListener('click', async e=>{
   const items=[...box.querySelectorAll('[data-pc]')].map(el=>{ const p=el.dataset.pc, m=box.querySelector(`[data-pm="${p}"]`); return {producto:p, ventas:limpia(el.value), ingreso:limpia(m.value)}; });
   if(!items.some(x=>x.ventas!=null||x.ingreso!=null)){ nota.textContent='Cargá al menos un producto.'; nota.className='vnota mal'; return; }
   const sel=box.querySelector('[data-pmon]'); const moneda=sel?sel.value:MON;
+  // ¿se equivocó de moneda? en pesos, montos chicos para lo invertido suelen ser dólares
+  { const tot=items.reduce((a,x)=>a+(x.ingreso||0),0), inv=Number(b.dataset.inv||0);
+    if(moneda==='ARS'&&inv>0&&tot>0&&tot/1500/inv<0.2&&b.dataset.ok!=='1'){ nota.innerHTML=`<b>Ojo con la moneda:</b> $ ${fmt(tot,0)} en pesos son unos USD ${fmt(tot/1500,0)}, contra USD ${fmt(inv,0)} invertidos. ¿No serán dólares? Si son dólares, cambiá la moneda arriba. Si de verdad son pesos, tocá de nuevo Guardar.`; nota.className='vnota mal'; b.dataset.ok='1'; b.textContent='Sí, son pesos'; return; }
+    if(moneda==='USD'&&inv>0&&tot/inv>15&&b.dataset.ok!=='1'){ nota.innerHTML=`<b>Ojo con la moneda:</b> USD ${fmt(tot,0)} contra USD ${fmt(inv,0)} invertidos da un retorno de ${fmt(tot/inv,0)} veces. ¿No serán pesos? Si son pesos, cambiá la moneda arriba. Si de verdad son dólares, tocá de nuevo Guardar.`; nota.className='vnota mal'; b.dataset.ok='1'; b.textContent='Sí, son dólares'; return; } }
   b.disabled=true; b.textContent='Guardando…';
   let r=null; try{ r=await fetch(`${API_WEB}/ventas-productos`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,campania:b.dataset.pguardar,periodo:b.dataset.per,moneda,items})}).then(x=>x.json()); }catch(err){}
   if(r&&r.ok){
