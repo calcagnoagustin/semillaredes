@@ -2441,22 +2441,22 @@ const PCOL=['#7A1F3A','#1A2456','#87863A','#E2767C','#2F5D62','#C48A2C'];
 function bloqueProductos(d, L, u, inv, camp, R, et){
   const per=u.desde+'/'+u.hasta, V=d.cliente.ventas||{}, vk=p=>V['Producto · '+p+' · '+per];
   const num=(x,dc)=>x==null?'':Number(x).toLocaleString('es-AR',{minimumFractionDigits:dc||0,maximumFractionDigits:dc||0});
-  const cargado=L.some(p=>vk(p));
+  const cargado=L.some(p=>vk(p)), enARS=MON==='ARS'||L.some(p=>(vk(p)||{}).moneda_cargada==='ARS');
   const ti=L.reduce((a,p)=>a+Number((vk(p)||{}).ingreso||0),0), tv=L.reduce((a,p)=>a+Number((vk(p)||{}).ventas||0),0);
   let h=`<div class="camp ventaBox prodF" id="cajaFact"><h3>Ventas del período por producto</h3>
     <p class="que">Del ${fecha(u.desde)} al ${fecha(u.hasta)}. Cargá las ventas y lo facturado de cada producto: el total y el ROAS se calculan solos.</p>
     <div class="formv" style="display:block">
-    <div class="pmon">Moneda de lo que cargás:${MON==='USD'?`<select data-pmon="1" aria-label="Moneda"><option value="USD">dólares (USD)</option><option value="ARS">pesos ($)</option></select>`:' pesos ($)'}</div>
+    <div class="pmon">Moneda de lo que cargás:${MON==='USD'?`<select data-pmon="1" aria-label="Moneda"><option value="USD">dólares (USD)</option><option value="ARS"${enARS?' selected':''}>pesos ($)</option></select>`:' pesos ($)'}</div>
     <div class="pfila phd"><span>Producto</span><span>Ventas</span><span>Facturado</span></div>
-    ${L.map(p=>{ const v=vk(p)||{}, ing=v.moneda_cargada==='ARS'&&v.ingreso_ars!=null?null:v.ingreso;
-      return `<div class="pfila"><span class="p">${p}</span><input type="text" inputmode="numeric" data-pc="${p}" placeholder="${v.ventas!=null?v.ventas:'0'}" aria-label="Ventas de ${p}"><input type="text" inputmode="decimal" data-pm="${p}" placeholder="${v.ingreso!=null?num(v.ingreso,0):'0'}" aria-label="Facturado de ${p}"></div>`; }).join('')}
-    <div class="pfila ptot"><span>Total</span><span class="pn" data-ptv>${num(tv)}</span><span class="pn" data-pti>${num(ti)}</span></div>
+    ${L.map(p=>{ const v=vk(p)||{}, ing=enARS?(v.ingreso_ars!=null?v.ingreso_ars:(v.ingreso!=null&&v.tasa?v.ingreso*v.tasa:null)):v.ingreso;
+      return `<div class="pfila"><span class="p">${p}</span><input type="text" inputmode="numeric" data-pc="${p}" placeholder="${v.ventas!=null?v.ventas:'0'}" aria-label="Ventas de ${p}"><input type="text" inputmode="decimal" data-pm="${p}" placeholder="${ing!=null?num(ing,0):'0'}" aria-label="Facturado de ${p}"></div>`; }).join('')}
+    <div class="pfila ptot"><span>Total</span><span class="pn" data-ptv>${num(tv)}</span><span class="pn" data-pti>${enARS?'$ '+num(L.reduce((a,p)=>{ const v=vk(p)||{}; return a+Number(v.ingreso_ars!=null?v.ingreso_ars:(v.ingreso||0)*(v.tasa||0)); },0)):num(ti)}</span></div>
     <div class="pacc"><button data-pguardar="${camp}" data-per="${per}" data-inv="${inv}">Guardar</button></div>
     <p class="vnota" data-pnota="1">${cargado?'Lo que ya cargaste aparece en gris: escribí solo lo que quieras cambiar, lo vacío queda como estaba.':'Si cobraste en pesos, elegí pesos y lo pasamos a dólares con el dólar MEP del día.'}</p>
     </div></div>`;
   if(cargado){
     const roas=inv>0?ti/inv:null;
-    h+=`<div class="desglose prodF prodT" style="margin-top:14px"><h3>Cómo se repartió lo facturado</h3><p class="leyenda">Del ${fecha(u.desde)} al ${fecha(u.hasta)}, en dólares (USD).${roas!=null?` Con USD ${num(inv,2)} de publicidad, cada dólar volvió USD ${num(roas,2)}.`:''}</p>
+    h+=`<div class="desglose prodF prodT" style="margin-top:14px"><h3>Cómo se repartió lo facturado</h3><p class="leyenda">Del ${fecha(u.desde)} al ${fecha(u.hasta)}, en dólares (USD)${enARS?` (lo cargado en pesos, pasado al dólar MEP)`:''}.${roas!=null?` Con USD ${num(inv,2)} de publicidad, cada dólar volvió USD ${num(roas,2)}.`:''}</p>
       <div class="pfila phd"><span>Producto</span><span>Ventas</span><span>Facturado</span><span>%</span></div>
       ${L.map(p=>{ const v=vk(p)||{}, i=Number(v.ingreso||0); return `<div class="pfila"><span class="p">${p}</span><span class="pn">${num(v.ventas||0)}</span><span class="pn">${num(i)}</span><span class="pn">${ti>0?num(i/ti*100,1)+'%':'—'}</span></div>`; }).join('')}
       <div class="pfila ptot"><span>Total</span><span class="pn">${num(tv)}</span><span class="pn">${num(ti)}</span><span class="pn">${ti>0?'100%':'—'}</span></div></div>`;
