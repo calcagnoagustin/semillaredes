@@ -377,6 +377,18 @@ table.histA th{font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;co
 .repCaja li::before{content:counter(r);position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;background:var(--crema);color:var(--navy);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
 .repCaja .qh li::before{background:var(--navy);color:var(--crema)}
 .vmon{display:flex;gap:8px;align-items:center}.vmon select{border:1px solid var(--linea);border-radius:10px;padding:10px;font:inherit;background:#fff}.vmonf{font-size:14px;color:var(--gris,#6F6B7C)}
+.prodF .pfila{display:grid;grid-template-columns:minmax(0,1fr) 64px 104px;column-gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--linea)}
+.prodF .pfila.phd{border-top:0;padding:0 0 4px;font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--oliva);font-weight:700}
+.prodF .pfila.phd span:not(:first-child),.prodF .pfila .pn{text-align:right}
+.prodF .pfila .p{font-size:14.5px;color:var(--navy);font-weight:600;line-height:1.25}
+.prodF .pfila input{width:100%;box-sizing:border-box;border:1px solid var(--linea);border-radius:9px;padding:8px 9px;font:inherit;font-size:15px;background:#FDFCF9;text-align:right}
+.prodF .pfila.ptot{font-weight:700;color:var(--navy);font-size:15px}
+.prodF .pmon{display:flex;align-items:center;gap:8px;margin:4px 0 10px;font-size:13.5px;color:#6F6B7C}
+.prodF .pmon select{border:1px solid var(--linea);border-radius:9px;padding:7px 9px;font:inherit;font-size:14px;background:#FDFCF9}
+.prodF .pacc{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.prodF button{border:0;background:var(--navy);color:var(--crema);font:inherit;font-weight:600;font-size:14px;border-radius:9px;padding:10px 16px;cursor:pointer}
+.prodF .formv .pfila.phd span:not(:first-child),.prodF .formv .pfila .pn{padding-right:10px}
+.prodT .pfila{grid-template-columns:minmax(0,1fr) 54px 92px 58px}
 .vnota{flex-basis:100%;margin:8px 0 0;font-size:13.5px;color:#6F6B7C;line-height:1.4}.vnota.mal{color:#9B2C36}.vnota.bien{color:#2F6B2A}
 .srAcc{display:flex;width:max-content;max-width:100%;align-items:center;margin-top:8px;border:1px solid var(--navy);background:#fff;color:var(--navy);border-radius:999px;padding:7px 13px;font:600 13.5px/1 Inter,sans-serif;cursor:pointer}
 .srFlash{animation:srFl 1.8s ease}@keyframes srFl{0%,60%{background:#F6EFC8}100%{background:transparent}}
@@ -1636,7 +1648,8 @@ function pintarMixto(d){
       ${card('Invertido', mon(m.msj_inversion,2), [m.msj_inversion, ma.msj_inversion],2)}
       ${u&&u.metricas.msj_seguidores!=null?card('Seguidores que trajo', fmt(u.metricas.msj_seguidores), [u.metricas.msj_seguidores, ma.msj_seguidores]):''}
     </div>`;
-    h+=bloqueVentas(d, m.msj_nombre||'Campaña de mensajes', Number((u&&u.metricas.msj_inversion)||0));
+    if(PRODUCTOS[slug]&&u) h+=bloqueProductos(d, PRODUCTOS[slug], u, Number(u.metricas.msj_inversion||0), m.msj_nombre||'Campaña de mensajes', R, et);
+    else h+=bloqueVentas(d, m.msj_nombre||'Campaña de mensajes', Number((u&&u.metricas.msj_inversion)||0));
     h+=grafico('Mensajes','Cuánta gente escribió en cada período.',R.map(r=>r.metricas.msj_mensajes),et,'#87863A');
     h+=grafico('Costo por mensaje','Cuánto cuesta cada persona que escribe. Mientras más baja la línea, mejor.',R.map(r=>r.metricas.msj_costo_mensaje),et,'#E2767C',true);
     if(hay('msj_seguidores'))
@@ -2421,6 +2434,62 @@ function armarIndice(){
     h.appendChild(v);
   });
 }
+
+// 09/11/2026 (Piku Yoga): ventas del período producto por producto; se suman solas y cada producto tiene su línea
+const PRODUCTOS={'piku-yoga':['Posgrado','Curso del mes','Grupo','Mentoría','Hatha Yoga','Retiros']};
+const PCOL=['#7A1F3A','#1A2456','#87863A','#E2767C','#2F5D62','#C48A2C'];
+function bloqueProductos(d, L, u, inv, camp, R, et){
+  const per=u.desde+'/'+u.hasta, V=d.cliente.ventas||{}, vk=p=>V['Producto · '+p+' · '+per];
+  const num=(x,dc)=>x==null?'':Number(x).toLocaleString('es-AR',{minimumFractionDigits:dc||0,maximumFractionDigits:dc||0});
+  const cargado=L.some(p=>vk(p));
+  const ti=L.reduce((a,p)=>a+Number((vk(p)||{}).ingreso||0),0), tv=L.reduce((a,p)=>a+Number((vk(p)||{}).ventas||0),0);
+  let h=`<div class="camp ventaBox prodF" id="cajaFact"><h3>Ventas del período por producto</h3>
+    <p class="que">Del ${fecha(u.desde)} al ${fecha(u.hasta)}. Cargá las ventas y lo facturado de cada producto: el total y el ROAS se calculan solos.</p>
+    <div class="formv" style="display:block">
+    <div class="pmon">Moneda de lo que cargás:${MON==='USD'?`<select data-pmon="1" aria-label="Moneda"><option value="USD">dólares (USD)</option><option value="ARS">pesos ($)</option></select>`:' pesos ($)'}</div>
+    <div class="pfila phd"><span>Producto</span><span>Ventas</span><span>Facturado</span></div>
+    ${L.map(p=>{ const v=vk(p)||{}, ing=v.moneda_cargada==='ARS'&&v.ingreso_ars!=null?null:v.ingreso;
+      return `<div class="pfila"><span class="p">${p}</span><input type="text" inputmode="numeric" data-pc="${p}" placeholder="${v.ventas!=null?v.ventas:'0'}" aria-label="Ventas de ${p}"><input type="text" inputmode="decimal" data-pm="${p}" placeholder="${v.ingreso!=null?num(v.ingreso,0):'0'}" aria-label="Facturado de ${p}"></div>`; }).join('')}
+    <div class="pfila ptot"><span>Total</span><span class="pn" data-ptv>${num(tv)}</span><span class="pn" data-pti>${num(ti)}</span></div>
+    <div class="pacc"><button data-pguardar="${camp}" data-per="${per}">Guardar</button></div>
+    <p class="vnota" data-pnota="1">${cargado?'Lo que ya cargaste aparece en gris: escribí solo lo que quieras cambiar, lo vacío queda como estaba.':'Si cobraste en pesos, elegí pesos y lo pasamos a dólares con el dólar MEP del día.'}</p>
+    </div></div>`;
+  if(cargado){
+    const roas=inv>0?ti/inv:null;
+    h+=`<div class="desglose prodF prodT" style="margin-top:14px"><h3>Cómo se repartió lo facturado</h3><p class="leyenda">Del ${fecha(u.desde)} al ${fecha(u.hasta)}, en dólares (USD).${roas!=null?` Con USD ${num(inv,2)} de publicidad, cada dólar volvió USD ${num(roas,2)}.`:''}</p>
+      <div class="pfila phd"><span>Producto</span><span>Ventas</span><span>Facturado</span><span>%</span></div>
+      ${L.map(p=>{ const v=vk(p)||{}, i=Number(v.ingreso||0); return `<div class="pfila"><span class="p">${p}</span><span class="pn">${num(v.ventas||0)}</span><span class="pn">${num(i)}</span><span class="pn">${ti>0?num(i/ti*100,1)+'%':'—'}</span></div>`; }).join('')}
+      <div class="pfila ptot"><span>Total</span><span class="pn">${num(tv)}</span><span class="pn">${num(ti)}</span><span class="pn">${ti>0?'100%':'—'}</span></div></div>`;
+  }
+  const RP=R.filter(r=>r.metricas&&r.metricas.prod);
+  h+=`<h2>Ventas por producto</h2><p class="sub">La línea de cada producto, período a período: cuánto facturó en dólares (USD).</p>`;
+  if(RP.length<2) h+=`<p class="pista">Las líneas aparecen cuando haya dos períodos cargados. Por ahora ${RP.length?'hay uno':'no hay ninguno'}: cargá las ventas de cada período y se van armando solas.</p>`;
+  else L.forEach((p,i)=>{ const S=R.map(r=>{ const x=r.metricas&&r.metricas.prod&&r.metricas.prod[p]; return r.metricas&&r.metricas.prod?(x?Number(x.ingreso||0):0):null; });
+    const N=R.map(r=>{ const x=r.metricas&&r.metricas.prod&&r.metricas.prod[p]; return x?Number(x.ventas||0):0; });
+    const tot=N.reduce((a,b)=>a+b,0);
+    h+=grafico(p, `Facturado en cada período. ${tot} ${tot===1?'venta':'ventas'} en total.`, S, et, PCOL[i%PCOL.length]); });
+  return h;
+}
+document.addEventListener('input', e=>{ const t=e.target; if(!t.matches('[data-pc],[data-pm]')) return;
+  const box=t.closest('.prodF'); const val=(el,k)=>{ const x=(el.value||'').trim(); const pl=el.placeholder; const s=(x||pl||'0').replace(/[^\d.,]/g,''); const n=parseFloat(s.includes(',')?s.replace(/\./g,'').replace(',','.'):s.replace(/\./g,'')); return isNaN(n)?0:n; };
+  let tv=0, ti=0; box.querySelectorAll('[data-pc]').forEach(el=>tv+=val(el)); box.querySelectorAll('[data-pm]').forEach(el=>ti+=val(el));
+  const sel=box.querySelector('[data-pmon]'); const ars=sel&&sel.value==='ARS';
+  box.querySelector('[data-ptv]').textContent=tv.toLocaleString('es-AR'); box.querySelector('[data-pti]').textContent=(ars?'$ ':'')+ti.toLocaleString('es-AR',{maximumFractionDigits:0}); });
+document.addEventListener('click', async e=>{
+  const b=e.target.closest('[data-pguardar]'); if(!b) return;
+  const box=b.closest('.prodF'), nota=box.querySelector('[data-pnota]');
+  const limpia=x=>{ x=(x||'').trim().replace(/[^\d.,]/g,''); if(!x) return null; if(x.includes(',')) x=x.replace(/\./g,'').replace(',','.'); else x=x.replace(/\./g,''); const n=parseFloat(x); return isNaN(n)?null:n; };
+  const items=[...box.querySelectorAll('[data-pc]')].map(el=>{ const p=el.dataset.pc, m=box.querySelector(`[data-pm="${p}"]`); return {producto:p, ventas:limpia(el.value), ingreso:limpia(m.value)}; });
+  if(!items.some(x=>x.ventas!=null||x.ingreso!=null)){ nota.textContent='Cargá al menos un producto.'; nota.className='vnota mal'; return; }
+  const sel=box.querySelector('[data-pmon]'); const moneda=sel?sel.value:MON;
+  b.disabled=true; b.textContent='Guardando…';
+  let r=null; try{ r=await fetch(`${API_WEB}/ventas-productos`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,campania:b.dataset.pguardar,periodo:b.dataset.per,moneda,items})}).then(x=>x.json()); }catch(err){}
+  if(r&&r.ok){
+    const msg=`Guardado: ${r.ventas} ${r.ventas===1?'venta':'ventas'} por USD ${fmt(r.total,0)} en total${r.tasa?` (pesos al dólar MEP ${fmt(r.tasa,0)})`:''}. Estamos rehaciendo tu reporte y la página principal: en un minuto lo ves actualizado.`;
+    traerD().then(dd=>{ pintar(dd); const n2=document.querySelector('[data-pnota]'); if(n2){ n2.textContent=msg; n2.className='vnota bien'; } });
+    [75000,150000].forEach(t=>setTimeout(()=>{ if(typeof srFresco==='function') srFresco(); else location.reload(); },t));
+  } else { b.disabled=false; b.textContent='Guardar'; nota.textContent=(r&&r.error)||'No se pudo guardar. Probá de nuevo.'; nota.className='vnota mal'; }
+});
 
 function bloqueVentas(d, campania, invTotal, o){
   o=o||{};
