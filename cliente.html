@@ -514,8 +514,22 @@ table.histA th{font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;co
 (function(){
   var q=new URLSearchParams(location.search), c=q.get('c'), k=q.get('k');
   if(q.get('yo')==='1'){ try{ localStorage.setItem('sr_yo','1'); }catch(e){} }
-  var yo=false; try{ yo=localStorage.getItem('sr_yo')==='1'; }catch(e){}
+  var yo=false; try{ yo=localStorage.getItem('sr_yo')==='1'||localStorage.getItem('sr_semilla')==='1'; }catch(e){}
   try{ if(window.top!==window && /panel|uso/.test(window.top.location.pathname)) yo=true; }catch(e){}
+  /* 09/11: tampoco cuentan los navegadores automáticos (pruebas) ni copias fuera de semillaredes.com */
+  try{ if(navigator.webdriver||!/(^|\.)semillaredes\.com$/.test(location.hostname)) yo=true; }catch(e){}
+  window.SR_YO=yo;
+  /* 09/11: marcar este dispositivo como de Agus tocando 5 veces el logo de arriba (sirve en la app instalada, que guarda aparte) */
+  (function(){ var n=0,t=0;
+    function aviso(txt){ var d=document.createElement('div'); d.textContent=txt; d.style.cssText='position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#1A2456;color:#fff;font:600 14px/1.35 system-ui,sans-serif;padding:12px 18px;border-radius:12px;z-index:99999;max-width:86vw;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.2)'; document.body.appendChild(d); setTimeout(function(){ d.remove(); },3500); }
+    document.addEventListener('click',function(e){ var en=false; try{ document.querySelectorAll('.cab img, .cabLogo img').forEach(function(i){ var r=i.getBoundingClientRect(); if(r.width>40&&e.clientX>=r.left-8&&e.clientX<=r.right+8&&e.clientY>=r.top-8&&e.clientY<=r.bottom+8) en=true; }); }catch(x){} if(!en) return;
+      var a=Date.now(); n=(a-t<2500)?n+1:1; t=a; if(n<5) return; n=0;
+      try{ localStorage.setItem('sr_yo','1'); }catch(x){ aviso('No se pudo guardar en este dispositivo'); return; }
+      window.SR_YO=yo=true; aviso('✓ Este dispositivo no cuenta en las métricas de uso'); visto(); },true); })();
+  function visto(){ try{ var dd=/iPhone|iPad|iPod/.test(navigator.userAgent)?'ios':(/Android/.test(navigator.userAgent)?'android':'compu');
+    var ap=false; try{ ap=!!(window.top.navigator.standalone||window.top.matchMedia('(display-mode: standalone)').matches); }catch(x){}
+    new Image().src='https://vm.semillaredes.com/web/yo-visto?d='+dd+'&app='+(ap?1:0); }catch(e){} }
+  try{ if(yo&&!navigator.webdriver&&/(^|\.)semillaredes\.com$/.test(location.hostname)&&!sessionStorage.getItem('sr_yo_v')){ sessionStorage.setItem('sr_yo_v','1'); setTimeout(visto,1500); } }catch(e){}
   var tq=''; try{ tq=window.top.location.search||''; }catch(e){}
   function ses(){ var s=null, now=Date.now(); try{ s=JSON.parse(localStorage.getItem('sr_ses')||'null'); }catch(e){}
     if(!s||now-s.t>30*60000) s={id:now.toString(36)+Math.random().toString(36).slice(2,7)}; s.t=now;
@@ -2825,7 +2839,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261105d';
+var SR_VER='20261109a';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
@@ -2834,7 +2848,7 @@ function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.n
   chequear();
   document.addEventListener('visibilitychange',function(){ if(!document.hidden) chequear(); });
   window.addEventListener('pageshow',function(e){ if(e.persisted) chequear(); });
-  try{ var q0=new URLSearchParams(location.search); if(q0.get('c')&&q0.get('k')) var yo0=false; try{ yo0=localStorage.getItem('sr_yo')==='1'||localStorage.getItem('sr_semilla')==='1'; }catch(e){} new Image().src='https://vm.semillaredes.com/web/uso-ping?c='+encodeURIComponent(q0.get('c'))+'&k='+encodeURIComponent(q0.get('k'))+(yo0?'&yo=1':'')+(function(){ try{ var w=window.top; return (w.matchMedia('(display-mode: standalone)').matches||w.navigator.standalone===true||window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true)?'&inst=1':''; }catch(e){ try{ return (window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true)?'&inst=1':''; }catch(x){ return ''; } } })(); }catch(e){}
+  try{ var q0=new URLSearchParams(location.search); if(q0.get('c')&&q0.get('k')) var yo0=false; try{ yo0=localStorage.getItem('sr_yo')==='1'||localStorage.getItem('sr_semilla')==='1'; }catch(e){} if(window.SR_YO) yo0=true; new Image().src='https://vm.semillaredes.com/web/uso-ping?c='+encodeURIComponent(q0.get('c'))+'&k='+encodeURIComponent(q0.get('k'))+(yo0?'&yo=1':'')+(function(){ try{ var w=window.top; return (w.matchMedia('(display-mode: standalone)').matches||w.navigator.standalone===true||window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true)?'&inst=1':''; }catch(e){ try{ return (window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true)?'&inst=1':''; }catch(x){ return ''; } } })(); }catch(e){}
   try{ var q=new URLSearchParams(location.search); if(q.get('c')==='semilla-redes'){ var sa=false; try{ sa=!!(window.top.navigator.standalone||window.top.matchMedia('(display-mode: standalone)').matches); }catch(e){}
     new Image().src='https://vm.semillaredes.com/web/log?p=panel&v='+SR_VER+'&app='+(sa?1:0)+'&marco='+(window.top!==window?1:0); } }catch(e){}
 })();
