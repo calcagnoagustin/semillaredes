@@ -2436,14 +2436,14 @@ function armarIndice(){
 }
 
 // 09/11/2026 (Piku Yoga): ventas del período producto por producto; se suman solas y cada producto tiene su línea
-const PRODUCTOS={'piku-yoga':['Posgrado','Curso del mes','Grupo','Mentoría','Hatha Yoga','Retiros']};
+const PRODUCTOS=window.PRODUCTOS={'piku-yoga':['Posgrado','Curso del mes','Grupo','Mentoría','Hatha Yoga','Retiros']};
 const PCOL=['#7A1F3A','#1A2456','#87863A','#E2767C','#2F5D62','#C48A2C'];
-function bloqueProductos(d, L, u, inv, camp, R, et){
+function bloqueProductos(d, L, u, inv, camp, R, et, ini){
   const per=u.desde+'/'+u.hasta, V=d.cliente.ventas||{}, vk=p=>V['Producto · '+p+' · '+per];
   const num=(x,dc)=>x==null?'':Number(x).toLocaleString('es-AR',{minimumFractionDigits:dc||0,maximumFractionDigits:dc||0});
   const cargado=L.some(p=>vk(p)), enARS=MON==='ARS'||L.some(p=>(vk(p)||{}).moneda_cargada==='ARS');
   const ti=L.reduce((a,p)=>a+Number((vk(p)||{}).ingreso||0),0), tv=L.reduce((a,p)=>a+Number((vk(p)||{}).ventas||0),0);
-  let h=`<div class="camp ventaBox prodF" id="cajaFact"><h3>Ventas del período por producto</h3>
+  let h=`<div class="camp ventaBox prodF"${ini?' style="margin-top:14px"':' id="cajaFact"'}><h3>${ini?'Cargá las ventas de cada producto':'Ventas del período por producto'}</h3>
     <p class="que">Del ${fecha(u.desde)} al ${fecha(u.hasta)}. Cargá las ventas y lo facturado de cada producto: el total y el ROAS se calculan solos.</p>
     <div class="formv" style="display:block">
     <div class="pmon">Moneda de lo que cargás:${MON==='USD'?`<select data-pmon="1" aria-label="Moneda"><option value="USD">dólares (USD)</option><option value="ARS"${enARS?' selected':''}>pesos ($)</option></select>`:' pesos ($)'}</div>
@@ -2461,6 +2461,7 @@ function bloqueProductos(d, L, u, inv, camp, R, et){
       ${L.map(p=>{ const v=vk(p)||{}, i=Number(v.ingreso||0); return `<div class="pfila"><span class="p">${p}</span><span class="pn">${num(v.ventas||0)}</span><span class="pn">${num(i)}</span><span class="pn">${ti>0?num(i/ti*100,1)+'%':'—'}</span></div>`; }).join('')}
       <div class="pfila ptot"><span>Total</span><span class="pn">${num(tv)}</span><span class="pn">${num(ti)}</span><span class="pn">${ti>0?'100%':'—'}</span></div></div>`;
   }
+  if(ini) return h;
   const RP=R.filter(r=>r.metricas&&r.metricas.prod);
   h+=`<h2>Ventas por producto</h2><p class="sub">La línea de cada producto, período a período: cuánto facturó en dólares (USD).</p>`;
   if(RP.length<2) h+=`<p class="pista">Las líneas aparecen cuando haya dos períodos cargados. Por ahora ${RP.length?'hay uno':'no hay ninguno'}: cargá las ventas de cada período y se van armando solas.</p>`;
@@ -2470,6 +2471,9 @@ function bloqueProductos(d, L, u, inv, camp, R, et){
     h+=grafico(p, `Facturado en cada período. ${tot} ${tot===1?'venta':'ventas'} en total.`, S, et, PCOL[i%PCOL.length]); });
   return h;
 }
+window.srProdInicio=function(){ const el=document.getElementById('v3prod'), d=window.__D; if(!el) return; if(!d||!d.reportes){ setTimeout(window.srProdInicio,300); return; }
+  const R=[...d.reportes].filter(r=>r.metricas).sort((a,b)=>a.hasta<b.hasta?-1:a.hasta>b.hasta?1:0), u=R[R.length-1]; if(!u){ el.innerHTML=''; return; }
+  el.innerHTML=bloqueProductos(d, PRODUCTOS[slug], u, Number(u.metricas.msj_inversion||0), u.metricas.msj_nombre||'Campaña de mensajes', R, R.map(r=>fecha(r.hasta)), true); };
 document.addEventListener('input', e=>{ const t=e.target; if(!t.matches('[data-pc],[data-pm]')) return; const bg=t.closest('.prodF').querySelector('[data-pguardar]'); if(bg&&bg.dataset.ok){ delete bg.dataset.ok; bg.textContent='Guardar'; }
   const box=t.closest('.prodF'); const val=(el,k)=>{ const x=(el.value||'').trim(); const pl=el.placeholder; const s=(x||pl||'0').replace(/[^\d.,]/g,''); const n=parseFloat(s.includes(',')?s.replace(/\./g,'').replace(',','.'):s.replace(/\./g,'')); return isNaN(n)?0:n; };
   let tv=0, ti=0; box.querySelectorAll('[data-pc]').forEach(el=>tv+=val(el)); box.querySelectorAll('[data-pm]').forEach(el=>ti+=val(el));
@@ -2490,7 +2494,8 @@ document.addEventListener('click', async e=>{
   let r=null; try{ r=await fetch(`${API_WEB}/ventas-productos`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,campania:b.dataset.pguardar,periodo:b.dataset.per,moneda,items})}).then(x=>x.json()); }catch(err){}
   if(r&&r.ok){
     const msg=`Guardado: ${r.ventas} ${r.ventas===1?'venta':'ventas'} por USD ${fmt(r.total,0)} en total${r.tasa?` (pesos al dólar MEP ${fmt(r.tasa,0)})`:''}. Estamos rehaciendo tu reporte y la página principal: en un minuto lo ves actualizado.`;
-    traerD().then(dd=>{ pintar(dd); const n2=document.querySelector('[data-pnota]'); if(n2){ n2.textContent=msg; n2.className='vnota bien'; } });
+    const enIni=!!b.closest('#v3prod');
+    traerD().then(dd=>{ pintar(dd); window.srProdInicio&&window.srProdInicio(); const n2=enIni?document.querySelector('#v3prod [data-pnota]'):[...document.querySelectorAll('[data-pnota]')].find(x=>!x.closest('#v3prod')); if(n2){ n2.textContent=msg; n2.className='vnota bien'; } });
     [75000,150000].forEach(t=>setTimeout(()=>{ if(typeof srFresco==='function') srFresco(); else location.reload(); },t));
   } else { b.disabled=false; b.textContent='Guardar'; nota.textContent=(r&&r.error)||'No se pudo guardar. Probá de nuevo.'; nota.className='vnota mal'; }
 });

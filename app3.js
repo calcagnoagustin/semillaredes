@@ -763,7 +763,7 @@
     const scrHoy=`
       ${ETQ}<h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>${ACT}${({'alan-sutton':'Tus números y las ventas de merch se actualizan todos los días. El reporte sale los jueves a las 7.','bodegon-para':'Tus números se actualizan todos los días. El reporte sale los jueves a las 7.'})[slug]?`<p class="aviso-act">${({'alan-sutton':'Tus números y las ventas de merch se actualizan todos los días. El reporte sale los jueves a las 7.','bodegon-para':'Tus números se actualizan todos los días. El reporte sale los jueves a las 7.'})[slug]}</p>`:''}
       <div id="v3reu"></div><div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g transform="translate(-4 44)"><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></g></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
-      <div id="v3ctas"></div>
+      ${(window.PRODUCTOS||{})[slug]?'<div id="v3prod"></div>':''}<div id="v3ctas"></div>
       ${DEST}${CRU}
       ${GIRA}
       <div class="tit2"><h3>Métricas principales</h3><button data-ir="metricas">Ver todas</button></div>
@@ -981,6 +981,7 @@
     if(app&&app.parentNode!==document.body) document.body.appendChild(app);   // sacarlo antes de reescribir
     raiz.innerHTML=`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="v3g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#F9A43A"/><stop offset=".5" stop-color="#E1306C"/><stop offset="1" stop-color="#7B3FE4"/></linearGradient></defs></svg><div class="cab"><img src="/assets/semilla-redes-oliva.png" alt="Semilla Redes"><span class="sep"></span><span class="ia">semilla<b>IA</b></span><span class="ver" title="Versión de tu app">v${verApp()}</span><span class="esp"></span><button class="camp" id="v3camp" aria-label="Notificaciones">${ico.camp}<b id="v3nn"></b></button><button class="av" id="v3av" aria-label="Tu perfil">${ini}<img src="/assets/avatars/${slug}.jpg?v=${new Date().toISOString().slice(0,10)}" alt="" onerror="this.remove()"></button></div>
       <div class="scr" data-scr="hoy">${scrHoy}</div><div class="scr" data-scr="proyecto">${scrPro}</div><div class="scr" data-scr="actividades">${scrAct}</div><div class="scr" data-scr="metricas">${scrMet}</div><div class="scr" data-scr="ia">${scrIA}</div>`;
+    if(window.srProdInicio) setTimeout(window.srProdInicio,0);   // 09/11: Piku carga las ventas de cada producto desde Inicio
     const todo=raiz.querySelector('#v3todo'); if(app&&todo){ todo.appendChild(app); app.classList.remove('oculto'); }
     /* Métricas avanzadas: el cliente no las abre solo, se miran con el equipo de Semilla Redes (Agus sí las ve) */
     let esSemilla=false; try{ esSemilla=localStorage.getItem('sr_semilla')==='1'; }catch(e){}
