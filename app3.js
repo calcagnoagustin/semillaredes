@@ -322,6 +322,7 @@
   #v3 .gira .gprf{margin-top:6px;font-size:12.5px;color:#6B6878}
   #v3 .hito .hx{position:absolute;top:10px;right:10px;width:28px;height:28px;border:0;border-radius:50%;background:none;color:#A9A190;font:400 20px/1 Inter,sans-serif;cursor:pointer}
   #v3 .tkp .fila{grid-template-columns:1fr auto}
+  #v3 .tkt-s{margin:-4px 0 10px;font-size:13.5px;color:#6F6B7C}#v3 .tkt-n{margin:10px 2px 0;font-size:12.5px;color:#8A8577;line-height:1.45}#v3 .tkt-tot{background:#F6F1E7}
   #v3 .pais .fila{grid-template-columns:1fr auto;padding:11px 16px;align-items:start}
   #v3 .pais .tx b{display:block;color:${NAVY};font-size:15px;font-weight:600}
   #v3 .pais .tx i{display:block;height:5px;border-radius:3px;background:#E2767C;margin-top:7px}
@@ -910,6 +911,15 @@
       <div class="card big"><div><div style="display:flex;align-items:center;gap:10px">${ico[SUBRED]}<div class="n">${nf(val(RD.k),Number.isInteger(Number(val(RD.k)))?0:1)}</div></div><div class="l">${RD.l}</div><div class="d">${dK(RD.k)}<small>${RD.ex}</small></div></div>${RD.kpis?`<div class="kp">${RD.kpis.map(([k,l])=>{const v=Number(val(k));return `<div><div class="n">${v<0?'−':''}${SIM}${nf(Math.abs(v),0)}</div><div class="l">${l}</div></div>`;}).join('')}</div>`:`<div class="sp">${linea(serie(RD.k),RD.col)}</div>`}</div>
       <div class="dos">${mini(RD.a)}${mini(RD.b)}</div>
       ${RD.ad?(()=>{const [p,t,l]=RD.ad, vis=val(p+'_visitas')!=null?p+'_visitas':p+'_clics';return `<div class="tit2"><h2>${t}</h2></div><div class="card big"><div><div class="n">${nf(val(vis))}</div><div class="l">${l}</div><div class="d"><small>${val(p+'_alcance')!=null?nf(val(p+'_alcance'))+' personas alcanzadas':''}</small></div></div><div class="sp">${linea(serie(vis),RD.col)}</div></div><div class="dos">${mini([p+'_costo_visita','costo por visita',true,'#E2767C',2])}${mini([p+'_inversion','inversión en el período',true,OLIVA])}</div>`;})():''}
+      ${SUBRED==='tk'?(()=>{ /* 10/11: entradas vendidas por función según la captura de la ticketera (Berco: la ticketera no da ventas por día) */
+        const CP=Object.values((d.cliente&&d.cliente.ventas)||{}).filter(v=>v&&v.tipo==='ticketera'&&Array.isArray(v.funciones)).sort((a,b)=>String(a.captura)<String(b.captura)?-1:1); if(!CP.length) return '';
+        const u=CP[CP.length-1], pr=CP.length>1?CP[CP.length-2]:null, fc=x=>fd(String(x).slice(0,10)), DS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+        const ant=f=>{ if(!pr) return null; const o=pr.funciones.find(z=>z.fecha===f.fecha); return o?Number(f.locs)-Number(o.locs):Number(f.locs); };
+        const ars=n=>'$ '+nf(Math.round(Number(n)||0));
+        const fil=u.funciones.map(f=>{ const dd=new Date(f.fecha+'T12:00:00'), dif=ant(f);
+          return `<div class="fila"><span class="tx ab"><b>${DS[dd.getDay()]} ${fd(f.fecha)}${f.hora?' · '+esc(String(f.hora).replace(/:00$/,''))+' hs':''}</b><br><span>${ars(f.importe_ars)} vendidos${dif!=null?` · <b style="font-size:13.5px;color:#2F6B2A">${dif>=0?'+':''}${nf(dif)}</b> desde el ${fc(pr.captura)}`:''}</span></span><span class="rt"><b>${nf(f.locs)}</b><small>${Number(f.locs)===1?'entrada':'entradas'}</small></span></div>`; }).join('');
+        const tot=u.funciones.reduce((a,f)=>a+Number(f.locs||0),0), totp=pr?pr.funciones.reduce((a,f)=>a+Number(f.locs||0),0):null;
+        return `<div class="tit2"><h2>Entradas vendidas por función</h2></div><p class="tkt-s">Según la ticketera · captura del ${fc(u.captura)}</p><div class="card lista tkp">${fil}<div class="fila tkt-tot"><span class="tx ab"><b>Total</b><br><span>${ars(u.ingreso_ars||u.funciones.reduce((a,f)=>a+Number(f.importe_ars||0),0))} vendidos${totp!=null?` · <b style="font-size:13.5px;color:#2F6B2A">${tot-totp>=0?'+':''}${nf(tot-totp)}</b> desde el ${fc(pr.captura)}`:''}</span></span><span class="rt"><b>${nf(tot)}</b><small>entradas</small></span></div></div><p class="tkt-n">La ticketera no informa la fecha de cada venta: con cada captura nueva comparamos función por función y se ve cuántas entradas se vendieron desde la anterior.</p>`; })():''}
       ${SUBRED==='tk'?(()=>{ /* 27/10: acumulado de entradas — el mes y desde el inicio (pedido de Agus para Berco) */
         const byD=new Map(); R.filter(r=>r.metricas&&r.metricas.tk_inversion!=null).forEach(r=>byD.set(String(r.desde).slice(0,10),r)); const L=[...byD.values()]; if(!L.length) return '';
         const ult=L[L.length-1], mes=String(ult.hasta).slice(0,7), MN=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][+mes.slice(5)-1];
