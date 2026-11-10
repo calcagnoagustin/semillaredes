@@ -293,6 +293,14 @@
   #v3 .rev h3{margin:0 0 4px;font-size:16px;color:#24242C}
   #v3 .rev p{margin:0;font-size:14.5px;line-height:1.55;color:#55525F}
   #v3 .cjn{font-size:12.5px;color:#8A8698;margin:10px 2px 0;line-height:1.45}
+  #v3 .pais{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  #v3 .pais .card{padding:14px 12px 6px}
+  #v3 .pais .pn{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B6878}
+  #v3 .pais .pv{font-size:30px;font-weight:700;line-height:1.1;margin-top:6px;color:#24242C}
+  #v3 .pais .pl{font-size:12.5px;color:#6B6878;margin:2px 0 10px}
+  #v3 .pais .pr{display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-top:1px solid #EDE6D8;padding:8px 0;font-size:12.5px;color:#6B6878}
+  #v3 .pais .pr b{font-size:14px;color:#24242C;white-space:nowrap}
+  #v3 .pnota{font-size:12px;color:#8A8577;margin:8px 2px 0;line-height:1.45}
   #v3 .gira{display:grid;gap:12px}
   #v3 .gira .gcur{grid-column:1/-1;border-top:1px solid #EDE6D8;padding-top:10px}
   #v3 .gira .gcur summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600;color:#24242C}
@@ -760,6 +768,14 @@
           ${Number(f.pres||0)>0?`<div class="gc gpd">Presupuesto diario: <b>${SIM}${nf(Number(f.pres),2)}</b>${f.estado==='pausada'?' · campaña pausada':f.estado==='borrador'?' · previsto':''}</div>`:''}
           ${f.tickets?`<a class="gl" href="${esc(f.tickets)}" target="_blank" rel="noopener">Ver entradas →</a>`:''}
         </div>${prog(f)}${curvaCE(f.serie_costo)}</div>`; }).join('')}</div>`; })();
+    // 10/11 (RÁU): seguidores por país, cada país por separado (neto de Instagram ÷ inversión en ese país)
+    const PAISC=(()=>{ const L=um.ig_pais_camp; if(!Array.isArray(L)||!L.length) return ''; const r0=R[R.length-1]||{};
+      const fd=x=>{ const z=String(x).slice(0,10).split('-'); return z[2]+'/'+z[1]; };
+      const fila=(l,v)=>`<div class="pr"><span>${l}</span><b>${v}</b></div>`;
+      return `<div class="tit2"><h3>Seguidores por país</h3></div><div class="pais">${L.map(p=>`<div class="card"><div class="pn">${esc(p.nombre||p.pais)}</div>
+        ${p.neto!=null?`<div class="pv">${p.neto>0?'+':''}${nf(p.neto)}</div><div class="pl">${Math.abs(p.neto)===1?'seguidor nuevo':'seguidores nuevos'}</div>`:''}
+        ${Number(p.inversion)>0?fila('Inversión',SIM+nf(Number(p.inversion))):''}${p.costo?fila('Costo por seguidor',SIM+nf(Number(p.costo))):''}${p.total!=null?fila('Seguidores en total',nf(p.total)):''}</div>`).join('')}</div>
+        ${r0.desde?`<p class="pnota">Del ${fd(r0.desde)} al ${fd(r0.hasta)}. Seguidores nuevos según Instagram (ganados menos los que dejaron de seguir). El costo es lo invertido en cada país dividido sus seguidores nuevos.</p>`:''}`; })();
     // 04/11: etapa del Método Semilla, sutil arriba del saludo. Por ahora solo en estos proyectos (Agus decide cuándo se suma el resto).
     // Etapas acordadas con Agus el 04/11 (Cerro de Oro y JUABRU sin definir). Solo se MUESTRA en ETAPA_VIS hasta que Agus diga.
     const ETAPAS_TODAS={'hernan-onirico':1,'hernan-onirico-2':1,'betsy-grinblat':1,'yamila-beraja':1,'audova':1,'spam-studio':1,'felipe-gonzalez':1,'lu-glass':1,'marcos-cifuentes':1,'flor-scott':1,'los-soplafortune':1,'mavela':1,'sin-fronteras-duo':1,'eupatridas':1,'eupatridas-1':1,'cacatua-negra':1,'cacatua-negra-1':1,'mynk':1,'urieldepaz':1,'lzkphoto':1,'juanmarinoph':1,'jimena-mercedes':1,'jimena-pesado':1,'semilla-redes':2,'federico-andahazi':2,'maria-marta-crespo':2,'berco-estudio':2,'piku-yoga':2,'flor-del-valle':2,'lara-fichera':2,'andrea-guedella':2,'silvina':2,'alamesa':2,'bodegon-para':2,'tuncha':2,'abel-maldonado':2,'cheche-beraja':2,'koino':3,'animales-del-rock':3,'animales-del-rock-2':3,'alan-sutton':3};
@@ -774,7 +790,7 @@
       <div id="v3reu"></div><div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g transform="translate(-4 44)"><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></g></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
       ${(window.PRODUCTOS||{})[slug]?'<div id="v3prod"></div>':''}<div id="v3ctas"></div>
       ${DEST}${CRU}
-      ${GIRA}
+      ${GIRA}${PAISC}
       <div class="tit2"><h3>Métricas principales</h3><button data-ir="metricas">Ver todas</button></div>
       <div class="met">${MET.slice(0,3).map(m=>`<div class="card"><div class="ic">${ico[m.ic]}</div><div class="v ${m.k==='vta_costo_venta'?'ch':''}">${m.k==='ig_conv'?nf(val(m.k),1)+'%':m.k==='vta_costo_venta'?SIM.trim()+' '+nf(val(m.k),2):m.k==='vta_roas_pixel'?nf(val(m.k),1)+'x':nf(val(m.k),Number.isInteger(Number(val(m.k)))?0:1)}</div><div class="l">${Number(val(m.k))===1?m.l.replace(/^consultas$/,'consulta').replace(/^mensajes$/,'mensaje').replace(/^ventas$/,'venta').replace(/^seguidores$/,'seguidor'):m.l}</div><div class="d">${m.k==='ig_conv'?dPt(m.k):dK(m.k,m.k==='vta_costo_venta')}</div></div>`).join('')}</div>
       <div id="v3cj"></div>
