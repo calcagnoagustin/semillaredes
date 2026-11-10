@@ -2222,10 +2222,7 @@ function pintarResto(d,h){
   }
 
   const N=d.notas||[];
-  h+=`<h2>Tus notas</h2><p class="sub">Dejanos cualquier cosa que quieras que tengamos en cuenta: una idea, una duda, algo que haya pasado en estos días.</p>
-    <div class="notas"><textarea id="nota_txt" placeholder="Escribí acá…"></textarea><br><button id="nota_btn">Guardar nota</button><div id="nota_out"></div>
-    ${N.map(n=>`<div class="nota"><div class="quien ${n.autor==='semilla'?'semilla':''}">${n.autor==='semilla'?'Semilla Redes':'Vos'}</div><div class="txt">${n.texto}</div><div class="cuando">${new Date(n.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</div><button class="lap" data-ed="nota" data-id="${n.id}" title="Editar" aria-label="Editar"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button class="x" data-deln="${n.id}" title="Borrar nota">×</button></div>`).join('')}
-    </div>`;
+  /* 10/11: «Tus notas» sacada de todas las apps (pedido de Agus) */
 
   const RC=d.recomendaciones&&d.recomendaciones.recomendaciones;
   const hayInforme=(d.reportes||[]).some(r=>r.metricas&&r.metricas.informe);
@@ -2917,7 +2914,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261109a';
+var SR_VER='20261110a';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){

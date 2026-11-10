@@ -932,10 +932,6 @@
       <div class="tit2"><h2>Tus activos</h2><button id="v3anuevo">${AFORM?'Cerrar':'Agregar activo'}</button></div>
       <div class="card lista">${A.length?A.map(a=>EDon('activo',a.id)?`<div class="fila" style="grid-template-columns:1fr">${EDF([{v:a.titulo,ph:'Nombre'},{v:a.url||'',ph:'Link (https://…)'},{v:a.descripcion||'',ph:'Descripción (opcional)'}])}</div>`:`<div class="fila" style="grid-template-columns:1fr${a.id?' auto':' 18px'}">${a.url?`<a class="tx" style="color:${NAVY};text-decoration:none" href="${esc(a.url)}" target="_blank" rel="noopener"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">${esc(a.descripcion||'')}</span></a>`:`<span class="tx"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">En preparación</span></span>`}${a.id?IB('activo',a.id):`<span class="ch">${ico.ch}</span>`}</div>`).join(''):'<div class="vacio">Todavía no hay enlaces. Sumá tus links: tu web, tu Spotify, tu tienda, tu canal.</div>'}
         ${AFORM?`<div class="fform"><input id="v3at" placeholder="Nombre. Por ejemplo: Mi Spotify"><input class="u" id="v3au" placeholder="Link (https://…)"><input id="v3ad" placeholder="Descripción (opcional)"><button id="v3aadd">Guardar activo</button></div>`:''}</div>
-      <div class="tit2"><h2>Tus notas</h2></div>
-      <p class="bj" style="margin:0 0 10px;font-size:14.5px">Dejanos lo que quieras que tengamos en cuenta: una idea, una duda, algo que pasó en estos días.</p>
-      <div class="card notas3"><div class="nn"><textarea id="v3nt" rows="3" placeholder="Escribí acá…"></textarea><button id="v3nadd">Guardar nota</button></div>
-        ${NT.map(n=>`<div class="nt"><div class="cb"><b class="${n.autor==='semilla'?'sem':''}">${n.autor==='semilla'?'Semilla Redes':'Vos'}</b><small>${new Date(n.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</small>${n.autor==='semilla'?'':`<span class="sp"></span>${IB('nota',n.id)}`}</div>${EDon('nota',n.id)?EDF([{v:String(n.texto||'').replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g,''),area:1}]):`<p>${esc(String(n.texto||'').replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g,'')).replace(/\n/g,'<br>')}</p>`}</div>`).join('')}</div>
       <div id="v3web"></div><div id="v3pl"></div>`;
 
     // --- SemillaIA ---
@@ -1369,7 +1365,7 @@
     'drop del viernes':{d:'La idea de la semana para tu proyecto, para leer o escuchar.',i:'Cada viernes sale un drop nuevo: una idea para pensar tu proyecto artístico como un negocio digital. Te avisamos con una notificación, y en «Todos los drops» está el archivo completo.'},
     'tu próximo hito':{i:'La meta más cercana de las que definiste en Tu proyecto. La barra muestra cuánto te falta y se actualiza sola.'},
     'accesos rápidos':{d:'Atajos a lo que más vas a usar.',i:'Abrí el reporte, sumá una tarea, cargá una fecha o hablá con SemillaIA sin cambiar de pantalla.'},
-    'scr:proyecto':{i:'Acá se ordena tu proyecto: hacia dónde vas (hitos), con qué contás (activos y web) y qué querés que sepamos (notas).'},
+    'scr:proyecto':{i:'Acá se ordena tu proyecto: hacia dónde vas (hitos), y con qué contás (activos y web).'},
     'hitos':{d:'Las metas concretas hacia las que estás trabajando.',i:'Cada hito sigue una métrica real (seguidores, oyentes, ventas…) y se actualiza solo. Sumá uno con «Agregar hito».'},
     'gestioná tus tickets':{d:'Las entradas de tus shows, en el mismo lugar que el resto de tu proyecto.',i:'Muy pronto vas a poder vender y seguir las entradas de tus fechas desde la app: cuántas se vendieron, por qué canal y cuánto costó cada una.'},
     'tus lanzamientos':{d:'Tus singles, EPs y discos, cada uno con su landing para compartir.',i:'Pegá los links de tu lanzamiento (Spotify, YouTube, Bandcamp, Apple Music, Deezer…) y SemillaIA arma una landing con la portada, los colores del lanzamiento y todos los accesos. Compartila en tu bio, en historias y en tus anuncios.'},
