@@ -293,6 +293,24 @@
   #v3 .rev h3{margin:0 0 4px;font-size:16px;color:#24242C}
   #v3 .rev p{margin:0;font-size:14.5px;line-height:1.55;color:#55525F}
   #v3 .cjn{font-size:12.5px;color:#8A8698;margin:10px 2px 0;line-height:1.45}
+  #v3 .dwl{margin-top:14px;border-top:1px solid #EDE6D8;padding-top:12px}
+  #v3 .dwl .dpt{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B6878}
+  #v3 .dwl .dws{font-size:12.5px;color:#8A8577;margin:4px 0 8px}
+  #v3 .dwl .dwr{display:grid;grid-template-columns:minmax(0,1fr) 84px 86px;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid #F1EBDF}
+  #v3 .dwl .dwr span.dwn{font-weight:700;font-size:14px;color:#24242C}
+  #v3 .dwl input{font:inherit;font-size:15px;padding:8px 10px;border:1px solid #DDD3C2;border-radius:10px;background:#fff;color:#24242C;width:100%;box-sizing:border-box;min-height:40px;margin:0}
+  #v3 .dwl input.dwv{text-align:right}
+  #v3 .dwl .dwc{font-size:12.5px;color:#2F7A4F;font-weight:600;text-align:right;white-space:nowrap}
+  #v3 .dwl .dwb{display:flex;gap:10px;margin-top:12px}
+  #v3 .dwl .dwb button{flex:1;min-height:42px;border-radius:12px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+  #v3 .dwl .dwa{background:transparent;border:1.5px dashed #B9AE99;color:#4A4756}
+  #v3 .dwl .dwg{background:#1A2456;border:0;color:#F2EDE4}
+  #v3 .dwl .dwnota{font-size:13px;margin-top:8px}
+  #v3 .dwl .dwnota.bien{color:#2F7A4F} #v3 .dwl .dwnota.mal{color:#A23B3B}
+  #v3 .dwl .gcur{margin-top:12px;border-top:1px solid #EDE6D8;padding-top:10px}
+  #v3 .dwl .gcur summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600;color:#24242C}
+  #v3 .dwl .dwley{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:#4A4756;margin-top:4px}
+  #v3 .dwl .dwley i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
   #v3 .dpa{margin-top:14px;border-top:1px solid #EDE6D8;padding-top:12px}
   #v3 .dpa .dpt{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B6878;margin-bottom:6px}
   #v3 .dpa .dpr{display:grid;grid-template-columns:minmax(0,1.25fr) repeat(3,minmax(0,1fr));gap:6px;align-items:baseline;padding:8px 0;border-bottom:1px solid #F1EBDF;font-size:14px;color:#24242C}
@@ -708,6 +726,32 @@
     if(CONSULTAS.includes(slug)) MET.sort((x,y)=>(y.k==='msj_mensajes')-(x.k==='msj_mensajes'));
     // --- Campaña destacada (sub_campanas con tipo 'destacada'): arriba de todo en Hoy, con sus números acumulados ---
     const SIMG=SIM;   // 04/11 (MMC): cada campaña destacada con la moneda de su cuenta
+    // 10/11 (Spam): wishlists del período por país (se cargan desde Steamworks) + gráfica desplegable
+    const WLP=(M,UR0,fl)=>{ if(!UR0.desde) return ''; const per=UR0.desde+'/'+UR0.hasta, G=(um.stm_wl_paises||[]);
+      const noms=[...new Set([...(M.paises||[]).map(p=>p.nombre),...G.map(x=>x.nombre)])], val=n=>(G.find(x=>x.nombre===n)||{});
+      const fila=(n,fija)=>{ const v=val(n); return `<div class="dwr">${fija?`<span class="dwn">${esc(n)}</span>`:`<input class="dwn" placeholder="País" value="${esc(n||'')}" aria-label="País">`}<input class="dwv" type="number" min="0" inputmode="numeric" placeholder="0" value="${v.wishlists!=null?v.wishlists:''}" aria-label="Wishlists ${esc(n||'')}"><span class="dwc">${v.costo!=null?SIM+nf(v.costo)+' c/u':''}</span></div>`; };
+      const H=(d.reportes||[]).filter(r=>r.metricas&&r.metricas.stm_wishlist!=null).sort((a,b)=>a.desde<b.desde?-1:1).slice(-10);
+      const CP=[...new Set(H.flatMap(r=>(r.metricas.stm_wl_paises||[]).map(x=>x.nombre)))];
+      const COLS=['#2F7A4F','#C0603A','#7A5BA6','#B08A2E','#3A7CA5','#A23B5B'];
+      const SR=[{n:'Total',c:NAVY,v:H.map(r=>Number(r.metricas.stm_wishlist))}].concat(CP.map((n,i)=>({n,c:COLS[i%COLS.length],v:H.map(r=>{ const x=(r.metricas.stm_wl_paises||[]).find(z=>z.nombre===n); return x?Number(x.wishlists):null; })})));
+      let gr='';
+      if(H.length>=2){ const W=320,HH=170,PX=26,PT=22,PB=26, mx=Math.max(1,...SR.flatMap(q=>q.v.filter(x=>x!=null)))*1.12, X=i=>PX+i*(W-PX*2)/(H.length-1), Y=x=>PT+(1-x/mx)*(HH-PT-PB);
+        const lin=q=>{ const ok=q.v.map((x,i)=>[i,x]).filter(z=>z[1]!=null); if(!ok.length) return ''; return `${ok.length>1?`<path d="${ok.map((z,k)=>(k?'L':'M')+X(z[0]).toFixed(1)+' '+Y(z[1]).toFixed(1)).join(' ')}" fill="none" stroke="${q.c}" stroke-width="2.2" stroke-linejoin="round"/>`:''}${ok.map(z=>`<circle cx="${X(z[0]).toFixed(1)}" cy="${Y(z[1]).toFixed(1)}" r="3" fill="${q.c}"/><text x="${X(z[0]).toFixed(1)}" y="${(Y(z[1])-7).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" fill="${q.c}" paint-order="stroke" stroke="#FBF8F2" stroke-width="4" stroke-linejoin="round">${nf(z[1])}</text>`).join('')}`; };
+        gr=`<svg viewBox="0 0 ${W} ${HH}" class="gsvg">${SR.map(lin).join('')}${H.map((r,i)=>`<text x="${X(i).toFixed(1)}" y="${HH-8}" text-anchor="middle" font-size="9.5" fill="#8A8577">${fl(r.metricas.stm_periodo_hasta||r.hasta)}</text>`).join('')}</svg>
+          <div class="dwley">${SR.map(q=>`<span><i style="background:${q.c}"></i>${esc(q.n)}</span>`).join('')}</div><p class="gnota">Wishlists nuevas de cada período según Steam (abajo, la fecha de cierre). Cada país aparece desde que se carga.</p>`; }
+      return `<div class="dwl" data-per="${per}"><div class="dpt">Wishlists por país · del ${fl(UR0.desde)} al ${fl(UR0.hasta)}</div>
+        <p class="dws">Cargalas desde Steamworks (wishlists por región).</p>
+        <div class="dwrs">${noms.map(n=>fila(n,true)).join('')}</div>
+        <div class="dwb"><button type="button" class="dwa">+ Agregar país</button><button type="button" class="dwg">Guardar</button></div><div class="dwnota" role="status"></div>
+        ${gr?`<details class="gcur"><summary>Ver gráfica <span class="fl">▸</span></summary>${gr}</details>`:''}</div>`; };
+    if(!window.__wlIni){ window.__wlIni=1;
+      document.addEventListener('click',async e=>{ const a=e.target.closest('.dwa'), g=e.target.closest('.dwg'); if(!a&&!g) return; const B=e.target.closest('.dwl');
+        if(a){ const w=document.createElement('div'); w.className='dwr'; w.innerHTML='<input class="dwn" placeholder="País" aria-label="País"><input class="dwv" type="number" min="0" inputmode="numeric" placeholder="0" aria-label="Wishlists"><span class="dwc"></span>'; B.querySelector('.dwrs').appendChild(w); w.querySelector('input').focus(); return; }
+        const items=[...B.querySelectorAll('.dwr')].map(r=>{ const n=r.querySelector('.dwn'); return {pais:(n.tagName==='INPUT'?n.value:n.textContent).trim(),wishlists:r.querySelector('.dwv').value}; }).filter(x=>x.pais&&x.wishlists!=='');
+        const nota=B.querySelector('.dwnota'); g.disabled=true; g.textContent='Guardando…';
+        let r=null; try{ r=await fetch(`${API_WEB}/wishlists-pais`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,periodo:B.dataset.per,items})}).then(x=>x.json()); }catch(err){}
+        if(r&&r.ok){ nota.textContent='Guardado.'; nota.className='dwnota bien'; if(typeof traerD==='function'&&typeof pintar==='function') traerD().then(dd=>pintar(dd)); else location.reload(); }
+        else { g.disabled=false; g.textContent='Guardar'; nota.textContent=(r&&r.error)||'No se pudo guardar. Probá de nuevo.'; nota.className='dwnota mal'; } }); }
     const DEST_OCULTAS={'spam-seguidores':1};   // 10/11 (Spam): desde ahora solo Steam
     const DEST=(d.campanas||[]).filter(k=>(k.metricas||{}).tipo==='destacada'&&!DEST_OCULTAS[k.codigo]).map(k=>{ const M=k.metricas||{}, on=M.estado==='activa', SIM=M.moneda?(M.moneda==='USD'?'USD ':'$ '):SIMG;
       const fl=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
@@ -744,6 +788,7 @@
         <h3>${esc(k.nombre)}</h3><div class="ds">${M.etiqueta?esc(M.etiqueta)+' · ':''}${M.show?'Show el '+fl(M.show)+' · ':''}${PER&&dh?'Del '+fl(UR0.desde)+' al '+fl(UR0.hasta):(M.desde?'Desde el '+fl(M.desde):'')+(M.hasta?' hasta el '+fl(M.hasta):'')}${M.diaria?' · '+SIM+nf(M.diaria)+' por día hoy':''}</div>
         ${dh}${it.length?`<div class="dg">${it.map(x=>`<div><b>${x[0]}</b><small>${esc(x[1])}</small></div>`).join('')}</div>`:'<div class="ds" style="margin-top:12px">Los números aparecen en la próxima actualización.</div>'}${esc2}${gra}
         ${Array.isArray(M.paises)&&M.paises.length?`<div class="dpa"><div class="dpt">Por país · desde el ${fl(M.paises_desde)}</div><div class="dpr dph"><span></span><span>Invertido</span><span>Visitas a Steam</span><span>Por visita</span></div>${M.paises.map(p=>`<div class="dpr"><span class="dpn">${esc(p.nombre)}</span>${Number(p.inversion)>0?`<span>${SIM}${nf(p.inversion)}</span><span>${nf(p.visitas)}</span><span>${p.costo_visita!=null?SIM+nf(p.costo_visita):'—'}</span>`:'<span class="dpe">todavía sin circular</span>'}</div>`).join('')}</div>`:''}
+        ${PER==='stm'?WLP(M,UR0,fl):''}
         <div class="dp">${PER&&dh?'Del '+fl(UR0.desde)+' al '+fl(UR0.hasta)+(PER==='stm'?' · wishlists y visitas totales según Steam':' · seguidores y visitas según Instagram'):(M.show||M.corte)?'Acumulado desde el '+fl(M.desde):'Acumulado de toda la campaña'}${M.ventas!=null?' · según el píxel de la tienda':''}${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; }).join('');
     // --- 04/11 (MMC): cruce del costo por seguidor entre dos campañas de cuentas distintas, con gráfica desplegable ---
     const CRU=(d.campanas||[]).filter(k=>(k.metricas||{}).tipo==='cruce').map(k=>{ const M=k.metricas||{}, C2=M.campanas||[], D=M.dias||[], R0=M.referencia;
