@@ -650,7 +650,11 @@
     const vIng=FACT||Nm('vta_ingreso')||Nm('vta_ingreso_pixel'), vRoas=(FACT&&Nm('vta_inversion'))?FACT/Nm('vta_inversion'):Nm('vta_ingreso')?Nm('vta_roas'):Nm('vta_roas_pixel');
     const vGan=FACT&&Nm('vta_inversion')?Math.round(FACT*0.75-Nm('vta_inversion')):Nm('vta_ganancia');
     const CONSULTAS=['jimena-mercedes','jimena-pesado'];   // 05/11: vende cursos, lo que importa son las consultas (seguidores van abajo)
-    if(CONSULTAS.includes(slug)&&Nm('msj_mensajes')>0)
+    const STEAM=Nm('stm_wishlist')>0;   // 10/11 (Spam): el progreso del período son las wishlists de Steam
+    if(STEAM)
+      DZ={e:'Resultado destacado',v:'+'+nf(um.stm_wishlist),u:Nm('stm_wishlist')===1?'wishlist':'wishlists',k:'stm_wishlist',ic:'sube'},
+      hero=`<div class="e">Tu progreso del período</div><div class="p">+${nf(um.stm_wishlist)}</div><div class="x">${Nm('stm_wishlist')===1?'persona sumó':'personas sumaron'} el juego a su wishlist de Steam${Nm('stm_costo_wishlist')?`, a ${SIM}${nf(um.stm_costo_wishlist)} cada una`:''}.${um.stm_wishlist_bajas===0?' Sin bajas.':''}</div>`;
+    else if(CONSULTAS.includes(slug)&&Nm('msj_mensajes')>0)
       DZ={e:'Resultado destacado',v:nf(um.msj_mensajes),u:Nm('msj_mensajes')===1?'consulta':'consultas',k:'msj_mensajes',ic:'msj'},
       hero=`<div class="e">Consultas del período</div><div class="p">${nf(um.msj_mensajes)}</div><div class="x">${Nm('msj_mensajes')===1?'persona te escribió':'personas te escribieron'}${um.msj_nombre?' por <b>'+esc(um.msj_nombre)+'</b>':''}${Nm('msj_costo_mensaje')?`, a ${SIM}${nf(um.msj_costo_mensaje)} cada una`:''}.${Nm('ig_followers_nuevos')>0?` Además sumaste ${nf(um.ig_followers_nuevos)} seguidores.`:''}</div>`;
     else if(Nm('vta_ventas')>0&&vIng>0)
@@ -674,7 +678,9 @@
       hero=`<div class="e">Tu progreso del período</div><div class="p">${nf(um.msj_mensajes)}</div><div class="x">consultas por mensaje en el período.</div>`;
     else hero=`<div class="e">Tu comunidad</div><div class="p">${nf(val('ig_followers_total'))}</div><div class="x">seguidores en Instagram.</div>`;
     const TODOS=(d.reportes||[]).filter(r=>r.metricas&&r.metricas.ig_followers_total!=null).sort((a,b)=>a.hasta<b.hasta?-1:1);
-    if(TODOS.length>1){ const a0=Number(TODOS[0].metricas.ig_followers_total), a1=Number(TODOS[TODOS.length-1].metricas.ig_followers_total), dd=new Date(TODOS[0].desde||TODOS[0].hasta);
+    if(STEAM){ const RW=(d.reportes||[]).filter(r=>r.metricas&&r.metricas.stm_wishlist!=null).sort((a,b)=>a.desde<b.desde?-1:1);
+      if(RW.length>1){ const tw=RW.reduce((a,r)=>a+Number(r.metricas.stm_wishlist||0),0); hero+=`<div class="desde">Desde el ${fd(RW[0].stm_periodo_desde||RW[0].metricas.stm_periodo_desde||RW[0].desde)} con Semilla: <b>+${nf(tw)} wishlists</b> en Steam.</div>`; } }
+    else if(TODOS.length>1){ const a0=Number(TODOS[0].metricas.ig_followers_total), a1=Number(TODOS[TODOS.length-1].metricas.ig_followers_total), dd=new Date(TODOS[0].desde||TODOS[0].hasta);
       if(a1>a0) hero+=`<div class="desde">Desde ${MESL[dd.getUTCMonth()]}${dd.getUTCFullYear()!==new Date().getFullYear()?' de '+dd.getUTCFullYear():''} con Semilla: <b>+${nf(a1-a0)} seguidores</b> (de ${nf(a0)} a ${nf(a1)}).</div>`; }
     const RG=um&&R.length?`<div class="rg">Del ${fd(R[R.length-1].desde)} al ${fd(R[R.length-1].hasta)}</div>`:'';
     hero=hero.replace(/(<div class="e">[^<]*período<\/div>)/,'$1'+RG);
