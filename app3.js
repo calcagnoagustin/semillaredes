@@ -293,6 +293,15 @@
   #v3 .rev h3{margin:0 0 4px;font-size:16px;color:#24242C}
   #v3 .rev p{margin:0;font-size:14.5px;line-height:1.55;color:#55525F}
   #v3 .cjn{font-size:12.5px;color:#8A8698;margin:10px 2px 0;line-height:1.45}
+  #v3 .dpa{margin-top:14px;border-top:1px solid #EDE6D8;padding-top:12px}
+  #v3 .dpa .dpt{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B6878;margin-bottom:6px}
+  #v3 .dpa .dpr{display:grid;grid-template-columns:minmax(0,1.25fr) repeat(3,minmax(0,1fr));gap:6px;align-items:baseline;padding:8px 0;border-bottom:1px solid #F1EBDF;font-size:14px;color:#24242C}
+  #v3 .dpa .dpr:last-child{border-bottom:0}
+  #v3 .dpa .dpr span:not(:first-child){text-align:right;font-weight:600;white-space:nowrap}
+  #v3 .dpa .dph{font-size:11px;color:#8A8577;padding:2px 0 4px}
+  #v3 .dpa .dph span:not(:first-child){font-weight:400;white-space:normal;line-height:1.2}
+  #v3 .dpa .dpn{font-weight:700}
+  #v3 .dpa .dpe{grid-column:2/-1;font-weight:400!important;color:#8A8577;font-size:13px}
   #v3 .pais{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   #v3 .pais .card{padding:14px 12px 6px}
   #v3 .pais .pn{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B6878}
@@ -693,7 +702,8 @@
     if(CONSULTAS.includes(slug)) MET.sort((x,y)=>(y.k==='msj_mensajes')-(x.k==='msj_mensajes'));
     // --- Campaña destacada (sub_campanas con tipo 'destacada'): arriba de todo en Hoy, con sus números acumulados ---
     const SIMG=SIM;   // 04/11 (MMC): cada campaña destacada con la moneda de su cuenta
-    const DEST=(d.campanas||[]).filter(k=>(k.metricas||{}).tipo==='destacada').map(k=>{ const M=k.metricas||{}, on=M.estado==='activa', SIM=M.moneda?(M.moneda==='USD'?'USD ':'$ '):SIMG;
+    const DEST_OCULTAS={'spam-seguidores':1};   // 10/11 (Spam): desde ahora solo Steam
+    const DEST=(d.campanas||[]).filter(k=>(k.metricas||{}).tipo==='destacada'&&!DEST_OCULTAS[k.codigo]).map(k=>{ const M=k.metricas||{}, on=M.estado==='activa', SIM=M.moneda?(M.moneda==='USD'?'USD ':'$ '):SIMG;
       const fl=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
       const PER=({'spam-steam':'stm','spam-seguidores':'ig'})[k.codigo], UR0=R[R.length-1]||{};   // 10/11 (Spam): en Inicio, los números del período del reporte
       const it=[]; let dh='', esc2='', gra=''; if(M.ventas!=null){ // 30/10 (Alan): ventas y costo por venta destacados, escalera de objetivos y gráfica desplegable
@@ -725,8 +735,9 @@
       else { if(M.visitas!=null) it.push([nf(M.visitas),M.resultado||'resultados']); if(M.alcance!=null) it.push([nf(M.alcance),'personas alcanzadas']);
       if(M.inversion!=null) it.push([SIM+nf(M.inversion),'invertidos']); if(M.costo_visita!=null) it.push([SIM+nf(M.costo_visita,2),'por '+String(M.resultado||'resultado').replace(/s(\s|$)/,'$1').replace(/es al /,' al ')]); } }
       return `<div class="dest"><div class="de">Campaña destacada<span class="${on?'on':''}"><i></i>${on?'Activa':M.estado==='sin_circular'?'Sin circular':'Terminada'}</span></div>
-        <h3>${esc(k.nombre)}</h3><div class="ds">${M.etiqueta?esc(M.etiqueta)+' · ':''}${M.show?'Show el '+fl(M.show)+' · ':''}${M.desde?'Desde el '+fl(M.desde):''}${M.hasta?' hasta el '+fl(M.hasta):''}${M.diaria?' · '+SIM+nf(M.diaria)+' por día':''}</div>
+        <h3>${esc(k.nombre)}</h3><div class="ds">${M.etiqueta?esc(M.etiqueta)+' · ':''}${M.show?'Show el '+fl(M.show)+' · ':''}${PER&&dh?'Del '+fl(UR0.desde)+' al '+fl(UR0.hasta):(M.desde?'Desde el '+fl(M.desde):'')+(M.hasta?' hasta el '+fl(M.hasta):'')}${M.diaria?' · '+SIM+nf(M.diaria)+' por día hoy':''}</div>
         ${dh}${it.length?`<div class="dg">${it.map(x=>`<div><b>${x[0]}</b><small>${esc(x[1])}</small></div>`).join('')}</div>`:'<div class="ds" style="margin-top:12px">Los números aparecen en la próxima actualización.</div>'}${esc2}${gra}
+        ${Array.isArray(M.paises)&&M.paises.length?`<div class="dpa"><div class="dpt">Por país · desde el ${fl(M.paises_desde)}</div><div class="dpr dph"><span></span><span>Invertido</span><span>Visitas a Steam</span><span>Por visita</span></div>${M.paises.map(p=>`<div class="dpr"><span class="dpn">${esc(p.nombre)}</span>${Number(p.inversion)>0?`<span>${SIM}${nf(p.inversion)}</span><span>${nf(p.visitas)}</span><span>${p.costo_visita!=null?SIM+nf(p.costo_visita):'—'}</span>`:'<span class="dpe">todavía sin circular</span>'}</div>`).join('')}</div>`:''}
         <div class="dp">${PER&&dh?'Del '+fl(UR0.desde)+' al '+fl(UR0.hasta)+(PER==='stm'?' · wishlists y visitas totales según Steam':' · seguidores y visitas según Instagram'):(M.show||M.corte)?'Acumulado desde el '+fl(M.desde):'Acumulado de toda la campaña'}${M.ventas!=null?' · según el píxel de la tienda':''}${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; }).join('');
     // --- 04/11 (MMC): cruce del costo por seguidor entre dos campañas de cuentas distintas, con gráfica desplegable ---
     const CRU=(d.campanas||[]).filter(k=>(k.metricas||{}).tipo==='cruce').map(k=>{ const M=k.metricas||{}, C2=M.campanas||[], D=M.dias||[], R0=M.referencia;
