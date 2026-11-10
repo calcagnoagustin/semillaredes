@@ -3,6 +3,14 @@
 (function(){
   if(window.V3) return;
   const NAVY='#1A2456', VINO='#7A1F3A', OLIVA='#87863A';
+  /* PERFILES (10/11/2026): cada proyecto ve las funciones de su perfil. musico · artista · formador (profesional/formador) · negocio.
+     Sin perfil = ve todo (Semilla Redes, pruebas). Una sola línea por proyecto: se puede tener más de un perfil. */
+  const PERFILES={"koino":["musico"],"lu-glass":["musico"],"hernan-onirico":["musico"],"hernan-onirico-2":["musico"],"sin-fronteras-duo":["musico"],"lara-fichera":["musico"],"flor-scott":["musico"],"marcos-cifuentes":["musico"],"felipe-gonzalez":["musico"],"alan-sutton":["musico"],"los-soplafortune":["musico"],"eupatridas":["musico"],"eupatridas-1":["musico"],"emma-avila":["musico"],"juabru":["musico"],"pancha":["musico"],"cerrodeoro":["musico"],"urieldepaz":["musico"],"abel-maldonado":["musico"],"flor-del-valle":["musico","formador"],
+    "betsy-grinblat":["artista"],"silvina":["artista"],"maria-marta-crespo":["artista"],"andrea-guedella":["artista"],"cacatua-negra":["artista"],"cacatua-negra-1":["artista"],"juanmarinoph":["artista"],"lzkphoto":["artista"],"mavela":["artista"],"marcia-karina-centurion":["artista"],"jimena-mercedes":["artista"],"jimena-pesado":["artista"],
+    "yamila-beraja":["formador"],"piku-yoga":["formador"],"cheche-beraja":["formador"],"berco-estudio":["formador"],
+    "alamesa":["negocio"],"bodegon-para":["negocio"],"animales-del-rock":["negocio"],"animales-del-rock-2":["negocio"],"federico-andahazi":["negocio"],"tuncha":["negocio"],"spam-studio":["negocio"],"audova":["negocio"]};
+  const PERF_FUN={playlists:["musico"],lanzamientos:["musico"],tickets:["musico"],drop:["musico","artista","formador"]};
+  const pOk=f=>{ let c=''; try{ c=new URLSearchParams(location.search).get('c')||''; }catch(e){} const p=PERFILES[c]; return !p||p.some(x=>(PERF_FUN[f]||[]).includes(x)); };
   const css=document.createElement('style');
   css.textContent=`
   body.v3{background:#F2EDE4}
@@ -927,8 +935,8 @@
       <div class="tit2"><h2>Hitos</h2>${HDISP.length?`<button id="v3hnuevo">${HFORM?'Cerrar':'Agregar hito'}</button>`:''}</div>
       <div class="card">${HT.length?HT.map(x=>`<div class="hito" style="margin:0;border-top:1px solid #EDE6D8;grid-template-columns:38px 1fr;position:relative"><div>${ico.sol}</div><div style="${x.h.id&&!x.h.virtual?'padding-right:70px':''}"><div class="v3t">${esc(HTIT(x.h))}</div><div class="tx">${x.v!=null&&hAv(x)>=1?'¡Logrado!':'En camino'}</div></div><div class="bar"><div class="b"><i style="width:${x.v==null?0:Math.min(100,hAv(x)*100).toFixed(1)}%"></i></div><span>${nf(x.v)} / ${nf(x.h.objetivo)}</span></div>${x.h.id&&!x.h.virtual?`<span class="hacc">${IB('hito',x.h.id)}</span>`:''}${EDon('hito',x.h.id)?`<div style="grid-column:1/-1">${EDF([{v:x.h.titulo||'',ph:'Nombre (opcional)'},{v:x.h.objetivo,ph:'Meta (número)',num:1}])}</div>`:''}</div>`).join(''):'<div class="vacio">Todavía no hay hitos. Sumá una meta: por ejemplo, a cuántos seguidores querés llegar.</div>'}
         ${HFORM?`<div class="fform hform"><select id="v3hm">${HDISP.map(k=>`<option value="${k}">${HMET[k][0]}</option>`).join('')}</select><input id="v3ho" inputmode="decimal" placeholder="Meta (número)"><input id="v3ht" placeholder="Nombre (opcional)"><button id="v3hadd">Guardar hito</button></div>`:''}</div>
-      <div class="tit2"><h2>Gestioná tus tickets</h2></div>
-      <div class="card tkpr"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 7.5A1.5 1.5 0 0 1 5.5 6h13A1.5 1.5 0 0 1 20 7.5V10a2 2 0 0 0 0 4v2.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 16.5V14a2 2 0 0 0 0-4z"/><path d="M14 6.5v11" stroke-dasharray="2 2"/></svg></span><span class="tx"><b>Vendé y seguí tus entradas desde la app</b><small>Muy pronto</small></span></div>
+      ${pOk('tickets')?`<div class="tit2"><h2>Gestioná tus tickets</h2></div>
+      <div class="card tkpr"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 7.5A1.5 1.5 0 0 1 5.5 6h13A1.5 1.5 0 0 1 20 7.5V10a2 2 0 0 0 0 4v2.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 16.5V14a2 2 0 0 0 0-4z"/><path d="M14 6.5v11" stroke-dasharray="2 2"/></svg></span><span class="tx"><b>Vendé y seguí tus entradas desde la app</b><small>Muy pronto</small></span></div>`:''}
       <div class="tit2"><h2>Tus activos</h2><button id="v3anuevo">${AFORM?'Cerrar':'Agregar activo'}</button></div>
       <div class="card lista">${A.length?A.map(a=>EDon('activo',a.id)?`<div class="fila" style="grid-template-columns:1fr">${EDF([{v:a.titulo,ph:'Nombre'},{v:a.url||'',ph:'Link (https://…)'},{v:a.descripcion||'',ph:'Descripción (opcional)'}])}</div>`:`<div class="fila" style="grid-template-columns:1fr${a.id?' auto':' 18px'}">${a.url?`<a class="tx" style="color:${NAVY};text-decoration:none" href="${esc(a.url)}" target="_blank" rel="noopener"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">${esc(a.descripcion||'')}</span></a>`:`<span class="tx"><b>${esc(a.titulo)}</b><br><span style="color:#8A8577;font-size:13.5px">En preparación</span></span>`}${a.id?IB('activo',a.id):`<span class="ch">${ico.ch}</span>`}</div>`).join(''):'<div class="vacio">Todavía no hay enlaces. Sumá tus links: tu web, tu Spotify, tu tienda, tu canal.</div>'}
         ${AFORM?`<div class="fform"><input id="v3at" placeholder="Nombre. Por ejemplo: Mi Spotify"><input class="u" id="v3au" placeholder="Link (https://…)"><input id="v3ad" placeholder="Descripción (opcional)"><button id="v3aadd">Guardar activo</button></div>`:''}</div>
@@ -1026,7 +1034,7 @@
       const WI=window.__V3WEBINFO; if(WI&&WI.puede_crear&&!lista.some(w=>/semillaia\.com\//.test(w.url||''))){ web.insertAdjacentHTML('beforeend','<div id="v3webcl" style="margin-top:14px"></div>'); crearLanding(web.querySelector('#v3webcl')); } }; ponerWeb();
     /* LOS DROPS EN LA APP (23/10/2026): el último drop del newsletter, sale los viernes (drops_app.py publica drops/ultimos.json) */
     const dropEl=raiz.querySelector('#v3drop');
-    if(dropEl&&vOk('2.1')) dropsCargar().then(L=>{ const d=L&&L[0]; if(!d) return;
+    if(dropEl&&vOk('2.1')&&pOk('drop')) dropsCargar().then(L=>{ const d=L&&L[0]; if(!d) return;
       const flecha='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
       dropEl.innerHTML='<div class="card dcard"><div class="dhd"><h3>Drop del viernes</h3><span class="dnot"><span class="bl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a6 6 0 0 0-6 6v4.2L4.4 16a.8.8 0 0 0 .7 1.2h13.8a.8.8 0 0 0 .7-1.2L18 13.2V9a6 6 0 0 0-6-6zm-2.2 15.6a2.3 2.3 0 0 0 4.4 0z"/></svg></span><span><b>Notificaciones activadas</b><small>Todos los viernes</small></span></span></div>'
         +'<a class="din" href="'+esc(d.url)+'"><div class="dtx"><p class="dk">Drop #'+d.n+(d.categoria?' · '+esc(d.categoria):'')+'</p><p class="dt">'+esc(d.titulo)+'</p>'
@@ -1036,7 +1044,7 @@
       dropEl.querySelector('.dtodos').addEventListener('click',ev=>{ ev.preventDefault(); window.SRE&&window.SRE('drops_todos',{}); irDrops(); }); }).catch(()=>{});
     /* TUS LANZAMIENTOS (27/10/2026): pegás los links del lanzamiento y SemillaIA arma una landing con la portada y todos los accesos */
     const lzEl=raiz.querySelector('#v3lz');
-    if(lzEl){ const API='https://vm.semillaredes.com/web/'; let LZ=[], LZF=null, LZE=null, LZB=false, LZM=null;
+    if(lzEl&&pOk('lanzamientos')){ const API='https://vm.semillaredes.com/web/'; let LZ=[], LZF=null, LZE=null, LZB=false, LZM=null;
       const PL=[['spotify','Spotify',/(open|play)\.spotify\.com|spotify\.link/i],['youtube_music','YouTube Music',/music\.youtube\.com/i],['youtube','YouTube',/youtube\.com|youtu\.be/i],['apple','Apple Music',/music\.apple\.com|itunes\.apple\.com/i],['deezer','Deezer',/deezer\./i],['tidal','Tidal',/tidal\.com/i],['amazon','Amazon Music',/music\.amazon\.|amazon\.[a-z.]+\/music/i],['soundcloud','SoundCloud',/soundcloud\.com/i],['bandcamp','Bandcamp',/bandcamp\.com/i],['instagram','Instagram',/instagram\.com/i],['tiktok','TikTok',/tiktok\.com/i]];
       const plat=u=>{ const x=PL.find(p=>p[2].test(u)); return x?x[1]:'Web'; };
       const urls=t=>[...new Set(String(t||'').split(/[\s,]+/).map(x=>x.trim()).filter(x=>/^https?:\/\//.test(x)))];
@@ -1133,7 +1141,7 @@
         fetch(API+'lanzamientos?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(x=>x.ok?x.json():null).then(j=>{ LZS=(j&&j.lanzamientos)||[]; if(FLF) return; pintarFl(); }).catch(()=>{}); }).catch(()=>{}); }
     /* BUSCADOR DE PLAYLISTS (23/10/2026): la misma IA de curadores.html, con el Spotify y el Instagram que ya conectó */
     const plEl=raiz.querySelector('#v3pl');
-    if(plEl&&vOk('2.1')&&!PL_NO.includes(slug)){ const PK='sr_pl_'+slug, lsg=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}, lss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+    if(plEl&&vOk('2.1')&&!PL_NO.includes(slug)&&pOk('playlists')){ const PK='sr_pl_'+slug, lsg=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}, lss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
       const miMail=()=>{ try{ for(const k of Object.keys(localStorage)) if(/^sb-.*-auth-token$/.test(k)){ const u=(JSON.parse(localStorage.getItem(k))||{}).user; if(u&&u.email) return u.email; } }catch(e){} return 'app+'+slug+'@semillaredes.com'; };
       let CXD=null;
       const datos=async()=>{ if(CXD) return CXD; try{ const r=await fetch('https://fdrxsjphlvvwwknnrjtx.supabase.co/rest/v1/rpc/con_get',{method:'POST',headers:{apikey:'sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17','Content-Type':'application/json'},body:JSON.stringify({p_slug:slug,p_k:tok})}).then(x=>x.json()); const c=(r&&r.conexiones)||{};
