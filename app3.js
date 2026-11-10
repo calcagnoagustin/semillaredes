@@ -695,6 +695,7 @@
     const SIMG=SIM;   // 04/11 (MMC): cada campaña destacada con la moneda de su cuenta
     const DEST=(d.campanas||[]).filter(k=>(k.metricas||{}).tipo==='destacada').map(k=>{ const M=k.metricas||{}, on=M.estado==='activa', SIM=M.moneda?(M.moneda==='USD'?'USD ':'$ '):SIMG;
       const fl=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
+      const PER=({'spam-steam':'stm','spam-seguidores':'ig'})[k.codigo], UR0=R[R.length-1]||{};   // 10/11 (Spam): en Inicio, los números del período del reporte
       const it=[]; let dh='', esc2='', gra=''; if(M.ventas!=null){ // 30/10 (Alan): ventas y costo por venta destacados, escalera de objetivos y gráfica desplegable
         dh=`<div class="dh"><div><b>${nf(M.ventas)}</b><small>${M.ventas===1?'venta':'ventas'}</small></div><div><b>${M.costo_venta!=null?(SIM.trim()?`<em>${SIM.trim()}</em>`:'')+nf(M.costo_venta,2):'—'}</b><small>costo por venta</small></div></div>`;
         it.push([M.ingreso?SIM+nf(M.ingreso,2):'—','facturados']); it.push([M.roas!=null?nf(M.roas,2)+'x':'—','retorno (ROAS)']); it.push([SIM+nf(M.inversion,2),'invertidos']); it.push([nf(M.carritos||0),'carritos']);
@@ -713,12 +714,20 @@
         dh=`<div class="dh"><div><b>${nf(M.wishlist)}</b><small>${M.wishlist===1?'se sumó a la wishlist':'se sumaron a la wishlist'}</small></div><div><b>${M.costo_wishlist!=null?(SIM.trim()?`<em>${SIM.trim()}</em>`:'')+nf(M.costo_wishlist,0):'—'}</b><small>costo por wishlist</small></div></div>${M.wishlist_desde?`<div class="ds" style="margin-top:6px">Del ${fl(M.wishlist_desde)} al ${fl(M.wishlist_hasta)}, según Steam${M.wishlist_bajas?' · '+nf(M.wishlist_bajas)+(M.wishlist_bajas===1?' baja':' bajas'):''}</div>`:''}`; }
       if(M.seg_status&&um.ig_followers_nuevos!=null){ const UR=R[R.length-1]||{}; // 05/11 (Spam): seguidores nuevos (BM) y costo por seguidor del último status
         dh=`<div class="dh"><div><b>${nf(um.ig_followers_nuevos)}</b><small>${Number(um.ig_followers_nuevos)===1?'seguidor nuevo':'seguidores nuevos'}</small></div><div><b>${um.ig_costo_follower!=null?(SIM.trim()?`<em>${SIM.trim()}</em>`:'')+nf(um.ig_costo_follower,0):'—'}</b><small>costo por seguidor</small></div></div><div class="ds" style="margin-top:6px">Del ${fl(UR.desde)} al ${fl(UR.hasta)}, según Instagram</div>`; }
-      if(M.visitas!=null) it.push([nf(M.visitas),M.resultado||'resultados']); if(M.alcance!=null) it.push([nf(M.alcance),'personas alcanzadas']);
-      if(M.inversion!=null) it.push([SIM+nf(M.inversion),'invertidos']); if(M.costo_visita!=null) it.push([SIM+nf(M.costo_visita,2),'por '+String(M.resultado||'resultado').replace(/s(\s|$)/,'$1').replace(/es al /,' al ')]); }
+      if(PER==='stm'&&um.stm_inversion!=null){
+        dh=`<div class="dh"><div><b>${nf(um.stm_wishlist)}</b><small>${Number(um.stm_wishlist)===1?'se sumó a la wishlist':'se sumaron a la wishlist'}</small></div><div><b>${um.stm_costo_wishlist!=null?(SIM.trim()?`<em>${SIM.trim()}</em>`:'')+nf(um.stm_costo_wishlist,0):'—'}</b><small>costo por wishlist</small></div></div>`;
+        if(um.stm_visitas!=null) it.push([nf(um.stm_visitas),'visitas a Steam desde la campaña']); if(um.stm_visitas_steam!=null) it.push([nf(um.stm_visitas_steam),'visitas totales a la página de Steam']);
+        it.push([SIM+nf(um.stm_inversion),'invertidos']); if(um.stm_costo_visita!=null) it.push([SIM+nf(um.stm_costo_visita,2),'por visita a Steam']); }
+      else if(PER==='ig'&&um.ig_followers_nuevos!=null){
+        dh=`<div class="dh"><div><b>${nf(um.ig_followers_nuevos)}</b><small>${Number(um.ig_followers_nuevos)===1?'seguidor nuevo':'seguidores nuevos'}</small></div><div><b>${um.ig_costo_follower!=null?(SIM.trim()?`<em>${SIM.trim()}</em>`:'')+nf(um.ig_costo_follower,0):'—'}</b><small>costo por seguidor</small></div></div>`;
+        if(um.ig_visitas!=null) it.push([nf(um.ig_visitas),'visitas al perfil']); if(um.ig_visitas) it.push([nf(um.ig_followers_nuevos*100/um.ig_visitas,1)+'%','de las visitas siguieron']);
+        if(um.ig_inversion!=null) it.push([SIM+nf(um.ig_inversion),'invertidos']); if(um.ig_followers_total!=null) it.push([nf(um.ig_followers_total),'seguidores en total']); }
+      else { if(M.visitas!=null) it.push([nf(M.visitas),M.resultado||'resultados']); if(M.alcance!=null) it.push([nf(M.alcance),'personas alcanzadas']);
+      if(M.inversion!=null) it.push([SIM+nf(M.inversion),'invertidos']); if(M.costo_visita!=null) it.push([SIM+nf(M.costo_visita,2),'por '+String(M.resultado||'resultado').replace(/s(\s|$)/,'$1').replace(/es al /,' al ')]); } }
       return `<div class="dest"><div class="de">Campaña destacada<span class="${on?'on':''}"><i></i>${on?'Activa':M.estado==='sin_circular'?'Sin circular':'Terminada'}</span></div>
         <h3>${esc(k.nombre)}</h3><div class="ds">${M.etiqueta?esc(M.etiqueta)+' · ':''}${M.show?'Show el '+fl(M.show)+' · ':''}${M.desde?'Desde el '+fl(M.desde):''}${M.hasta?' hasta el '+fl(M.hasta):''}${M.diaria?' · '+SIM+nf(M.diaria)+' por día':''}</div>
         ${dh}${it.length?`<div class="dg">${it.map(x=>`<div><b>${x[0]}</b><small>${esc(x[1])}</small></div>`).join('')}</div>`:'<div class="ds" style="margin-top:12px">Los números aparecen en la próxima actualización.</div>'}${esc2}${gra}
-        <div class="dp">${(M.show||M.corte)?'Acumulado desde el '+fl(M.desde):'Acumulado de toda la campaña'}${M.ventas!=null?' · según el píxel de la tienda':''}${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; }).join('');
+        <div class="dp">${PER&&dh?'Del '+fl(UR0.desde)+' al '+fl(UR0.hasta)+(PER==='stm'?' · wishlists y visitas totales según Steam':' · seguidores y visitas según Instagram'):(M.show||M.corte)?'Acumulado desde el '+fl(M.desde):'Acumulado de toda la campaña'}${M.ventas!=null?' · según el píxel de la tienda':''}${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; }).join('');
     // --- 04/11 (MMC): cruce del costo por seguidor entre dos campañas de cuentas distintas, con gráfica desplegable ---
     const CRU=(d.campanas||[]).filter(k=>(k.metricas||{}).tipo==='cruce').map(k=>{ const M=k.metricas||{}, C2=M.campanas||[], D=M.dias||[], R0=M.referencia;
       const fl=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'', COL={nueva:'#2F7A4F',vieja:VINO}, u=v=>v==null?'—':'USD '+nf(v,2);
