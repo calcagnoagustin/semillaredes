@@ -633,7 +633,8 @@
     R.forEach(r=>{ const m=r.metricas||{}; if(m.ig_conv==null&&Number(m.ig_visitas)>0&&m.ig_followers_nuevos!=null) m.ig_conv=Math.round(Number(m.ig_followers_nuevos)*1000/Number(m.ig_visitas))/10; });
     R.forEach(r=>{ const m=r.metricas||{}; if(m.msj_ingreso!=null&&m.msj_inversion!=null&&m.msj_ganancia==null) m.msj_ganancia=Math.round((Number(m.msj_ingreso)-Number(m.msj_inversion))*100)/100; });
     const MANUAL={stm_wishlist:1,stm_costo_wishlist:1,stm_inversion:1,stm_clics:1,stm_visitas:1,vta_visitas:1,vta_clics:1,vta_costo_visita:1,ig_conv:1,msj_mensajes:1,msj_inversion:1,msj_costo_mensaje:1,tk_tickets:1,tk_roas:1,tk_inversion:1,tk_costo_ticket:1,vta_ventas:1,vta_inversion:1,vta_costo_venta:1,vta_ingreso_pixel:1,vta_roas_pixel:1,frm_visitas:1,spad_inversion:1,spad_visitas:1,spad_costo_visita:1,spad_alcance:1,spad_clics:1,ytad_inversion:1,ytad_visitas:1,ytad_costo_visita:1,ytad_alcance:1,ytad_clics:1,frm_mensajes:1,frm_inversion:1,frm_costo_visita:1,   // del período: solo si están en la última medición (si la campaña se apagó no se muestra un número viejo como actual)
-      msj_ganancia:1,msj_conversiones:1,msj_ingreso:1,msj_roas:1,msj_costo_conversion:1,vta_ingreso:1,vta_ganancia:1,vta_roas:1,vta_roi:1};
+      msj_ganancia:1,msj_conversiones:1,msj_ingreso:1,msj_roas:1,msj_costo_conversion:1,vta_ingreso:1,vta_ganancia:1,vta_roas:1,vta_roi:1,
+      sp_listeners:1,sp_streams:1,sp_monthly:1,sp_guardados:1,sp_playlists:1,sp_playlist_adds:1,sp_stream_listener:1,sp_superlisteners:1,sp_followers:1};   // 11/11: Spotify for Artists sin dato en la última medición = no se muestra un número viejo como actual
     const ultM=k=>{ if(!MANUAL[k]) return ult(k); const i=R.length-1; return i>=0&&R[i].metricas[k]!=null?[R[i].metricas[k],i]:[null,-1]; };
     const val=k=>ultM(k)[0];
     const previo=k=>{ const [v,i]=ultM(k); return i<0?null:ant(k,i); };
