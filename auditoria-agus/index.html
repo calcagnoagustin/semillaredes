@@ -381,34 +381,22 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 
 
 <div class="modal" id="pagar" role="dialog" aria-modal="true" aria-labelledby="pg-t">
-  <div class="caja" id="pg-caja">
+  <div class="caja ancha" id="pg-caja">
     <button type="button" class="x" aria-label="Cerrar" data-cerrar>&times;</button>
-    <div class="pasitos"><span id="ps1" class="on">1 · Tus datos</span><span id="ps2">2 · Horario</span><span id="ps3">3 · Pago</span></div>
+    <div class="pasitos"><span id="ps1" class="on">1 · Elegí tu horario</span><span id="ps2">2 · Pagá para confirmar</span></div>
 
-    <form id="pg-1" novalidate>
-      <h2 id="pg-t">Reservá tu auditoría</h2>
-      <p class="p">$60.000 ARS · 1 hora por Zoom con Agus.</p>
-      <div class="regla"><b>Importante: el turno se confirma recién cuando pagás.</b> Después de elegir el horario tenés <b>15 minutos</b> para pagar. Si no pagás, la reserva se cancela sola y el horario se libera.</div>
-      <label for="pg-n">Nombre y apellido</label>
-      <input id="pg-n" name="nombre" autocomplete="name" required maxlength="80"/>
-      <label for="pg-e">Email</label>
-      <input id="pg-e" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="120"/>
-      <button class="btn btn-red" type="submit">Elegir día y horario <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-      <div class="err" id="pg-err1" aria-live="polite"></div>
-    </form>
-
-    <div id="pg-2" class="oculto">
-      <h2>Elegí día y horario</h2>
+    <div id="pg-1">
+      <h2 id="pg-t">Elegí día y horario</h2>
       <div class="regla"><b>Importante: el turno se confirma recién cuando pagás.</b> Después de elegir el horario tenés <b>15 minutos</b> para pagar. Si no pagás, la reserva se cancela sola y el horario se libera.</div>
       <div class="cal" id="pg-cal"><div class="cargando-cal">Cargando el calendario…</div></div>
     </div>
 
-    <div id="pg-3" class="oculto paso3">
+    <div id="pg-2" class="oculto paso3">
       <div class="big">Tu horario está reservado<br><span>por 15 minutos</span></div>
       <div class="reloj" id="pg-reloj">15:00</div>
       <div class="regla" style="text-align:left"><b>Todavía NO está confirmado.</b> Si no pagás en los próximos 15 minutos, el turno se cancela y el horario se libera. Aunque Calendly te mande un mail, la reserva vale solo con el pago.</div>
       <button class="btn btn-red" type="button" id="pg-b">Pagar $60.000 y confirmar mi turno <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-      <div class="err" id="pg-err3" aria-live="polite"></div>
+      <div class="err" id="pg-err" aria-live="polite"></div>
       <p class="p" style="margin-top:10px">Pago seguro con Mercado Pago: tarjeta de crédito, débito o dinero en cuenta.</p>
     </div>
   </div>
@@ -425,72 +413,56 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 
 
 <script src="https://semillaredes.com/assets/resenas.js?v=3" defer></script>
-<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 <script>
 (function(){
   var FN='https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/auditoria-pago';
   var CAL='https://calendly.com/calcagnoagustin/1-hora-de-consultoria-con-agus';
-  var m=document.getElementById('pagar'),caja=document.getElementById('pg-caja');
-  var f1=document.getElementById('pg-1'),p2=document.getElementById('pg-2'),p3=document.getElementById('pg-3');
-  var b=document.getElementById('pg-b'),datos={},turno=null,urlPago=null,calHecho=false;
+  var m=document.getElementById('pagar'),p1=document.getElementById('pg-1'),p2=document.getElementById('pg-2');
+  var b=document.getElementById('pg-b'),turno=null,urlPago=null,refVenta=null;
   function paso(n){
-    f1.classList.toggle('oculto',n!==1);p2.classList.toggle('oculto',n!==2);p3.classList.toggle('oculto',n!==3);
-    caja.classList.toggle('ancha',n===2);
-    [1,2,3].forEach(function(i){var e=document.getElementById('ps'+i);e.className=i<n?'ok':(i===n?'on':'')});
+    p1.classList.toggle('oculto',n!==1);p2.classList.toggle('oculto',n!==2);
+    [1,2].forEach(function(i){var e=document.getElementById('ps'+i);e.className=i<n?'ok':(i===n?'on':'')});
     m.scrollTop=0;
   }
-  function abrir(e){if(e)e.preventDefault();if(typeof precargar==='function')precargar();m.classList.add('on');if(!turno){paso(1);setTimeout(function(){document.getElementById('pg-n').focus()},50)}
-    if(typeof fbq==='function')fbq('trackCustom','AbrirPago');}
-  function cerrar(){
-    if(turno&&!urlPago){} // sigue reservado; el aviso de arriba lo recuerda
-    m.classList.remove('on');
-    if(turno){var av=document.getElementById('aviso');av.innerHTML='<b>Tu horario está reservado por 15 minutos y todavía no está confirmado.</b> <a href="#pagar" data-pagar style="text-decoration:underline">Pagá para confirmarlo</a> o se cancela.';av.style.display='block'}
-  }
-  document.addEventListener('click',function(e){
-    var a=e.target.closest&&e.target.closest('[data-pagar]');if(a){abrir(e);if(turno)paso(3);return}
-    if(e.target===m||(e.target.closest&&e.target.closest('[data-cerrar]')))cerrar();
-  });
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')cerrar()});
   function ck(n){var r=document.cookie.match('(?:^|; )'+n+'=([^;]*)');return r?decodeURIComponent(r[1]):''}
   var q=new URLSearchParams(location.search),utm={};
   ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid'].forEach(function(k){if(q.get(k))utm[k]=q.get(k)});
   try{if(Object.keys(utm).length)sessionStorage.setItem('aud_utm',JSON.stringify(utm));else utm=JSON.parse(sessionStorage.getItem('aud_utm')||'{}')}catch(_){}
-  var precargado=false;
-  function precargar(){
-    if(precargado)return;precargado=true;
-    var fr=document.createElement('iframe');
-    fr.src=CAL+'?embed_domain=semillaredes.com&embed_type=Inline&hide_gdpr_banner=1&primary_color=d8434f';
-    fr.setAttribute('aria-hidden','true');fr.tabIndex=-1;fr.title='precarga';
-    fr.style.cssText='position:absolute;left:-10000px;top:0;width:900px;height:700px;border:0;opacity:0;pointer-events:none';
-    document.body.appendChild(fr);
+
+  // el calendario se carga escondido apenas abre la página: cuando tocan "Reservá" ya está listo
+  var calCargado=false;
+  function cargarCal(){
+    if(calCargado)return;calCargado=true;
+    var u=new URL(CAL);
+    u.searchParams.set('embed_domain',location.hostname);u.searchParams.set('embed_type','Inline');
+    u.searchParams.set('hide_gdpr_banner','1');u.searchParams.set('primary_color','d8434f');
+    Object.keys(utm).forEach(function(k){if(k.indexOf('utm_')===0)u.searchParams.set(k,utm[k])});
+    var fr=document.createElement('iframe');fr.src=u.toString();fr.title='Elegí día y horario';
+    fr.style.cssText='position:relative;z-index:1;width:100%;height:100%;border:0';
+    document.getElementById('pg-cal').appendChild(fr);
   }
-  window.addEventListener('load',function(){setTimeout(precargar,1200)});
-  document.addEventListener('pointerdown',function(e){if(e.target.closest&&e.target.closest('[data-pagar]'))precargar()},true);
+  if(document.readyState==='complete')setTimeout(cargarCal,300);else window.addEventListener('load',function(){setTimeout(cargarCal,300)});
+
+  function abrir(e){if(e)e.preventDefault();cargarCal();m.classList.add('on');paso(turno?2:1);
+    if(typeof fbq==='function')fbq('trackCustom','AbrirPago');}
+  function cerrar(){
+    m.classList.remove('on');
+    if(turno&&!refPagado()){var av=document.getElementById('aviso');av.innerHTML='<b>Tu horario está reservado por 15 minutos y todavía no está confirmado.</b> <a href="#pagar" data-pagar style="text-decoration:underline">Pagá para confirmarlo</a> o se cancela.';av.style.display='block'}
+  }
+  function refPagado(){return false}
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('[data-pagar]');if(a){abrir(e);return}
+    if(e.target===m||(e.target.closest&&e.target.closest('[data-cerrar]')))cerrar();
+  });
+  document.addEventListener('pointerdown',function(e){if(e.target.closest&&e.target.closest('[data-pagar]'))cargarCal()},true);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')cerrar()});
   if(location.hash==='#pagar')abrir();
 
-  f1.addEventListener('submit',function(e){
-    e.preventDefault();var er=document.getElementById('pg-err1');er.textContent='';
-    var n=f1.nombre.value.trim(),em=f1.email.value.trim();
-    if(!n){er.textContent='Falta tu nombre.';return}
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){er.textContent='Revisá tu email.';return}
-    datos={nombre:n,email:em};paso(2);
-    if(typeof fbq==='function')fbq('trackCustom','ElegirHorario');
-    function montar(){
-      if(!window.Calendly){return setTimeout(montar,200)}
-      if(calHecho)return;calHecho=true;
-      var u=new URL(CAL);u.searchParams.set('hide_gdpr_banner','1');u.searchParams.set('primary_color','d8434f');
-      Object.keys(utm).forEach(function(k){if(k.indexOf('utm_')===0)u.searchParams.set(k,utm[k])});
-      Calendly.initInlineWidget({url:u.toString(),parentElement:document.getElementById('pg-cal'),prefill:{name:n,email:em}});
-    }
-    montar();
-  });
-
   window.addEventListener('message',function(e){
-    if(!e.data||typeof e.data.event!=='string'||e.data.event.indexOf('calendly.')!==0)return;
-    if(e.data.event!=='calendly.event_scheduled')return;
+    if(e.origin!=='https://calendly.com'||!e.data||e.data.event!=='calendly.event_scheduled')return;
     var p=e.data.payload||{};turno={event_uri:p.event&&p.event.uri,invitee_uri:p.invitee&&p.invitee.uri};
     if(typeof fbq==='function'){fbq('trackCustom','AgendarAuditoria');fbq('track','Schedule');}
-    paso(3);arrancarReloj(Date.now()+15*60*1000);crearPago();
+    paso(2);arrancarReloj(Date.now()+15*60*1000);crearPago();
   });
   var relojT=null;
   function arrancarReloj(fin){
@@ -500,20 +472,19 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
       if(r<=0){clearInterval(relojT);el.classList.add('fin');el.textContent='Se terminó el tiempo: si no pagaste, la reserva se cancela.';}}
     tic();relojT=setInterval(tic,1000);
   }
-
   function crearPago(){
-    var er=document.getElementById('pg-err3');er.textContent='';b.disabled=true;b.firstChild.nodeValue='Preparando el pago… ';
+    var er=document.getElementById('pg-err');er.textContent='';b.disabled=true;b.firstChild.nodeValue='Preparando el pago… ';
     var fbc=ck('_fbc');if(!fbc&&utm.fbclid)fbc='fb.1.'+Date.now()+'.'+utm.fbclid;
-    fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accion:'crear',nombre:datos.nombre,email:datos.email,event_uri:turno.event_uri,invitee_uri:turno.invitee_uri,fbp:ck('_fbp'),fbc:fbc,utm:utm,origen:location.href})})
+    fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accion:'crear',event_uri:turno.event_uri,invitee_uri:turno.invitee_uri,fbp:ck('_fbp'),fbc:fbc,utm:utm,origen:location.href})})
     .then(function(r){return r.json()}).then(function(d){
       if(!d||!d.url)throw new Error(d&&d.error||'error');
-      urlPago=d.url;try{localStorage.setItem('aud_ref',d.ref)}catch(_){}
-      b.dataset.ref=d.ref;b.disabled=false;b.firstChild.nodeValue='Pagar $60.000 y confirmar mi turno ';
+      urlPago=d.url;refVenta=d.ref;try{localStorage.setItem('aud_ref',d.ref)}catch(_){}
+      b.disabled=false;b.firstChild.nodeValue='Pagar $60.000 y confirmar mi turno ';
     }).catch(function(x){b.disabled=false;b.firstChild.nodeValue='Reintentar ';er.textContent=(x&&x.message&&x.message!=='error')?x.message:'No pudimos preparar el pago. Tocá reintentar o escribime por WhatsApp.'});
   }
   b.addEventListener('click',function(){
     if(!urlPago){crearPago();return}
-    if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:60000,currency:'ARS',content_name:'Auditoría con Agus'},{eventID:'ic-'+b.dataset.ref});
+    if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:60000,currency:'ARS',content_name:'Auditoría con Agus'},{eventID:'ic-'+refVenta});
     location.href=urlPago;
   });
 
