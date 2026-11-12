@@ -52,11 +52,11 @@ p{font-size:16px;line-height:1.45;color:var(--muted);margin-bottom:10px}
 <div class="card oculto" id="ok">
   <h1>¡Gracias<span id="nom"></span>!<br><span>Tu turno está confirmado.</span></h1>
   <p id="cuando" class="cuando"></p>
-  <p>Te llega la invitación con el link de Zoom al mail con el que reservaste.</p>
+  <p id="ok-txt">Te llega la invitación con el link de Zoom al mail que dejaste.</p>
   <a class="btn oculto" id="cal" href="#" target="_blank" rel="noopener">Elegir día y horario →</a>
   <div class="pasos">
     <b>Qué sigue:</b><br>
-    1. Revisá tu mail: ahí está la invitación de Calendly con el Zoom.<br>
+    1. Revisá tu mail: ahí te llega la invitación con el link de Zoom (si no la ves, mirá en spam).<br>
     2. Nos vemos una hora y te llevás tu plan.<br><br>
     El comprobante de pago te lo manda Mercado Pago por mail. Si necesitás cambiar el horario, usá el link de la invitación o escribime por <a href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20ya%20pagu%C3%A9%20la%20auditor%C3%ADa" target="_blank" rel="noopener">WhatsApp</a>.
   </div>
@@ -79,7 +79,7 @@ p{font-size:16px;line-height:1.45;color:var(--muted);margin-bottom:10px}
 
 <div class="card oculto" id="cad">
   <h1>Esta reserva <span>se canceló</span></h1>
-  <p>Pasaron los 15 minutos sin pago, así que el horario se liberó. Podés reservar otro y pagarlo para confirmarlo.</p>
+  <p>Pasaron los 15 minutos sin pago, así que el horario se liberó. Podés elegir otro y pagarlo para confirmarlo.</p>
   <a class="btn" href="/auditoria-agus/#pagar">Reservar de nuevo</a>
 </div>
 
@@ -108,6 +108,7 @@ p{font-size:16px;line-height:1.45;color:var(--muted);margin-bottom:10px}
       if(d&&d.pagada){
         if(d.nombre)document.getElementById('nom').textContent=', '+d.nombre;
         if(d.turno)document.getElementById('cuando').textContent='Te espero el '+fecha(d.turno)+'.';
+        if(!d.turno_confirmado){document.getElementById('ok-txt').textContent=d.problema_turno?'El pago entró bien, pero tuvimos un problema para agendar ese horario. Te escribo para confirmarlo, o elegí otro horario acá:':'Estamos terminando de confirmar tu horario: en unos minutos te llega la invitación con el Zoom.';if(!d.problema_turno&&intentos<8)setTimeout(chequear,4000)}
         if(d.calendly){var c=document.getElementById('cal');c.href=d.calendly;c.classList.remove('oculto')}
         ver('ok');
         var k='aud_compra_'+ref,ya=false;try{ya=localStorage.getItem(k)}catch(_){}
