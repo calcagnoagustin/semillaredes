@@ -97,14 +97,17 @@ p{font-size:16px;line-height:1.45;color:var(--muted);margin-bottom:10px}
   try{if(!ref)ref=localStorage.getItem('aud_ref')||''}catch(_){}
   var ids=['cargando','ok','falta','pend','cad','no'];
   function ver(id){ids.forEach(function(x){document.getElementById(x).classList.toggle('oculto',x!==id)})}
-  function fecha(iso){try{return new Date(iso).toLocaleString('es-AR',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit',timeZone:'America/Argentina/Buenos_Aires'})+' hs (hora de Argentina)'}catch(_){return ''}}
-  function hora(iso){try{return new Date(iso).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',timeZone:'America/Argentina/Buenos_Aires'})+' hs'}catch(_){return ''}}
+  var EXT=false,TZL='America/Argentina/Buenos_Aires';try{TZL=Intl.DateTimeFormat().resolvedOptions().timeZone||TZL}catch(_){}
+  function zona(){return EXT?TZL:'America/Argentina/Buenos_Aires'}
+  function fecha(iso){try{return new Date(iso).toLocaleString('es-AR',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit',timeZone:zona()})+' hs '+(EXT?'(tu hora local)':'(hora de Argentina)')}catch(_){return ''}}
+  function hora(iso){try{return new Date(iso).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',timeZone:zona()})+' hs'}catch(_){return ''}}
   if(!/^[0-9a-f-]{36}$/i.test(ref)){ver('no');return}
   var intentos=0;
   function chequear(){
     intentos++;
     fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accion:'estado',ref:ref})})
     .then(function(r){return r.json()}).then(function(d){
+      EXT=!!(d&&d.pasarela==='dl');
       if(d&&d.pagada){
         if(d.nombre)document.getElementById('nom').textContent=', '+d.nombre;
         if(d.turno)document.getElementById('cuando').textContent='Te espero el '+fecha(d.turno)+'.';
@@ -120,6 +123,7 @@ p{font-size:16px;line-height:1.45;color:var(--muted);margin-bottom:10px}
       if(est==='pending'||est==='in_process'||est==='authorized'){ver('pend');return}
       if(intentos<4&&!q.get('fallo')){setTimeout(chequear,2500);return}
       if(d&&d.pagar){
+        if(d.moneda==='USD')document.getElementById('pagar').textContent='Pagar USD '+(Number(d.monto)||45)+' y confirmar →';
         document.getElementById('pagar').href=d.pagar;document.getElementById('vence').textContent=hora(d.vence);(function(){var fin=Date.parse(d.vence),el=document.getElementById('resta');function tic(){var r=Math.max(0,fin-Date.now());el.textContent=Math.floor(r/60000)+' min '+Math.floor(r%60000/1000)+' s';if(r<=0)location.reload()}tic();setInterval(tic,1000)})();
         if(d.turno)document.getElementById('cuando2').textContent='Elegiste el '+fecha(d.turno)+'.';
         ver('falta');return;
