@@ -415,6 +415,8 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
       <input id="pg-n" name="nombre" autocomplete="name" required maxlength="80"/>
       <label for="pg-e">Email (ahí te llega la invitación con el Zoom)</label>
       <input id="pg-e" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="120"/>
+      <label for="pg-w">WhatsApp (te mandamos la confirmación y un recordatorio)</label>
+      <input id="pg-w" name="telefono" type="tel" autocomplete="tel" inputmode="tel" required maxlength="25" placeholder="Ej: 11 2345 6789 · desde otro país, con +código"/>
       <button class="btn btn-red" type="submit" id="pg-r">Reservar horario y pagar <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
       <div class="err" id="pg-err2" aria-live="polite"></div>
     </form>
@@ -493,12 +495,13 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 
   f2.addEventListener('submit',function(e){
     e.preventDefault();var er=document.getElementById('pg-err2');er.textContent='';
-    var n=f2.nombre.value.trim(),em=f2.email.value.trim();
+    var n=f2.nombre.value.trim(),em=f2.email.value.trim(),tw=f2.telefono.value.trim();
     if(!n){er.textContent='Falta tu nombre.';return}
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){er.textContent='Revisá tu email.';return}
+    if(tw.replace(/\D/g,'').length<10){er.textContent='Revisá tu WhatsApp (con código de área, sin 0 ni 15).';return}
     btnR.disabled=true;btnR.firstChild.nodeValue='Guardando tu horario… ';
     var fbc=ck('_fbc');if(!fbc&&utm.fbclid)fbc='fb.1.'+Date.now()+'.'+utm.fbclid;
-    fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accion:'crear',inicio:elegido,nombre:n,email:em,fbp:ck('_fbp'),fbc:fbc,utm:utm,origen:location.href})})
+    fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accion:'crear',inicio:elegido,nombre:n,email:em,telefono:tw,fbp:ck('_fbp'),fbc:fbc,utm:utm,origen:location.href})})
     .then(function(r){return r.json().then(function(d){return{s:r.status,d:d}})}).then(function(x){
       var d=x.d;
       if(x.s===409){traer();paso(1);btnR.disabled=false;btnR.firstChild.nodeValue='Reservar horario y pagar ';alert(d.error);return}
