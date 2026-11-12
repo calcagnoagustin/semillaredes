@@ -184,6 +184,29 @@
   #v3 .ib:hover{background:#F1ECE1;color:${NAVY}}
   #v3 .ib[data-del2]:hover{color:${VINO}}
   #v3 .hacc{position:absolute;top:10px;right:8px}
+  #v3 .hlog{position:relative;display:grid;grid-template-columns:1fr 108px;align-items:center;column-gap:12px;padding:20px 18px 18px;border:1px solid #D9CFB6;margin-bottom:22px}
+  #v3 .hlog .hacc{top:10px;right:10px}
+  #v3 .hsupi{margin-top:14px}#v3 .hsupi .hlog{margin-bottom:0}
+  #v3 .hlog .pill{text-transform:none;letter-spacing:0;display:inline-block;background:${OLIVA};color:#fff;font:700 13px/1 Inter,sans-serif;padding:7px 12px;border-radius:99px}
+  #v3 .hlog .hnum{font-family:'Playfair Display',serif;font-weight:700;font-size:52px;line-height:1;color:${NAVY};margin:12px 0 4px;letter-spacing:-1px}
+  #v3 .hlog .uni{font-size:17px;color:${NAVY};line-height:1.25}
+  #v3 .hlog .hlp{display:flex;align-items:center;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid #E6DCC6;font-size:14px;line-height:1.2;color:${NAVY};flex-wrap:wrap}
+  #v3 .hlog .hlp i{width:1px;height:18px;background:#D9CFB6}
+  #v3 .hlog .hlp b{color:${OLIVA};font-weight:700}
+  #v3 .hlog .hli{align-self:center;margin-top:28px}#v3 .hlog .hli svg{width:108px;height:108px;display:block}
+  #v3 h3.encam{margin:0 0 12px;font-family:'Playfair Display',serif;font-size:21px;font-weight:600;color:${NAVY};line-height:1.2}
+  #v3 .hcam{padding:0}
+  #v3 .hrow{position:relative;display:grid;grid-template-columns:34px 1fr;column-gap:12px;align-items:start;padding:14px 16px;border-top:1px solid #EDE6D8}
+  #v3 .hrow:first-child{border-top:0}
+  #v3 .hrow > svg{width:34px;height:34px;display:block}
+  #v3 .hrow .hrt{font-size:15.5px;color:${NAVY};line-height:20px;padding:7px 64px 0 0}
+  #v3 .hrow .hracc{position:absolute;top:14px;right:10px}
+  #v3 .hrow .hrb{grid-column:2;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-top:10px}
+  #v3 .hrow .hrb .b{height:10px;border-radius:99px;background:#E6DFD0;overflow:hidden}
+  #v3 .hrow .hrb .b i{display:block;height:100%;background:${OLIVA};border-radius:99px}
+  #v3 .hrow .hrb span{font-size:13.5px;color:#55525F;font-variant-numeric:tabular-nums;white-space:nowrap}
+  #v3 .hrow .hrs{grid-column:2;font-size:13.5px;color:#8A8577;margin-top:2px}
+  @media (max-width:380px){ #v3 .hlog{grid-template-columns:1fr 92px} #v3 .hlog .hli svg{width:92px;height:92px} #v3 .hlog .hnum{font-size:44px} }
   #v3 .card > .hito{border:0;border-radius:0;background:none;box-shadow:none;border-top:1px solid #EDE6D8}
   #v3 .card > .hito:first-child{border-top:0}
   #v3 .edf{display:grid;gap:8px;width:100%}
@@ -722,6 +745,15 @@
     // avance de un hito: en los de costo (ig_costo_follower, etc.) lo bueno es bajar, así que se mide al revés (27/10/2026)
     const hAv=x=>{ const v=Number(x.v), o=Number(x.h.objetivo); if(x.v==null||!o||!v) return 0; return /costo/.test(x.h.metrica||'')?o/v:v/o; };
     const hito=H.sort((a,b)=>hAv(b)-hAv(a))[0];
+    /* 12/11: panel de progreso nuevo — metas superadas grandes arriba, el resto «En camino» */
+    const HOK=x=>x.v!=null&&hAv(x)>=1;
+    const HCOS=h=>/costo/.test(h.metrica||'');
+    const HUNI=h=>(HMET[h.metrica]||[])[1]||HTIT(h);
+    const HDIF=x=>{ const v=Number(x.v), o=Number(x.h.objetivo); if(HCOS(x.h)) return v===o?'Meta cumplida':nf(o-v,2)+' por debajo de la meta'; return v===o?'Meta cumplida':'+'+nf(v-o)+' sobre la meta'; };
+    const HFAL=x=>{ const v=Number(x.v), o=Number(x.h.objetivo); if(HCOS(x.h)) return 'Hoy: '+nf(v,2); return 'Faltan '+nf(Math.max(0,Math.ceil(o-v))); };
+    const ICUMBRE='<svg viewBox="0 0 120 120" width="120" height="120" aria-hidden="true"><defs><linearGradient id="hcg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBF7EF"/><stop offset="1" stop-color="#EFE4CC"/></linearGradient><clipPath id="hcc"><circle cx="60" cy="60" r="55"/></clipPath></defs><circle cx="60" cy="60" r="55" fill="#FBF7EF" stroke="#C9A64B" stroke-width="2"/><g clip-path="url(#hcc)"><path d="M14 98 L34 82 L42 88 L60 62 L80 90 L88 84 L108 100 L108 120 L12 120 Z" fill="url(#hcg)"/><path d="M14 98 L34 82 L46 92 M42 88 L60 62 L80 90 M74 94 L88 84 L108 100" fill="none" stroke="#3E4A2A" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></g><path d="M60 62 V34" stroke="#3E4A2A" stroke-width="1.8" stroke-linecap="round"/><path d="M60 35 C66 32 70 38 77 35 L74 41 L77 46 C70 49 66 43 60 46 Z" fill="#87863A"/><g stroke="#C9A64B" stroke-width="1.8" stroke-linecap="round"><path d="M60 16 V24"/><path d="M45 21 L49 28"/><path d="M75 21 L71 28"/><path d="M37 32 L44 36"/></g></svg>';
+    const HSUP=(d.hitos||[]).map(h=>({h,v:val(h.metrica)})).filter(HOK).sort((a,b)=>Number(b.h.objetivo)-Number(a.h.objetivo))[0];   // la meta superada más grande (para Inicio)
+    const HCARD=(x,ed)=>`<div class="card hlog">${ed&&x.h.id&&!x.h.virtual?`<span class="hacc">${IB('hito',x.h.id)}</span>`:''}<div class="hlt"><span class="pill">Meta superada</span><div class="hnum">${nf(x.v)}</div><div class="uni">${esc(HUNI(x.h))}</div><div class="hlp"><span>Meta de ${nf(x.h.objetivo)}</span><i></i><b>${esc(HDIF(x))}</b></div></div><div class="hli">${ICUMBRE}</div>${ed&&EDon('hito',x.h.id)?`<div style="grid-column:1/-1">${EDF([{v:x.h.titulo||'',ph:'Nombre (opcional)'},{v:x.h.objetivo,ph:'Meta (número)',num:1}])}</div>`:''}</div>`;
     const tiene=k=>val(k)!=null;
     const MET=[['ig_followers_total','seguidores','ig'],[SPK,'oyentes mensuales','sp'],['yt_views','vistas','yt'],['msj_mensajes','mensajes','msj'],['msj_conversiones','ventas','msj'],['tk_tickets','entradas','tk'],['stm_wishlist','wishlists en Steam','stm'],['vta_visitas','visitas a la tienda','vtv'],['ig_conv','conversión de visitas','ig'],['vta_ventas','ventas','vta'],['vta_roas_pixel','retorno por dólar','vta'],['vta_costo_venta','costo por venta','vta'],['frm_visitas','visitas a la formación','frm'],['frm_mensajes','consultas','frm'],['ig_visitas','visitas al perfil','ig']].filter(([k])=>tiene(k)&&!(k==='vta_visitas'&&tiene('vta_ventas'))).map(([k,l,ic])=>({k,l,ic}));
     if(CONSULTAS.includes(slug)) MET.sort((x,y)=>(y.k==='msj_mensajes')-(x.k==='msj_mensajes'));
@@ -859,7 +891,7 @@
       return `<button type="button" class="etq" data-info="${esc(info)}" aria-label="Etapa de ${x[0]}. Más info">Etapa de ${x[0]}<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.6" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="10" cy="6.2" r="1.3" fill="currentColor"/><path d="M10 9v5.6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></button>`; })():'';
     const scrHoy=`
       ${ETQ}<h1 class="v3t">Hola ${esc(nombre)}</h1><p class="bj">Seguimos haciendo crecer tu proyecto 🌱</p>${ACT}${({'alan-sutton':'Tus números y las ventas de merch se actualizan todos los días. El reporte sale los jueves a las 7.','bodegon-para':'Tus números se actualizan todos los días. El reporte sale los jueves a las 7.'})[slug]?`<p class="aviso-act">${({'alan-sutton':'Tus números y las ventas de merch se actualizan todos los días. El reporte sale los jueves a las 7.','bodegon-para':'Tus números se actualizan todos los días. El reporte sale los jueves a las 7.'})[slug]}</p>`:''}
-      <div id="v3reu"></div><div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g transform="translate(-4 44)"><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></g></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
+      <div id="v3reu"></div>${HSUP?`<div class="hsupi">${HCARD(HSUP,false)}</div>`:''}<div class="hero"><svg class="cielo" width="170" height="170" viewBox="0 0 170 170"><defs><radialGradient id="v3l" cx=".35" cy=".35"><stop offset="0" stop-color="#E9E6DD"/><stop offset="1" stop-color="#8E8C86"/></radialGradient></defs><circle cx="118" cy="64" r="40" fill="url(#v3l)" opacity=".95"/><circle cx="104" cy="54" r="5" fill="#7E7C76" opacity=".5"/><circle cx="128" cy="76" r="7" fill="#7E7C76" opacity=".4"/><g transform="translate(-4 44)"><g stroke="#C9B98A" stroke-width="1" opacity=".8"><path d="M40 40v26M27 53h26M31 44l18 18M49 44 31 62"/></g><circle cx="40" cy="53" r="3.5" fill="#E8D9A8"/></g></svg>${hero}<button class="ir" data-ir="metricas" aria-label="Ver métricas">${ico.flecha}</button></div>
       ${(window.PRODUCTOS||{})[slug]?'<div id="v3prod"></div>':''}<div id="v3ctas"></div>
       ${DEST}${CRU}
       ${GIRA}${PAISC}
@@ -868,8 +900,7 @@
       <div id="v3cj"></div>
       <div id="v3cta"></div>
       <div id="v3drop"></div>
-      ${hito?`<div class="card hito"><div>${ico.sol}</div><div><div class="v3t">Tu próximo hito</div><div class="tx">${esc(HTIT(hito.h))}</div></div><button class="ir" data-ir="proyecto" aria-label="Ver hitos">${ico.flecha}</button>
-        <div class="bar"><div class="b"><i style="width:${Math.min(100,hAv(hito)*100).toFixed(1)}%"></i></div><span>${nf(hito.v)} / ${nf(hito.h.objetivo)}</span></div></div>`:''}
+
       <div class="tit2"><h3>Accesos rápidos</h3></div>
       <div class="acc">
         <button data-acc="rep"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M6 19v-5M10 19V9M14 19v-7M18 19V6"/></svg>Ver reporte</button>
@@ -1026,12 +1057,15 @@
 
     // --- Proyecto ---
     const HT=(d.hitos||[]).map(h=>({h,v:val(h.metrica)}));
+    const HLOG=HT.filter(HOK), HCAM=HT.filter(x=>!HOK(x));
     const A=d.activos||[];
     const NT=d.notas||[];
     const scrPro=`
       <h1 class="v3t">Tu proyecto</h1><p class="bj">Tus metas, tus links y tu web.</p>
       <div class="tit2"><h2>Hitos</h2>${HDISP.length?`<button id="v3hnuevo">${HFORM?'Cerrar':'Agregar hito'}</button>`:''}</div>
-      <div class="card">${HT.length?HT.map(x=>`<div class="hito" style="margin:0;border-top:1px solid #EDE6D8;grid-template-columns:38px 1fr;position:relative"><div>${ico.sol}</div><div style="${x.h.id&&!x.h.virtual?'padding-right:70px':''}"><div class="v3t">${esc(HTIT(x.h))}</div><div class="tx">${x.v!=null&&hAv(x)>=1?'¡Logrado!':'En camino'}</div></div><div class="bar"><div class="b"><i style="width:${x.v==null?0:Math.min(100,hAv(x)*100).toFixed(1)}%"></i></div><span>${nf(x.v)} / ${nf(x.h.objetivo)}</span></div>${x.h.id&&!x.h.virtual?`<span class="hacc">${IB('hito',x.h.id)}</span>`:''}${EDon('hito',x.h.id)?`<div style="grid-column:1/-1">${EDF([{v:x.h.titulo||'',ph:'Nombre (opcional)'},{v:x.h.objetivo,ph:'Meta (número)',num:1}])}</div>`:''}</div>`).join(''):'<div class="vacio">Todavía no hay hitos. Sumá una meta: por ejemplo, a cuántos seguidores querés llegar.</div>'}
+      ${HLOG.map(x=>HCARD(x,true)).join('')}
+      ${HLOG.length&&(HCAM.length||HFORM)?'<h3 class="encam">En camino</h3>':''}
+      <div class="card hcam">${HCAM.length?HCAM.map(x=>`<div class="hrow">${ico.sol}<div class="hrt">${esc(HTIT(x.h))}</div>${x.h.id&&!x.h.virtual?`<span class="hracc">${IB('hito',x.h.id)}</span>`:''}${x.v==null?'<div class="hrs">Sin datos todavía</div>':`<div class="hrb"><div class="b"><i style="width:${Math.min(100,hAv(x)*100).toFixed(1)}%"></i></div><span>${esc(HFAL(x))}</span></div>`}${EDon('hito',x.h.id)?`<div style="grid-column:1/-1">${EDF([{v:x.h.titulo||'',ph:'Nombre (opcional)'},{v:x.h.objetivo,ph:'Meta (número)',num:1}])}</div>`:''}</div>`).join(''):(HLOG.length?'':'<div class="vacio">Todavía no hay hitos. Sumá una meta: por ejemplo, a cuántos seguidores querés llegar.</div>')}
         ${HFORM?`<div class="fform hform"><select id="v3hm">${HDISP.map(k=>`<option value="${k}">${HMET[k][0]}</option>`).join('')}</select><input id="v3ho" inputmode="decimal" placeholder="Meta (número)"><input id="v3ht" placeholder="Nombre (opcional)"><button id="v3hadd">Guardar hito</button></div>`:''}</div>
       ${pOk('tickets')?`<div class="tit2"><h2>Gestioná tus tickets</h2></div>
       <div class="card tkpr"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 7.5A1.5 1.5 0 0 1 5.5 6h13A1.5 1.5 0 0 1 20 7.5V10a2 2 0 0 0 0 4v2.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 16.5V14a2 2 0 0 0 0-4z"/><path d="M14 6.5v11" stroke-dasharray="2 2"/></svg></span><span class="tx"><b>Vendé y seguí tus entradas desde la app</b><small>Muy pronto</small></span></div>`:''}
