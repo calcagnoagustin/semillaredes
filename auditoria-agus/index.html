@@ -207,19 +207,34 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 
 .usd{display:block;text-align:center;font-size:11.5px;color:var(--muted);text-decoration:underline;margin-top:4px}
 .aviso{background:var(--rose-bg);color:var(--navy);border-radius:12px;padding:12px 16px;font-size:14px;margin:14px auto 0;max-width:1000px;display:none}
-.modal{position:fixed;inset:0;z-index:100;background:rgba(22,33,90,.45);display:none;align-items:center;justify-content:center;padding:18px}
+.modal{position:fixed;inset:0;z-index:100;background:rgba(22,33,90,.5);display:none;align-items:flex-start;justify-content:center;padding:14px;overflow-y:auto}
 .modal.on{display:flex}
-.caja{background:#fff;border-radius:18px;max-width:400px;width:100%;padding:26px 22px 20px;box-shadow:0 20px 60px rgba(0,0,0,.2);position:relative}
-.caja h2{font-size:26px;font-weight:900;margin-bottom:4px}
-.caja .p{font-size:14px;color:var(--muted);margin-bottom:16px}
+.caja{background:#fff;border-radius:18px;max-width:420px;width:100%;padding:24px 22px 20px;box-shadow:0 20px 60px rgba(0,0,0,.2);position:relative;margin:auto 0}
+.caja.ancha{max-width:760px;padding:20px 16px 14px}
+.caja h2{font-size:25px;font-weight:900;margin-bottom:4px}
+.caja .p{font-size:14px;color:var(--muted);margin-bottom:12px}
 .caja label{display:block;font-size:12px;font-weight:700;color:var(--navy);margin:10px 0 5px}
 .caja input{width:100%;font:inherit;font-size:16px;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--paper)}
 .caja input:focus{outline:none;border-color:var(--navy)}
 .caja .btn{width:100%;margin-top:16px}
 .caja .btn[disabled]{opacity:.6;cursor:wait}
 .caja .err{color:var(--red-dark);font-size:13px;margin-top:10px;min-height:1em}
-.caja .seg{font-size:11.5px;color:var(--muted);text-align:center;margin-top:10px}
-.caja .x{position:absolute;right:12px;top:10px;background:none;border:0;font-size:26px;line-height:1;color:var(--muted);cursor:pointer}
+.caja .x{position:absolute;right:12px;top:8px;background:none;border:0;font-size:28px;line-height:1;color:var(--muted);cursor:pointer}
+.pasitos{display:flex;gap:6px;margin:0 0 14px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.pasitos span{flex:1;text-align:center;padding:7px 4px;border-radius:999px;background:var(--paper);color:#9A96A2}
+.pasitos span.on{background:var(--navy);color:#fff}
+.pasitos span.ok{background:var(--olive-soft);color:var(--navy)}
+.regla{background:#FFF4D6;border:2px solid #E9B949;color:#4A3A0A;border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.4;margin:6px 0 12px}
+.regla b{color:#2B2000}
+.cal{min-width:280px;height:640px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.paso3{text-align:center}
+.paso3 .big{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:var(--navy);line-height:1.1;margin:6px 0 10px}
+.paso3 .big span{color:var(--red)}
+.paso3 .btn{font-size:17px;padding:16px 22px}
+.reloj{font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:44px;font-weight:800;color:var(--red);margin:4px 0 10px}
+.reloj.fin{font-size:18px}
+.oculto{display:none!important}
+@media (max-width:600px){.cal{height:600px}.caja.ancha{padding:16px 10px 10px}}
 </style>
 </head>
 <body>
@@ -261,7 +276,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
     </div>
     <aside class="precio" id="precio">
         <div class="monto">$60.000 <small>ARS</small></div>
-        <div class="alt">Pagás en pesos con Mercado Pago</div>
+        <div class="alt">Elegís tu horario y pagás con Mercado Pago</div>
         <ul>
           <li><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Sesión de 1 hora por videollamada</li>
           <li><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8M8 13h5"/></svg>Análisis personalizado</li>
@@ -308,7 +323,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
         <h2>Cómo funciona</h2>
         <p class="s">Una hora, foco total en tu proyecto.</p>
         <div class="pasos">
-          <div class="paso"><div class="top"><span class="num r">1</span><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></div><div class="txt"><b>Reservás tu sesión</b><span>Elegí el día y horario que mejor te quede.</span></div></div>
+          <div class="paso"><div class="top"><span class="num r">1</span><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></div><div class="txt"><b>Elegís horario y pagás</b><span>El turno queda confirmado cuando se acredita el pago.</span></div></div>
           <svg class="flecha" viewBox="0 0 34 12"><path d="M0 6h32M27 1l5 5-5 5"/></svg>
           <div class="paso"><div class="top"><span class="num o">2</span><svg viewBox="0 0 24 24"><rect x="3" y="6.5" width="13" height="11" rx="2"/><path d="M16 10.5l5-3v9l-5-3"/></svg></div><div class="txt"><b>Nos encontramos</b><span>Sesión de 1 hora por videollamada.</span></div></div>
           <svg class="flecha" viewBox="0 0 34 12"><path d="M0 6h32M27 1l5 5-5 5"/></svg>
@@ -333,7 +348,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
         <svg class="card" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6 15h4"/></svg>
         <div>
           <h3>Medios de pago</h3>
-          <p>En pesos con Mercado Pago: tarjeta de crédito o débito, dinero en cuenta o efectivo. Desde el exterior, USD 45 con PayPal.</p>
+          <p>En pesos con Mercado Pago: tarjeta de crédito, débito o dinero en cuenta. Desde el exterior, USD 45 con PayPal.</p>
           <div class="marcas">
             <span class="marca m-visa">VISA</span>
             <span class="marca m-mc"><i></i><i></i></span>
@@ -361,18 +376,37 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 
 
 <div class="modal" id="pagar" role="dialog" aria-modal="true" aria-labelledby="pg-t">
-  <form class="caja" id="pg-form" novalidate>
+  <div class="caja" id="pg-caja">
     <button type="button" class="x" aria-label="Cerrar" data-cerrar>&times;</button>
-    <h2 id="pg-t">Reservá tu auditoría</h2>
-    <p class="p">$60.000 ARS · 1 hora por Zoom. Después del pago elegís día y horario.</p>
-    <label for="pg-n">Nombre y apellido</label>
-    <input id="pg-n" name="nombre" autocomplete="name" required maxlength="80"/>
-    <label for="pg-e">Email</label>
-    <input id="pg-e" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="120"/>
-    <button class="btn btn-red" type="submit" id="pg-b">Ir a pagar con Mercado Pago <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-    <div class="err" id="pg-err" aria-live="polite"></div>
-    <div class="seg">Pago seguro procesado por Mercado Pago. Tarjeta, débito, dinero en cuenta o efectivo.</div>
-  </form>
+    <div class="pasitos"><span id="ps1" class="on">1 · Tus datos</span><span id="ps2">2 · Horario</span><span id="ps3">3 · Pago</span></div>
+
+    <form id="pg-1" novalidate>
+      <h2 id="pg-t">Reservá tu auditoría</h2>
+      <p class="p">$60.000 ARS · 1 hora por Zoom con Agus.</p>
+      <div class="regla"><b>Importante: el turno se confirma recién cuando pagás.</b> Después de elegir el horario tenés <b>15 minutos</b> para pagar. Si no pagás, la reserva se cancela sola y el horario se libera.</div>
+      <label for="pg-n">Nombre y apellido</label>
+      <input id="pg-n" name="nombre" autocomplete="name" required maxlength="80"/>
+      <label for="pg-e">Email</label>
+      <input id="pg-e" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="120"/>
+      <button class="btn btn-red" type="submit">Elegir día y horario <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <div class="err" id="pg-err1" aria-live="polite"></div>
+    </form>
+
+    <div id="pg-2" class="oculto">
+      <h2>Elegí día y horario</h2>
+      <div class="regla"><b>Importante: el turno se confirma recién cuando pagás.</b> Después de elegir el horario tenés <b>15 minutos</b> para pagar. Si no pagás, la reserva se cancela sola y el horario se libera.</div>
+      <div class="cal" id="pg-cal"></div>
+    </div>
+
+    <div id="pg-3" class="oculto paso3">
+      <div class="big">Tu horario está reservado<br><span>por 15 minutos</span></div>
+      <div class="reloj" id="pg-reloj">15:00</div>
+      <div class="regla" style="text-align:left"><b>Todavía NO está confirmado.</b> Si no pagás en los próximos 15 minutos, el turno se cancela y el horario se libera. Aunque Calendly te mande un mail, la reserva vale solo con el pago.</div>
+      <button class="btn btn-red" type="button" id="pg-b">Pagar $60.000 y confirmar mi turno <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <div class="err" id="pg-err3" aria-live="polite"></div>
+      <p class="p" style="margin-top:10px">Pago seguro con Mercado Pago: tarjeta de crédito, débito o dinero en cuenta.</p>
+    </div>
+  </div>
 </div>
 
 <footer>
@@ -386,39 +420,87 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 
 
 <script src="https://semillaredes.com/assets/resenas.js?v=3" defer></script>
+<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 <script>
 (function(){
   var FN='https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/auditoria-pago';
-  var m=document.getElementById('pagar'),f=document.getElementById('pg-form'),b=document.getElementById('pg-b'),er=document.getElementById('pg-err');
-  function abrir(e){if(e)e.preventDefault();m.classList.add('on');setTimeout(function(){document.getElementById('pg-n').focus()},50);
+  var CAL='https://calendly.com/calcagnoagustin/1-hora-de-consultoria-con-agus';
+  var m=document.getElementById('pagar'),caja=document.getElementById('pg-caja');
+  var f1=document.getElementById('pg-1'),p2=document.getElementById('pg-2'),p3=document.getElementById('pg-3');
+  var b=document.getElementById('pg-b'),datos={},turno=null,urlPago=null,calHecho=false;
+  function paso(n){
+    f1.classList.toggle('oculto',n!==1);p2.classList.toggle('oculto',n!==2);p3.classList.toggle('oculto',n!==3);
+    caja.classList.toggle('ancha',n===2);
+    [1,2,3].forEach(function(i){var e=document.getElementById('ps'+i);e.className=i<n?'ok':(i===n?'on':'')});
+    m.scrollTop=0;
+  }
+  function abrir(e){if(e)e.preventDefault();m.classList.add('on');if(!turno){paso(1);setTimeout(function(){document.getElementById('pg-n').focus()},50)}
     if(typeof fbq==='function')fbq('trackCustom','AbrirPago');}
-  function cerrar(){m.classList.remove('on')}
+  function cerrar(){
+    if(turno&&!urlPago){} // sigue reservado; el aviso de arriba lo recuerda
+    m.classList.remove('on');
+    if(turno){var av=document.getElementById('aviso');av.innerHTML='<b>Tu horario está reservado por 15 minutos y todavía no está confirmado.</b> <a href="#pagar" data-pagar style="text-decoration:underline">Pagá para confirmarlo</a> o se cancela.';av.style.display='block'}
+  }
   document.addEventListener('click',function(e){
-    var a=e.target.closest&&e.target.closest('[data-pagar]');if(a){abrir(e);return}
+    var a=e.target.closest&&e.target.closest('[data-pagar]');if(a){abrir(e);if(turno)paso(3);return}
     if(e.target===m||(e.target.closest&&e.target.closest('[data-cerrar]')))cerrar();
   });
   document.addEventListener('keydown',function(e){if(e.key==='Escape')cerrar()});
-  if(location.hash==='#pagar')abrir();
   function ck(n){var r=document.cookie.match('(?:^|; )'+n+'=([^;]*)');return r?decodeURIComponent(r[1]):''}
   var q=new URLSearchParams(location.search),utm={};
   ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid'].forEach(function(k){if(q.get(k))utm[k]=q.get(k)});
   try{if(Object.keys(utm).length)sessionStorage.setItem('aud_utm',JSON.stringify(utm));else utm=JSON.parse(sessionStorage.getItem('aud_utm')||'{}')}catch(_){}
-  if(q.get('pago')==='no'){var av=document.getElementById('aviso');av.textContent='El pago no se completó. Podés intentarlo de nuevo con otro medio, o escribime por WhatsApp si tenés algún problema.';av.style.display='block'}
-  f.addEventListener('submit',function(e){
-    e.preventDefault();er.textContent='';
-    var n=f.nombre.value.trim(),em=f.email.value.trim();
+  if(location.hash==='#pagar')abrir();
+
+  f1.addEventListener('submit',function(e){
+    e.preventDefault();var er=document.getElementById('pg-err1');er.textContent='';
+    var n=f1.nombre.value.trim(),em=f1.email.value.trim();
     if(!n){er.textContent='Falta tu nombre.';return}
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){er.textContent='Revisá tu email.';return}
-    b.disabled=true;b.firstChild.nodeValue='Abriendo Mercado Pago… ';
+    datos={nombre:n,email:em};paso(2);
+    if(typeof fbq==='function')fbq('trackCustom','ElegirHorario');
+    function montar(){
+      if(!window.Calendly){return setTimeout(montar,200)}
+      if(calHecho)return;calHecho=true;
+      var u=new URL(CAL);u.searchParams.set('hide_gdpr_banner','1');u.searchParams.set('primary_color','d8434f');
+      Object.keys(utm).forEach(function(k){if(k.indexOf('utm_')===0)u.searchParams.set(k,utm[k])});
+      Calendly.initInlineWidget({url:u.toString(),parentElement:document.getElementById('pg-cal'),prefill:{name:n,email:em}});
+    }
+    montar();
+  });
+
+  window.addEventListener('message',function(e){
+    if(!e.data||typeof e.data.event!=='string'||e.data.event.indexOf('calendly.')!==0)return;
+    if(e.data.event!=='calendly.event_scheduled')return;
+    var p=e.data.payload||{};turno={event_uri:p.event&&p.event.uri,invitee_uri:p.invitee&&p.invitee.uri};
+    if(typeof fbq==='function'){fbq('trackCustom','AgendarAuditoria');fbq('track','Schedule');}
+    paso(3);arrancarReloj(Date.now()+15*60*1000);crearPago();
+  });
+  var relojT=null;
+  function arrancarReloj(fin){
+    var el=document.getElementById('pg-reloj');clearInterval(relojT);
+    function tic(){var r=Math.max(0,fin-Date.now()),mm=Math.floor(r/60000),ss=Math.floor(r%60000/1000);
+      el.textContent=(mm<10?'0':'')+mm+':'+(ss<10?'0':'')+ss;
+      if(r<=0){clearInterval(relojT);el.classList.add('fin');el.textContent='Se terminó el tiempo: si no pagaste, la reserva se cancela.';}}
+    tic();relojT=setInterval(tic,1000);
+  }
+
+  function crearPago(){
+    var er=document.getElementById('pg-err3');er.textContent='';b.disabled=true;b.firstChild.nodeValue='Preparando el pago… ';
     var fbc=ck('_fbc');if(!fbc&&utm.fbclid)fbc='fb.1.'+Date.now()+'.'+utm.fbclid;
-    fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accion:'crear',nombre:n,email:em,fbp:ck('_fbp'),fbc:fbc,utm:utm,origen:location.href})})
+    fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accion:'crear',nombre:datos.nombre,email:datos.email,event_uri:turno.event_uri,invitee_uri:turno.invitee_uri,fbp:ck('_fbp'),fbc:fbc,utm:utm,origen:location.href})})
     .then(function(r){return r.json()}).then(function(d){
       if(!d||!d.url)throw new Error(d&&d.error||'error');
-      if(typeof fbq==='function'){fbq('trackCustom','AgendarAuditoria');fbq('track','InitiateCheckout',{value:60000,currency:'ARS',content_name:'Auditoría con Agus'},{eventID:'ic-'+d.ref});}
-      try{localStorage.setItem('aud_ref',d.ref)}catch(_){}
-      setTimeout(function(){location.href=d.url},300);
-    }).catch(function(x){b.disabled=false;b.firstChild.nodeValue='Ir a pagar con Mercado Pago ';er.textContent=(x&&x.message&&x.message!=='error')?x.message:'No pudimos abrir el pago. Probá de nuevo o escribime por WhatsApp.'});
+      urlPago=d.url;try{localStorage.setItem('aud_ref',d.ref)}catch(_){}
+      b.dataset.ref=d.ref;b.disabled=false;b.firstChild.nodeValue='Pagar $60.000 y confirmar mi turno ';
+    }).catch(function(x){b.disabled=false;b.firstChild.nodeValue='Reintentar ';er.textContent=(x&&x.message&&x.message!=='error')?x.message:'No pudimos preparar el pago. Tocá reintentar o escribime por WhatsApp.'});
+  }
+  b.addEventListener('click',function(){
+    if(!urlPago){crearPago();return}
+    if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:60000,currency:'ARS',content_name:'Auditoría con Agus'},{eventID:'ic-'+b.dataset.ref});
+    location.href=urlPago;
   });
+
   document.addEventListener('click',function(e){
     var a=e.target.closest&&e.target.closest('a');if(!a||typeof fbq!=='function')return;
     if(/auditoria-inicial-con-agus/.test(a.href)){fbq('trackCustom','PagoUSDTiendup');fbq('track','InitiateCheckout',{value:45,currency:'USD'});}

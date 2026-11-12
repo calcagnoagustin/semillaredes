@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>¡Gracias! Reservá tu auditoría — Semilla Redes</title>
+<title>Tu auditoría — Semilla Redes</title>
 <meta name="robots" content="noindex"/>
 <meta name="theme-color" content="#F8F0E2"/>
 <link rel="apple-touch-icon" href="/icon-180.png?v=4"/>
@@ -33,6 +33,8 @@ p{font-size:16px;line-height:1.45;color:var(--muted);margin-bottom:10px}
 .spin{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--red);border-radius:50%;margin:8px auto 16px;animation:g 1s linear infinite}
 @keyframes g{to{transform:rotate(360deg)}}
 .oculto{display:none}
+.cuando{font-size:18px;color:var(--navy);font-weight:700}
+.regla{background:#FFF4D6;border:2px solid #E9B949;color:#4A3A0A;border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.4;margin:12px 0;text-align:left}
 </style>
 </head>
 <body>
@@ -45,30 +47,43 @@ p{font-size:16px;line-height:1.45;color:var(--muted);margin-bottom:10px}
 </div>
 
 <div class="card oculto" id="ok">
-  <h1>¡Gracias<span id="nom"></span>!<br><span>Tu auditoría está paga.</span></h1>
-  <p>Ahora elegí el día y horario que mejor te quede.</p>
-  <a class="btn" id="cal" href="#" target="_blank" rel="noopener">Elegir día y horario →</a>
+  <h1>¡Gracias<span id="nom"></span>!<br><span>Tu turno está confirmado.</span></h1>
+  <p id="cuando" class="cuando"></p>
+  <p>Te llega la invitación con el link de Zoom al mail con el que reservaste.</p>
+  <a class="btn oculto" id="cal" href="#" target="_blank" rel="noopener">Elegir día y horario →</a>
   <div class="pasos">
     <b>Qué sigue:</b><br>
-    1. Elegís el horario en el calendario (con el mismo email con el que pagaste).<br>
-    2. Te llega la invitación con el link de Zoom.<br>
-    3. Nos vemos una hora y te llevás tu plan.<br><br>
-    El comprobante de pago te lo manda Mercado Pago por mail. Cualquier duda, escribime por <a href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20ya%20pagu%C3%A9%20la%20auditor%C3%ADa" target="_blank" rel="noopener">WhatsApp</a>.
+    1. Revisá tu mail: ahí está la invitación de Calendly con el Zoom.<br>
+    2. Nos vemos una hora y te llevás tu plan.<br><br>
+    El comprobante de pago te lo manda Mercado Pago por mail. Si necesitás cambiar el horario, usá el link de la invitación o escribime por <a href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20ya%20pagu%C3%A9%20la%20auditor%C3%ADa" target="_blank" rel="noopener">WhatsApp</a>.
   </div>
+</div>
+
+<div class="card oculto" id="falta">
+  <h1>Tu turno <span>todavía NO está confirmado</span></h1>
+  <p id="cuando2" class="cuando"></p>
+  <div class="regla"><b>Falta el pago.</b> El horario queda reservado hasta las <b id="vence"></b> (te quedan <b id="resta"></b>). Si no pagás antes, la reserva se cancela sola y el horario se libera.</div>
+  <a class="btn" id="pagar" href="#">Pagar $60.000 y confirmar →</a><br>
+  <a class="btn sec" href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20tengo%20un%20problema%20para%20pagar%20la%20auditor%C3%ADa" target="_blank" rel="noopener">Tengo un problema para pagar</a>
 </div>
 
 <div class="card oculto" id="pend">
   <h1>Tu pago está <span>en proceso</span></h1>
-  <p>Mercado Pago todavía no lo acreditó (pasa con pagos en efectivo o algunas tarjetas). Apenas se acredite, volvé a esta misma página para elegir tu horario.</p>
-  <p>Guardá este link o escribime por WhatsApp y te paso el calendario.</p>
+  <p>Mercado Pago todavía no lo acreditó. Apenas se acredite, tu turno queda confirmado: volvé a esta misma página para verlo.</p>
   <a class="btn" href="javascript:location.reload()">Volver a chequear</a><br>
   <a class="btn sec" href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20pagu%C3%A9%20la%20auditor%C3%ADa%20y%20est%C3%A1%20en%20proceso" target="_blank" rel="noopener">WhatsApp</a>
 </div>
 
+<div class="card oculto" id="cad">
+  <h1>Esta reserva <span>se canceló</span></h1>
+  <p>Pasaron los 15 minutos sin pago, así que el horario se liberó. Podés reservar otro y pagarlo para confirmarlo.</p>
+  <a class="btn" href="/auditoria-agus/#pagar">Reservar de nuevo</a>
+</div>
+
 <div class="card oculto" id="no">
-  <h1>No encontramos <span>tu pago</span></h1>
-  <p>Si ya pagaste, puede tardar unos minutos. Si no, podés volver a intentarlo.</p>
-  <a class="btn" href="/auditoria-agus/#pagar">Volver a intentar</a><br>
+  <h1>No encontramos <span>tu reserva</span></h1>
+  <p>Si ya pagaste, puede tardar unos minutos. Si no, podés reservar de nuevo.</p>
+  <a class="btn" href="/auditoria-agus/#pagar">Reservar de nuevo</a><br>
   <a class="btn sec" href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20tuve%20un%20problema%20con%20el%20pago%20de%20la%20auditor%C3%ADa" target="_blank" rel="noopener">WhatsApp</a>
 </div>
 
@@ -77,7 +92,10 @@ p{font-size:16px;line-height:1.45;color:var(--muted);margin-bottom:10px}
   var FN='https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/auditoria-pago';
   var q=new URLSearchParams(location.search),ref=q.get('ref')||q.get('external_reference')||'';
   try{if(!ref)ref=localStorage.getItem('aud_ref')||''}catch(_){}
-  function ver(id){['cargando','ok','pend','no'].forEach(function(x){document.getElementById(x).classList.toggle('oculto',x!==id)})}
+  var ids=['cargando','ok','falta','pend','cad','no'];
+  function ver(id){ids.forEach(function(x){document.getElementById(x).classList.toggle('oculto',x!==id)})}
+  function fecha(iso){try{return new Date(iso).toLocaleString('es-AR',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit',timeZone:'America/Argentina/Buenos_Aires'})+' hs (hora de Argentina)'}catch(_){return ''}}
+  function hora(iso){try{return new Date(iso).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',timeZone:'America/Argentina/Buenos_Aires'})+' hs'}catch(_){return ''}}
   if(!/^[0-9a-f-]{36}$/i.test(ref)){ver('no');return}
   var intentos=0;
   function chequear(){
@@ -86,17 +104,24 @@ p{font-size:16px;line-height:1.45;color:var(--muted);margin-bottom:10px}
     .then(function(r){return r.json()}).then(function(d){
       if(d&&d.pagada){
         if(d.nombre)document.getElementById('nom').textContent=', '+d.nombre;
-        document.getElementById('cal').href=d.calendly;
+        if(d.turno)document.getElementById('cuando').textContent='Te espero el '+fecha(d.turno)+'.';
+        if(d.calendly){var c=document.getElementById('cal');c.href=d.calendly;c.classList.remove('oculto')}
         ver('ok');
         var k='aud_compra_'+ref,ya=false;try{ya=localStorage.getItem(k)}catch(_){}
         if(!ya&&typeof fbq==='function'){fbq('track','Purchase',{value:Number(d.monto)||60000,currency:d.moneda||'ARS',content_name:'Auditoría con Agus',content_type:'product'},{eventID:'aud-'+ref});try{localStorage.setItem(k,'1')}catch(_){}}
         return;
       }
       var est=d&&d.estado;
-      if((est==='pending'||est==='in_process'||est==='authorized')){ver('pend');return}
-      if(intentos<6){setTimeout(chequear,2500);return}
-      ver(est&&est!=='iniciada'&&est!=='rejected'&&est!=='cancelled'?'pend':'no');
-    }).catch(function(){if(intentos<6)setTimeout(chequear,2500);else ver('no')});
+      if(est==='caducada'){ver('cad');return}
+      if(est==='pending'||est==='in_process'||est==='authorized'){ver('pend');return}
+      if(intentos<4&&!q.get('fallo')){setTimeout(chequear,2500);return}
+      if(d&&d.pagar){
+        document.getElementById('pagar').href=d.pagar;document.getElementById('vence').textContent=hora(d.vence);(function(){var fin=Date.parse(d.vence),el=document.getElementById('resta');function tic(){var r=Math.max(0,fin-Date.now());el.textContent=Math.floor(r/60000)+' min '+Math.floor(r%60000/1000)+' s';if(r<=0)location.reload()}tic();setInterval(tic,1000)})();
+        if(d.turno)document.getElementById('cuando2').textContent='Elegiste el '+fecha(d.turno)+'.';
+        ver('falta');return;
+      }
+      ver(d&&d.estado?'cad':'no');
+    }).catch(function(){if(intentos<4)setTimeout(chequear,2500);else ver('no')});
   }
   chequear();
 })();
