@@ -256,7 +256,7 @@ const SECCIONES = {
   inicio: { t: 'Inicio', b: 'Qué está pasando con el negocio hoy.', f: secInicio },
   suscripciones: { t: 'Suscripciones', b: 'Quién paga qué, cuándo se le cobra y qué le da acceso.', f: secSuscripciones },
   planes: { t: 'Planes y links de pago', b: 'Los tiers de Semilla y el link de cada uno para mandar por WhatsApp.', f: secPlanes },
-  clientes: { t: 'Clientes', b: 'Proyectos con panel en la app.', f: secClientes },
+  clientes: { t: 'Clientes', b: 'Clientes activos, envío del reporte por WhatsApp y paneles en la app.', f: secClientes },
   alumnos: { t: 'Alumnos', b: 'Personas en la Formación Semilla.', f: secAlumnos },
   leads: { t: 'Leads', b: 'Los que entran solos por la auditoría y los que salimos a buscar.', f: secLeadsTabs },
   clases: { t: 'Clases', b: 'Subir y ordenar las clases de la Formación.', f: () => secPronto('Clases', ['Subir el video de cada clase a un servidor propio (sin logo ni descarga de YouTube).', 'Ordenar por módulo y pilar del Método: Modelo de negocio, Comunicación, Publicidad.', 'Elegir qué tier ve cada clase.', 'Reemplazar la clase anterior cuando la vuelta al sol avanza.']) },
@@ -484,12 +484,27 @@ async function secPlanes() {
 
 /* ---------- Clientes / Alumnos / Leads ---------- */
 async function secClientes() {
-  const r = await rpc('adm_clientes'); if (noAut(r)) return; const L = r.items || [];
+  const [r, ra] = await Promise.all([rpc('adm_clientes'), rpc('adm_clientes_activos')]); if (noAut(r)) return; const L = r.items || [];
+  const A = (ra && ra.items) || [];
   $('acciones').innerHTML = '';
-  $('contenido').innerHTML = `<div class="filtros"><input id="c-q" placeholder="Buscar"><span class="cnt">${L.filter((c) => c.activo && !c.interno).length} activos</span></div>
+  // 12/11/2026: clientes activos (planilla Clientes 2026, noviembre) y si se les mandó el reporte por WhatsApp
+  const EST = { read: ['Leído', 'activa'], delivered: ['Entregado', 'activa'], sent: ['Enviado', 'pendiente'], enviado: ['Enviado', 'pendiente'], failed: ['No llegó', 'rejected'] };
+  const tel = (w) => !w ? '' : /^54911\d{8}$/.test(w) ? `+54 9 11 ${w.slice(5, 9)}-${w.slice(9)}` : '+' + w;
+  const envio = (c) => { const e = c.ultimo_envio; if (!e) return `<span class="chip">Sin enviar</span>`; const [l, k] = EST[e.estado] || [e.estado, '']; return `<span class="chip ${k}">${l}</span><span class="sub">${esc(e.periodo || '')} · ${fecha(e.enviado_en, true)}</span>`; };
+  const filaA = (c) => `<tr><td><b>${esc(c.cliente)}</b><span class="sub">${esc(c.servicio || '')}${c.contacto ? ' · ' + esc(c.contacto) : ''}${c.whatsapp ? '<span class="solo-movil"> · ' + tel(c.whatsapp) + '</span>' : ''}${!c.slug ? ' · sin panel en la app' : ''}</span></td>
+    <td class="oc">${c.pago_mes ? '<span class="chip activa">Pagó</span>' : '<span class="chip pendiente">Falta</span>'}</td>
+    <td class="oc" style="white-space:nowrap">${c.whatsapp ? tel(c.whatsapp) : '<span class="sub">—</span>'}</td>
+    <td class="oc">${c.ultimo_reporte ? fecha(c.ultimo_reporte) : '<span class="sub">—</span>'}</td>
+    <td class="num">${envio(c)}</td>
+    <td class="meta">${c.whatsapp && c.slug ? `<button class="sec" data-wa="${esc(c.cliente)}" data-on="${c.wa_reporte_on ? 0 : 1}" style="padding:5px 12px;font-size:12.5px">${c.wa_reporte_on ? 'WhatsApp prendido' : 'WhatsApp apagado'}</button>` : ''}</td></tr>`;
+  const bloqueA = A.length ? `<div class="bloque" style="padding:0;overflow:auto"><div style="padding:16px 18px 6px"><h2>Clientes activos</h2><p>Según la planilla Clientes 2026 (noviembre). «Reporte por WhatsApp» muestra el último envío desde el número de Semilla. Se manda solo a los que tienen WhatsApp prendido.</p></div>
+    <table class="resp"><thead><tr><th>Cliente</th><th>Pago del mes</th><th>WhatsApp</th><th>Último reporte</th><th>Reporte por WhatsApp</th><th></th></tr></thead><tbody>${A.map(filaA).join('')}</tbody></table></div>
+    <h2 style="margin:22px 0 10px">Paneles en la app</h2>` : '';
+  $('contenido').innerHTML = `${bloqueA}<div class="filtros"><input id="c-q" placeholder="Buscar"><span class="cnt">${L.filter((c) => c.activo && !c.interno).length} activos</span></div>
     <div class="bloque" style="padding:0;overflow:auto"><table class="resp"><thead><tr><th>Proyecto</th><th>Tipo</th><th>Plan</th><th>Conexiones</th><th>Último reporte</th><th></th></tr></thead><tbody id="t-cli"></tbody></table></div>`;
   const pintar = () => { const q = $('c-q').value.toLowerCase(); $('t-cli').innerHTML = L.filter((c) => !q || c.nombre.toLowerCase().includes(q)).map((c) => `<tr><td><b>${esc(c.nombre)}</b>${c.interno ? ' <span class="chip">interno</span>' : ''}${!c.activo ? ' <span class="chip cancelada">inactivo</span>' : ''}<div class="sub"><span class="solo-movil">${esc(c.tipo || '')}${c.plan ? ' · ' + esc(c.plan) : ''}</span><span class="solo-desk">${esc(c.instagram || '')}</span></div></td><td class="oc">${esc(c.tipo || '')}</td><td class="oc">${c.plan ? esc(c.plan) : '<span style="color:var(--mute)">—</span>'}</td><td class="oc">${c.conexiones}</td><td class="meta">${fecha(c.ultimo_reporte)}</td><td class="oc" style="color:var(--mute);font-size:12px">${esc(c.slug)}</td></tr>`).join(''); };
   $('c-q').oninput = pintar; pintar();
+  document.querySelectorAll('[data-wa]').forEach((bt) => bt.onclick = async () => { bt.disabled = true; const r = await rpc('adm_cliente_wa_set', { p_cliente: bt.dataset.wa, p_on: bt.dataset.on === '1' }); if (r.ok === false) { bt.disabled = false; return toast(r.error, true); } toast(bt.dataset.on === '1' ? 'Se le va a mandar el reporte por WhatsApp' : 'WhatsApp apagado'); navegar(); });
 }
 async function secAlumnos() {
   const r = await rpc('adm_alumnos'); if (noAut(r)) return; const L = r.items || [];
