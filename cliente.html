@@ -2634,7 +2634,7 @@ const SR_ACC=[
 function srAccion(txt){ const t=String(txt).replace(/<[^>]+>/g,''); for(const a of SR_ACC) if(a.re.test(t)) return a; return null; }
 // Anclas: dónde vive cada acción dentro del panel. Primero lo más puntual (el formulario), después la sección.
 const SR_ANCLA={
-  ventas:['.ventaBox .formv','.ventaBox','.ventasF','#sec-ventas','#sec-consultas'],
+  ventas:['.ventaBox .formv','.ventaBox','.prodF','.ventasF','#sec-ventas','#sec-consultas'],
   fechas:['#f_fecha','#sec-proximas-fechas'],
   tareas:['#t_nueva','#sec-tarea-para-el-hogar'],
   web:['#tuweb','#sec-tu-web'],
