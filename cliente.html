@@ -1756,7 +1756,7 @@ function pintarMensajes(d){
         <div class="n"><div class="l">Mensajes</div><div class="v">${fmt(men)}</div><div class="d">${delta(men, ma[c.p+'_mensajes'])||''}</div></div>
         <div class="n"><div class="l">Costo x mensaje</div><div class="v">${fmt(costo,2)}</div><div class="d">USD</div></div>
         <div class="n"><div class="l">Alcance</div><div class="v">${fmt(alc)}</div><div class="d">personas</div></div>
-        <div class="n"><div class="l">Invertido</div><div class="v">${fmt(invc,0)}</div><div class="d">USD · ${fmt(m[c.p+'_inv_diaria'])} por día</div></div>
+        <div class="n"><div class="l">Invertido</div><div class="v">${fmt(invc,0)}</div><div class="d">USD · ${(c.p==='dj'||c.p==='fog')&&!(u&&Number(u.metricas[c.p+'_inv_diaria'])>0)?'pausada':fmt(m[c.p+'_inv_diaria'])+' por día'}</div></div>
       </div>
       <div class="zona"><span>PBA <b>${fmt(m[c.p+'_pba'])}</b></span><span>·</span><span>CABA <b>${fmt(m[c.p+'_caba'])}</b></span></div>
       ${(()=>{ // 05/11: costo por mensaje de esta campaña, período por período
@@ -1767,7 +1767,7 @@ function pintarMensajes(d){
   { // 05/11: contenidos de la semana (anuncios que corrieron en los últimos 7 días) con captura y costo por mensaje
     const K=(d.campanas||[]).map(k=>k.metricas||{}).find(M=>M.tipo==='anuncios'), A=K?(K.anuncios||[]).filter(z=>Number(z.inversion)>=0.5):[];
     if(A.length){ const best=A.filter(z=>z.costo!=null).reduce((b,z)=>!b||z.costo<b.costo?z:b,null);
-      h+=`<h2>Contenidos de la semana</h2><p class="sub">Cada anuncio que corrió del ${fecha(K.desde)} al ${fecha(K.hasta)}, ordenados del costo por mensaje más bajo al más alto.</p><div class="ansem">${A.map(z=>`<div class="an ${best&&z.id===best.id?'mejor':''}">${z.img?`<img src="${z.img}" alt="" loading="lazy">`:''}<div class="cu">${best&&z.id===best.id?'<span class="tag">El más eficiente</span>':''}<div class="cp">${(z.campania||'').replace(/^RESERVAS /i,'Reservas ').toLowerCase().replace(/^./,c=>c.toUpperCase())}${/famosos/i.test(z.conjunto||'')?' · Famosos':''}</div><div class="nm">${z.nombre||''}</div>
+      h+=`<h2>Contenidos de la semana</h2><p class="sub">Los anuncios activos en pauta hoy, con lo que hicieron del ${fecha(K.desde)} al ${fecha(K.hasta)}. Ordenados del costo por mensaje más bajo al más alto.</p><div class="ansem">${A.map(z=>`<div class="an ${best&&z.id===best.id?'mejor':''}">${z.img?`<img src="${z.img}" alt="" loading="lazy">`:''}<div class="cu">${best&&z.id===best.id?'<span class="tag">El más eficiente</span>':''}<div class="cp">${(z.campania||'').replace(/^RESERVAS /i,'Reservas ').toLowerCase().replace(/^./,c=>c.toUpperCase())}${/famosos/i.test(z.conjunto||'')?' · Famosos':''}</div><div class="nm">${z.nombre||''}</div>
         <div class="cm"><b>${z.costo!=null?fmt(z.costo,2):'—'}</b><span>USD por mensaje</span></div>
         <div class="ds"><span><b>${fmt(z.mensajes)}</b> ${z.mensajes===1?'mensaje':'mensajes'}</span><span><b>${fmt(z.inversion,2)}</b> USD invertidos</span><span><b>${fmt(z.alcance)}</b> personas</span></div>
         ${z.link?`<a href="${z.link}" target="_blank" rel="noopener">Ver en Instagram →</a>`:''}</div></div>`).join('')}</div><p class="sub" style="margin-top:8px">Actualizado el ${K.actualizado_txt||''} hs.</p>`; }
@@ -2155,7 +2155,7 @@ function pintarResto(d,h){
 
   // --- campañas con panel propio (p. ej. Festival de la Rosa): mismo dato que su URL aparte ---
   for(const K of (d.campanas||[])){
-    if(['detalle','destacada'].includes((K.metricas||{}).tipo)) continue;   // 02/11: los detalles van en su propia sección
+    if(['detalle','destacada','anuncios'].includes((K.metricas||{}).tipo)) continue;   // 12/11: 'anuncios' es Contenidos de la semana, va arriba   // 02/11: los detalles van en su propia sección
     const M=K.metricas||{}, inv=Number(M.inversion||0), vv=K.vendido!=null?Number(K.vendido):null;
     const nfK=(v,dd=0)=>Number(v).toLocaleString('es-AR',{minimumFractionDigits:dd,maximumFractionDigits:dd});
     const monK=(v,dd=0)=>((d.cliente.moneda||'USD')==='ARS'?'$ ':'USD ')+nfK(v,dd);
