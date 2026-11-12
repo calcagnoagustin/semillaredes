@@ -210,8 +210,9 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 
 .usd{display:block;text-align:center;font-size:11.5px;color:var(--muted);text-decoration:underline;margin-top:4px}
 .aviso{background:var(--rose-bg);color:var(--navy);border-radius:12px;padding:12px 16px;font-size:14px;margin:14px auto 0;max-width:1000px;display:none}
-.modal{position:fixed;inset:0;z-index:100;background:rgba(22,33,90,.5);display:flex;align-items:flex-start;justify-content:center;padding:14px;overflow-y:auto;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s}
-.modal.on{opacity:1;visibility:visible;pointer-events:auto}
+.modal{position:fixed;inset:0;z-index:-1;background:rgba(22,33,90,.5);display:flex;align-items:flex-start;justify-content:center;padding:14px;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity .15s}
+.modal.on{opacity:1;z-index:100;pointer-events:auto}
+.modal:not(.on) *{pointer-events:none!important}
 .caja{background:#fff;border-radius:18px;max-width:420px;width:100%;padding:24px 22px 20px;box-shadow:0 20px 60px rgba(0,0,0,.2);position:relative;margin:auto 0}
 .caja.ancha{max-width:760px;padding:20px 16px 14px}
 .caja h2{font-size:25px;font-weight:900;margin-bottom:4px}
@@ -239,6 +240,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 .oculto{display:none!important}
 .cal{position:relative}
 .cargando-cal{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--muted);z-index:0}
+.cal .calendly-inline-widget,.cal iframe{position:relative;z-index:1;background:#fff}
 @media (max-width:600px){.cal{height:600px}.caja.ancha{padding:16px 10px 10px}}
 </style>
 </head>
@@ -441,7 +443,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
     Object.keys(utm).forEach(function(k){if(k.indexOf('utm_')===0)u.searchParams.set(k,utm[k])});
     Calendly.initInlineWidget({url:u.toString(),parentElement:document.getElementById('pg-cal')});
   }
-  if(document.readyState==='complete')setTimeout(cargarCal,300);else window.addEventListener('load',function(){setTimeout(cargarCal,300)});
+  cargarCal();
 
   function abrir(e){if(e)e.preventDefault();cargarCal();m.classList.add('on');paso(turno?2:1);
     if(typeof fbq==='function')fbq('trackCustom','AbrirPago');}
