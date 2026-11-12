@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>¡Gracias! Reservá tu auditoría — Semilla Redes</title>
+<meta name="robots" content="noindex"/>
+<meta name="theme-color" content="#F8F0E2"/>
+<link rel="apple-touch-icon" href="/icon-180.png?v=4"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JXRH3E28FF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-JXRH3E28FF');</script>
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','953367820005998');fbq('track','PageView');
+</script>
+<style>
+:root{--bg:#F8F0E2;--paper:#FBF6EC;--navy:#16215A;--red:#D8434F;--red-dark:#BF3440;--rose-bg:#F8E3DE;--olive:#7B7C2E;--olive-soft:#E4E0BE;--text:#2B2B33;--muted:#4F4D57;--line:#E6DCCB}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 18px;-webkit-font-smoothing:antialiased}
+.logo{font-weight:800;letter-spacing:.06em;color:var(--navy);font-size:17px;margin-bottom:22px;text-decoration:none}
+.logo small{font-weight:500;letter-spacing:.14em;font-size:17px}
+.card{background:#fff;border-radius:20px;max-width:520px;width:100%;padding:34px 28px 28px;box-shadow:0 14px 40px rgba(22,33,90,.12);text-align:center}
+h1{font-family:'Playfair Display',serif;color:var(--navy);font-size:34px;font-weight:900;line-height:1.05;margin-bottom:12px}
+h1 span{color:var(--red)}
+p{font-size:16px;line-height:1.45;color:var(--muted);margin-bottom:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:16px;border-radius:999px;padding:15px 28px;background:var(--red);color:#fff;text-decoration:none;margin-top:14px;box-shadow:0 4px 12px rgba(216,67,79,.22)}
+.btn:hover{background:var(--red-dark)}
+.btn.sec{background:var(--olive-soft);color:var(--navy);box-shadow:none}
+.pasos{text-align:left;background:var(--paper);border-radius:14px;padding:16px 18px;margin-top:20px;font-size:14px;color:var(--text);line-height:1.5}
+.pasos b{color:var(--navy)}
+.spin{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--red);border-radius:50%;margin:8px auto 16px;animation:g 1s linear infinite}
+@keyframes g{to{transform:rotate(360deg)}}
+.oculto{display:none}
+</style>
+</head>
+<body>
+<a class="logo" href="/">SEMILLA <small>REDES</small></a>
+
+<div class="card" id="cargando">
+  <div class="spin"></div>
+  <h1>Confirmando tu pago…</h1>
+  <p>Un segundo, estamos chequeando con Mercado Pago.</p>
+</div>
+
+<div class="card oculto" id="ok">
+  <h1>¡Gracias<span id="nom"></span>!<br><span>Tu auditoría está paga.</span></h1>
+  <p>Ahora elegí el día y horario que mejor te quede.</p>
+  <a class="btn" id="cal" href="#" target="_blank" rel="noopener">Elegir día y horario →</a>
+  <div class="pasos">
+    <b>Qué sigue:</b><br>
+    1. Elegís el horario en el calendario (con el mismo email con el que pagaste).<br>
+    2. Te llega la invitación con el link de Zoom.<br>
+    3. Nos vemos una hora y te llevás tu plan.<br><br>
+    El comprobante de pago te lo manda Mercado Pago por mail. Cualquier duda, escribime por <a href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20ya%20pagu%C3%A9%20la%20auditor%C3%ADa" target="_blank" rel="noopener">WhatsApp</a>.
+  </div>
+</div>
+
+<div class="card oculto" id="pend">
+  <h1>Tu pago está <span>en proceso</span></h1>
+  <p>Mercado Pago todavía no lo acreditó (pasa con pagos en efectivo o algunas tarjetas). Apenas se acredite, volvé a esta misma página para elegir tu horario.</p>
+  <p>Guardá este link o escribime por WhatsApp y te paso el calendario.</p>
+  <a class="btn" href="javascript:location.reload()">Volver a chequear</a><br>
+  <a class="btn sec" href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20pagu%C3%A9%20la%20auditor%C3%ADa%20y%20est%C3%A1%20en%20proceso" target="_blank" rel="noopener">WhatsApp</a>
+</div>
+
+<div class="card oculto" id="no">
+  <h1>No encontramos <span>tu pago</span></h1>
+  <p>Si ya pagaste, puede tardar unos minutos. Si no, podés volver a intentarlo.</p>
+  <a class="btn" href="/auditoria-agus/#pagar">Volver a intentar</a><br>
+  <a class="btn sec" href="https://wa.me/5492665242011?text=Hola%20Agus%2C%20tuve%20un%20problema%20con%20el%20pago%20de%20la%20auditor%C3%ADa" target="_blank" rel="noopener">WhatsApp</a>
+</div>
+
+<script>
+(function(){
+  var FN='https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/auditoria-pago';
+  var q=new URLSearchParams(location.search),ref=q.get('ref')||q.get('external_reference')||'';
+  try{if(!ref)ref=localStorage.getItem('aud_ref')||''}catch(_){}
+  function ver(id){['cargando','ok','pend','no'].forEach(function(x){document.getElementById(x).classList.toggle('oculto',x!==id)})}
+  if(!/^[0-9a-f-]{36}$/i.test(ref)){ver('no');return}
+  var intentos=0;
+  function chequear(){
+    intentos++;
+    fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accion:'estado',ref:ref})})
+    .then(function(r){return r.json()}).then(function(d){
+      if(d&&d.pagada){
+        if(d.nombre)document.getElementById('nom').textContent=', '+d.nombre;
+        document.getElementById('cal').href=d.calendly;
+        ver('ok');
+        var k='aud_compra_'+ref,ya=false;try{ya=localStorage.getItem(k)}catch(_){}
+        if(!ya&&typeof fbq==='function'){fbq('track','Purchase',{value:Number(d.monto)||60000,currency:d.moneda||'ARS',content_name:'Auditoría con Agus',content_type:'product'},{eventID:'aud-'+ref});try{localStorage.setItem(k,'1')}catch(_){}}
+        return;
+      }
+      var est=d&&d.estado;
+      if((est==='pending'||est==='in_process'||est==='authorized')){ver('pend');return}
+      if(intentos<6){setTimeout(chequear,2500);return}
+      ver(est&&est!=='iniciada'&&est!=='rejected'&&est!=='cancelled'?'pend':'no');
+    }).catch(function(){if(intentos<6)setTimeout(chequear,2500);else ver('no')});
+  }
+  chequear();
+})();
+</script>
+</body>
+</html>
