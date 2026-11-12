@@ -413,6 +413,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 
 
 <script src="https://semillaredes.com/assets/resenas.js?v=3" defer></script>
+<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 <script>
 (function(){
   var FN='https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/auditoria-pago';
@@ -432,14 +433,13 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
   // el calendario se carga escondido apenas abre la página: cuando tocan "Reservá" ya está listo
   var calCargado=false;
   function cargarCal(){
-    if(calCargado)return;calCargado=true;
+    if(calCargado)return;
+    if(!window.Calendly){setTimeout(cargarCal,150);return}
+    calCargado=true;
     var u=new URL(CAL);
-    u.searchParams.set('embed_domain',location.hostname);u.searchParams.set('embed_type','Inline');
     u.searchParams.set('hide_gdpr_banner','1');u.searchParams.set('primary_color','d8434f');
     Object.keys(utm).forEach(function(k){if(k.indexOf('utm_')===0)u.searchParams.set(k,utm[k])});
-    var fr=document.createElement('iframe');fr.src=u.toString();fr.title='Elegí día y horario';
-    fr.style.cssText='position:relative;z-index:1;width:100%;height:100%;border:0';
-    document.getElementById('pg-cal').appendChild(fr);
+    Calendly.initInlineWidget({url:u.toString(),parentElement:document.getElementById('pg-cal')});
   }
   if(document.readyState==='complete')setTimeout(cargarCal,300);else window.addEventListener('load',function(){setTimeout(cargarCal,300)});
 
