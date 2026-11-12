@@ -34,6 +34,15 @@ iframe{border:0;width:100%;height:100%;display:block}
 </style>
 </head>
 <body>
+<div id="waIos" style="position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 10px);background:#1A2456;color:#F2EDE4;border-radius:14px;padding:12px 14px;display:none;align-items:center;gap:11px;font-family:system-ui,-apple-system,sans-serif;box-shadow:0 8px 28px rgba(0,0,0,.25);z-index:130">
+  <img src="/icono-192.png?v=4" alt="" style="width:36px;height:36px;border-radius:9px;flex:none">
+  <span style="flex:1;font-size:13.5px;line-height:1.38">Tu reporte también está en tu app <b>Semilla IA</b>. La próxima vez abrilo tocando el ícono en tu pantalla de inicio.</span>
+  <button id="waIosX" aria-label="Cerrar" style="border:0;background:transparent;color:#B9B5C6;font-size:20px;padding:4px 2px;cursor:pointer">×</button>
+</div>
+<script>/* 12/11: llega desde el WhatsApp del reporte en iPhone (Safari no puede abrir la app instalada): cartel que lo recuerda */
+(function(){ try{ const q=new URLSearchParams(location.search), ios=/iphone|ipad|ipod/i.test(navigator.userAgent), app=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
+  if(q.get('src')==='wa' && ios && !app){ window.SR_WA_IOS=true; const b=document.getElementById('waIos'); b.style.display='flex'; document.getElementById('waIosX').onclick=()=>b.style.display='none'; setTimeout(()=>{ b.style.display='none'; },15000); } }catch(e){} })();
+</script>
 <iframe id="marco" allow="microphone; camera" title="Spam Studio"></iframe>
 
 <div id="instalar">
@@ -102,6 +111,7 @@ const esMovil=/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
 const enApp=/instagram|fban|fbav|whatsapp|line\/|tiktok/i.test(navigator.userAgent);
 const pop=document.getElementById('popInst'), pasos=document.getElementById('piPasos'), piSi=document.getElementById('piSi');
 function abrirPop(){
+  if(window.SR_WA_IOS) return;   // 12/11: viene del WhatsApp en iPhone: ya tiene el cartel de arriba
   if(yaInstalada || oculto || !esMovil) return;
   if(enApp){
     document.getElementById('piTxt').textContent='Para instalarlo, primero abrí este link en el navegador del celular.';
