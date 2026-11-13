@@ -28,13 +28,5 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ],
-  "id": "/marcoscifuentes/",
-  "handle_links": "preferred",
-  "launch_handler": {
-    "client_mode": [
-      "navigate-existing",
-      "auto"
-    ]
-  }
+  ]
 }
