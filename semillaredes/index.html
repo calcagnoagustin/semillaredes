@@ -43,6 +43,18 @@ iframe{border:0;width:100%;height:100%;display:block}
 (function(){ try{ const q=new URLSearchParams(location.search), ios=/iphone|ipad|ipod/i.test(navigator.userAgent), app=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
   if(q.get('src')==='wa' && ios && !app){ window.SR_WA_IOS=true; const b=document.getElementById('waIos'); b.style.display='flex'; document.getElementById('waIosX').onclick=()=>b.style.display='none'; setTimeout(()=>{ b.style.display='none'; },15000); } }catch(e){} })();
 </script>
+<div id="waAnd" style="position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 10px);background:#1A2456;color:#F2EDE4;border-radius:14px;padding:12px 14px;display:none;align-items:center;gap:11px;font-family:system-ui,sans-serif;box-shadow:0 8px 28px rgba(0,0,0,.25);z-index:130">
+  <img src="/icono-192.png?v=4" alt="" style="width:36px;height:36px;border-radius:9px;flex:none">
+  <span style="flex:1;font-size:13.5px;line-height:1.38">¿Tenés instalada la app <b>Semilla IA</b>? Abrí tu reporte ahí.</span>
+  <a id="waAndIr" style="flex:none;background:#F2EDE4;color:#1A2456;font-weight:700;font-size:13.5px;border-radius:10px;padding:9px 12px;text-decoration:none">Abrir</a>
+  <button id="waAndX" aria-label="Cerrar" style="border:0;background:transparent;color:#B9B5C6;font-size:20px;padding:4px 2px;cursor:pointer">×</button>
+</div>
+<script>/* 13/11: llega desde el WhatsApp del reporte en Android: WhatsApp lo abre en su navegador; el botón le pide a Android que lo abra en la app instalada */
+(function(){ try{ const q=new URLSearchParams(location.search), and=/android/i.test(navigator.userAgent), app=window.matchMedia('(display-mode: standalone)').matches;
+  if(q.get('src')==='wa' && and && !app){ const b=document.getElementById('waAnd'), ir=document.getElementById('waAndIr');
+    ir.href='intent://semillaredes.com/semillaredes/?src=app#Intent;scheme=https;S.browser_fallback_url='+encodeURIComponent('https://semillaredes.com/semillaredes/?src=web')+';end';
+    b.style.display='flex'; document.getElementById('waAndX').onclick=()=>b.style.display='none'; } }catch(e){} })();
+</script>
 <iframe id="marco" allow="microphone; camera" title="Semilla Redes"></iframe>
 
 <div id="instalar">
@@ -73,10 +85,6 @@ iframe{border:0;width:100%;height:100%;display:block}
 <script>
 const BASE='https://semillaredes.com/cliente.html?c=semilla-redes&k=14f43d8c92a4';
 const marco=document.getElementById('marco');
-// diagnostico del gesto de recarga (solo este panel): que ve el marco de la app cuando se toca la pantalla
-(function(){ var n=0; function lg(q){ try{ new Image().src='https://vm.semillaredes.com/web/log?p=wrap&e='+q; }catch(e){} }
-  window.addEventListener('touchstart',function(e){ if(n++<3) lg('ts_'+[Math.round(window.scrollY),(document.scrollingElement||document.documentElement).scrollTop,innerHeight,marco.offsetHeight,(e.target&&(e.target.id||e.target.tagName))||'?'].join('_')); },{passive:true,capture:true});
-  window.addEventListener('scroll',function(){ if(n++<6) lg('scroll_'+Math.round(window.scrollY)); },{passive:true}); })();
 try{ localStorage.setItem('sr_cliente_slug','semillaredes'); }catch(e){}
 function cargar(){ marco.src = BASE + '&v=' + Date.now() + (location.hash||''); }
 window.addEventListener('hashchange', cargar);
@@ -115,7 +123,7 @@ const esMovil=/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
 const enApp=/instagram|fban|fbav|whatsapp|line\/|tiktok/i.test(navigator.userAgent);
 const pop=document.getElementById('popInst'), pasos=document.getElementById('piPasos'), piSi=document.getElementById('piSi');
 function abrirPop(){
-  if(window.SR_WA_IOS) return;   // 12/11: viene del WhatsApp en iPhone: ya tiene el cartel de arriba
+  if(window.SR_WA_IOS) return;   // 12/11: viene del WhatsApp en iPhone
   if(yaInstalada || oculto || !esMovil) return;
   if(enApp){
     document.getElementById('piTxt').textContent='Para instalarlo, primero abrí este link en el navegador del celular.';
@@ -189,6 +197,5 @@ document.getElementById('btnAv').onclick=async()=>{
 };
 document.getElementById('cerrarAv').onclick=()=>{ cajaAv.style.display='none'; localStorage.setItem('sr_push_off','1'); };
 </script>
-<script src="https://semillaredes.com/assets/puente.js?v=2" data-app defer></script>
 </body>
 </html>
