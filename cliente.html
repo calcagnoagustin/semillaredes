@@ -338,6 +338,11 @@ details.hist table{border:0;border-radius:0}
 .btnReporte{position:fixed;top:14px;right:14px;z-index:40;background:var(--navy);color:var(--crema);border:0;border-radius:999px;
   padding:10px 18px;font:700 14px/1 Inter,system-ui,sans-serif;letter-spacing:.3px;cursor:pointer;box-shadow:0 4px 14px rgba(26,36,86,.25);display:flex;align-items:center;gap:8px}
 .btnReporte .punto{width:8px;height:8px;border-radius:50%;background:var(--rosa)}
+.tjFondo{position:fixed;inset:0;background:rgba(20,22,40,.55);z-index:70;overflow:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 28px}
+.tjCaja{position:relative;max-width:430px;margin:0 auto}
+.tjCaja img{display:block;width:100%;height:auto;border-radius:24px}
+.tjX{position:absolute;top:24px;right:24px;width:38px;height:38px;border-radius:50%;border:0;background:rgba(30,35,80,.08);color:#1E2350;font-size:24px;line-height:38px;text-align:center;padding:0;cursor:pointer}
+.tjVer{display:block;width:100%;margin-top:12px;border:0;border-radius:14px;background:#1E2350;color:#F2EDE4;font:inherit;font-weight:700;font-size:16px;padding:15px;cursor:pointer}
 .repFondo{position:fixed;inset:0;background:rgba(20,22,40,.45);z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:18px 14px;overflow:auto}
 .repFondo.oculto{display:none}
 .repCaja{background:#fff;border-radius:20px;max-width:620px;width:100%;padding:26px 24px 24px;position:relative;margin:auto 0}
@@ -2706,7 +2711,25 @@ function ponerReporte(d){
   };
   fondo.onclick=e=>{ if(e.target===fondo) cerrar(); };
   if(location.hash==='#ventas'){ const go=n=>{ if(window.V3IR&&document.querySelector('#v3 .scr')&&window.srBuscar&&window.srBuscar('ventas')) { window.srIr('ventas'); setTimeout(()=>{ const bx=document.querySelector('#app .ventaBox')||document.querySelector('.ventaBox'); if(bx) window.scrollTo({top:Math.max(0,bx.getBoundingClientRect().top+scrollY-90),behavior:'smooth'}); },700); } else if(n<60) setTimeout(()=>go(n+1),250); }; go(0); }   // 05/11: link directo para que el cliente cargue sus ventas
-  else if(location.hash==='#reporte' || nuevo) abrir();
+  else if(location.hash==='#reporte' || nuevo){   // 13/11: el día del reporte se abre la tarjeta «Tu reporte» (la misma imagen que va por WhatsApp); si no está, el resumen de siempre
+    const tk=(new URLSearchParams(location.search)).get('k')||'';
+    fetch(API_WEB+'/tarjeta.json?c='+encodeURIComponent(slugR)+'&k='+encodeURIComponent(tk)).then(r=>r.ok?r.json():null).then(t=>{
+      if(t&&t.hay&&t.hasta===I.hasta) verTarjeta(slugR,tk,I.hasta,()=>{ try{ localStorage.setItem(clave,I.fecha); }catch(e){} const p=b.querySelector('.punto'); if(p) p.remove(); });
+      else abrir();
+    }).catch(()=>abrir());
+  }
+}
+function verTarjeta(slugR,tk,hasta,listo){
+  const f=document.createElement('div'); f.className='tjFondo';
+  f.innerHTML=`<div class="tjCaja" role="dialog" aria-label="Tu reporte"><button class="tjX" type="button" aria-label="Cerrar">×</button>
+    <img alt="Tu reporte" src="${API_WEB}/tarjeta?c=${encodeURIComponent(slugR)}&k=${encodeURIComponent(tk)}&h=${encodeURIComponent(hasta)}">
+    <button class="tjVer" type="button">Ver el reporte completo</button></div>`;
+  const img=f.querySelector('img');
+  img.onload=()=>{ document.body.appendChild(f); listo&&listo(); };
+  const cerrar=()=>f.remove();
+  f.querySelector('.tjX').onclick=cerrar;
+  f.onclick=e=>{ if(e.target===f) cerrar(); };
+  f.querySelector('.tjVer').onclick=()=>{ cerrar(); const nv=document.querySelector('#v3nav button[data-ir="ia"]'); if(nv) nv.click(); else { const bt=document.querySelector('.btnReporte'); if(bt) bt.click(); } };
 }
 function graficoDia(dias, campo, titulo, leyenda, color, esPlata){
   const vals=dias.map(d=>Number(d[campo]||0));
@@ -2918,7 +2941,7 @@ new MutationObserver(()=>{ if(LANG===null) decidir(); clearTimeout(t); t=setTime
 
 <script>
 // version del panel: cuando publico algo nuevo, la app se actualiza sola al abrirla o volver a ella
-var SR_VER='20261112b';
+var SR_VER='20261113a';
 function srFresco(){ var u=new URL(location.href); u.searchParams.set('v',Date.now()); location.replace(u.toString()); }
 (function(){
   function chequear(){ fetch('/version.json?x='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
