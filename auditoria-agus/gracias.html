@@ -107,7 +107,7 @@ p{font-size:16px;line-height:1.45;color:var(--muted);margin-bottom:10px}
     intentos++;
     fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accion:'estado',ref:ref})})
     .then(function(r){return r.json()}).then(function(d){
-      EXT=!!(d&&d.pasarela==='dl');
+      EXT=!!(d&&d.pasarela==='pp');
       if(d&&d.pagada){
         if(d.nombre)document.getElementById('nom').textContent=', '+d.nombre;
         if(d.turno)document.getElementById('cuando').textContent='Te espero el '+fecha(d.turno)+'.';
