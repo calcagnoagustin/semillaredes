@@ -1,0 +1,413 @@
+{
+ "Merlo": {
+  "id": "23850883424080232",
+  "paises": [],
+  "edad": [
+   18,
+   65
+  ],
+  "tipos": {},
+  "tam": [
+   25400,
+   29800
+  ]
+ },
+ "Hispanoamerica": {
+  "id": "120253305590890233",
+  "paises": [
+   "AR",
+   "BO",
+   "CL",
+   "CO",
+   "CR",
+   "DO",
+   "EC",
+   "ES",
+   "GT",
+   "HN",
+   "MX",
+   "NI",
+   "PA",
+   "PE",
+   "PR",
+   "PY",
+   "SV",
+   "UY",
+   "VE"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   163900,
+   192800
+  ]
+ },
+ "Artistas · Argentina": {
+  "id": "120253305599670233",
+  "paises": [
+   "AR"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   22600,
+   26500
+  ]
+ },
+ "Artistas · Bolivia": {
+  "id": "120253305604060233",
+  "paises": [
+   "BO"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   3400,
+   4000
+  ]
+ },
+ "Artistas · Chile": {
+  "id": "120253305606780233",
+  "paises": [
+   "CL"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   7700,
+   9100
+  ]
+ },
+ "Artistas · Colombia": {
+  "id": "120253305608050233",
+  "paises": [
+   "CO"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   15400,
+   18100
+  ]
+ },
+ "Artistas · Costa Rica": {
+  "id": "120253305609240233",
+  "paises": [
+   "CR"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   1600,
+   1900
+  ]
+ },
+ "Artistas · República Dominicana": {
+  "id": "120253305611340233",
+  "paises": [
+   "DO"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   2700,
+   3200
+  ]
+ },
+ "Artistas · Ecuador": {
+  "id": "120253305621710233",
+  "paises": [
+   "EC"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   6700,
+   7900
+  ]
+ },
+ "Artistas · El Salvador": {
+  "id": "120253305624420233",
+  "paises": [
+   "SV"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   1400,
+   1700
+  ]
+ },
+ "Artistas · España": {
+  "id": "120253305634280233",
+  "paises": [
+   "ES"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   19800,
+   23200
+  ]
+ },
+ "Artistas · Guatemala": {
+  "id": "120253305636760233",
+  "paises": [
+   "GT"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   2900,
+   3400
+  ]
+ },
+ "Artistas · Honduras": {
+  "id": "120253305639440233",
+  "paises": [
+   "HN"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   1000,
+   1000
+  ]
+ },
+ "Artistas · México": {
+  "id": "120253305641450233",
+  "paises": [
+   "MX"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   52800,
+   62100
+  ]
+ },
+ "Artistas · Nicaragua": {
+  "id": "120253305644110233",
+  "paises": [
+   "NI"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   1000,
+   1000
+  ]
+ },
+ "Artistas · Panamá": {
+  "id": "120253305646760233",
+  "paises": [
+   "PA"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   1100,
+   1300
+  ]
+ },
+ "Artistas · Paraguay": {
+  "id": "120253305648030233",
+  "paises": [
+   "PY"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   1300,
+   1500
+  ]
+ },
+ "Artistas · Perú": {
+  "id": "120253305648890233",
+  "paises": [
+   "PE"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   11500,
+   13500
+  ]
+ },
+ "Artistas · Puerto Rico": {
+  "id": "120253305650730233",
+  "paises": [
+   "PR"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   2300,
+   2700
+  ]
+ },
+ "Artistas · Uruguay": {
+  "id": "120253305652850233",
+  "paises": [
+   "UY"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   1200,
+   1400
+  ]
+ },
+ "Artistas · Venezuela": {
+  "id": "120253305657050233",
+  "paises": [
+   "VE"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   5100,
+   6000
+  ]
+ }
+}
