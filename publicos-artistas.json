@@ -1,0 +1,7310 @@
+{
+ "fecha": "15/11/2026",
+ "cuenta": "Semilla NFT 709673576795383",
+ "resultados": {
+  "fecha": "15/11/2026",
+  "geos": {
+   "ES": {
+    "nucleo_fbig_18": [
+     160600,
+     188900
+    ],
+    "nucleo_ig_18": [
+     118700,
+     139600
+    ],
+    "nucleo_ig_2554": [
+     100900,
+     118700
+    ],
+    "ampliado_fbig_18": [
+     231000,
+     271700
+    ],
+    "ampliado_ig_18": [
+     173800,
+     204400
+    ],
+    "base_ig_18": [
+     174700000,
+     205500000
+    ],
+    "d_fbig|Música": [
+     79300,
+     93200
+    ],
+    "d_ig|Música": [
+     55800,
+     65700
+    ],
+    "t_ig|Música|cargo": [
+     42000,
+     49400
+    ],
+    "t_ig|Música|empleador": [
+     5600,
+     6500
+    ],
+    "t_ig|Música|estudio": [
+     8500,
+     10000
+    ],
+    "d_fbig|Artes visuales": [
+     25700,
+     30300
+    ],
+    "d_ig|Artes visuales": [
+     19500,
+     22900
+    ],
+    "t_ig|Artes visuales|cargo": [
+     10200,
+     12000
+    ],
+    "t_ig|Artes visuales|empleador": [
+     3000,
+     3600
+    ],
+    "t_ig|Artes visuales|estudio": [
+     6300,
+     7500
+    ],
+    "d_fbig|Teatro y escena": [
+     15500,
+     18300
+    ],
+    "d_ig|Teatro y escena": [
+     12200,
+     14400
+    ],
+    "t_ig|Teatro y escena|cargo": [
+     7700,
+     9100
+    ],
+    "t_ig|Teatro y escena|empleador": [
+     3100,
+     3700
+    ],
+    "t_ig|Teatro y escena|estudio": [
+     1800,
+     2200
+    ],
+    "d_fbig|Danza": [
+     21000,
+     24700
+    ],
+    "d_ig|Danza": [
+     17100,
+     20200
+    ],
+    "t_ig|Danza|cargo": [
+     11900,
+     14000
+    ],
+    "t_ig|Danza|empleador": [
+     3900,
+     4600
+    ],
+    "t_ig|Danza|estudio": [
+     1700,
+     2000
+    ],
+    "d_fbig|Audiovisual": [
+     8700,
+     10200
+    ],
+    "d_ig|Audiovisual": [
+     6600,
+     7800
+    ],
+    "t_ig|Audiovisual|cargo": [
+     4200,
+     4900
+    ],
+    "t_ig|Audiovisual|empleador": [
+     1000,
+     1000
+    ],
+    "t_ig|Audiovisual|estudio": [
+     2300,
+     2700
+    ],
+    "d_fbig|Letras": [
+     9600,
+     11300
+    ],
+    "d_ig|Letras": [
+     6400,
+     7600
+    ],
+    "t_ig|Letras|cargo": [
+     4300,
+     5100
+    ],
+    "t_ig|Letras|empleador": [
+     1000,
+     1000
+    ],
+    "t_ig|Letras|estudio": [
+     1900,
+     2200
+    ],
+    "d_fbig|Diseño, artesanía y afines": [
+     72100,
+     84900
+    ],
+    "d_ig|Diseño, artesanía y afines": [
+     55900,
+     65800
+    ],
+    "t_ig|Diseño, artesanía y afines|cargo": [
+     31500,
+     37100
+    ],
+    "t_ig|Diseño, artesanía y afines|empleador": [
+     3600,
+     4200
+    ],
+    "t_ig|Diseño, artesanía y afines|estudio": [
+     22800,
+     26900
+    ]
+   },
+   "BR": {
+    "nucleo_fbig_18": [
+     49600,
+     58400
+    ],
+    "nucleo_ig_18": [
+     42100,
+     49600
+    ],
+    "nucleo_ig_2554": [
+     34500,
+     40500
+    ],
+    "ampliado_fbig_18": [
+     96700,
+     113700
+    ],
+    "ampliado_ig_18": [
+     82300,
+     96800
+    ],
+    "base_ig_18": [
+     133900000,
+     157600000
+    ],
+    "d_fbig|Música": [
+     23000,
+     27100
+    ],
+    "d_ig|Música": [
+     19300,
+     22700
+    ],
+    "t_ig|Música|cargo": [
+     15000,
+     17600
+    ],
+    "t_ig|Música|empleador": [
+     1500,
+     1700
+    ],
+    "t_ig|Música|estudio": [
+     3000,
+     3600
+    ],
+    "d_fbig|Artes visuales": [
+     10700,
+     12600
+    ],
+    "d_ig|Artes visuales": [
+     9000,
+     10600
+    ],
+    "t_ig|Artes visuales|cargo": [
+     5700,
+     6700
+    ],
+    "t_ig|Artes visuales|empleador": [
+     1300,
+     1600
+    ],
+    "t_ig|Artes visuales|estudio": [
+     2200,
+     2500
+    ],
+    "d_fbig|Teatro y escena": [
+     4000,
+     4700
+    ],
+    "d_ig|Teatro y escena": [
+     3400,
+     4000
+    ],
+    "t_ig|Teatro y escena|cargo": [
+     2900,
+     3400
+    ],
+    "t_ig|Teatro y escena|empleador": [
+     1000,
+     1000
+    ],
+    "t_ig|Teatro y escena|estudio": [
+     1000,
+     1000
+    ],
+    "d_fbig|Danza": [
+     4000,
+     4700
+    ],
+    "d_ig|Danza": [
+     3500,
+     4100
+    ],
+    "t_ig|Danza|cargo": [
+     2400,
+     2800
+    ],
+    "t_ig|Danza|empleador": [
+     1000,
+     1000
+    ],
+    "t_ig|Danza|estudio": [
+     1000,
+     1000
+    ],
+    "d_fbig|Audiovisual": [
+     2300,
+     2700
+    ],
+    "d_ig|Audiovisual": [
+     1900,
+     2200
+    ],
+    "t_ig|Audiovisual|cargo": [
+     1600,
+     1900
+    ],
+    "t_ig|Audiovisual|empleador": [
+     1000,
+     1000
+    ],
+    "t_ig|Audiovisual|estudio": [
+     1000,
+     1000
+    ],
+    "d_fbig|Letras": [
+     5900,
+     6900
+    ],
+    "d_ig|Letras": [
+     4900,
+     5800
+    ],
+    "t_ig|Letras|cargo": [
+     4100,
+     4800
+    ],
+    "t_ig|Letras|empleador": [
+     1000,
+     1000
+    ],
+    "t_ig|Letras|estudio": [
+     1000,
+     1000
+    ],
+    "d_fbig|Diseño, artesanía y afines": [
+     47300,
+     55700
+    ],
+    "d_ig|Diseño, artesanía y afines": [
+     40400,
+     47500
+    ],
+    "t_ig|Diseño, artesanía y afines|cargo": [
+     26100,
+     30700
+    ],
+    "t_ig|Diseño, artesanía y afines|empleador": [
+     3600,
+     4200
+    ],
+    "t_ig|Diseño, artesanía y afines|estudio": [
+     12000,
+     14100
+    ]
+   },
+   "US": {
+    "nucleo_fbig_18": [
+     90200,
+     106100
+    ],
+    "nucleo_ig_18": [
+     68300,
+     80400
+    ],
+    "nucleo_ig_2554": [
+     57800,
+     68000
+    ],
+    "ampliado_fbig_18": [
+     117900,
+     138700
+    ],
+    "ampliado_ig_18": [
+     92000,
+     108200
+    ],
+    "base_ig_18": [
+     32600000,
+     38300000
+    ],
+    "d_fbig|Música": [
+     33100,
+     39000
+    ],
+    "d_ig|Música": [
+     25000,
+     29400
+    ],
+    "t_ig|Música|cargo": [
+     8000,
+     9500
+    ],
+    "t_ig|Música|empleador": [
+     2300,
+     2700
+    ],
+    "t_ig|Música|estudio": [
+     14900,
+     17600
+    ],
+    "d_fbig|Artes visuales": [
+     35800,
+     42100
+    ],
+    "d_ig|Artes visuales": [
+     27900,
+     32800
+    ],
+    "t_ig|Artes visuales|cargo": [
+     9300,
+     11000
+    ],
+    "t_ig|Artes visuales|empleador": [
+     1000,
+     1100
+    ],
+    "t_ig|Artes visuales|estudio": [
+     18400,
+     21700
+    ],
+    "d_fbig|Teatro y escena": [
+     7900,
+     9300
+    ],
+    "d_ig|Teatro y escena": [
+     6300,
+     7400
+    ],
+    "t_ig|Teatro y escena|cargo": [
+     2700,
+     3200
+    ],
+    "t_ig|Teatro y escena|empleador": [
+     1200,
+     1400
+    ],
+    "t_ig|Teatro y escena|estudio": [
+     2800,
+     3300
+    ],
+    "d_fbig|Danza": [
+     2100,
+     2500
+    ],
+    "d_ig|Danza": [
+     1700,
+     2000
+    ],
+    "t_ig|Danza|cargo": [
+     1000,
+     1000
+    ],
+    "t_ig|Danza|empleador": [
+     1000,
+     1000
+    ],
+    "t_ig|Danza|estudio": [
+     1000,
+     1000
+    ],
+    "d_fbig|Audiovisual": [
+     2800,
+     3300
+    ],
+    "d_ig|Audiovisual": [
+     2200,
+     2600
+    ],
+    "t_ig|Audiovisual|cargo": [
+     1100,
+     1200
+    ],
+    "t_ig|Audiovisual|empleador": [
+     1000,
+     1000
+    ],
+    "t_ig|Audiovisual|estudio": [
+     1000,
+     1200
+    ],
+    "d_fbig|Letras": [
+     9000,
+     10600
+    ],
+    "d_ig|Letras": [
+     6500,
+     7700
+    ],
+    "t_ig|Letras|cargo": [
+     1300,
+     1500
+    ],
+    "t_ig|Letras|empleador": [
+     1000,
+     1000
+    ],
+    "t_ig|Letras|estudio": [
+     5000,
+     5900
+    ],
+    "d_fbig|Diseño, artesanía y afines": [
+     29800,
+     35100
+    ],
+    "d_ig|Diseño, artesanía y afines": [
+     24200,
+     28500
+    ],
+    "t_ig|Diseño, artesanía y afines|cargo": [
+     6200,
+     7300
+    ],
+    "t_ig|Diseño, artesanía y afines|empleador": [
+     1000,
+     1100
+    ],
+    "t_ig|Diseño, artesanía y afines|estudio": [
+     17500,
+     20600
+    ]
+   }
+  },
+  "paises": {
+   "AR": {
+    "nucleo_fbig_18": [
+     26200,
+     30800
+    ],
+    "nucleo_ig_18": [
+     21400,
+     25200
+    ],
+    "nucleo_ig_2554": [
+     17500,
+     20600
+    ],
+    "d_ig|Música": [
+     7500,
+     8900
+    ],
+    "d_ig|Artes visuales": [
+     3200,
+     3800
+    ],
+    "d_ig|Teatro y escena": [
+     2500,
+     3000
+    ],
+    "d_ig|Danza": [
+     4700,
+     5600
+    ],
+    "d_ig|Audiovisual": [
+     2500,
+     2900
+    ],
+    "d_ig|Letras": [
+     1000,
+     1000
+    ]
+   },
+   "BO": {
+    "nucleo_fbig_18": [
+     3600,
+     4200
+    ],
+    "nucleo_ig_18": [
+     1800,
+     2100
+    ],
+    "nucleo_ig_2554": [
+     1600,
+     1800
+    ],
+    "d_ig|Música": [
+     1000,
+     1100
+    ],
+    "d_ig|Artes visuales": [
+     1000,
+     1000
+    ],
+    "d_ig|Teatro y escena": [
+     1000,
+     1000
+    ],
+    "d_ig|Danza": [
+     1000,
+     1000
+    ],
+    "d_ig|Audiovisual": [
+     1000,
+     1000
+    ],
+    "d_ig|Letras": [
+     1000,
+     1000
+    ]
+   },
+   "CL": {
+    "nucleo_fbig_18": [
+     8600,
+     10200
+    ],
+    "nucleo_ig_18": [
+     7000,
+     8200
+    ],
+    "nucleo_ig_2554": [
+     6000,
+     7100
+    ],
+    "d_ig|Música": [
+     3100,
+     3600
+    ],
+    "d_ig|Artes visuales": [
+     1000,
+     1200
+    ],
+    "d_ig|Teatro y escena": [
+     1000,
+     1100
+    ],
+    "d_ig|Danza": [
+     1100,
+     1300
+    ],
+    "d_ig|Audiovisual": [
+     1000,
+     1000
+    ],
+    "d_ig|Letras": [
+     1000,
+     1000
+    ]
+   },
+   "CO": {
+    "nucleo_fbig_18": [
+     16600,
+     19500
+    ],
+    "nucleo_ig_18": [
+     12600,
+     14800
+    ],
+    "nucleo_ig_2554": [
+     10900,
+     12900
+    ],
+    "d_ig|Música": [
+     7200,
+     8400
+    ],
+    "d_ig|Artes visuales": [
+     2000,
+     2300
+    ],
+    "d_ig|Teatro y escena": [
+     1100,
+     1300
+    ],
+    "d_ig|Danza": [
+     1400,
+     1600
+    ],
+    "d_ig|Audiovisual": [
+     1000,
+     1000
+    ],
+    "d_ig|Letras": [
+     1000,
+     1000
+    ]
+   },
+   "CR": {
+    "nucleo_fbig_18": [
+     2000,
+     2400
+    ],
+    "nucleo_ig_18": [
+     1600,
+     1800
+    ],
+    "nucleo_ig_2554": [
+     1300,
+     1500
+    ],
+    "d_ig|Música": [
+     1000,
+     1000
+    ],
+    "d_ig|Artes visuales": [
+     1000,
+     1000
+    ],
+    "d_ig|Teatro y escena": [
+     1000,
+     1000
+    ],
+    "d_ig|Danza": [
+     1000,
+     1000
+    ],
+    "d_ig|Audiovisual": [
+     1000,
+     1000
+    ],
+    "d_ig|Letras": [
+     1000,
+     1000
+    ]
+   },
+   "DO": {
+    "nucleo_fbig_18": [
+     3100,
+     3700
+    ],
+    "nucleo_ig_18": [
+     2600,
+     3100
+    ],
+    "nucleo_ig_2554": [
+     2300,
+     2700
+    ],
+    "d_ig|Música": [
+     1100,
+     1300
+    ],
+    "d_ig|Artes visuales": [
+     1000,
+     1000
+    ],
+    "d_ig|Teatro y escena": [
+     1000,
+     1000
+    ],
+    "d_ig|Danza": [
+     1000,
+     1000
+    ],
+    "d_ig|Audiovisual": [
+     1000,
+     1000
+    ],
+    "d_ig|Letras": [
+     1000,
+     1000
+    ]
+   },
+   "EC": {
+    "nucleo_fbig_18": [
+     7200,
+     8500
+    ],
+    "nucleo_ig_18": [
+     5000,
+     5800
+    ],
+    "nucleo_ig_2554": [
+     4300,
+     5100
+    ],
+    "d_ig|Música": [
+     2700,
+     3200
+    ],
+    "d_ig|Artes visuales": [
+     1000,
+     1000
+    ],
+    "d_ig|Teatro y escena": [
+     1000,
+     1000
+    ],
+    "d_ig|Danza": [
+     1000,
+     1000
+    ],
+    "d_ig|Audiovisual": [
+     1000,
+     1000
+    ],
+    "d_ig|Letras": [
+     1000,
+     1000
+    ]
+   },
+   "SV": {
+    "nucleo_fbig_18": [
+     1400,
+     1700
+    ],
+    "nucleo_ig_18": [
+     1000,
+     1100
+    ],
+    "nucleo_ig_2554": [
+     1000,
+     1000
+    ],
+    "d_ig|Música": [
+     1000,
+     1000
+    ],
+    "d_ig|Artes visuales": [
+     1000,
+     1000
+    ],
+    "d_ig|Teatro y escena": [
+     1000,
+     1000
+    ],
+    "d_ig|Danza": [
+     1000,
+     1000
+    ],
+    "d_ig|Audiovisual": [
+     1000,
+     1000
+    ],
+    "d_ig|Letras": [
+     1000,
+     1000
+    ]
+   },
+   "GT": {
+    "nucleo_fbig_18": [
+     3100,
+     3600
+    ],
+    "nucleo_ig_18": [
+     1900,
+     2200
+    ],
+    "nucleo_ig_2554": [
+     1700,
+     2000
+    ],
+    "d_ig|Música": [
+     1200,
+     1400
+    ],
+    "d_ig|Artes visuales": [
+     1000,
+     1000
+    ],
+    "d_ig|Teatro y escena": [
+     1000,
+     1000
+    ],
+    "d_ig|Danza": [
+     1000,
+     1000
+    ],
+    "d_ig|Audiovisual": [
+     1000,
+     1000
+    ],
+    "d_ig|Letras": [
+     1000,
+     1000
+    ]
+   },
+   "HN": {
+    "nucleo_fbig_18": [
+     1000,
+     1000
+    ],
+    "nucleo_ig_18": [
+     1000,
+     1000
+    ],
+    "nucleo_ig_2554": [
+     1000,
+     1000
+    ],
+    "d_ig|Música": [
+     1000,
+     1000
+    ],
+    "d_ig|Artes visuales": [
+     1000,
+     1000
+    ],
+    "d_ig|Teatro y escena": [
+     1000,
+     1000
+    ],
+    "d_ig|Danza": [
+     1000,
+     1000
+    ],
+    "d_ig|Audiovisual": [
+     1000,
+     1000
+    ],
+    "d_ig|Letras": [
+     1000,
+     1000
+    ]
+   },
+   "MX": {
+    "nucleo_fbig_18": [
+     59500,
+     70000
+    ],
+    "nucleo_ig_18": [
+     43400,
+     51000
+    ],
+    "nucleo_ig_2554": [
+     37000,
+     43500
+    ],
+    "d_ig|Música": [
+     21200,
+     25000
+    ],
+    "d_ig|Artes visuales": [
+     7400,
+     8700
+    ],
+    "d_ig|Teatro y escena": [
+     4800,
+     5700
+    ],
+    "d_ig|Danza": [
+     5700,
+     6700
+    ],
+    "d_ig|Audiovisual": [
+     2000,
+     2300
+    ],
+    "d_ig|Letras": [
+     2800,
+     3200
+    ]
+   },
+   "NI": {
+    "nucleo_fbig_18": [
+     1000,
+     1000
+    ],
+    "nucleo_ig_18": [
+     1000,
+     1000
+    ],
+    "nucleo_ig_2554": [
+     1000,
+     1000
+    ],
+    "d_ig|Música": [
+     1000,
+     1000
+    ],
+    "d_ig|Artes visuales": [
+     1000,
+     1000
+    ],
+    "d_ig|Teatro y escena": [
+     1000,
+     1000
+    ],
+    "d_ig|Danza": [
+     1000,
+     1000
+    ],
+    "d_ig|Audiovisual": [
+     1000,
+     1000
+    ],
+    "d_ig|Letras": [
+     1000,
+     1000
+    ]
+   },
+   "PA": {
+    "nucleo_fbig_18": [
+     1300,
+     1500
+    ],
+    "nucleo_ig_18": [
+     1000,
+     1200
+    ],
+    "nucleo_ig_2554": [
+     1000,
+     1100
+    ],
+    "d_ig|Música": [
+     1000,
+     1000
+    ],
+    "d_ig|Artes visuales": [
+     1000,
+     1000
+    ],
+    "d_ig|Teatro y escena": [
+     1000,
+     1000
+    ],
+    "d_ig|Danza": [
+     1000,
+     1000
+    ],
+    "d_ig|Audiovisual": [
+     1000,
+     1000
+    ],
+    "d_ig|Letras": [
+     1000,
+     1000
+    ]
+   },
+   "PY": {
+    "nucleo_fbig_18": [
+     1400,
+     1600
+    ],
+    "nucleo_ig_18": [
+     1100,
+     1300
+    ],
+    "nucleo_ig_2554": [
+     1000,
+     1100
+    ],
+    "d_ig|Música": [
+     1000,
+     1000
+    ],
+    "d_ig|Artes visuales": [
+     1000,
+     1000
+    ],
+    "d_ig|Teatro y escena": [
+     1000,
+     1000
+    ],
+    "d_ig|Danza": [
+     1000,
+     1000
+    ],
+    "d_ig|Audiovisual": [
+     1000,
+     1000
+    ],
+    "d_ig|Letras": [
+     1000,
+     1000
+    ]
+   },
+   "PE": {
+    "nucleo_fbig_18": [
+     12900,
+     15100
+    ],
+    "nucleo_ig_18": [
+     8000,
+     9400
+    ],
+    "nucleo_ig_2554": [
+     6800,
+     8000
+    ],
+    "d_ig|Música": [
+     4200,
+     4900
+    ],
+    "d_ig|Artes visuales": [
+     1200,
+     1400
+    ],
+    "d_ig|Teatro y escena": [
+     1000,
+     1000
+    ],
+    "d_ig|Danza": [
+     1100,
+     1200
+    ],
+    "d_ig|Audiovisual": [
+     1000,
+     1000
+    ],
+    "d_ig|Letras": [
+     1000,
+     1000
+    ]
+   },
+   "PR": {
+    "nucleo_fbig_18": [
+     3100,
+     3600
+    ],
+    "nucleo_ig_2554": [
+     2000,
+     2400
+    ],
+    "d_ig|Música": [
+     1000,
+     1100
+    ],
+    "d_ig|Artes visuales": [
+     1000,
+     1000
+    ]
+   },
+   "UY": {
+    "nucleo_fbig_18": [
+     1500,
+     1800
+    ],
+    "nucleo_ig_2554": [
+     1000,
+     1100
+    ],
+    "d_ig|Música": [
+     1000,
+     1000
+    ],
+    "d_ig|Artes visuales": [
+     1000,
+     1000
+    ]
+   },
+   "VE": {
+    "nucleo_fbig_18": [
+     5800,
+     6800
+    ],
+    "nucleo_ig_2554": [
+     3400,
+     4000
+    ],
+    "d_ig|Música": [
+     2200,
+     2600
+    ],
+    "d_ig|Artes visuales": [
+     1000,
+     1000
+    ]
+   }
+  }
+ },
+ "categorias": [
+  {
+   "id": "111863075496840",
+   "nombre": "Musicology",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     9,
+     11
+    ],
+    "work_employers": [
+     2883,
+     3391
+    ],
+    "education_majors": [
+     47792,
+     56204
+    ]
+   }
+  },
+  {
+   "id": "112257968789058",
+   "nombre": "Musician",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     585932,
+     689057
+    ],
+    "work_employers": [
+     623999,
+     733823
+    ],
+    "education_majors": [
+     2854,
+     3357
+    ]
+   }
+  },
+  {
+   "id": "105493209483759",
+   "nombre": "Session musician",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     9443,
+     11106
+    ],
+    "work_employers": [
+     3182,
+     3743
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "604445876352585",
+   "nombre": "Jazz Musician",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     2698,
+     3173
+    ],
+    "work_employers": [
+     136,
+     160
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "159774687558335",
+   "nombre": "Freelance Musician",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     375,
+     441
+    ],
+    "work_employers": [
+     13482,
+     15855
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "108010722559745",
+   "nombre": "Real Conservatorio Superior de Música de Madrid",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     1
+    ],
+    "work_employers": [
+     1412,
+     1661
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "107784422584466",
+   "nombre": "Music director",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     70801,
+     83262
+    ],
+    "work_employers": [
+     7602,
+     8941
+    ],
+    "education_majors": [
+     25,
+     30
+    ]
+   }
+  },
+  {
+   "id": "135363589830391",
+   "nombre": "Music editor",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     25815,
+     30359
+    ],
+    "work_employers": [
+     1118,
+     1315
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "112137995468127",
+   "nombre": "Vocal music",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     23403,
+     27523
+    ],
+    "work_employers": [
+     1414,
+     1663
+    ],
+    "education_majors": [
+     14074,
+     16552
+    ]
+   }
+  },
+  {
+   "id": "112936425387489",
+   "nombre": "Music",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     7985,
+     9391
+    ],
+    "work_employers": [
+     157424,
+     185131
+    ],
+    "education_majors": [
+     578727,
+     680584
+    ]
+   }
+  },
+  {
+   "id": "114717785212368",
+   "nombre": "Music supervisor",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     2097,
+     2467
+    ],
+    "work_employers": [
+     41,
+     49
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "113222462024547",
+   "nombre": "Electronic music",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     104,
+     123
+    ],
+    "work_employers": [
+     12221,
+     14373
+    ],
+    "education_majors": [
+     42650,
+     50157
+    ]
+   }
+  },
+  {
+   "id": "107882635906465",
+   "nombre": "Music technology",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     46,
+     55
+    ],
+    "work_employers": [
+     259,
+     305
+    ],
+    "education_majors": [
+     25427,
+     29903
+    ]
+   }
+  },
+  {
+   "id": "106026389437838",
+   "nombre": "Indie Music",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     27,
+     32
+    ],
+    "work_employers": [
+     5013,
+     5896
+    ],
+    "education_majors": [
+     13,
+     16
+    ]
+   }
+  },
+  {
+   "id": "113617172021251",
+   "nombre": "Music Production and Engineering Major at Berklee",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     8,
+     10
+    ],
+    "work_employers": [
+     250,
+     295
+    ],
+    "education_majors": [
+     5926,
+     6969
+    ]
+   }
+  },
+  {
+   "id": "104128412956069",
+   "nombre": "Singer-songwriter",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     494636,
+     581692
+    ],
+    "work_employers": [
+     82953,
+     97553
+    ],
+    "education_majors": [
+     4419,
+     5197
+    ]
+   }
+  },
+  {
+   "id": "216480755044614",
+   "nombre": "Lead singer/songwriter",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     9645,
+     11343
+    ],
+    "work_employers": [
+     3284,
+     3863
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "374828012702564",
+   "nombre": "Choir Singer",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     5650,
+     6645
+    ],
+    "work_employers": [
+     62,
+     74
+    ],
+    "education_majors": [
+     8,
+     10
+    ]
+   }
+  },
+  {
+   "id": "104081222960818",
+   "nombre": "Guitarist",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     315878,
+     371473
+    ],
+    "work_employers": [
+     40628,
+     47779
+    ],
+    "education_majors": [
+     994,
+     1170
+    ]
+   }
+  },
+  {
+   "id": "113099055370169",
+   "nombre": "Guitar",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     38082,
+     44785
+    ],
+    "work_employers": [
+     32107,
+     37759
+    ],
+    "education_majors": [
+     65987,
+     77601
+    ]
+   }
+  },
+  {
+   "id": "107660512589970",
+   "nombre": "Lead guitar",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     26972,
+     31720
+    ],
+    "work_employers": [
+     9484,
+     11154
+    ],
+    "education_majors": [
+     120,
+     142
+    ]
+   }
+  },
+  {
+   "id": "113298925350318",
+   "nombre": "Guitar technician",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     2178,
+     2562
+    ],
+    "work_employers": [
+     146,
+     172
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "108163959205272",
+   "nombre": "Electric guitar",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     1287,
+     1514
+    ],
+    "work_employers": [
+     4539,
+     5339
+    ],
+    "education_majors": [
+     25854,
+     30405
+    ]
+   }
+  },
+  {
+   "id": "105587689475983",
+   "nombre": "Bajista",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     21786,
+     25621
+    ],
+    "work_employers": [
+     3493,
+     4108
+    ],
+    "education_majors": [
+     170,
+     200
+    ]
+   }
+  },
+  {
+   "id": "107750459245598",
+   "nombre": "Bassist",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     100318,
+     117975
+    ],
+    "work_employers": [
+     8141,
+     9574
+    ],
+    "education_majors": [
+     175,
+     206
+    ]
+   }
+  },
+  {
+   "id": "105470232819886",
+   "nombre": "Double bass",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     365,
+     430
+    ],
+    "work_employers": [
+     422,
+     497
+    ],
+    "education_majors": [
+     1818,
+     2139
+    ]
+   }
+  },
+  {
+   "id": "381103838741175",
+   "nombre": "Saxophone Player",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     3967,
+     4666
+    ],
+    "work_employers": [
+     392,
+     461
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "111871088829034",
+   "nombre": "Drummer",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     231343,
+     272060
+    ],
+    "work_employers": [
+     20033,
+     23559
+    ],
+    "education_majors": [
+     4560,
+     5363
+    ]
+   }
+  },
+  {
+   "id": "109303172422811",
+   "nombre": "Composer",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     123039,
+     144694
+    ],
+    "work_employers": [
+     27653,
+     32520
+    ],
+    "education_majors": [
+     1511,
+     1778
+    ]
+   }
+  },
+  {
+   "id": "109331982417984",
+   "nombre": "Pianist",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     22324,
+     26254
+    ],
+    "work_employers": [
+     7398,
+     8701
+    ],
+    "education_majors": [
+     390,
+     459
+    ]
+   }
+  },
+  {
+   "id": "109368705748404",
+   "nombre": "Keyboardist",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     16896,
+     19870
+    ],
+    "work_employers": [
+     6735,
+     7921
+    ],
+    "education_majors": [
+     23,
+     28
+    ]
+   }
+  },
+  {
+   "id": "360830940788315",
+   "nombre": "Trumpeter",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     2262,
+     2661
+    ],
+    "work_employers": [
+     172,
+     203
+    ],
+    "education_majors": [
+     4,
+     5
+    ]
+   }
+  },
+  {
+   "id": "113173892030654",
+   "nombre": "Lead vocalist",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     119183,
+     140160
+    ],
+    "work_employers": [
+     2849,
+     3351
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "109741902376835",
+   "nombre": "Backing vocalist",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     19681,
+     23145
+    ],
+    "work_employers": [
+     1274,
+     1499
+    ],
+    "education_majors": [
+     48,
+     57
+    ]
+   }
+  },
+  {
+   "id": "107820229251878",
+   "nombre": "DJing",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     763895,
+     898341
+    ],
+    "work_employers": [
+     184312,
+     216752
+    ],
+    "education_majors": [
+     3354,
+     3945
+    ]
+   }
+  },
+  {
+   "id": "724112454376003",
+   "nombre": "Disc Jockey (DJ)",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     154392,
+     181565
+    ],
+    "work_employers": [
+     14410,
+     16947
+    ],
+    "education_majors": [
+     16,
+     19
+    ]
+   }
+  },
+  {
+   "id": "147301181990475",
+   "nombre": "DJ, Producer, Artist",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     28289,
+     33269
+    ],
+    "work_employers": [
+     5470,
+     6433
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "623546231109867",
+   "nombre": "Mobile Disc Jockey (Mobile DJ)",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     8928,
+     10500
+    ],
+    "work_employers": [
+     927,
+     1091
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "1562973990633969",
+   "nombre": "Radio Disk Jockey (Radio DJ)",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     7284,
+     8566
+    ],
+    "work_employers": [
+     414,
+     488
+    ],
+    "education_majors": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "109410205781101",
+   "nombre": "DJ PRODUCTOR",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     4306,
+     5065
+    ],
+    "work_employers": [
+     1490,
+     1753
+    ],
+    "education_majors": [
+     7,
+     9
+    ]
+   }
+  },
+  {
+   "id": "108191505868699",
+   "nombre": "DJ mix",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     1
+    ],
+    "work_employers": [
+     3244,
+     3816
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "1416609645249831",
+   "nombre": "Producer",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     204215,
+     240158
+    ],
+    "work_employers": [
+     28994,
+     34097
+    ],
+    "education_majors": [
+     227,
+     267
+    ]
+   }
+  },
+  {
+   "id": "144025998958052",
+   "nombre": "Co-Founder/Producer",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     101418,
+     119268
+    ],
+    "work_employers": [
+     2725,
+     3205
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "107806885914681",
+   "nombre": "Film producer",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     80403,
+     94554
+    ],
+    "work_employers": [
+     8075,
+     9497
+    ],
+    "education_majors": [
+     36,
+     43
+    ]
+   }
+  },
+  {
+   "id": "105630109469647",
+   "nombre": "Executive producer",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     67511,
+     79394
+    ],
+    "work_employers": [
+     1853,
+     2180
+    ],
+    "education_majors": [
+     18,
+     22
+    ]
+   }
+  },
+  {
+   "id": "105505939482701",
+   "nombre": "Television Producer",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     21070,
+     24779
+    ],
+    "work_employers": [
+     1306,
+     1536
+    ],
+    "education_majors": [
+     57,
+     68
+    ]
+   }
+  },
+  {
+   "id": "108774692479778",
+   "nombre": "Radio producer",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     11844,
+     13929
+    ],
+    "work_employers": [
+     266,
+     313
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "103753906330244",
+   "nombre": "Line producer",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     10805,
+     12707
+    ],
+    "work_employers": [
+     423,
+     498
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "140488085985156",
+   "nombre": "Audio Engineer/Producer",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     9611,
+     11303
+    ],
+    "work_employers": [
+     1350,
+     1588
+    ],
+    "education_majors": [
+     93,
+     110
+    ]
+   }
+  },
+  {
+   "id": "105991316098857",
+   "nombre": "Recording studio",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     173,
+     204
+    ],
+    "work_employers": [
+     10505,
+     12355
+    ],
+    "education_majors": [
+     16,
+     19
+    ]
+   }
+  },
+  {
+   "id": "105738472792105",
+   "nombre": "G-Unit Records",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     6,
+     8
+    ],
+    "work_employers": [
+     4957,
+     5830
+    ],
+    "education_majors": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "187941561236865",
+   "nombre": "Recording/Audio Engineering",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     1
+    ],
+    "work_employers": [
+     322,
+     379
+    ],
+    "education_majors": [
+     2926,
+     3442
+    ]
+   }
+  },
+  {
+   "id": "181658708537190",
+   "nombre": "Diseño de Imagen y Sonido",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     2,
+     3
+    ],
+    "work_employers": [
+     80,
+     95
+    ],
+    "education_majors": [
+     3751,
+     4412
+    ]
+   }
+  },
+  {
+   "id": "110211182341546",
+   "nombre": "Sound Engineering",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     83459,
+     98148
+    ],
+    "work_employers": [
+     16908,
+     19884
+    ],
+    "education_majors": [
+     40113,
+     47174
+    ]
+   }
+  },
+  {
+   "id": "107800785909655",
+   "nombre": "Production sound mixer",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     4760,
+     5598
+    ],
+    "work_employers": [
+     944,
+     1111
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "105598236141729",
+   "nombre": "Sound design",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     55,
+     65
+    ],
+    "work_employers": [
+     682,
+     803
+    ],
+    "education_majors": [
+     7766,
+     9133
+    ]
+   }
+  },
+  {
+   "id": "192424877448816",
+   "nombre": "Sound Engineering/Music Production",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     1
+    ],
+    "work_employers": [
+     3669,
+     4315
+    ],
+    "education_majors": [
+     4818,
+     5667
+    ]
+   }
+  },
+  {
+   "id": "162894820428467",
+   "nombre": "Audio Production",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     37,
+     44
+    ],
+    "work_employers": [
+     359,
+     423
+    ],
+    "education_majors": [
+     10405,
+     12237
+    ]
+   }
+  },
+  {
+   "id": "153605131361856",
+   "nombre": "Audio Engineering & Production",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     29,
+     35
+    ],
+    "work_employers": [
+     108,
+     128
+    ],
+    "education_majors": [
+     2681,
+     3153
+    ]
+   }
+  },
+  {
+   "id": "132252726797108",
+   "nombre": "Produção Audiovisual",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     13,
+     16
+    ],
+    "work_employers": [
+     1162,
+     1367
+    ],
+    "education_majors": [
+     2677,
+     3149
+    ]
+   }
+  },
+  {
+   "id": "261645437336940",
+   "nombre": "Técnico de som",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     13160,
+     15477
+    ],
+    "work_employers": [
+     842,
+     991
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "103760109663393",
+   "nombre": "Director de orquesta",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     15896,
+     18694
+    ],
+    "work_employers": [
+     1310,
+     1541
+    ],
+    "education_majors": [
+     160,
+     189
+    ]
+   }
+  },
+  {
+   "id": "103860589653343",
+   "nombre": "Television director",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     9873,
+     11611
+    ],
+    "work_employers": [
+     607,
+     714
+    ],
+    "education_majors": [
+     47,
+     56
+    ]
+   }
+  },
+  {
+   "id": "111120598916164",
+   "nombre": "Director of Bands",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     8277,
+     9734
+    ],
+    "work_employers": [
+     50,
+     59
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "833812576679642",
+   "nombre": "Choir Member",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     28274,
+     33251
+    ],
+    "work_employers": [
+     675,
+     794
+    ],
+    "education_majors": [
+     2,
+     3
+    ]
+   }
+  },
+  {
+   "id": "119151501433716",
+   "nombre": "Freelance Graphic Designer",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     11676,
+     13731
+    ],
+    "work_employers": [
+     32081,
+     37728
+    ],
+    "education_majors": [
+     20,
+     24
+    ]
+   }
+  },
+  {
+   "id": "110928542268172",
+   "nombre": "Professional writing",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     17,
+     20
+    ],
+    "work_employers": [
+     369,
+     435
+    ],
+    "education_majors": [
+     5539,
+     6514
+    ]
+   }
+  },
+  {
+   "id": "113413235335729",
+   "nombre": "Bandleader",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     12248,
+     14404
+    ],
+    "work_employers": [
+     141,
+     166
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "114405591923231",
+   "nombre": "Artista Plástico",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     238,
+     281
+    ],
+    "work_employers": [
+     2693,
+     3167
+    ],
+    "education_majors": [
+     5,
+     7
+    ]
+   }
+  },
+  {
+   "id": "117589721594045",
+   "nombre": "Artista Plastico",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     0,
+     1
+    ],
+    "work_employers": [
+     11915,
+     14013
+    ],
+    "education_majors": [
+     28,
+     34
+    ]
+   }
+  },
+  {
+   "id": "107917455895350",
+   "nombre": "Tattoo artist",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     79903,
+     93967
+    ],
+    "work_employers": [
+     56889,
+     66902
+    ],
+    "education_majors": [
+     104,
+     123
+    ]
+   }
+  },
+  {
+   "id": "103821172989458",
+   "nombre": "Teaching artist",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     45665,
+     53703
+    ],
+    "work_employers": [
+     7270,
+     8550
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "107955369225659",
+   "nombre": "Artistic Director",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     16852,
+     19818
+    ],
+    "work_employers": [
+     467,
+     550
+    ],
+    "education_majors": [
+     13,
+     16
+    ]
+   }
+  },
+  {
+   "id": "362192230548223",
+   "nombre": "3D Artist",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     14624,
+     17198
+    ],
+    "work_employers": [
+     1217,
+     1432
+    ],
+    "education_majors": [
+     70,
+     83
+    ]
+   }
+  },
+  {
+   "id": "107798415919499",
+   "nombre": "Street artist",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     8113,
+     9542
+    ],
+    "work_employers": [
+     3681,
+     4330
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "106374759399831",
+   "nombre": "Comics artist",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     1761,
+     2071
+    ],
+    "work_employers": [
+     398,
+     469
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "116347735088035",
+   "nombre": "Tattoo Artist",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     27,
+     32
+    ],
+    "work_employers": [
+     3936,
+     4629
+    ],
+    "education_majors": [
+     4,
+     5
+    ]
+   }
+  },
+  {
+   "id": "106462779391123",
+   "nombre": "Liceo Artistico",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     7,
+     9
+    ],
+    "work_employers": [
+     595,
+     700
+    ],
+    "education_majors": [
+     13,
+     16
+    ]
+   }
+  },
+  {
+   "id": "108332699197745",
+   "nombre": "Voice teacher",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     3849,
+     4527
+    ],
+    "work_employers": [
+     148,
+     175
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "391990610979570",
+   "nombre": "Vocal Artist",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     174809,
+     205576
+    ],
+    "work_employers": [
+     48642,
+     57203
+    ],
+    "education_majors": [
+     13,
+     16
+    ]
+   }
+  },
+  {
+   "id": "105734932794748",
+   "nombre": "Vocal coach",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     2862,
+     3366
+    ],
+    "work_employers": [
+     525,
+     618
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "104074416294757",
+   "nombre": "Voice acting",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     11099,
+     13053
+    ],
+    "work_employers": [
+     3792,
+     4460
+    ],
+    "education_majors": [
+     107,
+     127
+    ]
+   }
+  },
+  {
+   "id": "134303669970458",
+   "nombre": "Voice Performance",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     1
+    ],
+    "work_employers": [
+     22,
+     26
+    ],
+    "education_majors": [
+     4296,
+     5053
+    ]
+   }
+  },
+  {
+   "id": "1628891967332423",
+   "nombre": "Piano Instructor",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     6550,
+     7703
+    ],
+    "work_employers": [
+     225,
+     265
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "105667052799444",
+   "nombre": "Piano",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     2971,
+     3494
+    ],
+    "work_employers": [
+     7550,
+     8879
+    ],
+    "education_majors": [
+     55897,
+     65736
+    ]
+   }
+  },
+  {
+   "id": "108105032543590",
+   "nombre": "Piano pedagogy",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     325,
+     383
+    ],
+    "work_employers": [
+     693,
+     816
+    ],
+    "education_majors": [
+     8636,
+     10157
+    ]
+   }
+  },
+  {
+   "id": "575974859172562",
+   "nombre": "Instrumental Music Teacher",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     10316,
+     12132
+    ],
+    "work_employers": [
+     1170,
+     1376
+    ],
+    "education_majors": [
+     6,
+     8
+    ]
+   }
+  },
+  {
+   "id": "325178820985358",
+   "nombre": "Visual arts education",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     10029,
+     11795
+    ],
+    "work_employers": [
+     8457,
+     9946
+    ],
+    "education_majors": [
+     90447,
+     106366
+    ]
+   }
+  },
+  {
+   "id": "109439469082967",
+   "nombre": "Music education",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     3822,
+     4495
+    ],
+    "work_employers": [
+     17397,
+     20460
+    ],
+    "education_majors": [
+     108900,
+     128067
+    ]
+   }
+  },
+  {
+   "id": "135725819826241",
+   "nombre": "Music Education-Instrumental",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     1
+    ],
+    "work_employers": [
+     213,
+     251
+    ],
+    "education_majors": [
+     7626,
+     8969
+    ]
+   }
+  },
+  {
+   "id": "180811621960936",
+   "nombre": "Bachelor of Music Education",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     1
+    ],
+    "work_employers": [
+     17,
+     21
+    ],
+    "education_majors": [
+     4244,
+     4991
+    ]
+   }
+  },
+  {
+   "id": "112526212092780",
+   "nombre": "Music industry",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     143,
+     169
+    ],
+    "work_employers": [
+     36516,
+     42943
+    ],
+    "education_majors": [
+     9156,
+     10768
+    ]
+   }
+  },
+  {
+   "id": "108461722510998",
+   "nombre": "Tour manager",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     70267,
+     82635
+    ],
+    "work_employers": [
+     1260,
+     1482
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "108095632544141",
+   "nombre": "Talent Agent",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     67526,
+     79411
+    ],
+    "work_employers": [
+     2083,
+     2450
+    ],
+    "education_majors": [
+     7,
+     9
+    ]
+   }
+  },
+  {
+   "id": "108380162525686",
+   "nombre": "Tour promoter",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     10982,
+     12915
+    ],
+    "work_employers": [
+     227,
+     268
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "363374213848991",
+   "nombre": "Artist Manager",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     70355,
+     82738
+    ],
+    "work_employers": [
+     4856,
+     5711
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "106070946100452",
+   "nombre": "Fine Arts",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     2001,
+     2354
+    ],
+    "work_employers": [
+     20310,
+     23885
+    ],
+    "education_majors": [
+     311511,
+     366338
+    ]
+   }
+  },
+  {
+   "id": "109448532407153",
+   "nombre": "Publishing",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     361,
+     425
+    ],
+    "work_employers": [
+     3138,
+     3691
+    ],
+    "education_majors": [
+     7881,
+     9269
+    ]
+   }
+  },
+  {
+   "id": "514390232050927",
+   "nombre": "Event Promoter",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     19689,
+     23155
+    ],
+    "work_employers": [
+     1473,
+     1733
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "108287192526512",
+   "nombre": "Stage management",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     27649,
+     32516
+    ],
+    "work_employers": [
+     1343,
+     1580
+    ],
+    "education_majors": [
+     58,
+     69
+    ]
+   }
+  },
+  {
+   "id": "108188302536265",
+   "nombre": "Stagehand",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     8271,
+     9727
+    ],
+    "work_employers": [
+     544,
+     640
+    ],
+    "education_majors": [
+     5,
+     7
+    ]
+   }
+  },
+  {
+   "id": "1400456796930309",
+   "nombre": "Stage Technician",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     7102,
+     8352
+    ],
+    "work_employers": [
+     124,
+     146
+    ],
+    "education_majors": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "113517325329640",
+   "nombre": "Concertmaster",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     3190,
+     3752
+    ],
+    "work_employers": [
+     45,
+     54
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "115722858438378",
+   "nombre": "Lighting technician",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     16708,
+     19649
+    ],
+    "work_employers": [
+     757,
+     891
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "112011722143644",
+   "nombre": "Lighting designer",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     4190,
+     4928
+    ],
+    "work_employers": [
+     601,
+     707
+    ],
+    "education_majors": [
+     2862,
+     3366
+    ]
+   }
+  },
+  {
+   "id": "108038755890478",
+   "nombre": "Graphic designer",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     570000,
+     670321
+    ],
+    "work_employers": [
+     77606,
+     91265
+    ],
+    "education_majors": [
+     9957,
+     11710
+    ]
+   }
+  },
+  {
+   "id": "101561156597558",
+   "nombre": "Fashion Designer/Stylist",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     102839,
+     120939
+    ],
+    "work_employers": [
+     282037,
+     331676
+    ],
+    "education_majors": [
+     88,
+     104
+    ]
+   }
+  },
+  {
+   "id": "103746186331087",
+   "nombre": "Costume designer",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     38199,
+     44923
+    ],
+    "work_employers": [
+     8140,
+     9573
+    ],
+    "education_majors": [
+     36,
+     43
+    ]
+   }
+  },
+  {
+   "id": "108324472556364",
+   "nombre": "Graphic Designer/Illustrator",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     32177,
+     37841
+    ],
+    "work_employers": [
+     2298,
+     2703
+    ],
+    "education_majors": [
+     8,
+     10
+    ]
+   }
+  },
+  {
+   "id": "104034232967760",
+   "nombre": "Production designer",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     11454,
+     13471
+    ],
+    "work_employers": [
+     998,
+     1174
+    ],
+    "education_majors": [
+     41,
+     49
+    ]
+   }
+  },
+  {
+   "id": "113144995367089",
+   "nombre": "VJ",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     15508,
+     18238
+    ],
+    "work_employers": [
+     761,
+     895
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "156681287675313",
+   "nombre": "Journalist/Writer",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     3175,
+     3734
+    ],
+    "work_employers": [
+     477,
+     561
+    ],
+    "education_majors": [
+     5,
+     6
+    ]
+   }
+  },
+  {
+   "id": "107924545901911",
+   "nombre": "Mariachi",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     482,
+     568
+    ],
+    "work_employers": [
+     7863,
+     9247
+    ],
+    "education_majors": [
+     7,
+     9
+    ]
+   }
+  },
+  {
+   "id": "109690222391495",
+   "nombre": "Art school",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     30,
+     36
+    ],
+    "work_employers": [
+     3454,
+     4063
+    ],
+    "education_majors": [
+     61422,
+     72233
+    ]
+   }
+  },
+  {
+   "id": "704111922938071",
+   "nombre": "Conservatorio Giuseppe Verdi",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     1
+    ],
+    "work_employers": [
+     441,
+     519
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "109558099062698",
+   "nombre": "Opera",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     91,
+     108
+    ],
+    "work_employers": [
+     5178,
+     6090
+    ],
+    "education_majors": [
+     25762,
+     30297
+    ]
+   }
+  },
+  {
+   "id": "103450186361756",
+   "nombre": "Studio Art",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     56,
+     66
+    ],
+    "work_employers": [
+     2335,
+     2747
+    ],
+    "education_majors": [
+     53754,
+     63215
+    ]
+   }
+  },
+  {
+   "id": "109823779047223",
+   "nombre": "Music Composition",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     64,
+     76
+    ],
+    "work_employers": [
+     4407,
+     5183
+    ],
+    "education_majors": [
+     103354,
+     121545
+    ]
+   }
+  },
+  {
+   "id": "193831830647885",
+   "nombre": "Music Theory/Composition",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     1
+    ],
+    "work_employers": [
+     15,
+     18
+    ],
+    "education_majors": [
+     2334,
+     2745
+    ]
+   }
+  },
+  {
+   "id": "106486452721204",
+   "nombre": "Music Production",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     296174,
+     348301
+    ],
+    "work_employers": [
+     98954,
+     116371
+    ],
+    "education_majors": [
+     6354,
+     7473
+    ]
+   }
+  },
+  {
+   "id": "113028665377618",
+   "nombre": "Production coordinator",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     60312,
+     70927
+    ],
+    "work_employers": [
+     641,
+     754
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "113219968691591",
+   "nombre": "Production assistant",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     38584,
+     45375
+    ],
+    "work_employers": [
+     1290,
+     1518
+    ],
+    "education_majors": [
+     17,
+     20
+    ]
+   }
+  },
+  {
+   "id": "107593029269869",
+   "nombre": "Hip hop production",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     34875,
+     41014
+    ],
+    "work_employers": [
+     1598,
+     1880
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "106289802743160",
+   "nombre": "Production company",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     32190,
+     37856
+    ],
+    "work_employers": [
+     6284,
+     7391
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "104084369626881",
+   "nombre": "Post-production",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     69,
+     82
+    ],
+    "work_employers": [
+     499,
+     587
+    ],
+    "education_majors": [
+     1959,
+     2304
+    ]
+   }
+  },
+  {
+   "id": "136073143125360",
+   "nombre": "Music Production & Engineering",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     15,
+     18
+    ],
+    "work_employers": [
+     703,
+     827
+    ],
+    "education_majors": [
+     6646,
+     7816
+    ]
+   }
+  },
+  {
+   "id": "111488235535505",
+   "nombre": "Wedding photography",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     6244,
+     7343
+    ],
+    "work_employers": [
+     2381,
+     2801
+    ],
+    "education_majors": [
+     83,
+     98
+    ]
+   }
+  },
+  {
+   "id": "123850070992909",
+   "nombre": "Wedding Photographer / Owner",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     5745,
+     6757
+    ],
+    "work_employers": [
+     1019,
+     1199
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "140183009335237",
+   "nombre": "Violonista",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     1911,
+     2248
+    ],
+    "work_employers": [
+     136,
+     160
+    ],
+    "education_majors": [
+     2,
+     3
+    ]
+   }
+  },
+  {
+   "id": "144944208856813",
+   "nombre": "Visual Art Teacher",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     8174,
+     9613
+    ],
+    "work_employers": [
+     809,
+     952
+    ],
+    "education_majors": [
+     13,
+     16
+    ]
+   }
+  },
+  {
+   "id": "333949773480079",
+   "nombre": "Visual Arts Teacher",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     4255,
+     5004
+    ],
+    "work_employers": [
+     69,
+     82
+    ],
+    "education_majors": [
+     21,
+     25
+    ]
+   }
+  },
+  {
+   "id": "103779466327610",
+   "nombre": "Visual effects",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     546,
+     643
+    ],
+    "work_employers": [
+     525,
+     618
+    ],
+    "education_majors": [
+     3817,
+     4489
+    ]
+   }
+  },
+  {
+   "id": "141892122496339",
+   "nombre": "Fine Art Teacher",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     2481,
+     2918
+    ],
+    "work_employers": [
+     528,
+     621
+    ],
+    "education_majors": [
+     3,
+     4
+    ]
+   }
+  },
+  {
+   "id": "112128888802423",
+   "nombre": "Fine art photography",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     102,
+     120
+    ],
+    "work_employers": [
+     533,
+     627
+    ],
+    "education_majors": [
+     5862,
+     6894
+    ]
+   }
+  },
+  {
+   "id": "105923792771581",
+   "nombre": "Athens School of Fine Arts",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     1,
+     2
+    ],
+    "work_employers": [
+     278,
+     327
+    ],
+    "education_majors": [
+     8,
+     10
+    ]
+   }
+  },
+  {
+   "id": "107991489221346",
+   "nombre": "Royal University of Fine Arts",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     0,
+     1
+    ],
+    "work_employers": [
+     623,
+     733
+    ],
+    "education_majors": [
+     2,
+     3
+    ]
+   }
+  },
+  {
+   "id": "133987043333018",
+   "nombre": "Fine Arts/Photography",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     0,
+     1
+    ],
+    "work_employers": [
+     32,
+     38
+    ],
+    "education_majors": [
+     2482,
+     2920
+    ]
+   }
+  },
+  {
+   "id": "143245212372140",
+   "nombre": "Artist/Painter",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     5707,
+     6712
+    ],
+    "work_employers": [
+     1252,
+     1473
+    ],
+    "education_majors": [
+     17,
+     20
+    ]
+   }
+  },
+  {
+   "id": "137321639638817",
+   "nombre": "Face Painter",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     4683,
+     5508
+    ],
+    "work_employers": [
+     334,
+     393
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "111925778823301",
+   "nombre": "Painting",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     24785,
+     29148
+    ],
+    "work_employers": [
+     100813,
+     118557
+    ],
+    "education_majors": [
+     109051,
+     128244
+    ]
+   }
+  },
+  {
+   "id": "106148299416410",
+   "nombre": "Oil painting",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     23,
+     28
+    ],
+    "work_employers": [
+     1279,
+     1505
+    ],
+    "education_majors": [
+     2607,
+     3066
+    ]
+   }
+  },
+  {
+   "id": "137833162917209",
+   "nombre": "Professional Tattoo Artist",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     6852,
+     8058
+    ],
+    "work_employers": [
+     402,
+     473
+    ],
+    "education_majors": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "108034949225192",
+   "nombre": "Sculpture",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     257,
+     303
+    ],
+    "work_employers": [
+     5914,
+     6955
+    ],
+    "education_majors": [
+     30607,
+     35995
+    ]
+   }
+  },
+  {
+   "id": "112775385404002",
+   "nombre": "Illustrator",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     33475,
+     39367
+    ],
+    "work_employers": [
+     6845,
+     8050
+    ],
+    "education_majors": [
+     272,
+     321
+    ]
+   }
+  },
+  {
+   "id": "112608815418540",
+   "nombre": "Drawing",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     2579,
+     3033
+    ],
+    "work_employers": [
+     28542,
+     33566
+    ],
+    "education_majors": [
+     71630,
+     84238
+    ]
+   }
+  },
+  {
+   "id": "104086106293169",
+   "nombre": "Illustration",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     109,
+     129
+    ],
+    "work_employers": [
+     3304,
+     3886
+    ],
+    "education_majors": [
+     41938,
+     49320
+    ]
+   }
+  },
+  {
+   "id": "181823988521690",
+   "nombre": "Graphic Design/Illustration",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     33,
+     39
+    ],
+    "work_employers": [
+     630,
+     742
+    ],
+    "education_majors": [
+     4944,
+     5815
+    ]
+   }
+  },
+  {
+   "id": "105672926131840",
+   "nombre": "Graffiti",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     1085,
+     1277
+    ],
+    "work_employers": [
+     48880,
+     57484
+    ],
+    "education_majors": [
+     1161,
+     1366
+    ]
+   }
+  },
+  {
+   "id": "132117200224938",
+   "nombre": "Artesã/ Proprietária",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     28474,
+     33486
+    ],
+    "work_employers": [
+     5583,
+     6566
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "108156972538457",
+   "nombre": "Artes plásticas",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     12096,
+     14226
+    ],
+    "work_employers": [
+     11699,
+     13759
+    ],
+    "education_majors": [
+     23750,
+     27931
+    ]
+   }
+  },
+  {
+   "id": "108122372548790",
+   "nombre": "Street art",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     32,
+     38
+    ],
+    "work_employers": [
+     3306,
+     3888
+    ],
+    "education_majors": [
+     994,
+     1170
+    ]
+   }
+  },
+  {
+   "id": "105553976143730",
+   "nombre": "Printmaking",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     26,
+     31
+    ],
+    "work_employers": [
+     1420,
+     1670
+    ],
+    "education_majors": [
+     10710,
+     12595
+    ]
+   }
+  },
+  {
+   "id": "780887541986924",
+   "nombre": "Potter",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     4274,
+     5027
+    ],
+    "work_employers": [
+     102,
+     120
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "111956652150198",
+   "nombre": "Pottery",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     386,
+     454
+    ],
+    "work_employers": [
+     2173,
+     2556
+    ],
+    "education_majors": [
+     3537,
+     4160
+    ]
+   }
+  },
+  {
+   "id": "108261959194035",
+   "nombre": "Orfebrería",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     1,
+     2
+    ],
+    "work_employers": [
+     1835,
+     2159
+    ],
+    "education_majors": [
+     31,
+     37
+    ]
+   }
+  },
+  {
+   "id": "106247222745222",
+   "nombre": "Jewelry making",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     12581,
+     14796
+    ],
+    "work_employers": [
+     5437,
+     6395
+    ],
+    "education_majors": [
+     3407,
+     4007
+    ]
+   }
+  },
+  {
+   "id": "115183551830113",
+   "nombre": "Jewelry",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     7008,
+     8242
+    ],
+    "work_employers": [
+     35988,
+     42323
+    ],
+    "education_majors": [
+     413,
+     486
+    ]
+   }
+  },
+  {
+   "id": "106412399390778",
+   "nombre": "Artisan",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     66045,
+     77670
+    ],
+    "work_employers": [
+     19800,
+     23285
+    ],
+    "education_majors": [
+     31,
+     37
+    ]
+   }
+  },
+  {
+   "id": "103849223026327",
+   "nombre": "TATUADOR/ PROPRIETÁRIO",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     3641,
+     4282
+    ],
+    "work_employers": [
+     461,
+     543
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "362204710631842",
+   "nombre": "Tattoo and Body Artist",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     82214,
+     96684
+    ],
+    "work_employers": [
+     29475,
+     34663
+    ],
+    "education_majors": [
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "id": "1037846916231427",
+   "nombre": "Tattoo Designer",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     11474,
+     13494
+    ],
+    "work_employers": [
+     409,
+     482
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "145902162103959",
+   "nombre": "Tattoo Artist/Body Piercer",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     10332,
+     12151
+    ],
+    "work_employers": [
+     3909,
+     4598
+    ],
+    "education_majors": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "568931679856841",
+   "nombre": "Fotógrafo publicitario",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     20755,
+     24408
+    ],
+    "work_employers": [
+     4471,
+     5258
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "107600619269865",
+   "nombre": "Photographer",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     1350814,
+     1588558
+    ],
+    "work_employers": [
+     363758,
+     427780
+    ],
+    "education_majors": [
+     2690,
+     3164
+    ]
+   }
+  },
+  {
+   "id": "138109882896104",
+   "nombre": "Owner/Photographer",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     197622,
+     232404
+    ],
+    "work_employers": [
+     3259,
+     3833
+    ],
+    "education_majors": [
+     42,
+     50
+    ]
+   }
+  },
+  {
+   "id": "139719116061485",
+   "nombre": "Owner and Photographer",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     122925,
+     144560
+    ],
+    "work_employers": [
+     20179,
+     23731
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "140258702671223",
+   "nombre": "Senior Photographer",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     4372,
+     5142
+    ],
+    "work_employers": [
+     72,
+     85
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "262818967105807",
+   "nombre": "Graphic Designer and Photographer",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     3488,
+     4102
+    ],
+    "work_employers": [
+     429,
+     505
+    ],
+    "education_majors": [
+     8,
+     10
+    ]
+   }
+  },
+  {
+   "id": "109988185691450",
+   "nombre": "Self Employed Photographer",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     107,
+     127
+    ],
+    "work_employers": [
+     3002,
+     3531
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "154024051288885",
+   "nombre": "Photographer",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     9,
+     11
+    ],
+    "work_employers": [
+     4696,
+     5523
+    ],
+    "education_majors": [
+     7,
+     9
+    ]
+   }
+  },
+  {
+   "id": "110718662299674",
+   "nombre": "Professional Photographer",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     5,
+     7
+    ],
+    "work_employers": [
+     5654,
+     6650
+    ],
+    "education_majors": [
+     9,
+     11
+    ]
+   }
+  },
+  {
+   "id": "108170975877442",
+   "nombre": "Photography",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     20730,
+     24379
+    ],
+    "work_employers": [
+     195925,
+     230408
+    ],
+    "education_majors": [
+     405208,
+     476525
+    ]
+   }
+  },
+  {
+   "id": "118337981548226",
+   "nombre": "Photography Intern",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     4063,
+     4779
+    ],
+    "work_employers": [
+     20,
+     24
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "113350782008628",
+   "nombre": "Portrait photography",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     10,
+     12
+    ],
+    "work_employers": [
+     470,
+     553
+    ],
+    "education_majors": [
+     2855,
+     3358
+    ]
+   }
+  },
+  {
+   "id": "112694615410063",
+   "nombre": "Digital photography",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     8,
+     10
+    ],
+    "work_employers": [
+     5277,
+     6206
+    ],
+    "education_majors": [
+     7592,
+     8929
+    ]
+   }
+  },
+  {
+   "id": "105940826103742",
+   "nombre": "Digital art",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     25,
+     30
+    ],
+    "work_employers": [
+     725,
+     853
+    ],
+    "education_majors": [
+     3982,
+     4684
+    ]
+   }
+  },
+  {
+   "id": "106141379416232",
+   "nombre": "Animator",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     103759,
+     122021
+    ],
+    "work_employers": [
+     12372,
+     14550
+    ],
+    "education_majors": [
+     160,
+     189
+    ]
+   }
+  },
+  {
+   "id": "149600401716717",
+   "nombre": "Animatore",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     5164,
+     6074
+    ],
+    "work_employers": [
+     622,
+     732
+    ],
+    "education_majors": [
+     256,
+     302
+    ]
+   }
+  },
+  {
+   "id": "648913501879859",
+   "nombre": "Animation Artist",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     9667,
+     11369
+    ],
+    "work_employers": [
+     264,
+     311
+    ],
+    "education_majors": [
+     28,
+     34
+    ]
+   }
+  },
+  {
+   "id": "107786229244841",
+   "nombre": "Animation",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     8994,
+     10577
+    ],
+    "work_employers": [
+     9270,
+     10902
+    ],
+    "education_majors": [
+     64356,
+     75683
+    ]
+   }
+  },
+  {
+   "id": "109259605758399",
+   "nombre": "Character animation",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     22,
+     26
+    ],
+    "work_employers": [
+     126,
+     149
+    ],
+    "education_majors": [
+     4500,
+     5292
+    ]
+   }
+  },
+  {
+   "id": "111803728845830",
+   "nombre": "3-D Animation",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     17,
+     21
+    ],
+    "work_employers": [
+     641,
+     754
+    ],
+    "education_majors": [
+     9485,
+     11155
+    ]
+   }
+  },
+  {
+   "id": "136520479747018",
+   "nombre": "3D Modeling & Animation",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     17,
+     20
+    ],
+    "work_employers": [
+     764,
+     899
+    ],
+    "education_majors": [
+     1783,
+     2097
+    ]
+   }
+  },
+  {
+   "id": "191193214246158",
+   "nombre": "Diseñador Gráfico (Graphic Designer)",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     55700,
+     65504
+    ],
+    "work_employers": [
+     12096,
+     14225
+    ],
+    "education_majors": [
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "id": "137709556266277",
+   "nombre": "Motion Graphic Designer",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     15611,
+     18359
+    ],
+    "work_employers": [
+     4995,
+     5875
+    ],
+    "education_majors": [
+     23,
+     28
+    ]
+   }
+  },
+  {
+   "id": "337896049743194",
+   "nombre": "Motion Graphics Artist",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     9339,
+     10983
+    ],
+    "work_employers": [
+     763,
+     898
+    ],
+    "education_majors": [
+     10,
+     12
+    ]
+   }
+  },
+  {
+   "id": "114001541943344",
+   "nombre": "Motion graphics",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     452,
+     532
+    ],
+    "work_employers": [
+     371,
+     437
+    ],
+    "education_majors": [
+     1723,
+     2027
+    ]
+   }
+  },
+  {
+   "id": "109803049037749",
+   "nombre": "Graphic design",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     104329,
+     122692
+    ],
+    "work_employers": [
+     151986,
+     178736
+    ],
+    "education_majors": [
+     766273,
+     901138
+    ]
+   }
+  },
+  {
+   "id": "103800496324974",
+   "nombre": "Graphic arts",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     10,
+     12
+    ],
+    "work_employers": [
+     2431,
+     2860
+    ],
+    "education_majors": [
+     2869,
+     3374
+    ]
+   }
+  },
+  {
+   "id": "108428449186130",
+   "nombre": "Art history",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     238,
+     281
+    ],
+    "work_employers": [
+     6061,
+     7128
+    ],
+    "education_majors": [
+     283571,
+     333480
+    ]
+   }
+  },
+  {
+   "id": "109474405737419",
+   "nombre": "History of art",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     96,
+     113
+    ],
+    "work_employers": [
+     1087,
+     1279
+    ],
+    "education_majors": [
+     68401,
+     80440
+    ]
+   }
+  },
+  {
+   "id": "110026012360236",
+   "nombre": "Installation art",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     38,
+     45
+    ],
+    "work_employers": [
+     214,
+     252
+    ],
+    "education_majors": [
+     1777,
+     2090
+    ]
+   }
+  },
+  {
+   "id": "108338775853344",
+   "nombre": "Art director",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     196576,
+     231174
+    ],
+    "work_employers": [
+     10215,
+     12013
+    ],
+    "education_majors": [
+     4727,
+     5559
+    ]
+   }
+  },
+  {
+   "id": "436043696554453",
+   "nombre": "Creative/Art Director",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     78569,
+     92398
+    ],
+    "work_employers": [
+     3795,
+     4463
+    ],
+    "education_majors": [
+     5,
+     7
+    ]
+   }
+  },
+  {
+   "id": "1547557845516603",
+   "nombre": "Senior Designer/Art Director",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     6809,
+     8008
+    ],
+    "work_employers": [
+     373,
+     439
+    ],
+    "education_majors": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "1012977968731197",
+   "nombre": "Freelance Art Director",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     2041,
+     2401
+    ],
+    "work_employers": [
+     455,
+     536
+    ],
+    "education_majors": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "106283999406746",
+   "nombre": "Video editor",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     79980,
+     94057
+    ],
+    "work_employers": [
+     45959,
+     54048
+    ],
+    "education_majors": [
+     131,
+     155
+    ]
+   }
+  },
+  {
+   "id": "103109429729120",
+   "nombre": "Video editing",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     1213,
+     1427
+    ],
+    "work_employers": [
+     9109,
+     10713
+    ],
+    "education_majors": [
+     852,
+     1002
+    ]
+   }
+  },
+  {
+   "id": "105968652767651",
+   "nombre": "Video art",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     37,
+     44
+    ],
+    "work_employers": [
+     539,
+     634
+    ],
+    "education_majors": [
+     9897,
+     11639
+    ]
+   }
+  },
+  {
+   "id": "107995009229020",
+   "nombre": "Videography",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     17,
+     21
+    ],
+    "work_employers": [
+     2042,
+     2402
+    ],
+    "education_majors": [
+     1083,
+     1274
+    ]
+   }
+  },
+  {
+   "id": "105541076147097",
+   "nombre": "Textile design",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     84,
+     99
+    ],
+    "work_employers": [
+     4205,
+     4946
+    ],
+    "education_majors": [
+     19881,
+     23381
+    ]
+   }
+  },
+  {
+   "id": "103132636393525",
+   "nombre": "Fashion design",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     126829,
+     149152
+    ],
+    "work_employers": [
+     380254,
+     447179
+    ],
+    "education_majors": [
+     244019,
+     286967
+    ]
+   }
+  },
+  {
+   "id": "137205766305631",
+   "nombre": "Inter National Institute of Fashion Design (INIFD)",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     0,
+     1
+    ],
+    "work_employers": [
+     746,
+     878
+    ],
+    "education_majors": [
+     3,
+     4
+    ]
+   }
+  },
+  {
+   "id": "108430785847939",
+   "nombre": "Curator",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     29877,
+     35136
+    ],
+    "work_employers": [
+     7227,
+     8500
+    ],
+    "education_majors": [
+     43,
+     51
+    ]
+   }
+  },
+  {
+   "id": "103089569731771",
+   "nombre": "Literary criticism",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     26,
+     31
+    ],
+    "work_employers": [
+     762,
+     897
+    ],
+    "education_majors": [
+     9380,
+     11032
+    ]
+   }
+  },
+  {
+   "id": "1406116293027217",
+   "nombre": "Art Teacher",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     49486,
+     58196
+    ],
+    "work_employers": [
+     2255,
+     2653
+    ],
+    "education_majors": [
+     16,
+     19
+    ]
+   }
+  },
+  {
+   "id": "108511822510397",
+   "nombre": "Performing arts",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     43111,
+     50699
+    ],
+    "work_employers": [
+     10244,
+     12048
+    ],
+    "education_majors": [
+     122561,
+     144132
+    ]
+   }
+  },
+  {
+   "id": "109400172411628",
+   "nombre": "Arts and crafts",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     287,
+     338
+    ],
+    "work_employers": [
+     39556,
+     46518
+    ],
+    "education_majors": [
+     5019,
+     5903
+    ]
+   }
+  },
+  {
+   "id": "110720958956173",
+   "nombre": "Applied arts",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     2,
+     3
+    ],
+    "work_employers": [
+     581,
+     684
+    ],
+    "education_majors": [
+     18394,
+     21632
+    ]
+   }
+  },
+  {
+   "id": "107594029270341",
+   "nombre": "Modern art",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     11,
+     14
+    ],
+    "work_employers": [
+     307,
+     362
+    ],
+    "education_majors": [
+     3746,
+     4406
+    ]
+   }
+  },
+  {
+   "id": "306336389402777",
+   "nombre": "Aalto University School of Arts, Design and Architecture",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     2,
+     3
+    ],
+    "work_employers": [
+     601,
+     707
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "104068076296295",
+   "nombre": "Desenhista",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     60256,
+     70862
+    ],
+    "work_employers": [
+     15397,
+     18108
+    ],
+    "education_majors": [
+     1215,
+     1430
+    ]
+   }
+  },
+  {
+   "id": "107992259223308",
+   "nombre": "Actor",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     1220811,
+     1435674
+    ],
+    "work_employers": [
+     418048,
+     491625
+    ],
+    "education_majors": [
+     7570,
+     8903
+    ]
+   }
+  },
+  {
+   "id": "103741916330974",
+   "nombre": "Child actor",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     10590,
+     12455
+    ],
+    "work_employers": [
+     851,
+     1001
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "109454632407438",
+   "nombre": "Character actor",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     5494,
+     6462
+    ],
+    "work_employers": [
+     231,
+     272
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "112370218778176",
+   "nombre": "Theatre director",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     16300,
+     19169
+    ],
+    "work_employers": [
+     1864,
+     2193
+    ],
+    "education_majors": [
+     41,
+     49
+    ]
+   }
+  },
+  {
+   "id": "115009705181484",
+   "nombre": "Theatre practitioner",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     3395,
+     3993
+    ],
+    "work_employers": [
+     232,
+     273
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "108005205894490",
+   "nombre": "Film director",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     130721,
+     153729
+    ],
+    "work_employers": [
+     26125,
+     30723
+    ],
+    "education_majors": [
+     4104,
+     4827
+    ]
+   }
+  },
+  {
+   "id": "108157702551597",
+   "nombre": "Film crew",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     27733,
+     32615
+    ],
+    "work_employers": [
+     1978,
+     2327
+    ],
+    "education_majors": [
+     7,
+     9
+    ]
+   }
+  },
+  {
+   "id": "113805488629716",
+   "nombre": "Filmmaking",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     380,
+     447
+    ],
+    "work_employers": [
+     16071,
+     18900
+    ],
+    "education_majors": [
+     18899,
+     22226
+    ]
+   }
+  },
+  {
+   "id": "108143065873065",
+   "nombre": "Horror Film",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     57,
+     68
+    ],
+    "work_employers": [
+     5912,
+     6953
+    ],
+    "education_majors": [
+     2021,
+     2377
+    ]
+   }
+  },
+  {
+   "id": "105504132816737",
+   "nombre": "Action film",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     32,
+     38
+    ],
+    "work_employers": [
+     1909,
+     2245
+    ],
+    "education_majors": [
+     221,
+     260
+    ]
+   }
+  },
+  {
+   "id": "108288549193260",
+   "nombre": "Cinematographer",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     29726,
+     34958
+    ],
+    "work_employers": [
+     7260,
+     8538
+    ],
+    "education_majors": [
+     806,
+     948
+    ]
+   }
+  },
+  {
+   "id": "111963592152620",
+   "nombre": "Cinematography",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     215,
+     253
+    ],
+    "work_employers": [
+     3328,
+     3914
+    ],
+    "education_majors": [
+     19249,
+     22637
+    ]
+   }
+  },
+  {
+   "id": "111550008868874",
+   "nombre": "Maya Academy of Advanced Cinematics (MAAC)",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     0,
+     1
+    ],
+    "work_employers": [
+     670,
+     789
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "144766218886618",
+   "nombre": "Locutor",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     112666,
+     132496
+    ],
+    "work_employers": [
+     15734,
+     18504
+    ],
+    "education_majors": [
+     2036,
+     2395
+    ]
+   }
+  },
+  {
+   "id": "104013429633972",
+   "nombre": "Playwright",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     2953,
+     3473
+    ],
+    "work_employers": [
+     1242,
+     1461
+    ],
+    "education_majors": [
+     2072,
+     2437
+    ]
+   }
+  },
+  {
+   "id": "107691302586145",
+   "nombre": "Hochschule für Musik und Theater Hamburg",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     1
+    ],
+    "work_employers": [
+     397,
+     467
+    ],
+    "education_majors": [
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "id": "108512119182023",
+   "nombre": "Performing",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     16,
+     19
+    ],
+    "work_employers": [
+     122,
+     144
+    ],
+    "education_majors": [
+     4036,
+     4747
+    ]
+   }
+  },
+  {
+   "id": "113227362021025",
+   "nombre": "Acting",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     4131,
+     4859
+    ],
+    "work_employers": [
+     29585,
+     34793
+    ],
+    "education_majors": [
+     103397,
+     121595
+    ]
+   }
+  },
+  {
+   "id": "108060309214043",
+   "nombre": "Method acting",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     9,
+     11
+    ],
+    "work_employers": [
+     128,
+     151
+    ],
+    "education_majors": [
+     4488,
+     5279
+    ]
+   }
+  },
+  {
+   "id": "190800694273491",
+   "nombre": "Drama/Acting",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     1,
+     2
+    ],
+    "work_employers": [
+     1602,
+     1885
+    ],
+    "education_majors": [
+     2671,
+     3142
+    ]
+   }
+  },
+  {
+   "id": "109563255730113",
+   "nombre": "Drama",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     995,
+     1171
+    ],
+    "work_employers": [
+     5642,
+     6636
+    ],
+    "education_majors": [
+     67174,
+     78997
+    ]
+   }
+  },
+  {
+   "id": "108154475871813",
+   "nombre": "Comedian",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     20841,
+     24510
+    ],
+    "work_employers": [
+     9802,
+     11528
+    ],
+    "education_majors": [
+     946,
+     1113
+    ]
+   }
+  },
+  {
+   "id": "1415449645416680",
+   "nombre": "Stand Up Comedian",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     15053,
+     17703
+    ],
+    "work_employers": [
+     5399,
+     6350
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "111664808868693",
+   "nombre": "Stand Up Comedian",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     50,
+     59
+    ],
+    "work_employers": [
+     6893,
+     8107
+    ],
+    "education_majors": [
+     4,
+     5
+    ]
+   }
+  },
+  {
+   "id": "109390405747155",
+   "nombre": "Stand-up comedy",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     27337,
+     32149
+    ],
+    "work_employers": [
+     8956,
+     10533
+    ],
+    "education_majors": [
+     120,
+     142
+    ]
+   }
+  },
+  {
+   "id": "103796252992283",
+   "nombre": "Magician",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     13091,
+     15396
+    ],
+    "work_employers": [
+     4862,
+     5718
+    ],
+    "education_majors": [
+     17,
+     21
+    ]
+   }
+  },
+  {
+   "id": "111900908826104",
+   "nombre": "Circus",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     237,
+     279
+    ],
+    "work_employers": [
+     6169,
+     7255
+    ],
+    "education_majors": [
+     80,
+     95
+    ]
+   }
+  },
+  {
+   "id": "105736106127964",
+   "nombre": "Bailarina",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     204795,
+     240840
+    ],
+    "work_employers": [
+     33645,
+     39567
+    ],
+    "education_majors": [
+     1406,
+     1654
+    ]
+   }
+  },
+  {
+   "id": "836498499744176",
+   "nombre": "Modern Dancer",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     14675,
+     17258
+    ],
+    "work_employers": [
+     1039,
+     1223
+    ],
+    "education_majors": [
+     4,
+     5
+    ]
+   }
+  },
+  {
+   "id": "1454973101310094",
+   "nombre": "Belly Dancer",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     4963,
+     5837
+    ],
+    "work_employers": [
+     404,
+     476
+    ],
+    "education_majors": [
+     2,
+     3
+    ]
+   }
+  },
+  {
+   "id": "149082611771524",
+   "nombre": "Dance Instructor/Choreographer",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     17814,
+     20950
+    ],
+    "work_employers": [
+     5258,
+     6184
+    ],
+    "education_majors": [
+     11,
+     14
+    ]
+   }
+  },
+  {
+   "id": "109455935740176",
+   "nombre": "Break dance",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     11741,
+     13808
+    ],
+    "work_employers": [
+     37606,
+     44225
+    ],
+    "education_majors": [
+     1783,
+     2097
+    ]
+   }
+  },
+  {
+   "id": "144597985559511",
+   "nombre": "Dance Teacher and Choreographer",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     3010,
+     3540
+    ],
+    "work_employers": [
+     246,
+     290
+    ],
+    "education_majors": [
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "id": "107532252603348",
+   "nombre": "Modern dance",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     84,
+     99
+    ],
+    "work_employers": [
+     1968,
+     2315
+    ],
+    "education_majors": [
+     2729,
+     3210
+    ]
+   }
+  },
+  {
+   "id": "106086522756540",
+   "nombre": "Contemporary dance",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     39,
+     47
+    ],
+    "work_employers": [
+     2069,
+     2434
+    ],
+    "education_majors": [
+     12455,
+     14648
+    ]
+   }
+  },
+  {
+   "id": "104074259627973",
+   "nombre": "Ballerina",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     11458,
+     13475
+    ],
+    "work_employers": [
+     3065,
+     3605
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "108090639219274",
+   "nombre": "Ballet master",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     3699,
+     4351
+    ],
+    "work_employers": [
+     357,
+     421
+    ],
+    "education_majors": [
+     11,
+     14
+    ]
+   }
+  },
+  {
+   "id": "108369382518732",
+   "nombre": "Ballet clásico",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     11,
+     13
+    ],
+    "work_employers": [
+     267,
+     314
+    ],
+    "education_majors": [
+     6883,
+     8095
+    ]
+   }
+  },
+  {
+   "id": "110373612346865",
+   "nombre": "Performer/Choreographer",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     6815,
+     8015
+    ],
+    "work_employers": [
+     1062,
+     1250
+    ],
+    "education_majors": [
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "id": "140242569343657",
+   "nombre": "Teacher/Choreographer",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     3850,
+     4528
+    ],
+    "work_employers": [
+     203,
+     239
+    ],
+    "education_majors": [
+     5,
+     7
+    ]
+   }
+  },
+  {
+   "id": "112372052110802",
+   "nombre": "Choreography",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     36208,
+     42581
+    ],
+    "work_employers": [
+     9237,
+     10863
+    ],
+    "education_majors": [
+     14227,
+     16731
+    ]
+   }
+  },
+  {
+   "id": "425733404258888",
+   "nombre": "Hip Hop Dance Instructor",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     6962,
+     8188
+    ],
+    "work_employers": [
+     327,
+     385
+    ],
+    "education_majors": [
+     5,
+     7
+    ]
+   }
+  },
+  {
+   "id": "105620859470690",
+   "nombre": "Flamenco",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     24,
+     29
+    ],
+    "work_employers": [
+     4147,
+     4877
+    ],
+    "education_majors": [
+     670,
+     789
+    ]
+   }
+  },
+  {
+   "id": "103756269662839",
+   "nombre": "Salsa",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     8,
+     10
+    ],
+    "work_employers": [
+     2943,
+     3462
+    ],
+    "education_majors": [
+     464,
+     546
+    ]
+   }
+  },
+  {
+   "id": "105656529468559",
+   "nombre": "B-boy",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     34930,
+     41078
+    ],
+    "work_employers": [
+     1021,
+     1201
+    ],
+    "education_majors": [
+     14,
+     17
+    ]
+   }
+  },
+  {
+   "id": "108240422539595",
+   "nombre": "Hip hop dancing",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     283777,
+     333722
+    ],
+    "work_employers": [
+     71840,
+     84484
+    ],
+    "education_majors": [
+     5522,
+     6495
+    ]
+   }
+  },
+  {
+   "id": "112805205399988",
+   "nombre": "Hip hop music",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     12,
+     15
+    ],
+    "work_employers": [
+     32263,
+     37942
+    ],
+    "education_majors": [
+     1353,
+     1592
+    ]
+   }
+  },
+  {
+   "id": "112580342087236",
+   "nombre": "Hip Hop",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     3,
+     4
+    ],
+    "work_employers": [
+     13117,
+     15426
+    ],
+    "education_majors": [
+     25,
+     30
+    ]
+   }
+  },
+  {
+   "id": "110378878983786",
+   "nombre": "Pole dancing",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     5890,
+     6927
+    ],
+    "work_employers": [
+     5419,
+     6373
+    ],
+    "education_majors": [
+     936,
+     1101
+    ]
+   }
+  },
+  {
+   "id": "107507365936659",
+   "nombre": "Writer",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     551909,
+     649045
+    ],
+    "work_employers": [
+     138623,
+     163021
+    ],
+    "education_majors": [
+     954,
+     1122
+    ]
+   }
+  },
+  {
+   "id": "359943614193024",
+   "nombre": "Creative Writer",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     104111,
+     122435
+    ],
+    "work_employers": [
+     806,
+     949
+    ],
+    "education_majors": [
+     8,
+     10
+    ]
+   }
+  },
+  {
+   "id": "112001598819205",
+   "nombre": "Staff writer",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     80344,
+     94485
+    ],
+    "work_employers": [
+     2439,
+     2869
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "106078029422599",
+   "nombre": "Head writer",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     32318,
+     38006
+    ],
+    "work_employers": [
+     916,
+     1078
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "137208462981433",
+   "nombre": "Contributing Writer",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     11010,
+     12948
+    ],
+    "work_employers": [
+     125,
+     148
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "350886821768983",
+   "nombre": "Feature Writer",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     5784,
+     6803
+    ],
+    "work_employers": [
+     56,
+     67
+    ],
+    "education_majors": [
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "id": "103134046392799",
+   "nombre": "Novelist",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     62037,
+     72956
+    ],
+    "work_employers": [
+     7783,
+     9153
+    ],
+    "education_majors": [
+     2,
+     3
+    ]
+   }
+  },
+  {
+   "id": "109769685715227",
+   "nombre": "Poet",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     638649,
+     751052
+    ],
+    "work_employers": [
+     21385,
+     25149
+    ],
+    "education_majors": [
+     95,
+     112
+    ]
+   }
+  },
+  {
+   "id": "140654929331664",
+   "nombre": "Creative Writing - Poetry",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     1,
+     2
+    ],
+    "work_employers": [
+     461,
+     543
+    ],
+    "education_majors": [
+     1791,
+     2107
+    ]
+   }
+  },
+  {
+   "id": "105638589471122",
+   "nombre": "Screenwriter",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     14030,
+     16500
+    ],
+    "work_employers": [
+     7062,
+     8305
+    ],
+    "education_majors": [
+     25,
+     30
+    ]
+   }
+  },
+  {
+   "id": "112700085411809",
+   "nombre": "Screenwriting",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     20,
+     24
+    ],
+    "work_employers": [
+     1409,
+     1658
+    ],
+    "education_majors": [
+     10164,
+     11954
+    ]
+   }
+  },
+  {
+   "id": "107738129255817",
+   "nombre": "Creative writing",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     39,
+     46
+    ],
+    "work_employers": [
+     6758,
+     7948
+    ],
+    "education_majors": [
+     105250,
+     123774
+    ]
+   }
+  },
+  {
+   "id": "114990051846337",
+   "nombre": "Song writing",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     34471,
+     40538
+    ],
+    "work_employers": [
+     25601,
+     30107
+    ],
+    "education_majors": [
+     161,
+     190
+    ]
+   }
+  },
+  {
+   "id": "104046862964234",
+   "nombre": "Writing",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     654,
+     770
+    ],
+    "work_employers": [
+     18292,
+     21512
+    ],
+    "education_majors": [
+     60451,
+     71091
+    ]
+   }
+  },
+  {
+   "id": "106921212671451",
+   "nombre": "Literature",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     141,
+     166
+    ],
+    "work_employers": [
+     5383,
+     6331
+    ],
+    "education_majors": [
+     175053,
+     205863
+    ]
+   }
+  },
+  {
+   "id": "109579542394894",
+   "nombre": "Facultad de Filosofía y Letras",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     13,
+     16
+    ],
+    "work_employers": [
+     1288,
+     1515
+    ],
+    "education_majors": [
+     3301,
+     3883
+    ]
+   }
+  },
+  {
+   "id": "139148779457561",
+   "nombre": "Camera Operator/Editor",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     9950,
+     11702
+    ],
+    "work_employers": [
+     595,
+     700
+    ],
+    "education_majors": [
+     4,
+     5
+    ]
+   }
+  },
+  {
+   "id": "104048709631573",
+   "nombre": "Lyricist",
+   "grupo": "Letras",
+   "tipos": {
+    "work_positions": [
+     15105,
+     17764
+    ],
+    "work_employers": [
+     5442,
+     6400
+    ],
+    "education_majors": [
+     22,
+     27
+    ]
+   }
+  },
+  {
+   "id": "113429678667899",
+   "nombre": "Videographer",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     24882,
+     29262
+    ],
+    "work_employers": [
+     2935,
+     3452
+    ],
+    "education_majors": [
+     19,
+     23
+    ]
+   }
+  },
+  {
+   "id": "108103489218162",
+   "nombre": "Video production",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     9017,
+     10604
+    ],
+    "work_employers": [
+     1675,
+     1970
+    ],
+    "education_majors": [
+     10908,
+     12828
+    ]
+   }
+  },
+  {
+   "id": "170003099712653",
+   "nombre": "Film and Video",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     5,
+     6
+    ],
+    "work_employers": [
+     44,
+     52
+    ],
+    "education_majors": [
+     4113,
+     4837
+    ]
+   }
+  },
+  {
+   "id": "100109946735353",
+   "nombre": "Television Production",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     85,
+     101
+    ],
+    "work_employers": [
+     74,
+     88
+    ],
+    "education_majors": [
+     5246,
+     6170
+    ]
+   }
+  },
+  {
+   "id": "198347510178329",
+   "nombre": "Film & Television",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     14,
+     17
+    ],
+    "work_employers": [
+     284,
+     335
+    ],
+    "education_majors": [
+     2718,
+     3197
+    ]
+   }
+  },
+  {
+   "id": "112218162185550",
+   "nombre": "Film & Television Production",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     6,
+     8
+    ],
+    "work_employers": [
+     224,
+     264
+    ],
+    "education_majors": [
+     2505,
+     2947
+    ]
+   }
+  },
+  {
+   "id": "133984303336247",
+   "nombre": "Film & Video Production",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     35,
+     42
+    ],
+    "work_employers": [
+     193,
+     228
+    ],
+    "education_majors": [
+     3238,
+     3808
+    ]
+   }
+  },
+  {
+   "id": "102174173158087",
+   "nombre": "Film production",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     3,
+     4
+    ],
+    "work_employers": [
+     2440,
+     2870
+    ],
+    "education_majors": [
+     8765,
+     10308
+    ]
+   }
+  },
+  {
+   "id": "187527431268840",
+   "nombre": "Artiste chanteur, Auteur/compositeur",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     50,
+     59
+    ],
+    "work_employers": [
+     10460,
+     12302
+    ],
+    "education_majors": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "613996965399032",
+   "nombre": "Violin Teacher",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     4777,
+     5618
+    ],
+    "work_employers": [
+     263,
+     310
+    ],
+    "education_majors": [
+     10,
+     12
+    ]
+   }
+  },
+  {
+   "id": "112548678757278",
+   "nombre": "Cello",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     242,
+     285
+    ],
+    "work_employers": [
+     1328,
+     1562
+    ],
+    "education_majors": [
+     5704,
+     6709
+    ]
+   }
+  },
+  {
+   "id": "115319395149928",
+   "nombre": "Rap",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     129087,
+     151807
+    ],
+    "work_employers": [
+     131787,
+     154982
+    ],
+    "education_majors": [
+     7761,
+     9127
+    ]
+   }
+  },
+  {
+   "id": "115308341817261",
+   "nombre": "Cartooning",
+   "grupo": "Artes visuales",
+   "tipos": {
+    "work_positions": [
+     10744,
+     12636
+    ],
+    "work_employers": [
+     2449,
+     2881
+    ],
+    "education_majors": [
+     1193,
+     1404
+    ]
+   }
+  },
+  {
+   "id": "112143718802797",
+   "nombre": "Photographic assistant",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     8614,
+     10131
+    ],
+    "work_employers": [
+     895,
+     1053
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "110540392307856",
+   "nombre": "Dancing",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     287997,
+     338685
+    ],
+    "work_employers": [
+     313386,
+     368542
+    ],
+    "education_majors": [
+     185519,
+     218171
+    ]
+   }
+  },
+  {
+   "id": "111933825485318",
+   "nombre": "Camera operator",
+   "grupo": "Audiovisual",
+   "tipos": {
+    "work_positions": [
+     104391,
+     122764
+    ],
+    "work_employers": [
+     17005,
+     19998
+    ],
+    "education_majors": [
+     491,
+     578
+    ]
+   }
+  },
+  {
+   "id": "104030892966001",
+   "nombre": "Aftermath Entertainment",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     1,
+     2
+    ],
+    "work_employers": [
+     2959,
+     3480
+    ],
+    "education_majors": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "103133243060557",
+   "nombre": "Violoniste",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     11239,
+     13218
+    ],
+    "work_employers": [
+     991,
+     1166
+    ],
+    "education_majors": [
+     18,
+     22
+    ]
+   }
+  },
+  {
+   "id": "110631535624503",
+   "nombre": "Violão",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     85,
+     101
+    ],
+    "work_employers": [
+     1448,
+     1703
+    ],
+    "education_majors": [
+     3498,
+     4114
+    ]
+   }
+  },
+  {
+   "id": "111873888828865",
+   "nombre": "Trumpet",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     2941,
+     3459
+    ],
+    "work_employers": [
+     1971,
+     2318
+    ],
+    "education_majors": [
+     3239,
+     3810
+    ]
+   }
+  },
+  {
+   "id": "112099198806152",
+   "nombre": "Deejay",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     5698,
+     6701
+    ],
+    "work_employers": [
+     776,
+     913
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "112289355452820",
+   "nombre": "The Island Def Jam Music Group",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     10,
+     12
+    ],
+    "work_employers": [
+     14887,
+     17508
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "105960146104713",
+   "nombre": "Music theory",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     23,
+     28
+    ],
+    "work_employers": [
+     279,
+     329
+    ],
+    "education_majors": [
+     34354,
+     40401
+    ]
+   }
+  },
+  {
+   "id": "340114822845364",
+   "nombre": "Dance Master",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     11824,
+     13906
+    ],
+    "work_employers": [
+     124,
+     146
+    ],
+    "education_majors": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "104112326292537",
+   "nombre": "Universität für Musik und darstellende Kunst Graz",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     1,
+     2
+    ],
+    "work_employers": [
+     529,
+     623
+    ],
+    "education_majors": [
+     14,
+     17
+    ]
+   }
+  },
+  {
+   "id": "106304212741021",
+   "nombre": "Percussion",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     1369,
+     1610
+    ],
+    "work_employers": [
+     1536,
+     1807
+    ],
+    "education_majors": [
+     131,
+     155
+    ]
+   }
+  },
+  {
+   "id": "100840349996621",
+   "nombre": "Music Education-Vocal",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     0
+    ],
+    "work_employers": [
+     1,
+     2
+    ],
+    "education_majors": [
+     1901,
+     2236
+    ]
+   }
+  },
+  {
+   "id": "128655337202679",
+   "nombre": "Music Business/Audio Production",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     0
+    ],
+    "work_employers": [
+     76,
+     90
+    ],
+    "education_majors": [
+     1149,
+     1352
+    ]
+   }
+  },
+  {
+   "id": "130052490398967",
+   "nombre": "Music Technology & Production",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     0
+    ],
+    "work_employers": [
+     144,
+     170
+    ],
+    "education_majors": [
+     2512,
+     2955
+    ]
+   }
+  },
+  {
+   "id": "133996796665834",
+   "nombre": "Sound & Audio Engineering",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     0
+    ],
+    "work_employers": [
+     1504,
+     1769
+    ],
+    "education_majors": [
+     2218,
+     2609
+    ]
+   }
+  },
+  {
+   "id": "151647431559225",
+   "nombre": "Music Production/Audio Engineering",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     4,
+     5
+    ],
+    "work_employers": [
+     6,
+     8
+    ],
+    "education_majors": [
+     1647,
+     1938
+    ]
+   }
+  },
+  {
+   "id": "172658496114016",
+   "nombre": "Audio Production/Sound Engineering",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     0
+    ],
+    "work_employers": [
+     62,
+     73
+    ],
+    "education_majors": [
+     1351,
+     1589
+    ]
+   }
+  },
+  {
+   "id": "176995635678035",
+   "nombre": "Music Production/Recording Arts",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     0
+    ],
+    "work_employers": [
+     230,
+     271
+    ],
+    "education_majors": [
+     1125,
+     1324
+    ]
+   }
+  },
+  {
+   "id": "188078671225183",
+   "nombre": "Music - Vocal Performance",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     0
+    ],
+    "work_employers": [
+     118,
+     139
+    ],
+    "education_majors": [
+     7845,
+     9226
+    ]
+   }
+  },
+  {
+   "id": "197614366918553",
+   "nombre": "Music/Audio Production",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     3,
+     4
+    ],
+    "work_employers": [
+     16,
+     19
+    ],
+    "education_majors": [
+     940,
+     1106
+    ]
+   }
+  },
+  {
+   "id": "230822963717013",
+   "nombre": "Sound Engineering and Music Technology",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     0
+    ],
+    "work_employers": [
+     153,
+     181
+    ],
+    "education_majors": [
+     1323,
+     1556
+    ]
+   }
+  },
+  {
+   "id": "258480760879159",
+   "nombre": "Music, Engineering & Technology",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     0
+    ],
+    "work_employers": [
+     74,
+     88
+    ],
+    "education_majors": [
+     1036,
+     1219
+    ]
+   }
+  },
+  {
+   "id": "147358655464991",
+   "nombre": "3D Animation & Visual Effects",
+   "grupo": "Diseño, artesanía y afines",
+   "tipos": {
+    "work_positions": [
+     0,
+     0
+    ],
+    "work_employers": [
+     153,
+     181
+    ],
+    "education_majors": [
+     1334,
+     1569
+    ]
+   }
+  },
+  {
+   "id": "107600415936347",
+   "nombre": "Dramaturge",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     1318,
+     1550
+    ],
+    "work_employers": [
+     44,
+     52
+    ],
+    "education_majors": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "143925225626422",
+   "nombre": "Ballet Instructor",
+   "grupo": "Danza",
+   "tipos": {
+    "work_positions": [
+     1602,
+     1885
+    ],
+    "work_employers": [
+     62,
+     73
+    ],
+    "education_majors": [
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "id": "282379931913598",
+   "nombre": "Teatrologia",
+   "grupo": "Teatro y escena",
+   "tipos": {
+    "work_positions": [
+     0,
+     0
+    ],
+    "work_employers": [
+     56,
+     66
+    ],
+    "education_majors": [
+     10768,
+     12664
+    ]
+   }
+  },
+  {
+   "id": "139246016138460",
+   "nombre": "Audio Engineering and Music Production",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     0
+    ],
+    "work_employers": [
+     4,
+     5
+    ],
+    "education_majors": [
+     839,
+     987
+    ]
+   }
+  },
+  {
+   "id": "108102385884997",
+   "nombre": "Trombone",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     891,
+     1048
+    ],
+    "work_employers": [
+     766,
+     901
+    ],
+    "education_majors": [
+     1868,
+     2197
+    ]
+   }
+  },
+  {
+   "id": "134129996654410",
+   "nombre": "Audio Recording",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     4,
+     5
+    ],
+    "work_employers": [
+     29,
+     35
+    ],
+    "education_majors": [
+     805,
+     947
+    ]
+   }
+  },
+  {
+   "id": "135639369837397",
+   "nombre": "Music Theory and Composition",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     0
+    ],
+    "work_employers": [
+     69,
+     82
+    ],
+    "education_majors": [
+     2943,
+     3462
+    ]
+   }
+  },
+  {
+   "id": "189533087736254",
+   "nombre": "Audio Recording Engineering",
+   "grupo": "Música",
+   "tipos": {
+    "work_positions": [
+     0,
+     0
+    ],
+    "work_employers": [
+     0,
+     1
+    ],
+    "education_majors": [
+     829,
+     975
+    ]
+   }
+  }
+ ]
+}
