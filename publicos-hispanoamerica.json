@@ -409,5 +409,24 @@
    5100,
    6000
   ]
+ },
+ "Artistas · Estados Unidos (español)": {
+  "id": "120253305819430233",
+  "paises": [
+   "US"
+  ],
+  "edad": [
+   25,
+   54
+  ],
+  "tipos": {
+   "education_majors": 138,
+   "work_employers": 187,
+   "work_positions": 184
+  },
+  "tam": [
+   76600,
+   90100
+  ]
  }
 }
