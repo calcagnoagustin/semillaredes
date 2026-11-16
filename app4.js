@@ -3,6 +3,19 @@
    Usa los mismos datos que el panel clásico (window.__D) y los endpoints de la VM. Lo que todavía no está listo dice «Próximamente». */
 (function(){
   if(window.V3) return;
+  (function(){ const st=document.createElement('style'); st.id='v4pre'; st.textContent=`html,body{background:#F6F1EA!important}.wrap{display:none!important}
+    #v4splash{position:fixed;inset:0;z-index:99;background:#F6F1EA;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;font-family:"DM Sans",system-ui,sans-serif;color:#1E2350}
+    #v4splash img{width:76px;height:76px;object-fit:contain}
+    #v4splash .wm{display:flex;align-items:center;gap:8px;font-weight:700;font-size:26px;letter-spacing:-.6px;line-height:1}
+    #v4splash .wm b{color:#87863A}
+    #v4splash .beta{font-size:9.5px;font-weight:700;letter-spacing:1px;color:#7A1F3A;border:1px solid #7A1F3A;border-radius:6px;padding:2px 5px 1px;line-height:1;text-transform:uppercase}
+    #v4splash i{display:block;width:36px;height:3px;border-radius:2px;background:#E2DCCF;overflow:hidden;position:relative;margin-top:6px}
+    #v4splash i::after{content:"";position:absolute;inset:0;width:40%;background:#87863A;border-radius:2px;animation:v4c 1s ease-in-out infinite alternate}
+    @keyframes v4c{to{transform:translateX(150%)}}`; document.head.appendChild(st);
+    const sp=()=>{ if(document.getElementById('v4')||document.getElementById('v4splash')) return; const d=document.createElement('div'); d.id='v4splash';
+      d.innerHTML='<img src="/assets/marca-semilla-oliva.png" alt=""><span class="wm">semilla<b>IA</b><span class="beta">Beta</span></span><i></i>'; document.body.appendChild(d); };
+    if(document.body) sp(); else document.addEventListener('DOMContentLoaded',sp);
+    setTimeout(()=>{ const e=document.getElementById('error'); if(e&&!e.classList.contains('oculto')){ const w=document.querySelector('.wrap'); w&&w.style.setProperty('display','block','important'); const x=document.getElementById('v4splash'); x&&x.remove(); } },8000); })();
   const W='https://vm.semillaredes.com/web';
   const $=s=>document.querySelector(s);
   const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -59,6 +72,7 @@
   #v4 .hd .semi{width:34px;height:34px;object-fit:contain}
   #v4 .hd .wm{font-weight:700;font-size:23px;letter-spacing:-.6px;line-height:1}
   #v4 .hd .wm b{color:var(--oliva2);font-weight:700}
+  #v4 .hd .beta{font-size:9.5px;font-weight:700;letter-spacing:1px;color:var(--vino);border:1px solid var(--vino);border-radius:6px;padding:2px 5px 1px;line-height:1;text-transform:uppercase;margin-left:-2px}
   #v4 .rd{width:44px;height:44px;border-radius:50%;border:1px solid var(--linea);background:var(--card);display:grid;place-items:center;position:relative;padding:0}
   #v4 .rd .pt{position:absolute;top:10px;right:11px;width:8px;height:8px;border-radius:50%;background:var(--vino);border:2px solid var(--card)}
   #v4 .av{background:var(--salvia);color:#4B4E25;font-weight:700;font-size:15px;border-color:transparent}
@@ -67,7 +81,7 @@
   #v4 h1{font-family:"Playfair Display",Georgia,serif;font-weight:700;font-size:40px;line-height:1.05;letter-spacing:-1px;margin:6px 0 16px}
   #v4 h2{font-family:"Playfair Display",Georgia,serif;font-weight:700;font-size:25px;line-height:1.15;letter-spacing:-.4px;margin:0}
   #v4 .tt{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:26px 0 12px}
-  #v4 .lk{display:inline-flex;align-items:center;gap:4px;color:var(--vino);font-weight:700;font-size:15px;background:none;border:0;padding:0;text-decoration:none}
+  #v4 .lk{white-space:nowrap;display:inline-flex;align-items:center;gap:4px;color:var(--vino);font-weight:700;font-size:15px;background:none;border:0;padding:0;text-decoration:none}
   #v4 .lk .i{width:18px;height:18px}
   #v4 .vol{display:inline-flex;align-items:center;gap:8px;color:var(--vino);font-weight:700;font-size:15px;background:none;border:0;padding:4px 0;margin:2px 0 6px}
   #v4 .vol .i{width:19px;height:19px}
@@ -169,6 +183,20 @@
   #v4 .ig .big small{font-family:"DM Sans",sans-serif;font-size:17px;letter-spacing:0;color:var(--mute);font-weight:500}
   #v4 .bar2{height:9px;border-radius:5px;background:#ECE6DB;overflow:hidden;margin-top:16px} #v4 .bar2 i{display:block;height:100%;background:var(--oliva2);border-radius:5px}
   #v4 .ig .falt{display:flex;align-items:center;justify-content:space-between;margin-top:10px;font-size:14.5px;color:var(--mute)}
+  #v4 .dgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  #v4 .dt{background:var(--card);border:1px solid var(--linea);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:3px;min-width:0}
+  #v4 .dt b{font-size:22px;font-weight:700;letter-spacing:-.5px;line-height:28px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #v4 .dt small{font-size:13.5px;color:var(--mute);line-height:18px;margin-bottom:8px}
+  #v4 .dt b.ch{font-size:17px}
+  #v4 .dd{align-self:flex-start;margin-top:auto;font-size:12px;font-weight:700;background:var(--salvia);color:#4B4E25;border-radius:7px;padding:3px 7px}
+  #v4 .dd.mal{background:var(--rosa);color:var(--vino)}
+  #v4 .evo{padding:16px 14px 12px} #v4 .bars{display:flex;align-items:flex-end;gap:6px;height:150px}
+  #v4 .bars>div{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;min-width:0}
+  #v4 .bars i{display:block;width:100%;max-width:30px;border-radius:7px 7px 3px 3px;background:var(--oliva2)} #v4 .bars>div:last-child i{background:var(--navy)}
+  #v4 .bars span{font-size:11.5px;font-weight:700;color:#4B4958} #v4 .bars small{font-size:11px;color:var(--suave);white-space:nowrap}
+  #v4 .pie3{margin:10px 2px 0;font-size:13px;color:var(--suave)}
+  #v4 .pb{display:block;height:5px;border-radius:3px;background:#ECE6DB;margin-top:7px;overflow:hidden} #v4 .pb i{display:block;height:100%;background:var(--oliva2)}
+  #v4 .falt b{color:var(--tinta)}
   #v4 .costo{text-align:right;flex:none} #v4 .costo b{font-size:17px} #v4 .costo small{font-size:12.5px}
   #v4 .hall{display:flex;gap:14px;align-items:flex-start;padding:16px}
   #v4 .hall .tile{margin-top:0} #v4 .hall>span:last-child{padding-top:8px} #v4 .hall b{display:block;font-size:16.5px;line-height:22px} #v4 .hall p{margin:3px 0 0;font-size:15px;line-height:22px;color:#4B4958}
@@ -257,7 +285,7 @@
 
   // ---------- pantallas ----------
   function hd(){ const ini=INI();
-    return `<div class="hd"><button class="marca" data-ir="inicio" aria-label="Inicio">${SEMI}<span class="wm">semilla<b>IA</b></span></button>
+    return `<div class="hd"><button class="marca" data-ir="inicio" aria-label="Inicio">${SEMI}<span class="wm">semilla<b>IA</b></span><span class="beta">Beta</span></button>
       <button class="rd" id="v4bell" aria-label="Avisos">${I('campana')}${NOT.some(n=>!n.leida)?'<span class="pt"></span>':''}</button>
       <button class="rd av" data-ir="cuenta" aria-label="Tu cuenta">${esc(ini)}</button></div>`; }
 
@@ -271,15 +299,13 @@
         ${meta&&!sup?`<div class="barra" style="max-width:62%"><i style="width:${Math.min(100,Math.round(tot*100/meta))}%"></i></div>`:''}
         <div class="pie"><span>${meta?(sup?'Meta alcanzada':`Próxima meta · ${nf(meta)}`):'Seguidores totales'}</span><button data-ir="metricas">Ver mi reporte ${I('ext')}</button></div></div>`:'';
     const prox=agenda().filter(x=>x.f>=hoyISO()).slice(0,2);
-    const clase=TODAS.find(c=>!hechas().includes(c.id))||TODAS[0];
     const dr=DROPS[0];
     return `<div class="hola"><h1>Hola, ${esc(nom)}</h1><span class="pill">${I('cal')}${fecha}</span></div>
       ${hero}
       <div class="tt"><h2>Próximas fechas</h2><button class="lk" data-ir="proyecto">Ver agenda ${I('chev')}</button></div>
       <div class="box">${prox.length?prox.map(filaAgenda).join(''):`<div class="vacio">No tenés fechas próximas. Sumá una desde Proyecto.</div>`}</div>
       <div class="tt"><h2>Seguí aprendiendo</h2></div>
-      <div class="box"><button class="row" data-clase="${clase.id}"><img src="https://img.youtube.com/vi/${clase.id}/mqdefault.jpg" alt="" style="width:64px;height:48px;border-radius:10px;object-fit:cover;flex:none">
-        <span class="tx"><b>${esc(clase.t)}</b><small>Clase ${clase.n} de ${TODAS.length}</small></span><span class="go">${I('flecha')}</span></button></div>
+      <div class="box"><button class="row" data-ir="formacion"><span class="tile">${I('gorro')}</span><span class="tx"><b>Formación Semilla</b><small>13 clases del Método Semilla</small></span><span class="prox">Próximamente</span></button></div>
       ${dr?`<div class="tt" style="margin-top:22px"></div><a class="drop" href="${esc(dr.url)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
         <div class="tx"><div class="kk">Drop del viernes</div><h3>${esc(dr.titulo)}</h3><span class="lk">${dr.audio?"Leé o escuchá":"Leer el drop"} ${I("ext")}</span></div>
         <img src="/drops/img/drop-foto-${(dr.n%3)+1}.jpg" alt=""></a>`:''}
@@ -293,6 +319,8 @@
   }
   function filaAgenda(x){ const d=new Date(x.f+'T12:00:00'); const hoy=x.f===hoyISO();
     return `<div class="row"><span class="dia"><span>${DIA[d.getDay()]}</span><b>${d.getDate()}</b></span><span class="tx"><b>${esc(corta(x.t,48))}</b><small>${esc(x.s)}${hoy?' · Hoy':''}</small></span><span class="go">${I('chev')}</span></div>`; }
+  function filaTarea(t){ const ok=t.estado==='hecha';
+    return `<div class="row tarea"><button class="circ ${ok?'ok':''}" data-hecha="${t.id}" data-est="${ok?'pendiente':'hecha'}" aria-label="${ok?'Marcar como pendiente':'Marcar como hecha'}">${ok?I('check'):''}</button><button class="tx" data-tarea="${t.id}" style="background:none;border:0;padding:0;text-align:left"><b style="${ok?'text-decoration:line-through;color:var(--suave)':''}">${esc(corta(t.titulo,90))}</b><small>${t.creada_por==='semilla'?'Del reporte de Semilla':'Tuya'}${t.alarma?' · Aviso '+fCorta(String(t.alarma).slice(0,10)):''}</small></button><button class="go" data-tarea="${t.id}" aria-label="Editar" style="background:none;border:0;padding:4px">${I('chev')}</button></div>`; }
   const corta=(s,n)=>{ s=String(s||''); return s.length>n?s.slice(0,n).replace(/\s+\S*$/,'')+'…':s; };
 
   function scProyecto(){
@@ -302,18 +330,20 @@
       return `<button data-dia="${iso}" class="${iso===sel?'on':''} ${A.some(x=>x.f===iso)?'pt':''}"><span>${DIA[d.getDay()]}</span><b>${d.getDate()}</b></button>`; }).join('');
     const MESL=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'][base.getMonth()];
     const delDia=A.filter(x=>x.f>=sel).slice(0,3);
-    const pend=(D.tareas||[]).filter(t=>t.estado!=='hecha'), verT=LS('vertodas')==='1';
-    const web=WEBS[0];
+    const pend=(D.tareas||[]).filter(t=>t.estado!=='hecha'), hech=(D.tareas||[]).filter(t=>t.estado==='hecha'), verT=LS('vertodas')==='1';
     const SK=[['Lanzamientos','cohete','Landing y campaña de cada lanzamiento'],['Playlists','musica','Curadores para tu música'],['Shows y entradas','ticket','Tus fechas con venta de entradas'],
-      ['Clips de tu videoclip','clip','4 recortes listos para redes'],['Tu tienda','tienda','Vendé tus obras y objetos'],['Dominio propio','dominio','Tu web con tu nombre'],['Reels','camara','Ideas y guiones de reels'],['Comunidad','gente','Conectá con otros artistas']];
+      ['Clips de tu videoclip','clip','4 recortes listos para redes'],['Reels','camara','Ideas y guiones de reels']];
     return `<h1>Tu proyecto</h1>
       <div class="tt" style="margin-top:6px"><h2>Agenda</h2><button class="bt" id="v4fecha" style="height:46px;background:var(--salvia);border-color:transparent">${I('mas')}Agregar</button></div>
       <div class="box"><div class="mesh"><span>${MESL}</span><span><button data-sem="-7" aria-label="Semana anterior">${I('atras')}</button><button data-sem="7" aria-label="Semana siguiente">${I('chev')}</button></span></div><div class="semana">${dias}</div></div>
       <div class="box" style="margin-top:12px">${delDia.length?delDia.map(filaAgenda).join(''):`<div class="vacio">Nada agendado desde este día.</div>`}</div>
-      <div class="tt"><h2>Tareas</h2>${pend.length>2?`<button class="lk" id="v4vt">${verT?'Ver menos':'Ver todas'} ${I('chev')}</button>`:''}</div>
-      <div class="box">${pend.length?(verT?pend:pend.slice(0,2)).map(t=>`<div class="row"><button class="circ" data-hecha="${t.id}" aria-label="Marcar como hecha"></button><span class="tx"><b>${esc(corta(t.titulo,70))}</b><small>${t.creada_por==='semilla'?'Del reporte de Semilla':'Tuya'}</small></span>${t.alarma?`<span class="go">${I('campana')}</span>`:''}</div>`).join(''):`<div class="vacio">No tenés tareas pendientes.</div>`}</div>
+      <div class="tt"><h2>Tareas</h2>${pend.length>3?`<button class="lk" id="v4vt">${verT?'Ver menos':'Ver todas'} ${I('chev')}</button>`:''}</div>
+      <div class="box">${pend.length?(verT?pend:pend.slice(0,3)).map(filaTarea).join(''):`<div class="vacio">No tenés tareas pendientes.</div>`}
+        <button class="row" id="v4nt" style="color:var(--vino)"><span class="circ" style="border-style:dashed;border-color:var(--vino);color:var(--vino)">${I('mas')}</span><span class="tx"><b style="color:var(--vino)">Nueva tarea</b></span></button></div>
+      ${hech.length?`<button class="lk" id="v4vh" style="margin-top:12px">${LS('verhechas')==='1'?'Ocultar':'Ver'} hechas (${hech.length}) ${I('chev')}</button>${LS('verhechas')==='1'?`<div class="box" style="margin-top:10px">${hech.map(filaTarea).join('')}</div>`:''}`:''}
+      <div class="tt"><h2>Tus webs</h2></div>
+      <div class="box">${WEBS.length?WEBS.map(w=>`<a class="row" href="${esc(w.url)}${w.url.includes('?')?'&':'?'}editar=${encodeURIComponent(w.slug||slug)}&k=${encodeURIComponent(tok)}" target="_blank" rel="noopener"><span class="tile c">${I('web')}</span><span class="tx"><b>${esc(w.titulo||w.nombre||w.url.replace(/^https?:\/\//,'').replace(/\/$/,''))}</b><small>${esc(w.url.replace(/^https?:\/\//,'').replace(/\/$/,''))}</small></span><span class="lk">Editá ${I('ext')}</span></a>`).join(''):`<div class="vacio">Todavía no tenés webs con Semilla.</div>`}</div>
       <div class="tt"><h2>Recursos</h2></div>
-      <div class="box">${web?`<a class="row" href="${esc(web.url)}${web.url.includes('?')?'&':'?'}editar=${encodeURIComponent(slug)}&k=${encodeURIComponent(tok)}" target="_blank" rel="noopener"><span class="tile c">${I('web')}</span><span class="tx"><b>Tu web</b><small>${esc(web.url.replace(/^https?:\/\//,'').replace(/\/$/,''))}</small></span><span class="lk">Editá ${I('ext')}</span></a>`:`<div class="row"><span class="tile c">${I('web')}</span><span class="tx"><b>Tu web</b><small>Todavía no tenés una web con Semilla</small></span><span class="prox">Próximamente</span></div>`}</div>
       <div class="rec2"><div class="box"><button class="row" id="v4mat"><span class="tile">${I('folder')}</span><span class="tx"><b>Materiales</b></span><span class="go">${I('chev')}</span></button></div>
         <div class="box"><button class="row" data-prox="Flyers"><span class="tile r">${I('imagen')}</span><span class="tx"><b>Flyers</b></span><span class="go">${I('chev')}</span></button></div></div>
       <div class="tt"><h2>Herramientas</h2></div>
@@ -343,21 +373,33 @@
         ${acc?`<div class="hacer" style="margin-top:16px"><div class="kk">${I('lista')}Qué hacer ${tj.cadencia&&tj.cadencia>8?'ahora':'esta semana'}</div><h3>${esc(acc.titulo)}</h3><button class="bt n" data-agendar="${esc(acc.titulo)}">${I('cal')}Agendar esta prueba</button></div>`:''}
         <div class="pieR"><button class="lk" id="v4an">Ver análisis completo ${I('flecha')}</button><a class="bt" href="${W}/tarjeta?c=${encodeURIComponent(slug)}&k=${encodeURIComponent(tok)}" download="reporte.jpg" target="_blank" style="height:46px">${I('bajar')}Descargar</a></div>`;
     } else {
-      const tot=M.ult('ig_followers_total'), nue=M.U.ig_followers_nuevos, meta=META();
-      const anu=[]; const U=M.U;
-      if(U.ig_followers_nuevos!=null&&U.ig_inversion) anu.push(['megafono','r','Seguidores de Instagram',`${nf(U.ig_followers_nuevos)} nuevos · Meta Ads`,plata(U.ig_costo_follower),'por seguidor']);
-      if(U.frm_visitas) anu.push(['ext','','Formación Semilla',`${nf(U.frm_visitas)} visitas · Meta Ads`,plata(U.frm_costo_visita),'por visita']);
-      if(U.vta_ventas) anu.push(['bolsa','','Ventas',`${nf(U.vta_ventas)} ventas · Meta Ads`,plata(U.vta_costo_venta),'por venta']);
-      if(U.msj_mensajes) anu.push(['chat','c','Mensajes',`${nf(U.msj_mensajes)} conversaciones`,plata(U.msj_costo_mensaje),'por conversación']);
+      const U=M.U, tot=M.ult('ig_followers_total'), nue=U.ig_followers_nuevos, meta=META();
+      const LAB={ig_followers_nuevos:['Seguidores nuevos','n'],ig_alcance:['Alcance en Instagram','n'],ig_visitas:['Visitas al perfil','n'],ig_costo_follower:['Costo por seguidor','$2'],ig_inversion:['Invertido en seguidores','$'],
+        frm_visitas:['Visitas a la web','n'],frm_clics:['Clics al link','n'],frm_alcance:['Alcance de la campaña web','n'],frm_mensajes:['Mensajes','n'],frm_costo_visita:['Costo por visita','$2'],frm_inversion:['Invertido en la web','$'],
+        pres_gastado:['Invertido en el período','$'],pres_diario:['Presupuesto diario','$'],sp_oyentes:['Oyentes en Spotify','n'],sp_oyentes_perfil:['Oyentes del perfil','n'],sp_seguidores:['Seguidores en Spotify','n'],sp_streams:['Reproducciones','n'],
+        yt_subs:['Suscriptores en YouTube','n'],yt_subs_nuevos:['Suscriptores nuevos','n'],yt_vistas:['Vistas en YouTube','n'],vta_ventas:['Ventas','n'],vta_costo_venta:['Costo por venta','$2'],msj_mensajes:['Conversaciones','n'],msj_costo_mensaje:['Costo por conversación','$2']};
+      const val=(k,t)=>{ const v=Number(U[k]); return t==='n'?nf(v):SIM()==='USD'?'USD '+nf(v,t==='$2'?2:(v<100?2:0)):'$ '+nf(v,0); };
+      const grupos=[['Instagram','camara','r',k=>/^ig_/.test(k)],['Web y Formación','web','c',k=>/^frm_/.test(k)],['Spotify','musica','',k=>/^sp_/.test(k)],['YouTube','clip','r',k=>/^yt_/.test(k)],['Ventas y mensajes','bolsa','',k=>/^(vta|msj)_/.test(k)],['Inversión','billetera','c',k=>/^pres_/.test(k)]];
+      const tiles=f=>Object.keys(LAB).filter(k=>f(k)&&U[k]!=null&&k!=='ig_followers_total').map(k=>{ const pp=pct(Number(U[k]),M.prom(k)), menos=/costo/.test(k);
+        return `<div class="dt"><b>${val(k,LAB[k][1])}</b><small>${LAB[k][0]}</small>${pp!=null&&!/^pres_/.test(k)?`<span class="dd ${((pp>=0)!==menos)?'':'mal'}">${pp>0?'+':''}${pp}% vs. promedio</span>`:''}</div>`; }).join('');
+      const H=M.R.filter(r=>r.metricas.ig_followers_total!=null).slice(-8), mx=Math.max(...H.map(r=>Number(r.metricas.ig_followers_total))), mn=Math.min(...H.map(r=>Number(r.metricas.ig_followers_total)));
+      const evo=H.length>1?`<div class="tt"><h2>Cómo creció</h2></div><div class="box evo"><div class="bars">${H.map(r=>{ const v=Number(r.metricas.ig_followers_total); return `<div><span>${nf(v/1000,1)}k</span><i style="height:${Math.round(18+82*(v-mn)/Math.max(1,mx-mn))}%"></i><small>${fCorta(r.hasta)}</small></div>`; }).join('')}</div><p class="pie3">Seguidores en Instagram al cierre de cada reporte</p></div>`:'';
+      const CJ=(CTA&&CTA.conjuntos)||[], P=CTA&&CTA.pago;
+      const lista=(L,n)=>{ const t=Number(U.ig_followers_total)||0, m=Math.max(...L.map(z=>Number(z.seguidores)||0))||1; return `<div class="box">${L.slice(0,10).map(z=>`<div class="row"><span class="tx"><b>${esc(z.nombre)}</b><span class="pb"><i style="width:${Math.max(3,Math.round((Number(z.seguidores)||0)*100/m))}%"></i></span></span><span class="costo"><b>${z.seguidores==null?'—':nf(z.seguidores)}</b>${t&&z.seguidores?`<small>${nf(z.seguidores*100/t,1)}%</small>`:''}</span></div>`).join('')}</div>`; };
+      const paises=M.R.slice().reverse().map(r=>r.metricas.ig_paises).find(x=>x&&x.length), ciudades=M.R.slice().reverse().map(r=>r.metricas.ig_ciudades_camp).find(x=>x&&x.length);
       rep=`<div class="tt" style="margin-top:4px"><h2>Tus números</h2>${per?`<span class="pill">${I('cal')}${per}</span>`:''}</div>
         ${tot!=null?`<div class="box ig"><div class="k"><span class="tile r">${I('camara')}</span>Instagram${nue!=null?`<span class="estado">${I('sube')} ${nue>0?'+':''}${nf(nue)} en el período</span>`:''}</div>
           <div class="big">${nf(tot)}<small>seguidores</small></div>
-          ${meta?`<div class="bar2"><i style="width:${Math.min(100,Math.round(tot*100/meta))}%"></i></div><div class="falt"><span>${tot>=meta?`Meta de ${nf(meta)} superada`:`Faltan ${nf(meta-tot)} para los ${nf(meta)}`}</span><button class="lk" data-prox="Hitos">Ver hitos ${I('chev')}</button></div>`:''}</div>`:''}
-        <div class="tt"><h2>Quién te sigue</h2></div>
-        <div class="box"><button class="row" data-prox="Países y ciudades"><span class="tile">${I('ubic')}</span><span class="tx"><b>Países y ciudades</b><small>Dónde está tu audiencia</small></span><span class="go">${I('chev')}</span></button>
-          <button class="row" data-prox="Públicos de anuncios"><span class="tile c">${I('gente')}</span><span class="tx"><b>Públicos de anuncios</b><small>A quiénes llegan tus campañas</small></span><span class="go">${I('chev')}</span></button></div>
-        <div class="tt"><h2>Tus anuncios</h2>${CTA&&CTA.act?`<a class="lk" href="https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=${encodeURIComponent(CTA.act)}" target="_blank" rel="noopener">Ver campañas ${I('chev')}</a>`:''}</div>
-        <div class="box">${anu.length?anu.map(a=>`<div class="row"><span class="tile ${a[1]}">${I(a[0])}</span><span class="tx"><b>${a[2]}</b><small>${a[3]}</small></span><span class="costo"><b>${a[4]}</b><small>${a[5]}</small></span></div>`).join(''):`<div class="vacio">No hubo anuncios corriendo en este período.</div>`}</div>`;
+          ${meta?`<div class="bar2"><i style="width:${Math.min(100,Math.round(tot*100/meta))}%"></i></div><div class="falt"><span>${tot>=meta?`Meta de ${nf(meta)} superada`:`Faltan ${nf(meta-tot)} para la meta de ${nf(meta)}`}</span><b>${Math.min(100,Math.round(tot*100/meta))}%</b></div>`:''}</div>`:''}
+        ${evo}
+        ${grupos.map(([t,ic,c,f])=>{ const x=tiles(f); return x?`<div class="tt"><h2>${t}</h2></div><div class="dgrid">${x}</div>`:''; }).join('')}
+        ${paises?`<div class="tt"><h2>Países</h2></div>${lista(paises)}`:''}
+        ${ciudades?`<div class="tt"><h2>Ciudades</h2></div>${lista(ciudades)}`:''}
+        ${CJ.length?`<div class="tt"><h2>Públicos de anuncios</h2>${CTA.act?`<a class="lk" href="https://adsmanager.facebook.com/adsmanager/manage/adsets?act=${encodeURIComponent(CTA.act)}" target="_blank" rel="noopener">Ver en Meta ${I('ext')}</a>`:''}</div>
+          <div class="box">${CJ.map(z=>`<div class="row"><span class="tile ${z.resultado==='ventas'?'':'c'}">${I(z.resultado==='ventas'?'bolsa':'gente')}</span><span class="tx"><b>${esc(z.nombre)}</b><small>${nf(z.resultados)} ${esc(z.resultado||'resultados')} · ${nf(z.alcance)} de alcance · ${plata(z.diaria)} por día</small></span><span class="costo"><b>${z.costo!=null?plata(z.costo):'—'}</b><small>${esc(z.por||'')}</small></span></div>`).join('')}</div>`:''}
+        ${P?`<div class="tt"><h2>Cuenta publicitaria</h2></div><div class="dgrid">
+          <div class="dt"><b>${plata(P.inversion_diaria)}</b><small>Inversión por día</small></div><div class="dt"><b>${plata(P.hoy)}</b><small>Gastado hoy</small></div>
+          ${P.saldo!=null?`<div class="dt"><b>${plata(P.saldo)}</b><small>A pagar en el próximo cobro</small></div>`:''}<div class="dt"><b class="ch">${esc(P.metodo||'—')}</b><small>Medio de pago</small></div></div>`:''}`;
     }
     return `<h1>Métricas</h1><div class="seg"><button data-subm="reporte" class="${SUBM==='reporte'?'on':''}">Reporte</button><button data-subm="datos" class="${SUBM==='datos'?'on':''}">Datos</button></div>${rep}`;
   }
@@ -382,15 +424,10 @@
     const H=hechas(), n=TODAS.filter(c=>H.includes(c.id)).length;
     let cont='';
     if(SUBF==='clases'){
-      const sig=TODAS.find(c=>!H.includes(c.id))||TODAS[0];
-      cont=`<div class="forHero"><img class="decor" src="/assets/marca-semilla.png" alt=""><h3>Formación Semilla</h3><div class="n">${n} de ${TODAS.length}<small>clases hechas</small></div><div class="barra"><i style="width:${Math.round(n*100/TODAS.length)}%"></i></div></div>
-        <div class="tt"><h2>Seguí donde quedaste</h2></div>
-        <button class="seguir" data-clase="${sig.id}"><img src="https://img.youtube.com/vi/${sig.id}/mqdefault.jpg" alt=""><span class="tx"><span class="kk">Clase ${sig.n} de ${TODAS.length}</span><h3>${esc(sig.t)}</h3><span class="lk">${n?'Continuar':'Empezar'} clase ${I('flecha')}</span></span></button>
-        <div class="tt"><h2>El programa</h2><span class="pill">${TODAS.length} clases</span></div>
-        <div class="box">${CLASES.map(([m,ic,L],k)=>{ const hh=L.filter(c=>H.includes(c[0])).length, ab=LS('mod')===m;
-          return `<div><button class="row" data-mod="${esc(m)}"><span class="tile ${['','r','c'][k]}">${I(ic)}</span><span class="tx"><b>${m}</b><small>${hh===L.length?'Completo':hh?'En curso':L.length+' clases'}</small></span><span class="estado" style="${hh===L.length?'':'background:#EEE8DE;color:#4B4958'}">${hh===L.length?'✓ ':''}${hh} de ${L.length}</span><span class="go">${I('chev')}</span></button>
-            ${ab?`<div class="acc">${L.map(([id,t])=>`<button class="cl" data-clase="${id}"><span>${esc(t)}</span>${H.includes(id)?I('check'):I('play')}</button>`).join('')}</div>`:''}</div>`; }).join('')}</div>
-        <button class="row" data-subf="drops" style="padding:16px 2px;margin-top:6px"><span class="tx"><b style="display:flex;align-items:center;gap:8px;font-size:15.5px">${I('auris')} Drops del viernes · Acceso gratuito</b></span><span class="go">${I('flecha')}</span></button>`;
+      cont=`<div class="forHero"><img class="decor" src="/assets/marca-semilla.png" alt=""><h3>Formación Semilla</h3><p style="margin:10px 0 14px;font-size:16px;line-height:23px;opacity:.92">Las 13 clases del Método Semilla, con ejercicios y plantillas para aplicar a tu proyecto.</p><span class="prox" style="background:rgba(255,255,255,.18);color:#fff">Próximamente</span></div>
+        <div class="tt"><h2>El programa</h2><span class="pill">13 clases</span></div>
+        <div class="box">${CLASES.map(([m,ic,L],k)=>`<div class="row"><span class="tile ${['','r','c'][k]}">${I(ic)}</span><span class="tx"><b>${m}</b><small>${L.length} clases</small></span><span class="prox">Próximamente</span></div>`).join('')}</div>
+        <button class="row" data-subf="drops" style="padding:16px 2px;margin-top:6px"><span class="tx"><b style="display:flex;align-items:center;gap:8px;font-size:15.5px">${I('auris')} Mientras tanto, leé los Drops del viernes</b></span><span class="go">${I('flecha')}</span></button>`;
     } else {
       const q=(LS('q')||'').toLowerCase(); const L=DROPS.filter(x=>!q||(x.titulo+' '+(x.categoria||'')+' '+(x.resumen||'')).toLowerCase().includes(q));
       const d0=L[0];
@@ -440,6 +477,7 @@
     const sc=TAB.startsWith('clase:')?scClase(TAB.slice(6)):TAB==='analisis'?scAnalisis():TAB==='cuenta'?scCuenta():TAB==='proyecto'?scProyecto():TAB==='metricas'?scMetricas():TAB==='formacion'?scFormacion():scInicio();
     const nb=TAB.startsWith('clase:')?'formacion':TAB==='analisis'?'metricas':TAB;
     const N=[['inicio','casa','Inicio'],['proyecto','carpeta','Proyecto'],['metricas','barras','Métricas'],['formacion','gorro','Formación']];
+    const spl=document.getElementById('v4splash'); if(spl) spl.remove();
     r.innerHTML=hd()+`<div class="sc on">${sc}</div>`+`<nav class="v4n" id="v3nav">${N.map(([k,ic,t])=>`<button data-ir="${k==='metricas'?'ia':k}" class="${nb===k?'on':''}"><span class="ic">${I(ic)}</span>${t}</button>`).join('')}</nav>`;
     eventos(r);
   }
@@ -458,10 +496,13 @@
     r.querySelectorAll('[data-mod]').forEach(b=>b.onclick=()=>{ LS('mod',LS('mod')===b.dataset.mod?'':b.dataset.mod); pintar(); });
     r.querySelectorAll('[data-dia]').forEach(b=>b.onclick=()=>{ DIA_SEL=b.dataset.dia; pintar(); });
     r.querySelectorAll('[data-sem]').forEach(b=>b.onclick=()=>{ const d=new Date((DIA_SEL||hoyISO())+'T12:00:00'); d.setDate(d.getDate()+Number(b.dataset.sem)); DIA_SEL=d.toISOString().slice(0,10); pintar(); });
-    r.querySelectorAll('[data-hecha]').forEach(b=>b.onclick=async()=>{ b.classList.add('ok'); b.innerHTML=I('check'); const x=await rpc('sub_tarea_cliente',{p_slug:slug,p_k:tok,p_id:b.dataset.hecha,p_estado:'hecha'}).catch(()=>null); if(x&&x.ok) setTimeout(recargar,400); });
+    r.querySelectorAll('[data-hecha]').forEach(b=>b.onclick=async()=>{ const e=b.dataset.est; b.classList.toggle('ok',e==='hecha'); b.innerHTML=e==='hecha'?I('check'):''; const t=(D.tareas||[]).find(x=>x.id===b.dataset.hecha); if(t) t.estado=e;
+      const x=await rpc('sub_tarea_cliente',{p_slug:slug,p_k:tok,p_id:b.dataset.hecha,p_estado:e}).catch(()=>null); setTimeout(x&&x.ok?recargar:pintar,450); });
+    r.querySelectorAll('[data-tarea]').forEach(b=>b.onclick=()=>editarTarea(b.dataset.tarea));
     r.querySelectorAll('[data-agendar]').forEach(b=>b.onclick=()=>nuevaTarea(b.dataset.agendar));
     const on=(id,f)=>{ const e=r.querySelector('#'+id); if(e) e.onclick=f; };
     on('v4an',()=>ir('analisis')); on('v4tarea',()=>nuevaTarea('')); on('v4chat',chat); on('v4fecha',nuevaFecha); on('v4bell',avisos); on('v4cx',conexiones); on('v4mat',materiales);
+    on('v4nt',()=>nuevaTarea('')); on('v4vh',()=>{ LS('verhechas',LS('verhechas')==='1'?'0':'1'); pintar(); });
     on('v4vt',()=>{ LS('vertodas',LS('vertodas')==='1'?'0':'1'); pintar(); });
     on('v4play',()=>{ const v=r.querySelector('#v4vid'); const id=TAB.slice(6); v.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`; });
     on('v4hecha',()=>{ const id=r.querySelector('#v4hecha').dataset.id, H=hechas(); const i=H.indexOf(id); if(i<0) H.push(id); else H.splice(i,1); LS('hechas',JSON.stringify(H)); pintar(); });
@@ -470,6 +511,18 @@
   function nuevaTarea(t){ hoja('Nueva tarea',`<input id="v4tt" placeholder="¿Qué tenés que hacer?" value="${esc(t)}"><button class="bt n" id="v4ok" style="width:100%">${I('mas')}Agregar a mis tareas</button>`,(h,c)=>{
       const i=h.querySelector('#v4tt'); setTimeout(()=>i.focus(),60);
       h.querySelector('#v4ok').onclick=async()=>{ const v=i.value.trim(); if(!v) return; h.querySelector('#v4ok').disabled=true; const x=await rpc('sub_tarea_cliente_alta',{p_slug:slug,p_k:tok,p_titulo:v}).catch(()=>null); c(); if(x&&x.ok){ recargar(); } }; }); }
+  function editarTarea(id){ const t=(D.tareas||[]).find(x=>x.id===id); if(!t) return; const ok=t.estado==='hecha';
+    hoja('Tarea',`<textarea id="v4et" rows="4">${esc(t.titulo)}</textarea>
+      <label style="display:block;font-size:14px;font-weight:700;color:#4B4958;margin:4px 0 6px">Aviso (opcional)</label><input id="v4ea" type="date" value="${t.alarma?String(t.alarma).slice(0,10):''}">
+      <button class="bt n" id="v4eg" style="width:100%">${I('check')}Guardar cambios</button>
+      <div class="dos" style="margin-top:10px"><button class="bt" id="v4ee">${ok?'Marcar pendiente':'Marcar hecha'}</button><button class="bt" id="v4eb" style="color:var(--vino)">Borrar</button></div>`,(h,c)=>{
+      const q=s=>h.querySelector(s); const fin=async()=>{ c(); await recargar(); };
+      q('#v4eg').onclick=async()=>{ const v=q('#v4et').value.trim(), a=q('#v4ea').value; if(!v) return; q('#v4eg').disabled=true;
+        if(v!==t.titulo) await rpc('sub_tarea_editar',{p_slug:slug,p_k:tok,p_id:id,p_titulo:v}).catch(()=>null);
+        const prev=t.alarma?String(t.alarma).slice(0,10):''; if(a!==prev) await rpc('sub_tarea_alarma',{p_slug:slug,p_k:tok,p_id:id,p_alarma:a?a+'T12:00:00-03:00':null}).catch(()=>null);
+        fin(); };
+      q('#v4ee').onclick=async()=>{ q('#v4ee').disabled=true; await rpc('sub_tarea_cliente',{p_slug:slug,p_k:tok,p_id:id,p_estado:ok?'pendiente':'hecha'}).catch(()=>null); fin(); };
+      q('#v4eb').onclick=async()=>{ const b=q('#v4eb'); if(!b.dataset.seg){ b.dataset.seg='1'; b.textContent='¿Seguro? Tocá para borrar'; return; } b.disabled=true; await rpc('sub_tarea_borrar',{p_slug:slug,p_k:tok,p_id:id}).catch(()=>null); fin(); }; }); }
   function nuevaFecha(){ hoja('Nueva fecha',`<input id="v4ff" type="date" value="${DIA_SEL||hoyISO()}"><input id="v4ft" placeholder="Qué pasa ese día (show, lanzamiento, clase…)"><button class="bt n" id="v4ok" style="width:100%">${I('cal')}Guardar en la agenda</button>`,(h,c)=>{
       h.querySelector('#v4ok').onclick=async()=>{ const f=h.querySelector('#v4ff').value, t=h.querySelector('#v4ft').value.trim(); if(!f||!t) return; h.querySelector('#v4ok').disabled=true;
         const x=await rpc('sub_fecha_guardar',{p_slug:slug,p_k:tok,p_fecha:f,p_titulo:t,p_url:null}).catch(()=>null); c(); if(x&&x.ok){ await cargarFechas(); pintar(); } }; }); }
