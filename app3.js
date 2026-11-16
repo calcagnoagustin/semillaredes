@@ -162,6 +162,17 @@
   #v3 .pills{display:flex;gap:8px;margin:16px 0 12px;flex-wrap:nowrap}
   #v3 .pills button{white-space:nowrap;flex:0 1 auto;border:1px solid #E1D9C9;background:#FBF8F2;border-radius:999px;padding:8px 13px;font:500 13.5px/1 Inter,sans-serif;color:#55525F;cursor:pointer}
   #v3 .pills button.on{background:${OLIVA};border-color:${OLIVA};color:#fff}
+  #v3 .webs .wdel{border:1.5px solid #B23A3A;background:#fff;color:#B23A3A;border-radius:999px;padding:7px 13px;font:600 13px/1 Inter,sans-serif;cursor:pointer;white-space:nowrap}
+  #v3 .wpap{margin:16px 0 8px;font:600 12px/1 Inter,sans-serif;letter-spacing:1.2px;text-transform:uppercase;color:#8A8577}
+  #v3 .wborr .fila{opacity:.62}#v3 .wborr .tx b{color:#6B6878;text-decoration:line-through}#v3 .wborr .tx span{color:#8A8577;font-size:13px}#v3 .wborr .tx,#v3 .wborr .tx span{white-space:normal;overflow:visible;text-overflow:clip}
+  #v3 .wborr .wrec{border:1.5px solid #1A2456;background:#fff;color:#1A2456;border-radius:999px;padding:7px 13px;font:600 13px/1 Inter,sans-serif;cursor:pointer;opacity:1}
+  .wmod{position:fixed;inset:0;z-index:9999;background:rgba(20,22,40,.55);display:grid;place-items:center;padding:16px}
+  .wmod .wmc{background:#FBF7EF;border-radius:18px;max-width:400px;width:100%;padding:22px 20px 18px;color:#1A2456;font:15px/1.45 Inter,sans-serif;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+  .wmod h3{margin:0 0 10px;font:700 21px/1.2 'Playfair Display',serif;color:#B23A3A}
+  .wmod p{margin:0 0 10px}.wmod .wmn{background:#fff;border:1px solid #E6DCC6;border-radius:10px;padding:10px 12px;font-weight:600}.wmod .wmn span{font-weight:400;color:#8A8577;font-size:13.5px}
+  .wmod .wme{color:#B23A3A;font-size:13.5px;min-height:0}
+  .wmod .wmb{display:flex;gap:10px;margin-top:14px}.wmod .wmb button{flex:1;height:46px;border-radius:12px;font:700 14px/1 Inter,sans-serif;cursor:pointer}
+  .wmod .wmno{border:1.5px solid #1A2456;background:#fff;color:#1A2456}.wmod .wmsi{border:0;background:#B23A3A;color:#fff}.wmod .wmsi:disabled{opacity:.6}
   #v3 .webs .edt{display:inline-block;border:0;background:#2F7A4F;color:#fff;border-radius:999px;padding:8px 13px;font:600 13px/1 Inter,sans-serif;text-decoration:none;white-space:nowrap}
   #v3 .lista .est{border:1px solid #E1D9C9;background:#FBF8F2;border-radius:999px;padding:6px 10px;font:500 12px/1 Inter,sans-serif;color:#6F6B7C;cursor:pointer;white-space:nowrap}
   #v3 .lista .est.on{background:#F1EEDB;border-color:${OLIVA};color:#5E5C22;font-weight:600}
@@ -186,13 +197,15 @@
   #v3 .hacc{position:absolute;top:10px;right:8px}
   #v3 .hlog{position:relative;display:grid;grid-template-columns:1fr 108px;align-items:center;column-gap:12px;padding:20px 18px 18px;border:1px solid #D9CFB6;margin-bottom:22px}
   #v3 .hlog .hacc{top:10px;right:10px}
+  #v3 .hrt .hrx{display:block;margin-top:3px;font-weight:400;font-size:12.5px;line-height:1.4;color:#6B6878}
   #v3 .hsupi{margin-top:14px}#v3 .hsupi .hlog{margin-bottom:0}
   #v3 .hlog .pill{text-transform:none;letter-spacing:0;display:inline-block;background:${OLIVA};color:#fff;font:700 13px/1 Inter,sans-serif;padding:7px 12px;border-radius:99px}
   #v3 .hlog .hnum{font-family:'Playfair Display',serif;font-weight:700;font-size:52px;line-height:1;color:${NAVY};margin:12px 0 4px;letter-spacing:-1px}
   #v3 .hlog .uni{font-size:17px;color:${NAVY};line-height:1.25}
-  #v3 .hlog .hlp{display:flex;align-items:center;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid #E6DCC6;font-size:14px;line-height:1.2;color:${NAVY};flex-wrap:wrap}
-  #v3 .hlog .hlp i{width:1px;height:18px;background:#D9CFB6}
+  #v3 .hlog .hlp{display:flex;flex-direction:column;align-items:flex-start;gap:5px;margin-top:12px;padding-top:12px;border-top:1px solid #E6DCC6;font-size:14px;line-height:1.2;color:${NAVY};flex-wrap:wrap}
+  #v3 .hlog .hlp i{display:none}
   #v3 .hlog .hlp b{color:${OLIVA};font-weight:700}
+  #v3 .hlog .hexp{margin:10px 0 0;font-size:13.5px;line-height:1.45;color:#6B6878}
   #v3 .hlog .hli{align-self:center;margin-top:28px}#v3 .hlog .hli svg{width:108px;height:108px;display:block}
   #v3 h3.encam{margin:0 0 12px;font-family:'Playfair Display',serif;font-size:21px;font-weight:600;color:${NAVY};line-height:1.2}
   #v3 .hcam{padding:0}
@@ -749,11 +762,19 @@
     const HOK=x=>x.v!=null&&hAv(x)>=1;
     const HCOS=h=>/costo/.test(h.metrica||'');
     const HUNI=h=>(HMET[h.metrica]||[])[1]||HTIT(h);
-    const HDIF=x=>{ const v=Number(x.v), o=Number(x.h.objetivo); if(HCOS(x.h)) return v===o?'Meta cumplida':nf(o-v,2)+' por debajo de la meta'; return v===o?'Meta cumplida':'+'+nf(v-o)+' sobre la meta'; };
+    const HDEC=v=>{ v=Number(v); return Math.abs(v)<100&&Math.round(v)!==v?1:0; };   // 16/11: ROAS 3,4 no se muestra como «3»
+    const HDIF=x=>{ const v=Number(x.v), o=Number(x.h.objetivo), dec=Math.max(HDEC(v),HDEC(o)), dif=HCOS(x.h)?o-v:v-o, r=Number(dif.toFixed(dec)); if(Math.abs(r)<(dec?0.1:1)) return 'Justo en la meta'; return HCOS(x.h)?nf(r,2)+' por debajo de la meta':'+'+nf(r,dec)+' sobre la meta'; };
+    const HROAS=h=>/roas/i.test(h.metrica||'')||/roas|retorno/i.test(h.titulo||'');
+    const HEXP=h=>{ const k=h.metrica||'';
+      if(HROAS(h)) return 'El ROAS es lo que vuelve en ventas por cada peso o dólar invertido en publicidad. Un ROAS de '+nf(h.objetivo,HDEC(h.objetivo))+' quiere decir que cada 1 invertido trajo '+nf(h.objetivo,HDEC(h.objetivo))+' en ventas.';
+      const E={ig_followers_total:'La cantidad total de gente que sigue tu Instagram.',ig_followers_nuevos:'Cuánta gente nueva empezó a seguirte en el período.',ig_visitas:'Cuántas veces entraron a ver tu perfil de Instagram en el período.',
+        sp_oyentes_perfil:'Cuánta gente distinta te escuchó en Spotify en los últimos 28 días.',sp_monthly:'Cuánta gente distinta te escuchó en Spotify en los últimos 28 días.',sp_followers:'La gente que te sigue en Spotify y recibe tus lanzamientos.',sp_streams:'Cuántas veces se reprodujeron tus canciones en el período.',
+        yt_subs:'La gente suscripta a tu canal de YouTube.',yt_views:'Cuántas veces se vieron tus videos en el período.',msj_mensajes:'Las consultas que llegaron por mensaje en el período.',msj_conversiones:'Las ventas que cerraste en el período.',vta_ventas:'Las ventas que cerraste en el período.',tk_tickets:'Las entradas vendidas en el período.'};
+      if(E[k]) return E[k]; if(HCOS(h)) return 'Lo que cuesta cada resultado: cuanto más bajo, mejor.'; return ''; };
     const HFAL=x=>{ const v=Number(x.v), o=Number(x.h.objetivo); if(HCOS(x.h)) return 'Hoy: '+nf(v,2); return 'Faltan '+nf(Math.max(0,Math.ceil(o-v))); };
     const ICUMBRE='<svg viewBox="0 0 120 120" width="120" height="120" aria-hidden="true"><defs><linearGradient id="hcg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBF7EF"/><stop offset="1" stop-color="#EFE4CC"/></linearGradient><clipPath id="hcc"><circle cx="60" cy="60" r="55"/></clipPath></defs><circle cx="60" cy="60" r="55" fill="#FBF7EF" stroke="#C9A64B" stroke-width="2"/><g clip-path="url(#hcc)"><path d="M14 98 L34 82 L42 88 L60 62 L80 90 L88 84 L108 100 L108 120 L12 120 Z" fill="url(#hcg)"/><path d="M14 98 L34 82 L46 92 M42 88 L60 62 L80 90 M74 94 L88 84 L108 100" fill="none" stroke="#3E4A2A" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></g><path d="M60 62 V34" stroke="#3E4A2A" stroke-width="1.8" stroke-linecap="round"/><path d="M60 35 C66 32 70 38 77 35 L74 41 L77 46 C70 49 66 43 60 46 Z" fill="#87863A"/><g stroke="#C9A64B" stroke-width="1.8" stroke-linecap="round"><path d="M60 16 V24"/><path d="M45 21 L49 28"/><path d="M75 21 L71 28"/><path d="M37 32 L44 36"/></g></svg>';
     const HSUP=(d.hitos||[]).map(h=>({h,v:val(h.metrica)})).filter(HOK).sort((a,b)=>Number(b.h.objetivo)-Number(a.h.objetivo))[0];   // la meta superada más grande (para Inicio)
-    const HCARD=(x,ed)=>`<div class="card hlog">${ed&&x.h.id&&!x.h.virtual?`<span class="hacc">${IB('hito',x.h.id)}</span>`:''}<div class="hlt"><span class="pill">Meta superada</span><div class="hnum">${nf(x.v)}</div><div class="uni">${esc(HUNI(x.h))}</div><div class="hlp"><span>Meta de ${nf(x.h.objetivo)}</span><i></i><b>${esc(HDIF(x))}</b></div></div><div class="hli">${ICUMBRE}</div>${ed&&EDon('hito',x.h.id)?`<div style="grid-column:1/-1">${EDF([{v:x.h.titulo||'',ph:'Nombre (opcional)'},{v:x.h.objetivo,ph:'Meta (número)',num:1}])}</div>`:''}</div>`;
+    const HCARD=(x,ed)=>`<div class="card hlog">${ed&&x.h.id&&!x.h.virtual?`<span class="hacc">${IB('hito',x.h.id)}</span>`:''}<div class="hlt"><span class="pill">Meta superada</span><div class="hnum">${nf(x.v,HDEC(x.v))}</div><div class="uni">${esc(HUNI(x.h))}</div><div class="hlp"><span>Meta de ${nf(x.h.objetivo,HDEC(x.h.objetivo))}</span><i></i><b>${esc(HDIF(x))}</b></div>${HEXP(x.h)?`<p class="hexp">${esc(HEXP(x.h))}</p>`:''}</div><div class="hli">${ICUMBRE}</div>${ed&&EDon('hito',x.h.id)?`<div style="grid-column:1/-1">${EDF([{v:x.h.titulo||'',ph:'Nombre (opcional)'},{v:x.h.objetivo,ph:'Meta (número)',num:1}])}</div>`:''}</div>`;
     const tiene=k=>val(k)!=null;
     const MET=[['ig_followers_total','seguidores','ig'],[SPK,'oyentes mensuales','sp'],['yt_views','vistas','yt'],['msj_mensajes','mensajes','msj'],['msj_conversiones','ventas','msj'],['tk_tickets','entradas','tk'],['stm_wishlist','wishlists en Steam','stm'],['vta_visitas','visitas a la tienda','vtv'],['ig_conv','conversión de visitas','ig'],['vta_ventas','ventas','vta'],['vta_roas_pixel','retorno por dólar','vta'],['vta_costo_venta','costo por venta','vta'],['frm_visitas','visitas a la formación','frm'],['frm_mensajes','consultas','frm'],['ig_visitas','visitas al perfil','ig']].filter(([k])=>tiene(k)&&!(k==='vta_visitas'&&tiene('vta_ventas'))).map(([k,l,ic])=>({k,l,ic}));
     if(CONSULTAS.includes(slug)) MET.sort((x,y)=>(y.k==='msj_mensajes')-(x.k==='msj_mensajes'));
@@ -1065,7 +1086,7 @@
       <div class="tit2"><h2>Hitos</h2>${HDISP.length?`<button id="v3hnuevo">${HFORM?'Cerrar':'Agregar hito'}</button>`:''}</div>
       ${HLOG.map(x=>HCARD(x,true)).join('')}
       ${HLOG.length&&(HCAM.length||HFORM)?'<h3 class="encam">En camino</h3>':''}
-      <div class="card hcam">${HCAM.length?HCAM.map(x=>`<div class="hrow">${ico.sol}<div class="hrt">${esc(HTIT(x.h))}</div>${x.h.id&&!x.h.virtual?`<span class="hracc">${IB('hito',x.h.id)}</span>`:''}${x.v==null?'<div class="hrs">Sin datos todavía</div>':`<div class="hrb"><div class="b"><i style="width:${Math.min(100,hAv(x)*100).toFixed(1)}%"></i></div><span>${esc(HFAL(x))}</span></div>`}${EDon('hito',x.h.id)?`<div style="grid-column:1/-1">${EDF([{v:x.h.titulo||'',ph:'Nombre (opcional)'},{v:x.h.objetivo,ph:'Meta (número)',num:1}])}</div>`:''}</div>`).join(''):(HLOG.length?'':'<div class="vacio">Todavía no hay hitos. Sumá una meta: por ejemplo, a cuántos seguidores querés llegar.</div>')}
+      <div class="card hcam">${HCAM.length?HCAM.map(x=>`<div class="hrow">${ico.sol}<div class="hrt">${esc(HTIT(x.h))}${HEXP(x.h)?`<small class="hrx">${esc(HEXP(x.h))}</small>`:''}</div>${x.h.id&&!x.h.virtual?`<span class="hracc">${IB('hito',x.h.id)}</span>`:''}${x.v==null?'<div class="hrs">Sin datos todavía</div>':`<div class="hrb"><div class="b"><i style="width:${Math.min(100,hAv(x)*100).toFixed(1)}%"></i></div><span>${esc(HFAL(x))}</span></div>`}${EDon('hito',x.h.id)?`<div style="grid-column:1/-1">${EDF([{v:x.h.titulo||'',ph:'Nombre (opcional)'},{v:x.h.objetivo,ph:'Meta (número)',num:1}])}</div>`:''}</div>`).join(''):(HLOG.length?'':'<div class="vacio">Todavía no hay hitos. Sumá una meta: por ejemplo, a cuántos seguidores querés llegar.</div>')}
         ${HFORM?`<div class="fform hform"><select id="v3hm">${HDISP.map(k=>`<option value="${k}">${HMET[k][0]}</option>`).join('')}</select><input id="v3ho" inputmode="decimal" placeholder="Meta (número)"><input id="v3ht" placeholder="Nombre (opcional)"><button id="v3hadd">Guardar hito</button></div>`:''}</div>
       ${pOk('tickets')?`<div class="tit2"><h2>Gestioná tus tickets</h2></div>
       <div class="card tkpr"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 7.5A1.5 1.5 0 0 1 5.5 6h13A1.5 1.5 0 0 1 20 7.5V10a2 2 0 0 0 0 4v2.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 16.5V14a2 2 0 0 0 0-4z"/><path d="M14 6.5v11" stroke-dasharray="2 2"/></svg></span><span class="tx"><b>Vendé y seguí tus entradas desde la app</b><small>Muy pronto</small></span></div>`:''}
@@ -1154,15 +1175,34 @@
         if(j.landing&&j.landing.estado==='armando'){ crearLanding(); return; }
         clearInterval(t); siguiendo=false; if(j.webs&&j.webs.length){ window.__V3WEBS=j.webs; WEBV=j.webs; }
         if(j.landing&&j.landing.estado==='error') crearLanding(); else ponerWeb(); }).catch(()=>{}); },3000); };
+    /* 16/11: borrar páginas. Queda en gris 7 días con «Recuperar»; el original se guarda siempre en la VM */
+    const fcorta=f=>{ const x=new Date(f+'T12:00:00'); return x.getDate()+'/'+(x.getMonth()+1); };
+    const webBorradas=()=>{ const B=((window.__V3WEBINFO||{}).borradas)||[]; if(!B.length) return '';
+      return '<p class="wpap">Páginas borradas</p><div class="card lista webs wborr">'+B.map(b=>'<div class="fila" style="grid-template-columns:1fr auto"><span class="tx"><b>'+esc(b.titulo||'Página')+'</b><br><span>Borrada el '+fcorta(b.borrada)+' · podés recuperarla hasta el '+fcorta(b.hasta)+'</span></span><button class="wrec" data-wrec="'+esc(b.id)+'">Recuperar</button></div>').join('')+'</div>'; };
+    const webPost=(ruta,id)=>fetch('https://vm.semillaredes.com/web/'+ruta,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,id})}).then(r=>r.json()).catch(()=>({error:'No pudimos conectarnos. Probá de nuevo.'}));
+    const webRecargar=()=>fetch('https://vm.semillaredes.com/web/estado?c='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok)).then(r=>r.ok?r.json():null).then(j=>{ if(!j) return; window.__V3WEBINFO=j; window.__V3WEBS=j.webs||[]; WEBV=j.webs||[]; intentos=0; ponerWeb(); }).catch(()=>{});
+    const webConfirmar=(w,listo)=>{ const o=document.createElement('div'); o.className='wmod';
+      o.innerHTML='<div class="wmc" role="dialog" aria-modal="true"><h3>¿Borrar esta página?</h3><p class="wmn">'+esc(w.titulo||'Tu página')+'<br><span>'+esc(String(w.url||'').replace(/^https?:\/\//,'').replace(/\/$/,''))+'</span></p>'
+        +'<p>Va a dejar de verse para todos, también en los links que ya compartiste (bio de Instagram, anuncios, mensajes).</p><p>Durante 7 días la vas a ver en gris acá y la podés recuperar con un toque.</p>'
+        +'<p class="wme"></p><div class="wmb"><button class="wmno">Cancelar</button><button class="wmsi">Sí, borrar la página</button></div></div>';
+      document.body.appendChild(o); const cerrar=()=>o.remove();
+      o.addEventListener('click',e=>{ if(e.target===o) cerrar(); }); o.querySelector('.wmno').onclick=cerrar;
+      const si=o.querySelector('.wmsi'); si.onclick=async()=>{ si.disabled=true; si.textContent='Borrando…'; const r=await webPost('pagina-borrar',w.id);
+        if(r&&r.ok){ cerrar(); listo(); } else { si.disabled=false; si.textContent='Sí, borrar la página'; o.querySelector('.wme').textContent=(r&&r.error)||'No pudimos borrarla.'; } }; };
+    const webAcciones=(lista)=>{ if(!web) return;
+      web.querySelectorAll('[data-wdel]').forEach(b=>b.onclick=()=>{ const w=(lista||[])[+b.dataset.wdel]; if(w) webConfirmar(w,()=>{ window.SRE&&window.SRE('pagina_borrar',{}); webRecargar(); }); });
+      web.querySelectorAll('[data-wrec]').forEach(b=>b.onclick=async()=>{ b.disabled=true; b.textContent='Recuperando…'; const r=await webPost('pagina-recuperar',b.dataset.wrec);
+        if(r&&r.ok){ window.SRE&&window.SRE('pagina_recuperar',{}); webRecargar(); } else { b.disabled=false; b.textContent='Recuperar'; alert((r&&r.error)||'No pudimos recuperarla.'); } }); };
     const ponerWeb=()=>{ if(!web) return; const tw=app&&(app.querySelector('.twBtns')||app.querySelector('.twWebs')); if(!tw&&intentos++<20) setTimeout(ponerWeb,300);
       const eds=tw?[...tw.querySelectorAll('a')]:[];
-      if(!WEBV.length&&!eds.length){ if(window.__V3WEBINFO&&window.__V3WEBINFO.puede_crear) crearLanding(null); else web.innerHTML=''; return; }
+      if(!WEBV.length&&!eds.length){ if(window.__V3WEBINFO&&window.__V3WEBINFO.puede_crear){ crearLanding(null); if(webBorradas()) web.insertAdjacentHTML('beforeend',webBorradas()); } else web.innerHTML=(webBorradas()?'<div class="tit2"><h2>Tu web</h2></div>'+webBorradas():''); webAcciones(); return; }
       const lista=WEBV.length?WEBV:[{titulo:'Tu web',url:''}];
-      web.innerHTML='<div class="tit2"><h2>'+(lista.length>1?'Tus webs':'Tu web')+'</h2></div><p class="bj" style="margin:0 0 10px;font-size:14.5px">'+(lista.every(w=>w.externa)?'Tocá para verla.':'Tocá para verla. Con «Editá» la abrís en modo edición: cambiás textos y fotos, o le pedís cambios a SemillaIA. Nada se publica sin que lo apruebes.')+'</p><div class="card lista webs">'+lista.map((w,n)=>'<div class="fila" style="grid-template-columns:1fr auto">'+(w.url?'<a class="tx" style="text-decoration:none" href="'+esc(w.url)+'" target="_blank" rel="noopener"><b style="color:'+NAVY+'">'+esc(w.titulo||'Tu web')+'</b><br><span style="color:#8A8577;font-size:13.5px">'+esc(String(w.url).replace(/^https?:\/\//,'').replace(/\/(index\.html)?$/,''))+'</span></a>':'<span class="tx"><b style="color:'+NAVY+'">Tu web</b></span>')+'<span class="ed" data-wed="'+n+'"></span></div>').join('')+'</div>';
+      web.innerHTML='<div class="tit2"><h2>'+(lista.length>1?'Tus webs':'Tu web')+'</h2></div><p class="bj" style="margin:0 0 10px;font-size:14.5px">'+(lista.every(w=>w.externa)?'Tocá para verla.':'Tocá para verla. Con «Editá» la abrís en modo edición: cambiás textos y fotos, o le pedís cambios a SemillaIA. Nada se publica sin que lo apruebes.')+'</p><div class="card lista webs">'+lista.map((w,n)=>'<div class="fila" style="grid-template-columns:'+(w.borrable?'1fr auto auto':'1fr auto')+'">'+(w.url?'<a class="tx" style="text-decoration:none" href="'+esc(w.url)+'" target="_blank" rel="noopener"><b style="color:'+NAVY+'">'+esc(w.titulo||'Tu web')+'</b><br><span style="color:#8A8577;font-size:13.5px">'+esc(String(w.url).replace(/^https?:\/\//,'').replace(/\/(index\.html)?$/,''))+'</span></a>':'<span class="tx"><b style="color:'+NAVY+'">Tu web</b></span>')+'<span class="ed" data-wed="'+n+'"></span>'+(w.borrable?'<button class="wdel" data-wdel="'+n+'">Borrar</button>':'')+'</div>').join('')+'</div>'+webBorradas();
       web.querySelectorAll('[data-wed]').forEach(x=>{ const i=+x.dataset.wed, a=eds[i], w=lista[i]; let c; if(w&&w.externa) return; /* 27/10: web externa (Wix, etc.): solo se ve, no se edita desde la app */
         if(w&&w.url){ c=document.createElement('a'); c.href=w.url+(w.url.includes('?')?'&':'?')+'editar='+encodeURIComponent(slug)+'&k='+encodeURIComponent(tok); c.target='_blank'; c.rel='noopener'; c.addEventListener('click',ev=>{ window.SRE&&window.SRE('web_editar',{}); ev.preventDefault(); let top=location.href; try{ top=window.top.location.href; }catch(e){} const u=c.href+'&volver='+encodeURIComponent(top.split('#')[0]); try{ window.top.location.href=u; }catch(e){ location.href=u; } }); }
         else if(a){ c=a.cloneNode(true); }
         if(!c) return; c.className='edt'; c.innerHTML='✎ Editá'; x.appendChild(c); });
+      webAcciones(lista);
       const WI=window.__V3WEBINFO; if(WI&&WI.puede_crear&&!lista.some(w=>/semillaia\.com\//.test(w.url||''))){ web.insertAdjacentHTML('beforeend','<div id="v3webcl" style="margin-top:14px"></div>'); crearLanding(web.querySelector('#v3webcl')); } }; ponerWeb();
     /* LOS DROPS EN LA APP (23/10/2026): el último drop del newsletter, sale los viernes (drops_app.py publica drops/ultimos.json) */
     const dropEl=raiz.querySelector('#v3drop');
@@ -1328,9 +1368,10 @@
       const P=c.pago||{}, usd=P.moneda==='USD', pl=v=>v==null?'—':usd?'USD '+nf(v,2):'$ '+nf(v,0), met=String(P.metodo||'').replace(/\s*\*+\s*/,' ••');
       const DS3=['dom','lun','mar','mié','jue','vie','sáb'], fch=f=>{ const x=new Date(f+'T12:00:00'); return DS3[x.getDay()]+' '+fd(f); };
       const px=P.proximo;
-      const pg=P.saldo==null?'':`<div class="pg">${px?`<div class="r1"><span>Próximo cobro</span><b>${fch(px.fecha)} · ${pl(px.monto)}</b></div>`:`<div class="r1"><span>Saldo a pagar</span><b>${pl(P.saldo)}</b></div>`}
-        <p>${px?`${P.diario?`Se cobra todos los días${met?` a la <b>${esc(met)}</b>`:''}, o antes si el saldo llega a ${pl(P.umbral)}`:`Se cobra solo${met?` a la <b>${esc(met)}</b>`:''} cuando el saldo llega a ${pl(P.umbral)}${P.fecha_ciclo?` o el ${fd(P.fecha_ciclo)}, lo que pase primero`:''}`}. Hoy el saldo es de ${pl(P.saldo)}${P.promedio_diario?` y se gastan unos ${pl(P.promedio_diario)} por día`:''}, por eso la fecha es aproximada.`
-          :`${P.prepago?'Cuenta prepaga: se descuenta de los fondos cargados.':`Se cobra solo${met?` a la <b>${esc(met)}</b>`:''} cuando el saldo llega al umbral de Meta o a fin del ciclo de facturación.`}`}</p></div>`;
+      const pg=P.saldo==null?'':`<div class="pg"><div class="r1"><span>Saldo pendiente</span><b>${pl(P.saldo)}</b></div>
+        <p>${P.prepago?'Cuenta prepaga: se descuenta de los fondos cargados.'
+          :P.diario?`La cuenta cobra todos los días${met?` a la <b>${esc(met)}</b>`:''}, o antes si el saldo llega a ${pl(P.umbral)}.`
+          :`La cuenta cobra sola${met?` a la <b>${esc(met)}</b>`:''} cuando el saldo llega a ${P.umbral!=null?pl(P.umbral):'el umbral de Meta'}${P.fecha_ciclo?` o el ${fd(P.fecha_ciclo)}, lo que pase primero`:' o a fin del ciclo de facturación'}.`}${px&&!P.diario&&!P.prepago?` Al ritmo actual${P.promedio_diario?` (unos ${pl(P.promedio_diario)} por día)`:''}, el próximo cobro sería cerca del ${fch(px.fecha)}.`:''}</p></div>`;
       const CJON=['yamila-beraja','maria-marta-crespo','sin-fronteras-duo','animales-del-rock','tuncha','bodegon-para'].includes(slug), moneyC=v=>v==null?'—':usd?'USD '+nf(v,2):'$ '+nf(v,0);
       const dia=CJON&&P.inversion_diaria!=null?`<div class="pg"><div class="r1"><span>Inversión diaria</span><b>${moneyC(P.inversion_diaria)}</b></div><p>Lo que está programado por día entre todos los conjuntos activos.</p></div>`:'';
       const m0=v=>v>=1000?(usd?'USD ':'$ ')+nf(v,0):moneyC(v);
@@ -1506,7 +1547,7 @@
     'tu próximo hito':{i:'La meta más cercana de las que definiste en Tu proyecto. La barra muestra cuánto te falta y se actualiza sola.'},
     'accesos rápidos':{d:'Atajos a lo que más vas a usar.',i:'Abrí el reporte, sumá una tarea, cargá una fecha o hablá con SemillaIA sin cambiar de pantalla.'},
     'scr:proyecto':{i:'Acá se ordena tu proyecto: hacia dónde vas (hitos), y con qué contás (activos y web).'},
-    'hitos':{d:'Las metas concretas hacia las que estás trabajando.',i:'Cada hito sigue una métrica real (seguidores, oyentes, ventas…) y se actualiza solo. Sumá uno con «Agregar hito».'},
+    'hitos':{d:'Un hito es una meta con número para tu proyecto: llegar a 5.000 seguidores, vender 100 entradas o que la publicidad te devuelva el triple de lo que invertís. La app lo sigue sola con tus números reales y te muestra cuánto falta.',i:'Cada hito sigue una métrica real (seguidores, oyentes, ventas, retorno de la publicidad…) y se actualiza solo con cada reporte. Cuando la pasás, aparece arriba como «Meta superada». Sumá uno con «Agregar hito».'},
     'gestioná tus tickets':{d:'Las entradas de tus shows, en el mismo lugar que el resto de tu proyecto.',i:'Muy pronto vas a poder vender y seguir las entradas de tus fechas desde la app: cuántas se vendieron, por qué canal y cuánto costó cada una.'},
     'tus lanzamientos':{d:'Tus singles, EPs y discos, cada uno con su landing para compartir.',i:'Pegá los links de tu lanzamiento (Spotify, YouTube, Bandcamp, Apple Music, Deezer…) y SemillaIA arma una landing con la portada, los colores del lanzamiento y todos los accesos. Compartila en tu bio, en historias y en tus anuncios.'},
     'tus flyers':{d:'Flyers para tus fechas y lanzamientos, diseñados con ChatGPT.',i:'Elegís la fecha o el lanzamiento, le contás cómo lo imaginás y ChatGPT diseña el flyer con tus datos, tu foto o la portada. Tarda alrededor de un minuto. Revisá siempre los textos antes de publicarlo.'},
