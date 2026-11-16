@@ -194,6 +194,8 @@
   #v4 .bars>div{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;min-width:0}
   #v4 .bars i{display:block;width:100%;max-width:30px;border-radius:7px 7px 3px 3px;background:var(--oliva2)} #v4 .bars>div:last-child i{background:var(--navy)}
   #v4 .bars span{font-size:11.5px;font-weight:700;color:#4B4958} #v4 .bars small{font-size:11px;color:var(--suave);white-space:nowrap}
+  #v4 .sub2{font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#4B4E25;margin:18px 2px 10px}
+  #v4 .bars.mini{height:64px;gap:4px;margin-top:16px} #v4 .bars.mini i{border-radius:4px 4px 2px 2px;max-width:none}
   #v4 .pie3{margin:10px 2px 0;font-size:13px;color:var(--suave)}
   #v4 .pb{display:block;height:5px;border-radius:3px;background:#ECE6DB;margin-top:7px;overflow:hidden} #v4 .pb i{display:block;height:100%;background:var(--oliva2)}
   #v4 .falt b{color:var(--tinta)}
@@ -261,7 +263,7 @@
   `;
 
   // ---------- estado ----------
-  let D=null, TAB=LS('tab')||'inicio', SUBM=LS('subm')||'reporte', SUBF=LS('subf')||'clases', DROPS=[], TJ=null, CTA=null, FECHAS=[], WEBS=[], NOT=[], DIA_SEL=null, CHAT=[];
+  let D=null, TAB=LS('tab')||'inicio', SUBM=LS('subm')||'reporte', SUBF=LS('subf')||'clases', DROPS=[], TJ=null, CTA=null, FECHAS=[], WEBS=[], NOT=[], DIA_SEL=null, CHAT=[], USOW=null;
   const CLASES=[['Modelo de negocio','maletin',[['HE8pjQ0pbV8','Presentación de la Formación'],['1IWynYu2gRI','Tu arte como negocio digital'],['sgggTfqdWjk','Pensá un producto como artista'],['t711FU0w5yk','Ordená tus objetivos y próximos pasos']]],
     ['Comunicación','burbuja',[['84f7zYFQp3E','Excel de negocio: ingresos y gastos'],['8iI_anZtXpQ','Comunicá tu identidad'],['oo9d7a-02xw','Mostrá tu producto para que conecte'],['SN7WmmLunLY','Contenidos sostenibles']]],
     ['Publicidad','megafono',[['ozn7ch2Ui3k','Campaña de lanzamiento: Spotify, Meta y YouTube'],['tv8hQXAMwKc','Configurá Ads Manager y Business Manager'],['Ec_YHoGOq34','Conseguí más seguidores'],['8ANApErBj2M','Campañas de productos'],['OsvHvTZlTk0','Métricas y proyectiva']]]];
@@ -342,7 +344,7 @@
         <button class="row" id="v4nt" style="color:var(--vino)"><span class="circ" style="border-style:dashed;border-color:var(--vino);color:var(--vino)">${I('mas')}</span><span class="tx"><b style="color:var(--vino)">Nueva tarea</b></span></button></div>
       ${hech.length?`<button class="lk" id="v4vh" style="margin-top:12px">${LS('verhechas')==='1'?'Ocultar':'Ver'} hechas (${hech.length}) ${I('chev')}</button>${LS('verhechas')==='1'?`<div class="box" style="margin-top:10px">${hech.map(filaTarea).join('')}</div>`:''}`:''}
       <div class="tt"><h2>Tus webs</h2></div>
-      <div class="box">${WEBS.length?WEBS.map(w=>`<a class="row" href="${esc(w.url)}${w.url.includes('?')?'&':'?'}editar=${encodeURIComponent(w.slug||slug)}&k=${encodeURIComponent(tok)}" target="_blank" rel="noopener"><span class="tile c">${I('web')}</span><span class="tx"><b>${esc(w.titulo||w.nombre||w.url.replace(/^https?:\/\//,'').replace(/\/$/,''))}</b><small>${esc(w.url.replace(/^https?:\/\//,'').replace(/\/$/,''))}</small></span><span class="lk">Editá ${I('ext')}</span></a>`).join(''):`<div class="vacio">Todavía no tenés webs con Semilla.</div>`}</div>
+      <div class="box">${WEBS.length?WEBS.map(w=>`<a class="row" href="${esc(w.url)}${w.url.includes('?')?'&':'?'}editar=${encodeURIComponent(w.slug||slug)}&k=${encodeURIComponent(tok)}" target="_blank" rel="noopener"><span class="tile c">${I('web')}</span><span class="tx"><b>${esc(w.titulo||w.nombre||w.url.replace(/^https?:\/\//,'').replace(/\/$/,''))}</b><small>${esc(w.url.replace(/^https?:\/\//,'').replace(/\/$/,''))}${USOW?` · ${nf(((USOW.webs||[]).find(x=>x.id===w.id)||{}).n||0)} visitas en 30 días`:''}</small></span><span class="lk">Editá ${I('ext')}</span></a>`).join(''):`<div class="vacio">Todavía no tenés webs con Semilla.</div>`}</div>
       <div class="tt"><h2>Recursos</h2></div>
       <div class="rec2"><div class="box"><button class="row" id="v4mat"><span class="tile">${I('folder')}</span><span class="tx"><b>Materiales</b></span><span class="go">${I('chev')}</span></button></div>
         <div class="box"><button class="row" data-prox="Flyers"><span class="tile r">${I('imagen')}</span><span class="tx"><b>Flyers</b></span><span class="go">${I('chev')}</span></button></div></div>
@@ -392,6 +394,7 @@
           <div class="big">${nf(tot)}<small>seguidores</small></div>
           ${meta?`<div class="bar2"><i style="width:${Math.min(100,Math.round(tot*100/meta))}%"></i></div><div class="falt"><span>${tot>=meta?`Meta de ${nf(meta)} superada`:`Faltan ${nf(meta-tot)} para la meta de ${nf(meta)}`}</span><b>${Math.min(100,Math.round(tot*100/meta))}%</b></div>`:''}</div>`:''}
         ${evo}
+        ${bloqueWeb()}
         ${grupos.map(([t,ic,c,f])=>{ const x=tiles(f); return x?`<div class="tt"><h2>${t}</h2></div><div class="dgrid">${x}</div>`:''; }).join('')}
         ${paises?`<div class="tt"><h2>Países</h2></div>${lista(paises)}`:''}
         ${ciudades?`<div class="tt"><h2>Ciudades</h2></div>${lista(ciudades)}`:''}
@@ -403,6 +406,24 @@
     }
     return `<h1>Métricas</h1><div class="seg"><button data-subm="reporte" class="${SUBM==='reporte'?'on':''}">Reporte</button><button data-subm="datos" class="${SUBM==='datos'?'on':''}">Datos</button></div>${rep}`;
   }
+  function bloqueWeb(){ const V=USOW; if(!V||!WEBS.length) return '';
+    const OR={anuncio:'Anuncios',ig:'Instagram',fb:'Facebook',meta:'Instagram / Facebook',busc:'Google y buscadores',wa:'WhatsApp',yt:'YouTube',x:'X',semilla:'Semilla',otro:'Otras páginas',directo:'Directo o link guardado'};
+    const CL={wa:'WhatsApp',ig:'Instagram',mail:'Mail',tel:'Llamadas',spotify:'Spotify',youtube:'YouTube',steam:'Steam',otro:'Otros'};
+    const PA={AR:'Argentina',UY:'Uruguay',CL:'Chile',MX:'México',ES:'España',US:'Estados Unidos',CO:'Colombia',PE:'Perú',BR:'Brasil',PY:'Paraguay',BO:'Bolivia',EC:'Ecuador',VE:'Venezuela',IT:'Italia',FR:'Francia',DE:'Alemania',GB:'Reino Unido',CR:'Costa Rica',GT:'Guatemala',DO:'Rep. Dominicana',PA:'Panamá',CU:'Cuba'};
+    const dp=V.semana_ant?Math.round((V.semana-V.semana_ant)*100/V.semana_ant):null, mx=Math.max(1,...V.dias.map(x=>x.n));
+    const fila=(t,n,tot)=>`<div class="row"><span class="tx"><b>${esc(t)}</b><span class="pb"><i style="width:${Math.max(3,Math.round(n*100/Math.max(1,tot)))}%"></i></span></span><span class="costo"><b>${nf(n)}</b>${tot?`<small>${nf(n*100/tot,0)}%</small>`:''}</span></div>`;
+    const cons=Object.entries(V.clics||{}).sort((a,b)=>b[1]-a[1]);
+    return `<div class="tt"><h2>Tus webs</h2><span class="pill">En vivo</span></div>
+      <div class="box ig"><div class="k"><span class="tile c">${I('web')}</span>Visitas${dp!=null?`<span class="estado" style="${dp<0?'background:var(--rosa);color:var(--vino)':''}">${I(dp<0?'baja':'sube')} ${dp>0?'+':''}${dp}% vs. semana anterior</span>`:''}</div>
+        <div class="big">${nf(V.semana)}<small>en los últimos 7 días</small></div>
+        <div class="bars mini">${V.dias.map(x=>`<div><i style="height:${x.n?Math.max(8,Math.round(x.n*100/mx)):3}%;${x.n?'':'background:#ECE6DB'}"></i></div>`).join('')}</div>
+        <div class="falt"><span>Últimos 14 días · ${nf(V.mes)} visitas en 30 días</span></div>
+        ${V.mes<20?`<p class="pie3" style="margin-top:8px">Medimos las visitas desde el 16/11. Los números se completan solos a medida que entra gente.</p>`:''}</div>
+      ${(V.webs||[]).length>1?`<div class="sub2">Por página</div><div class="box">${V.webs.map(x=>fila(x.titulo,x.n,V.mes)).join('')}</div>`:''}
+      ${(V.origen||[]).length?`<div class="sub2">De dónde llegan</div><div class="box">${V.origen.map(x=>fila(OR[x.o]||x.o,x.n,V.mes)).join('')}</div>`:''}
+      ${(V.paises||[]).length?`<div class="sub2">Desde qué país</div><div class="box">${V.paises.map(x=>fila(PA[x.p]||x.p,x.n,V.mes)).join('')}</div>`:''}
+      <div class="sub2">Consultas desde tus webs · 30 días</div>
+      ${cons.length?`<div class="dgrid">${cons.map(([t,n])=>`<div class="dt"><b>${nf(n)}</b><small>Toques a ${CL[t]||t}</small></div>`).join('')}</div>`:`<div class="box"><div class="vacio">Todavía nadie tocó WhatsApp, mail o Instagram desde tus webs este mes.</div></div>`}`; }
   const cap=s=>{ s=String(s||''); return s.charAt(0).toUpperCase()+s.slice(1); };
 
   function scAnalisis(){
@@ -548,6 +569,7 @@
       fetch(W+'/cuenta?c='+c+'&k='+k).then(r=>r.ok?r.json():null).then(j=>{ CTA=j; }).catch(()=>{}),
       fetch(W+'/estado?c='+c+'&k='+k).then(r=>r.ok?r.json():null).then(j=>{ WEBS=((j&&j.webs)||[]).filter(w=>!w.externa); }).catch(()=>{}),
       rpc('sub_notifs_get',{p_slug:slug,p_k:tok}).then(j=>{ NOT=(j&&j.notifs)||[]; }).catch(()=>{}),
+      fetch(W+'/uso?c='+c+'&k='+k).then(r=>r.ok?r.json():null).then(j=>{ USOW=j&&j.web; }).catch(()=>{}),
       cargarFechas()
     ]).then(pintar);
   }
