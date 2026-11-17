@@ -580,7 +580,22 @@
   function nuevaFecha(){ hoja('Nueva fecha',`<input id="v4ff" type="date" value="${DIA_SEL||hoyISO()}"><input id="v4ft" placeholder="Qué pasa ese día (show, lanzamiento, clase…)"><button class="bt n" id="v4ok" style="width:100%">${I('cal')}Guardar en la agenda</button>`,(h,c)=>{
       h.querySelector('#v4ok').onclick=async()=>{ const f=h.querySelector('#v4ff').value, t=h.querySelector('#v4ft').value.trim(); if(!f||!t) return; h.querySelector('#v4ok').disabled=true;
         const x=await rpc('sub_fecha_guardar',{p_slug:slug,p_k:tok,p_fecha:f,p_titulo:t,p_url:null}).catch(()=>null); c(); if(x&&x.ok){ await cargarFechas(); pintar(); } }; }); }
-  function materiales(){ const A=D.activos||[]; hoja('Materiales',A.length?`<div class="box">${A.map(a=>`<a class="row" href="${esc(a.url||'#')}" target="_blank" rel="noopener"><span class="tile">${I('folder')}</span><span class="tx"><b>${esc(a.titulo||a.nombre||'Material')}</b><small>${esc(a.tipo||'')}</small></span><span class="go">${I('ext')}</span></a>`).join('')}</div>`:`<p style="color:#4B4958;font-size:16px;line-height:24px">Acá van a estar tus logos, fotos, planillas y todo lo que armemos para tu proyecto.</p><span class="prox">Próximamente</span>`); }
+  function materiales(){ const href=u=>{ u=String(u||'').trim(); return !u?'#':/^https?:\/\//i.test(u)?u:'https://'+u; };
+    const lista=()=>{ const A=D.activos||[]; return A.length?`<div class="box">${A.map(a=>`<div class="row"><span class="tile">${I(a.tipo==='link'||a.url?'link':'folder')}</span><a class="tx" href="${esc(href(a.url))}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><b>${esc(a.titulo||'Material')}</b><small>${esc(a.descripcion||String(a.url||'').replace(/^https?:\/\//,''))}</small></a><button class="go" data-borra="${a.id}" aria-label="Borrar" style="background:none;border:0;padding:6px;color:var(--vino);font-size:13px;font-weight:700">Borrar</button></div>`).join('')}</div>`:`<div class="box"><div class="vacio">Todavía no hay materiales. Sumá links a tus fotos, logos, planillas o carpetas de Drive.</div></div>`; };
+    hoja('Materiales',`<div id="v4ml">${lista()}</div>
+      <div class="sub2">Agregar material</div>
+      <input id="v4mt" placeholder="Nombre (ej.: Fotos de prensa)"><input id="v4mu" placeholder="Link (Drive, Dropbox, web…)" inputmode="url" autocapitalize="off"><input id="v4md" placeholder="Nota (opcional)">
+      <button class="bt n" id="v4mok" style="width:100%">${I('mas')}Agregar material</button><p class="pie3" id="v4mer"></p>`,(h)=>{
+      const q=x=>h.querySelector(x);
+      const enlazar=()=>h.querySelectorAll('[data-borra]').forEach(b=>b.onclick=async()=>{ if(!b.dataset.seg){ b.dataset.seg='1'; b.textContent='¿Seguro?'; return; } b.disabled=true;
+        await rpc('sub_activo_cliente_borrar',{p_slug:slug,p_k:tok,p_id:b.dataset.borra}).catch(()=>null); D.activos=(D.activos||[]).filter(a=>a.id!==b.dataset.borra); q('#v4ml').innerHTML=lista(); enlazar(); });
+      enlazar();
+      q('#v4mok').onclick=async()=>{ const t=q('#v4mt').value.trim(), u=q('#v4mu').value.trim(), de=q('#v4md').value.trim(); if(!t){ q('#v4mer').textContent='Ponele un nombre.'; return; }
+        q('#v4mok').disabled=true; const r=await rpc('sub_activo_cliente_alta',{p_slug:slug,p_k:tok,p_titulo:t,p_url:u?href(u):null,p_descripcion:de||null}).catch(()=>null);
+        q('#v4mok').disabled=false; if(!r||r.error){ q('#v4mer').textContent='No se pudo guardar. Probá de nuevo.'; return; }
+        const d=await rpc('sub_get',{p_slug:slug,p_k:tok}).catch(()=>null); if(d&&d.cliente){ D=d; window.__D=d; }
+        q('#v4mt').value=''; q('#v4mu').value=''; q('#v4md').value=''; q('#v4mer').textContent='Agregado ✓'; q('#v4ml').innerHTML=lista(); enlazar(); };
+    }); }
   function avisos(){ hoja('Avisos',NOT.length?`<div class="box">${NOT.slice(0,12).map(n=>`<div class="row"><span class="tile">${I('campana')}</span><span class="tx"><b>${esc(n.titulo||'')}</b><small>${esc(n.texto||'')}</small></span></div>`).join('')}</div>`:`<div class="box"><div class="vacio">No tenés avisos nuevos.</div></div>`);
     if(NOT.some(n=>!n.leida)) rpc('sub_notifs_leer',{p_slug:slug,p_k:tok}).then(()=>{ NOT.forEach(n=>n.leida=true); }).catch(()=>{}); }
   function conexiones(){ hoja('Redes conectadas','<div id="v4cxm"></div>',h=>{ const ir=()=>window.SRConexiones.montar(h.querySelector('#v4cxm'),{slug,k:tok,plegado:false});
