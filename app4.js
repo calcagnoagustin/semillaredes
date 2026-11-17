@@ -263,7 +263,7 @@
   `;
 
   // ---------- estado ----------
-  let D=null, TAB=LS('tab')||'inicio', SUBM=LS('subm')||'reporte', SUBF=LS('subf')||'clases', DROPS=[], TJ=null, CTA=null, FECHAS=[], WEBS=[], NOT=[], DIA_SEL=null, CHAT=[], USOW=null;
+  let D=null, TAB=LS('tab')||'inicio', SUBM=LS('subm')||'reporte', SUBF=LS('subf2')||'drops', DROPS=[], TJ=null, CTA=null, FECHAS=[], WEBS=[], NOT=[], DIA_SEL=null, CHAT=[], USOW=null;
   const CLASES=[['Modelo de negocio','maletin',[['HE8pjQ0pbV8','Presentación de la Formación'],['1IWynYu2gRI','Tu arte como negocio digital'],['sgggTfqdWjk','Pensá un producto como artista'],['t711FU0w5yk','Ordená tus objetivos y próximos pasos']]],
     ['Comunicación','burbuja',[['84f7zYFQp3E','Excel de negocio: ingresos y gastos'],['8iI_anZtXpQ','Comunicá tu identidad'],['oo9d7a-02xw','Mostrá tu producto para que conecte'],['SN7WmmLunLY','Contenidos sostenibles']]],
     ['Publicidad','megafono',[['ozn7ch2Ui3k','Campaña de lanzamiento: Spotify, Meta y YouTube'],['tv8hQXAMwKc','Configurá Ads Manager y Business Manager'],['Ec_YHoGOq34','Conseguí más seguidores'],['8ANApErBj2M','Campañas de productos'],['OsvHvTZlTk0','Métricas y proyectiva']]]];
@@ -445,10 +445,9 @@
     const H=hechas(), n=TODAS.filter(c=>H.includes(c.id)).length;
     let cont='';
     if(SUBF==='clases'){
-      cont=`<div class="forHero"><img class="decor" src="/assets/marca-semilla.png" alt=""><h3>Formación Semilla</h3><p style="margin:10px 0 14px;font-size:16px;line-height:23px;opacity:.92">Las 13 clases del Método Semilla, con ejercicios y plantillas para aplicar a tu proyecto.</p><span class="prox" style="background:rgba(255,255,255,.18);color:#fff">Próximamente</span></div>
+      cont=`<div class="forHero"><img class="decor" src="/assets/marca-semilla.png" alt=""><h3>Formación Semilla</h3><p style="margin:10px 0 16px;font-size:16px;line-height:23px;opacity:.92">Un grupo reducido con Agus para ordenar tu proyecto con el Método Semilla: modelo de negocio, comunicación y publicidad, con seguimiento semanal.</p><a class="bt" href="https://aguscalcagno.com/p/formacion-semilla-grupo" target="_blank" rel="noopener" style="display:inline-flex;background:#fff;border-color:#fff;color:#3F4526">Conocé la Formación ${I('ext')}</a></div>
         <div class="tt"><h2>El programa</h2><span class="pill">13 clases</span></div>
-        <div class="box">${CLASES.map(([m,ic,L],k)=>`<div class="row"><span class="tile ${['','r','c'][k]}">${I(ic)}</span><span class="tx"><b>${m}</b><small>${L.length} clases</small></span><span class="prox">Próximamente</span></div>`).join('')}</div>
-        <button class="row" data-subf="drops" style="padding:16px 2px;margin-top:6px"><span class="tx"><b style="display:flex;align-items:center;gap:8px;font-size:15.5px">${I('auris')} Mientras tanto, leé los Drops del viernes</b></span><span class="go">${I('flecha')}</span></button>`;
+        <div class="box">${CLASES.map(([m,ic,L],k)=>`<div class="row"><span class="tile ${['','r','c'][k]}">${I(ic)}</span><span class="tx"><b>${m}</b><small>${L.length} clases</small></span><span class="prox">Próximamente</span></div>`).join('')}</div>`;
     } else {
       const q=(LS('q')||'').toLowerCase(); const L=DROPS.filter(x=>!q||(x.titulo+' '+(x.categoria||'')+' '+(x.resumen||'')).toLowerCase().includes(q));
       const d0=L[0];
@@ -459,7 +458,7 @@
         <div class="tt"><h2>Explorá el archivo</h2><a class="lk" href="https://semillaredes.com/drops/" target="_blank" rel="noopener">Ver todos ${I('chev')}</a></div>
         <div class="chips"><a href="https://semillaredes.com/drops/" target="_blank" rel="noopener">Modelo de negocio</a><a href="https://semillaredes.com/drops/" target="_blank" rel="noopener">Comunicación</a><a href="https://semillaredes.com/drops/" target="_blank" rel="noopener">Publicidad</a><a href="https://semillaredes.com/drops/" target="_blank" rel="noopener">Estrategia</a></div>`;
     }
-    return `<h1>Formación</h1><div class="seg"><button data-subf="clases" class="${SUBF==='clases'?'on':''}">Clases</button><button data-subf="drops" class="${SUBF==='drops'?'on':''}">Drops del viernes</button></div>${cont}`;
+    return `<h1>Formación</h1><div class="seg"><button data-subf="drops" class="${SUBF==='drops'?'on':''}">Drops del viernes</button><button data-subf="clases" class="${SUBF==='clases'?'on':''}">Clases</button></div>${cont}`;
   }
 
   function scClase(id){
@@ -512,7 +511,7 @@
     r.querySelectorAll('[data-ir]').forEach(b=>b.onclick=()=>ir(b.dataset.ir));
     r.querySelectorAll('[data-prox]').forEach(b=>b.onclick=()=>prox(b.dataset.prox));
     r.querySelectorAll('[data-subm]').forEach(b=>b.onclick=()=>{ SUBM=b.dataset.subm; LS('subm',SUBM); pintar(); });
-    r.querySelectorAll('[data-subf]').forEach(b=>b.onclick=()=>{ SUBF=b.dataset.subf; LS('subf',SUBF); TAB='formacion'; LS('tab','formacion'); pintar(); window.scrollTo(0,0); });
+    r.querySelectorAll('[data-subf]').forEach(b=>b.onclick=()=>{ SUBF=b.dataset.subf; LS('subf2',SUBF); TAB='formacion'; LS('tab','formacion'); pintar(); window.scrollTo(0,0); });
     r.querySelectorAll('[data-clase]').forEach(b=>b.onclick=()=>ir('clase:'+b.dataset.clase));
     r.querySelectorAll('[data-mod]').forEach(b=>b.onclick=()=>{ LS('mod',LS('mod')===b.dataset.mod?'':b.dataset.mod); pintar(); });
     r.querySelectorAll('[data-dia]').forEach(b=>b.onclick=()=>{ DIA_SEL=b.dataset.dia; pintar(); });
