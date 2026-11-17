@@ -377,7 +377,7 @@
       <div class="tt"><h2>Tus webs</h2></div>
       <div class="box">${WEBS.length?WEBS.map(w=>`<a class="row" href="${esc(w.url)}${w.url.includes('?')?'&':'?'}editar=${encodeURIComponent(w.slug||slug)}&k=${encodeURIComponent(tok)}" target="_blank" rel="noopener"><span class="tile c">${I('web')}</span><span class="tx"><b>${esc(w.titulo||w.nombre||w.url.replace(/^https?:\/\//,'').replace(/\/$/,''))}</b><small>${esc(w.url.replace(/^https?:\/\//,'').replace(/\/$/,''))}${USOW?` · ${nf(((USOW.webs||[]).find(x=>x.id===w.id)||{}).n||0)} visitas en 30 días`:''}</small></span><span class="lk">Editá ${I('ext')}</span></a>`).join(''):`<div class="vacio">Todavía no tenés webs con Semilla.</div>`}</div>
       <div class="tt"><h2>Recursos</h2></div>
-      ${document.querySelector('#app .ventaBox')?`<div class="box" style="margin-bottom:12px"><button class="row" id="v4vtas"><span class="tile">${I('bolsa')}</span><span class="tx"><b>Cargar ventas</b><small>Lo que vendiste en el período</small></span><span class="go">${I('chev')}</span></button></div>`:''}
+      ${(document.querySelector('#app .ventaBox')||(D.cliente||{}).ventas_log_on||(D.ventas_log||[]).length)?`<div class="box" style="margin-bottom:12px"><button class="row" id="v4vtas"><span class="tile">${I('bolsa')}</span><span class="tx"><b>Cargar ventas</b><small>Lo que vendiste en el período</small></span><span class="go">${I('chev')}</span></button></div>`:''}
       <div class="rec2"><div class="box"><button class="row" id="v4mat"><span class="tile">${I('folder')}</span><span class="tx"><b>Materiales</b></span><span class="go">${I('chev')}</span></button></div>
         <div class="box"><button class="row" data-prox="Flyers"><span class="tile r">${I('imagen')}</span><span class="tx"><b>Flyers</b></span><span class="go">${I('chev')}</span></button></div></div>
       <div class="tt"><h2>Herramientas</h2></div>
@@ -672,8 +672,21 @@
       h.querySelector('#v4ok').onclick=async()=>{ const f=h.querySelector('#v4ff').value, t=h.querySelector('#v4ft').value.trim(); if(!f||!t) return; h.querySelector('#v4ok').disabled=true;
         const x=await rpc('sub_fecha_guardar',{p_slug:slug,p_k:tok,p_fecha:f,p_titulo:t,p_url:null}).catch(()=>null); c(); if(x&&x.ok){ await cargarFechas(); pintar(); } }; }); }
   // 17/11: la carga de ventas sigue siendo la del panel clásico: se muestra dentro de una hoja y vuelve a su lugar al cerrar
-  function ventas(){ const B=[...document.querySelectorAll('#app .ventaBox')]; if(!B.length) return; const lugar=B.map(b=>{ const m=document.createComment('v4v'); b.parentNode.insertBefore(m,b); return m; });
-    const h=hoja('Tus ventas','<div id="v4vb" class="v4clasico"></div>'); const c=h.querySelector('#v4vb'); B.forEach(b=>c.appendChild(b));
+  function ventas(){ const B=[...document.querySelectorAll('#app .ventaBox')], LOG=(D.cliente||{}).ventas_log_on||(D.ventas_log||[]).length; if(!B.length&&!LOG) return;
+    const lugar=B.map(b=>{ const m=document.createComment('v4v'); b.parentNode.insertBefore(m,b); return m; });
+    const mon=v=>v==null||v===''?'':(((D.cliente||{}).moneda||'USD')==='ARS'?'$ ':'USD ')+Number(v).toLocaleString('es-AR',{maximumFractionDigits:2});
+    const lista=()=>{ const VL=D.ventas_log||[], tot=VL.reduce((s,x)=>s+Number(x.monto||0),0);
+      return VL.length?`<p class="pie3" style="margin:0 2px 10px"><b>${VL.length}</b> ${VL.length===1?'venta':'ventas'}${tot?` · <b>${mon(tot)}</b>`:''}</p><div class="box">${VL.map(x=>`<div class="row"><span class="dia" style="background:var(--salvia);color:#4B4E25"><b style="color:#4B4E25;font-size:16px">${fC(x.fecha)}</b></span><span class="tx"><b>${esc(x.detalle||'Venta')}</b><small>${mon(x.monto)}</small></span><button class="go" data-bv="${x.id}" style="background:none;border:0;padding:6px;color:var(--vino);font-size:13px;font-weight:700">Borrar</button></div>`).join('')}</div>`
+        :`<div class="box"><div class="vacio">Todavía no hay ventas anotadas. Sumá la primera acá abajo.</div></div>`; };
+    const h=hoja('Tus ventas',`${LOG?`<div id="v4vl">${lista()}</div><div class="sub2">Agregar venta</div><input id="v4vf" type="date" value="${hoyISO()}"><input id="v4vd" placeholder="Qué se vendió (y a quién, si querés)"><input id="v4vm" inputmode="decimal" placeholder="Monto"><button class="bt n" id="v4vok" style="width:100%">${I('mas')}Agregar venta</button><p class="pie3" id="v4ver"></p>`:''}<div id="v4vb" class="v4clasico" style="margin-top:14px"></div>`);
+    const c=h.querySelector('#v4vb'); B.forEach(b=>c.appendChild(b)); const q=x=>h.querySelector(x);
+    const enl=()=>h.querySelectorAll('[data-bv]').forEach(b=>b.onclick=async()=>{ if(!b.dataset.seg){ b.dataset.seg='1'; b.textContent='¿Seguro?'; return; } b.disabled=true;
+      const r=await rpc('sub_vlog_borrar',{p_slug:slug,p_k:tok,p_id:b.dataset.bv}).catch(()=>null); if(r&&r.ok){ D.ventas_log=(D.ventas_log||[]).filter(x=>String(x.id)!==b.dataset.bv); q('#v4vl').innerHTML=lista(); enl(); } });
+    if(LOG){ enl(); q('#v4vok').onclick=async()=>{ const det=q('#v4vd').value.trim(), mt=q('#v4vm').value.trim().replace(/\./g,'').replace(',','.'); if(!det&&!mt){ q('#v4ver').textContent='Contanos qué se vendió o el monto.'; return; }
+      q('#v4vok').disabled=true; const r=await rpc('sub_vlog_alta',{p_slug:slug,p_k:tok,p_fecha:q('#v4vf').value||null,p_detalle:det,p_monto:mt===''?null:Number(mt)}).catch(()=>null); q('#v4vok').disabled=false;
+      if(!r||!r.ok){ q('#v4ver').textContent='No se pudo guardar. Probá de nuevo.'; return; }
+      const d=await rpc('sub_get',{p_slug:slug,p_k:tok}).catch(()=>null); if(d&&d.cliente){ D.ventas_log=d.ventas_log; }
+      q('#v4vd').value=''; q('#v4vm').value=''; q('#v4ver').textContent='Venta agregada ✓'; q('#v4vl').innerHTML=lista(); enl(); }; }
     const volver=()=>{ B.forEach((b,i)=>{ if(lugar[i].parentNode) lugar[i].parentNode.replaceChild(b,lugar[i]); }); };
     const ob=new MutationObserver(()=>{ if(!document.body.contains(h)){ volver(); ob.disconnect(); } }); ob.observe(h.parentNode,{childList:true}); }
   function materiales(){ const href=u=>{ u=String(u||'').trim(); return !u?'#':/^https?:\/\//i.test(u)?u:'https://'+u; };
