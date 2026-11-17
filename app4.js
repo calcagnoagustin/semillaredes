@@ -19,6 +19,7 @@
   const W='https://vm.semillaredes.com/web';
   const $=s=>document.querySelector(s);
   const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const escB=s=>esc(String(s==null?'':s).replace(/<(?!\/?(b|strong)>)[^>]*>/gi,'')).replace(/&lt;(\/?)(b|strong)&gt;/gi,'<$1b>');   // 17/11: los hallazgos traen <b>: se respeta solo la negrita
   const nf=(n,d=0)=>Number(n||0).toLocaleString('es-AR',{minimumFractionDigits:d,maximumFractionDigits:d});
   const MES=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'], DIA=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
   const fCorta=s=>{ const d=new Date(s+'T12:00:00'); return d.getDate()+' '+MES[d.getMonth()]; };
@@ -406,7 +407,7 @@
           ${p0!=null?`<div class="cmp"><span>Este período</span><i style="width:${Math.max(18,Math.min(76,Math.round(76*Math.min(1,(100+p0)/Math.max(100,100+p0)))))}px"></i><span>Promedio</span><i class="p" style="width:${Math.max(18,Math.min(76,Math.round(76*Math.min(1,100/Math.max(100,100+p0)))))}px"></i></div>`:''}</div></div>
           <div class="sub">${sub(h1)}${sub(m0)}</div><div class="vs">Cambios vs. el promedio ${tj.cadencia&&tj.cadencia>8?'de los 4 reportes anteriores':'de las últimas 4 semanas'}</div></div>`:`<div class="box"><div class="vacio">Tu primer reporte se arma con la próxima medición.</div></div>`}`;
       if(SUBM==='reporte') rep=`${CARD}
-        ${ht?`<div class="tt"><h2>Qué explica el cambio</h2></div><div class="box exp"><span class="tile" style="margin-top:0">${I('foco')}</span><p>${esc(ht)}</p></div>`:''}
+        ${ht?`<div class="tt"><h2>Qué explica el cambio</h2></div><div class="box exp"><span class="tile" style="margin-top:0">${I('foco')}</span><p>${escB(ht)}</p></div>`:''}
         ${acc?`<div class="hacer" style="margin-top:16px"><div class="kk">${I('lista')}Qué hacer ${tj.cadencia&&tj.cadencia>8?'ahora':'esta semana'}</div><h3>${esc(acc.titulo)}</h3><button class="bt n" data-agendar="${esc(acc.titulo)}">${I('cal')}Agendar esta prueba</button></div>`:''}
         <button class="bt n" data-subm="datos" style="width:100%;margin-top:16px">${I('barras')}Métricas completas</button>
         <div class="pieR"><button class="lk" id="v4an">Ver análisis completo ${I('flecha')}</button><a class="bt" href="${W}/tarjeta?c=${encodeURIComponent(slug)}&k=${encodeURIComponent(tok)}" download="reporte.jpg" target="_blank" style="height:46px">${I('bajar')}Descargar</a></div>`;
@@ -546,12 +547,12 @@
     const M=metricas(), inf=M.inf||{}, H=inf.hallazgos||[];
     const icoH=(h,i)=>{ const t=(typeof h==='object'?(h.titulo+' '+h.t):h).toLowerCase(); if((h.tipo||'')==='mal'||/baj|menos|cay|no hubo/.test(t)) return ['baja','r']; if(/seguidor/.test(t)) return ['sube','']; if(/visita|página|clic/.test(t)) return ['cursor','c']; return ['sube','']; };
     const RC=((D.recomendaciones||{}).recomendaciones||[]).slice(0,3);
-    const RT=RC.length?RC.map(r=>({t:r.titulo,s:r.texto})):(inf.recomendaciones||[]).slice(0,3).map((r,i)=>({t:(inf.recos_titulos||[])[i]||corta(r,40),s:r}));
+    const sinT=x=>String(x||'').replace(/<[^>]+>/g,''); const RT=(RC.length?RC.map(r=>({t:r.titulo,s:r.texto})):(inf.recomendaciones||[]).slice(0,3).map((r,i)=>({t:(inf.recos_titulos||[])[i]||corta(sinT(r),40),s:r}))).map(x=>({t:sinT(x.t),s:sinT(x.s)}));
     return `<button class="vol" data-ir="metricas">${I('atras')}Volver al reporte</button><h1 style="margin-bottom:10px">Análisis completo</h1>
       ${M.desde?`<span class="pill">${I('cal')}${rango(M.desde,M.hasta)}</span>`:''}
       <div class="tt"><h2>Lo principal</h2></div>
       <div class="box">${H.length?H.map((h,i)=>{ const [ic,c]=icoH(h,i); const o=typeof h==='object'?h:{t:h};
-        return `<div class="hall"><span class="tile ${c}">${I(ic)}</span><span>${o.titulo?`<b>${esc(o.titulo.replace(/\.$/,''))}</b>`:''}<p>${o.titulo?o.t:esc(o.t)}</p></span></div>`; }).join(''):`<div class="vacio">Todavía no hay análisis para este período.</div>`}</div>
+        return `<div class="hall"><span class="tile ${c}">${I(ic)}</span><span>${o.titulo?`<b>${esc(o.titulo.replace(/\.$/,''))}</b>`:''}<p>${escB(o.t)}</p></span></div>`; }).join(''):`<div class="vacio">Todavía no hay análisis para este período.</div>`}</div>
       <div class="tt"><h2>Qué podés hacer ahora</h2></div>
       <div class="box">${RT.map((r,i)=>`<button class="row" data-agendar="${esc(r.t)}"><span class="tile ${['','r','c'][i%3]}">${I(['bolsa','megafono','lista'][i%3])}</span><span class="tx"><b>${esc(corta(r.t,60))}</b><small>${esc(corta(r.s,90))}</small></span><span class="go">${I('flecha')}</span></button>`).join('')||`<div class="vacio">Sin recomendaciones por ahora.</div>`}</div>
       <a class="bt" style="display:inline-flex;margin-top:18px" href="${W}/tarjeta?c=${encodeURIComponent(slug)}&k=${encodeURIComponent(tok)}" target="_blank" download="reporte.jpg">${I('bajar')}Descargar reporte</a>`;
