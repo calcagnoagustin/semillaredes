@@ -104,6 +104,7 @@
   #v4 .dia span{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
   #v4 .dia b{font-family:"Playfair Display",Georgia,serif;font-size:22px;font-weight:700;margin-top:2px;line-height:1;color:var(--vino)}
   #v4 .prox{display:inline-block;background:#EEE8DE;color:#6B6553;border-radius:8px;padding:4px 8px;font-size:12px;font-weight:700;white-space:nowrap}
+  #v4 .prox.vivo{background:#E4EBD3;color:#3F5A22;white-space:normal;line-height:1.3}
   #v4 .estado{display:inline-block;background:var(--salvia);color:#4B4E25;border-radius:8px;padding:5px 10px;font-size:13px;font-weight:700}
   #v4 .hero{background:linear-gradient(160deg,#252B5C,#1B2049);color:#fff;border-radius:22px;padding:22px 22px 18px;position:relative;overflow:hidden}
   #v4 .hero .k{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;letter-spacing:1.4px;color:#E9EFC0;text-transform:uppercase}
@@ -359,7 +360,9 @@
       <div class="rec2"><div class="box"><button class="row" id="v4mat"><span class="tile">${I('folder')}</span><span class="tx"><b>Materiales</b></span><span class="go">${I('chev')}</span></button></div>
         <div class="box"><button class="row" data-prox="Flyers"><span class="tile r">${I('imagen')}</span><span class="tx"><b>Flyers</b></span><span class="go">${I('chev')}</span></button></div></div>
       <div class="tt"><h2>Herramientas</h2></div>
-      <div class="skills">${SK.map(([t,ic,s])=>`<button class="sk" data-prox="${esc(t)}"><span class="tile">${I(ic)}</span><b>${t}</b><small>${s}</small><span class="pie2"><span class="prox">Próximamente</span></span></button>`).join('')}</div>`;
+      <div class="skills">${SK.map(([t,ic,s])=>{ const vt=t==='Shows y entradas'?tkUlt():null;
+        return vt?`<button class="sk" data-ir="shows"><span class="tile">${I(ic)}</span><b>${t}</b><small>${s}</small><span class="pie2"><span class="prox vivo">${vt.nuevas_semana!=null?nf(vt.nuevas_pauta)+' por la publicidad':nf(vt.total_locs||vt.ventas)+' entradas vendidas'}</span></span></button>`
+          :`<button class="sk" data-prox="${esc(t)}"><span class="tile">${I(ic)}</span><b>${t}</b><small>${s}</small><span class="pie2"><span class="prox">Próximamente</span></span></button>`; }).join('')}</div>`;
   }
 
   function scMetricas(){
@@ -406,7 +409,6 @@
         ${evo}
         ${bloqueWeb()}
         ${grupos.map(([t,ic,c,f])=>{ const x=tiles(f); return x?`<div class="tt"><h2>${t}</h2></div><div class="dgrid">${x}</div>`:''; }).join('')}
-        ${tkBloque()}
         ${metas()}
         ${paises?`<div class="tt"><h2>Dónde están tus seguidores</h2></div><div class="sub2" style="margin-top:0">Países</div>${lista(paises)}`:''}
         ${ciudades?`<div class="sub2">Ciudades</div>${lista(ciudades)}`:''}
@@ -434,7 +436,9 @@
     const L=(CTA.cuentas||[]).length>1?CTA.cuentas:[CTA];
     return `<div class="tt"><h2>${L.length>1?'Tus cuentas publicitarias':'Cuenta publicitaria'}</h2></div>${L.map((c,i)=>una(c,L.length>1?(c.nombre||'Cuenta '+(i+1)):'Anuncios en Meta')).join('<div style="height:12px"></div>')}`; }
   /* 17/11: ticketera (Berco). La VM lee las entradas por función cada martes; María marca los invitados en una página aparte. */
-  function tkBloque(){ const VT=Object.values((D.cliente||{}).ventas||{}).filter(x=>x&&x.tipo==='ticketera'&&Array.isArray(x.funciones)).sort((a,b)=>String(a.captura||a.actualizado)<String(b.captura||b.actualizado)?-1:1).pop();
+  function tkUlt(){ return Object.values((D.cliente||{}).ventas||{}).filter(x=>x&&x.tipo==='ticketera'&&Array.isArray(x.funciones)).sort((a,b)=>String(a.captura||a.actualizado)<String(b.captura||b.actualizado)?-1:1).pop()||null; }
+  function scShows(){ return `<button class="vol" data-ir="proyecto">${I('atras')}Volver a tu proyecto</button><h1>Shows y entradas</h1>${tkBloque()||'<div class="box"><div class="vacio">Todavía no hay entradas para mostrar.</div></div>'}`; }
+  function tkBloque(){ const VT=tkUlt();
     if(!VT) return ''; const DS=['dom','lun','mar','mié','jue','vie','sáb'], dd=f=>{ const x=new Date(f+'T12:00:00'); return DS[x.getDay()]+' '+String(x.getDate()).padStart(2,'0')+'/'+String(x.getMonth()+1).padStart(2,'0'); };
     const ars=n=>'$ '+nf(Math.round(Number(n)||0)), hoy=new Date().toISOString().slice(0,10);
     const F=VT.funciones.filter(f=>f.fecha>=hoy), P=VT.funciones.filter(f=>f.fecha<hoy);
@@ -541,7 +545,7 @@
   // ---------- armado ----------
   function pintar(){
     let r=$('#v4'); if(!r){ r=document.createElement('div'); r.id='v4'; document.body.appendChild(r); }
-    const sc=TAB.startsWith('clase:')?scClase(TAB.slice(6)):TAB==='analisis'?scAnalisis():TAB==='cuenta'?scCuenta():TAB==='proyecto'?scProyecto():TAB==='metricas'?scMetricas():TAB==='formacion'?scFormacion():scInicio();
+    const sc=TAB.startsWith('clase:')?scClase(TAB.slice(6)):TAB==='analisis'?scAnalisis():TAB==='cuenta'?scCuenta():TAB==='proyecto'?scProyecto():TAB==='metricas'?scMetricas():TAB==='formacion'?scFormacion():TAB==='shows'?scShows():scInicio();
     const nb=TAB.startsWith('clase:')?'formacion':TAB==='analisis'?'metricas':TAB;
     const N=[['inicio','casa','Inicio'],['proyecto','carpeta','Proyecto'],['metricas','barras','Métricas'],['formacion','gorro','Formación']];
     const spl=document.getElementById('v4splash'); if(spl) spl.remove();
