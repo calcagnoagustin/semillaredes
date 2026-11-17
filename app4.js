@@ -406,6 +406,7 @@
         ${evo}
         ${bloqueWeb()}
         ${grupos.map(([t,ic,c,f])=>{ const x=tiles(f); return x?`<div class="tt"><h2>${t}</h2></div><div class="dgrid">${x}</div>`:''; }).join('')}
+        ${tkBloque()}
         ${metas()}
         ${paises?`<div class="tt"><h2>Dónde están tus seguidores</h2></div><div class="sub2" style="margin-top:0">Países</div>${lista(paises)}`:''}
         ${ciudades?`<div class="sub2">Ciudades</div>${lista(ciudades)}`:''}
@@ -432,6 +433,18 @@
         ${c.act?`<a class="lk" style="margin:2px 16px 16px" href="https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=${encodeURIComponent(c.act)}" target="_blank" rel="noopener">Abrir en Meta ${I('ext')}</a>`:''}</div>`; };
     const L=(CTA.cuentas||[]).length>1?CTA.cuentas:[CTA];
     return `<div class="tt"><h2>${L.length>1?'Tus cuentas publicitarias':'Cuenta publicitaria'}</h2></div>${L.map((c,i)=>una(c,L.length>1?(c.nombre||'Cuenta '+(i+1)):'Anuncios en Meta')).join('<div style="height:12px"></div>')}`; }
+  /* 17/11: ticketera (Berco). La VM lee las entradas por función cada martes; María marca los invitados en una página aparte. */
+  function tkBloque(){ const VT=Object.values((D.cliente||{}).ventas||{}).filter(x=>x&&x.tipo==='ticketera'&&Array.isArray(x.funciones)).sort((a,b)=>String(a.captura||a.actualizado)<String(b.captura||b.actualizado)?-1:1).pop();
+    if(!VT) return ''; const DS=['dom','lun','mar','mié','jue','vie','sáb'], dd=f=>{ const x=new Date(f+'T12:00:00'); return DS[x.getDay()]+' '+String(x.getDate()).padStart(2,'0')+'/'+String(x.getMonth()+1).padStart(2,'0'); };
+    const ars=n=>'$ '+nf(Math.round(Number(n)||0)), hoy=new Date().toISOString().slice(0,10);
+    const F=VT.funciones.filter(f=>f.fecha>=hoy), P=VT.funciones.filter(f=>f.fecha<hoy);
+    const fila=f=>`<div class="row"><span class="tile">${I('ticket')}</span><span class="tx"><b>${dd(f.fecha)}${f.hora?' · '+esc(String(f.hora).replace(/:00$/,''))+' hs':''}</b><small>${ars(f.importe_ars)} vendidos</small></span><span class="costo"><b>${nf(f.locs)}</b><small>${Number(f.locs)===1?'entrada':'entradas'}</small></span></div>`;
+    const inv=VT.invitadas!=null?VT.invitadas:(VT.nuevas_semana!=null?VT.nuevas_semana-VT.nuevas_pauta:null);
+    return `<div class="tt"><h2>Ticketera</h2><span class="pill">${I('cal')}${dd(String(VT.captura).slice(0,10))}</span></div>
+      ${VT.nuevas_semana!=null?`<div class="sub2" style="margin-top:0">${VT.obra?esc(VT.obra)+' · ':''}${VT.semana_desde?'del '+dd(VT.semana_desde).slice(4)+' al '+dd(VT.semana_hasta).slice(4):'esta semana'}</div><div class="dgrid"><div class="dt"><b>${nf(VT.nuevas_pauta)}</b><small>Por la publicidad</small></div><div class="dt"><b>${nf(inv)}</b><small>${inv===1?'Invitada':'Invitadas'}</small></div></div>`:''}
+      ${slug==='berco-estudio'?`<a class="bt n" style="margin-top:12px;width:100%;justify-content:center" href="https://vm.semillaredes.com/web/invitados?c=${encodeURIComponent(slug)}&k=${encodeURIComponent(tok)}" target="_blank" rel="noopener">${I('lista')}Marcar invitados de la semana</a>`:''}
+      ${F.length?`<div class="sub2">Próximas funciones</div><div class="box">${F.map(fila).join('')}</div>`:''}
+      ${P.length?`<div class="sub2">Funciones que ya pasaron</div><div class="box">${P.map(fila).join('')}</div>`:''}`; }
   function metas(){ const M=metricas(), H=(D.hitos||[]).filter(h=>h.metrica!=='ig_followers_total'||h.objetivo===META());
     const NOM={ig_followers_total:'seguidores en Instagram',msj_mensajes:'consultas',tk_tickets:'entradas vendidas'};
     const VT=Object.values((D.cliente||{}).ventas||{}).filter(x=>x&&x.tipo==='ticketera').sort((a,b)=>String(a.captura||a.actualizado)<String(b.captura||b.actualizado)?-1:1).pop();
