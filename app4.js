@@ -13,7 +13,7 @@
     #v4splash i::after{content:"";position:absolute;inset:0;width:40%;background:#87863A;border-radius:2px;animation:v4c 1s ease-in-out infinite alternate}
     @keyframes v4c{to{transform:translateX(150%)}}`; document.head.appendChild(st);
     const sp=()=>{ if(document.getElementById('v4')||document.getElementById('v4splash')) return; const d=document.createElement('div'); d.id='v4splash';
-      d.innerHTML='<img src="/assets/marca-semilla-oliva.png" alt=""><span class="wm">semilla<b>IA</b><span class="beta">Beta</span></span><i></i>'; document.body.appendChild(d); };
+      d.innerHTML='<img src="/assets/marca-semilla-oliva.png" alt=""><span class="wm">semilla<b>IA</b><span class="beta">Beta</span></span><i></i><small style="font-size:12px;color:#8C8896;margin-top:4px">Versión 4.0</small>'; document.body.appendChild(d); };
     if(document.body) sp(); else document.addEventListener('DOMContentLoaded',sp);
     setTimeout(()=>{ const e=document.getElementById('error'); if(e&&!e.classList.contains('oculto')){ const w=document.querySelector('.wrap'); w&&w.style.setProperty('display','block','important'); const x=document.getElementById('v4splash'); x&&x.remove(); } },8000); })();
   const W='https://vm.semillaredes.com/web';
@@ -227,6 +227,7 @@
   #v4 .pm{background:var(--card);border:1px solid var(--linea);border-radius:18px;padding:14px;display:flex;flex-direction:column}
   #v4 .pm b{font-family:"Playfair Display",Georgia,serif;font-size:26px;line-height:30px;letter-spacing:-.5px;white-space:nowrap} #v4 .pm small{font-size:13.5px;color:var(--mute);line-height:18px}
   #v4 .bb{display:flex;align-items:flex-end;gap:5px;height:56px;margin-top:14px} #v4 .bb i{flex:1;border-radius:4px 4px 2px 2px;display:block}
+  #v4 .v4clasico .ventaBox{background:var(--card);border:1px solid var(--linea);border-radius:18px;padding:16px;margin-bottom:12px;font-family:inherit}
   #v4 .costo{text-align:right;flex:none} #v4 .costo b{font-size:17px} #v4 .costo small{font-size:12.5px}
   #v4 .hall{display:flex;gap:14px;align-items:flex-start;padding:16px}
   #v4 .hall .tile{margin-top:0} #v4 .hall>span:last-child{padding-top:8px} #v4 .hall b{display:block;font-size:16.5px;line-height:22px} #v4 .hall p{margin:3px 0 0;font-size:15px;line-height:22px;color:#4B4958}
@@ -376,6 +377,7 @@
       <div class="tt"><h2>Tus webs</h2></div>
       <div class="box">${WEBS.length?WEBS.map(w=>`<a class="row" href="${esc(w.url)}${w.url.includes('?')?'&':'?'}editar=${encodeURIComponent(w.slug||slug)}&k=${encodeURIComponent(tok)}" target="_blank" rel="noopener"><span class="tile c">${I('web')}</span><span class="tx"><b>${esc(w.titulo||w.nombre||w.url.replace(/^https?:\/\//,'').replace(/\/$/,''))}</b><small>${esc(w.url.replace(/^https?:\/\//,'').replace(/\/$/,''))}${USOW?` · ${nf(((USOW.webs||[]).find(x=>x.id===w.id)||{}).n||0)} visitas en 30 días`:''}</small></span><span class="lk">Editá ${I('ext')}</span></a>`).join(''):`<div class="vacio">Todavía no tenés webs con Semilla.</div>`}</div>
       <div class="tt"><h2>Recursos</h2></div>
+      ${document.querySelector('#app .ventaBox')?`<div class="box" style="margin-bottom:12px"><button class="row" id="v4vtas"><span class="tile">${I('bolsa')}</span><span class="tx"><b>Cargar ventas</b><small>Lo que vendiste en el período</small></span><span class="go">${I('chev')}</span></button></div>`:''}
       <div class="rec2"><div class="box"><button class="row" id="v4mat"><span class="tile">${I('folder')}</span><span class="tx"><b>Materiales</b></span><span class="go">${I('chev')}</span></button></div>
         <div class="box"><button class="row" data-prox="Flyers"><span class="tile r">${I('imagen')}</span><span class="tx"><b>Flyers</b></span><span class="go">${I('chev')}</span></button></div></div>
       <div class="tt"><h2>Herramientas</h2></div>
@@ -599,12 +601,18 @@
       <div class="box"><button class="row" id="v4cx"><span class="tile r">${I('link')}</span><span class="tx"><b>Redes conectadas</b><small>Instagram, Spotify, YouTube y Meta Ads</small></span><span class="go">${I('chev')}</span></button>
         <button class="row" data-prox="Datos de acceso"><span class="tile c">${I('persona')}</span><span class="tx"><b>Datos de acceso</b><small>Editá tus datos</small></span><span class="go">${I('chev')}</span></button>
         <button class="row" data-prox="Notificaciones"><span class="tile">${I('campana')}</span><span class="tx"><b>Notificaciones</b><small>Elegí qué avisos recibir</small></span><span class="go">${I('chev')}</span></button></div>
-      <a class="salir" href="https://semillaredes.com/">Salir de la app ${I('salir')}</a>`;
+      <a class="salir" href="https://semillaredes.com/">Salir de la app ${I('salir')}</a>
+      <p class="nota" style="text-align:left;margin-top:22px">SemillaIA · versión ${VER}</p>`;
   }
-  const PERS={'semilla-redes':['Agus','AC','Agus Calcagno'],'berco-estudio':['María','MV','María Valiente']};
+  const VER='4.0';
+  const PERS={'semilla-redes':['Agus','AC','Agus Calcagno'],'berco-estudio':['María','MV','María Valiente'],'abel-maldonado':['Abel','AM','Abel Maldonado'],'alan-sutton':['Manu','ME','Manu Etchegaray'],
+    'andrea-guedella':['Andrea','AG','Andrea Guedella'],'animales-del-rock':['Mariana','MT','Mariana Tavella'],'mavela':['Mariana','MT','Mariana Tavella'],'betsy-grinblat':['Betsy','BG','Betsy Grinblat'],
+    'federico-andahazi':['Federico','FA','Federico Andahazi'],'felipe-gonzalez':['Felipe','FG','Felipe González'],'flor-del-valle':['Flor','FL','Flor Lanusse'],'flor-scott':['Flor','FS','Flor Scott'],
+    'hernan-onirico':['Hernán','HO','Hernán Onírico'],'jimena-mercedes':['Jimena','JP','Jimena Pesado'],'koino':['Jeremías','KO','Koino'],'lara-fichera':['Lara','LF','Lara Fichera'],'lu-glass':['Lucila','LG','Lu Glass'],
+    'maria-marta-crespo':['María Marta','MC','María Marta Crespo'],'silvina':['Silvina','SI','Silvina'],'sin-fronteras-duo':['Santiago','SE','Santiago Echeverria'],'spam-studio':['Ariel','SS','Spam Studio'],'yamila-beraja':['Yamila','YB','Yamila Beraja']};
   const NOMB=()=>String((D.cliente||{}).nombre||'').split('|')[0].trim();
   const INI=()=>{ if(PERS[slug]) return PERS[slug][1]; const w=NOMB().split(/\s+/).filter(x=>/^\p{L}/u.test(x)); return (w.length>1?w[0][0]+w[1][0]:(w[0]||'?').slice(0,2)).toUpperCase(); };
-  const SALUDO=()=>PERS[slug]?PERS[slug][0]:NOMB().split(/\s+/)[0];
+  const SALUDO=()=>{ if(PERS[slug]) return PERS[slug][0]; const n=NOMB(); return n===n.toUpperCase()?n.toLowerCase().replace(/(^|\s)\S/g,x=>x.toUpperCase()):n; };
   const SALUDO_LARGO=()=>PERS[slug]?PERS[slug][2]:NOMB();
 
   // ---------- armado ----------
@@ -638,7 +646,7 @@
     r.querySelectorAll('[data-tarea]').forEach(b=>b.onclick=()=>editarTarea(b.dataset.tarea));
     r.querySelectorAll('[data-agendar]').forEach(b=>b.onclick=()=>nuevaTarea(b.dataset.agendar));
     const on=(id,f)=>{ const e=r.querySelector('#'+id); if(e) e.onclick=f; };
-    on('v4an',()=>ir('analisis')); on('v4tarea',()=>nuevaTarea('')); on('v4chat',chat); on('v4fecha',nuevaFecha); on('v4bell',avisos); on('v4cx',conexiones); on('v4mat',materiales);
+    on('v4an',()=>ir('analisis')); on('v4tarea',()=>nuevaTarea('')); on('v4chat',chat); on('v4fecha',nuevaFecha); on('v4bell',avisos); on('v4cx',conexiones); on('v4mat',materiales); on('v4vtas',ventas);
     on('v4nt',()=>nuevaTarea('')); on('v4vh',()=>{ LS('verhechas',LS('verhechas')==='1'?'0':'1'); pintar(); });
     on('v4vt',()=>{ LS('vertodas',LS('vertodas')==='1'?'0':'1'); pintar(); });
     on('v4play',()=>{ const v=r.querySelector('#v4vid'); const id=TAB.slice(6); v.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`; });
@@ -663,6 +671,11 @@
   function nuevaFecha(){ hoja('Nueva fecha',`<input id="v4ff" type="date" value="${DIA_SEL||hoyISO()}"><input id="v4ft" placeholder="Qué pasa ese día (show, lanzamiento, clase…)"><button class="bt n" id="v4ok" style="width:100%">${I('cal')}Guardar en la agenda</button>`,(h,c)=>{
       h.querySelector('#v4ok').onclick=async()=>{ const f=h.querySelector('#v4ff').value, t=h.querySelector('#v4ft').value.trim(); if(!f||!t) return; h.querySelector('#v4ok').disabled=true;
         const x=await rpc('sub_fecha_guardar',{p_slug:slug,p_k:tok,p_fecha:f,p_titulo:t,p_url:null}).catch(()=>null); c(); if(x&&x.ok){ await cargarFechas(); pintar(); } }; }); }
+  // 17/11: la carga de ventas sigue siendo la del panel clásico: se muestra dentro de una hoja y vuelve a su lugar al cerrar
+  function ventas(){ const B=[...document.querySelectorAll('#app .ventaBox')]; if(!B.length) return; const lugar=B.map(b=>{ const m=document.createComment('v4v'); b.parentNode.insertBefore(m,b); return m; });
+    const h=hoja('Tus ventas','<div id="v4vb" class="v4clasico"></div>'); const c=h.querySelector('#v4vb'); B.forEach(b=>c.appendChild(b));
+    const volver=()=>{ B.forEach((b,i)=>{ if(lugar[i].parentNode) lugar[i].parentNode.replaceChild(b,lugar[i]); }); };
+    const ob=new MutationObserver(()=>{ if(!document.body.contains(h)){ volver(); ob.disconnect(); } }); ob.observe(h.parentNode,{childList:true}); }
   function materiales(){ const href=u=>{ u=String(u||'').trim(); return !u?'#':/^https?:\/\//i.test(u)?u:'https://'+u; };
     const lista=()=>{ const A=D.activos||[]; return A.length?`<div class="box">${A.map(a=>`<div class="row"><span class="tile">${I(a.tipo==='link'||a.url?'link':'folder')}</span><a class="tx" href="${esc(href(a.url))}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><b>${esc(a.titulo||'Material')}</b><small>${esc(a.descripcion||String(a.url||'').replace(/^https?:\/\//,''))}</small></a><button class="go" data-borra="${a.id}" aria-label="Borrar" style="background:none;border:0;padding:6px;color:var(--vino);font-size:13px;font-weight:700">Borrar</button></div>`).join('')}</div>`:`<div class="box"><div class="vacio">Todavía no hay materiales. Sumá links a tus fotos, logos, planillas o carpetas de Drive.</div></div>`; };
     hoja('Materiales',`<div id="v4ml">${lista()}</div>
@@ -712,5 +725,6 @@
     document.body.classList.add('v4');
     if(['inicio','proyecto','metricas','formacion','cuenta','analisis'].indexOf(TAB)<0) TAB='inicio';
     pintar(); cargarResto();
+    if(location.hash==='#ventas'&&!window.__v4v){ window.__v4v=1; setTimeout(()=>{ TAB='proyecto'; pintar(); ventas(); },1200); }
   };
 })();
