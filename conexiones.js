@@ -6,6 +6,8 @@
    - YouTube:   botón de Google (oauth-youtube.html), solo lectura
    - Meta Ads:  por ahora la conecta Semilla; Facebook Login cuando Meta apruebe la app */
 (function(){
+  /* 17/11/2026: la app de Meta (Semilla Reportes) sigue en modo desarrollo: solo la usan cuentas de Semilla hasta que Meta la apruebe */
+  function META_ABIERTO(){ try{ return localStorage.getItem('sr_semilla')==='1'; }catch(e){ return false; } }
   if(window.SRConexiones) return;
   var API='https://fdrxsjphlvvwwknnrjtx.supabase.co', KEY='sb_publishable_kT7McM9Dt7xP44IlFotsLA_8-b8q_17', VM='https://vm.semillaredes.com/web/conexion';
   var rpc=function(fn,a){ return fetch(API+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(a)}).then(function(r){return r.json();}); };
@@ -88,6 +90,8 @@
           h+='<details class="ay"><summary>Cómo se hace</summary>'+AYUDA[f]+'</details>';
         } else if(mostrarForm&&f==='youtube'){
           h+='<div class="frm"><button class="pri" data-yt="1">Conectar con Google</button></div><details class="ay"><summary>Cómo se hace</summary>'+AYUDA.youtube+'</details>';
+        } else if(mostrarForm&&f==='meta'&&!META_ABIERTO()){
+          h+='<div class="st mute">Muy pronto vas a poder conectar tu cuenta de Facebook para sumar visitas al perfil, alcance y lo invertido en publicidad. Mientras tanto, tus números de Instagram ya se leen con tu @.</div>';
         } else if(mostrarForm&&f==='meta'){
           h+='<div class="st mute">Trae visitas al perfil, alcance, seguidores nuevos y lo invertido en publicidad.</div><div class="frm"><button class="pri" data-meta="1" style="background:#1877F2">Continuar con Facebook</button></div><details class="ay"><summary>Cómo se hace</summary>'+AYUDA.meta+'</details>';
         } else if(!conectado&&f==='meta'&&st.gestion){

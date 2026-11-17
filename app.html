@@ -269,16 +269,17 @@ function pantallaAlta(email,hayOtros){
 function pantallaBienvenida(p,nombre,msg){
   const app=location.origin+'/cliente.html?c='+encodeURIComponent(p.slug)+'&k='+encodeURIComponent(p.k)+'&app=1';
   const meta='/oauth-meta.html?c='+encodeURIComponent(p.slug)+'&k='+encodeURIComponent(p.k)+'&volver='+encodeURIComponent(app);
+  const metaOk=ls.get('sr_semilla')==='1';   // 17/11/2026: la app de Meta sigue en desarrollo; solo cuentas de Semilla hasta que Meta la apruebe
   A.innerHTML=cab(false)+`<h1>¡Listo, ${esc(nombre)}!</h1>
-    <p class="bj">Conectá tu Instagram y tu publicidad para que SemillaIA lea tus números solo, todas las semanas. Solo lectura: nunca publicamos ni cambiamos nada.</p>
-    <a class="pri" id="mt" href="${meta}" style="text-align:center;text-decoration:none;margin-top:0">Conectar con Meta</a>
+    <p class="bj">Conectá ${metaOk?'tu Instagram y tu publicidad':'tu Instagram'} para que SemillaIA lea tus números solo, todas las semanas. Solo lectura: nunca publicamos ni cambiamos nada.</p>
+    ${metaOk?`<a class="pri" id="mt" href="${meta}" style="text-align:center;text-decoration:none;margin-top:0">Conectar con Meta</a>
     <p class="mini" style="text-align:left;margin-top:10px">Trae tu Instagram profesional y tu cuenta publicitaria. Te pide entrar con tu Facebook.</p>
-    <div class="o-sep">o solo tu Instagram</div>
+    <div class="o-sep">o solo tu Instagram</div>`:''}
     <input class="t" id="ig" placeholder="@tuusuario" autocomplete="off" autocapitalize="off">
-    <button class="g" id="igb" style="margin-top:10px">Conectar mi Instagram</button>
+    <button class="${metaOk?'g':'pri'}" id="igb" style="margin-top:10px">Conectar mi Instagram</button>
     ${msg?`<p class="err">${esc(msg)}</p>`:''}
     <p class="mini"><button class="link" id="desp">Después</button></p>`;
-  $('mt').onclick=()=>{ ls.set('sr_app_ultimo',p.slug); };
+  if($('mt')) $('mt').onclick=()=>{ ls.set('sr_app_ultimo',p.slug); };
   $('desp').onclick=()=>abrir(p);
   const ig=async()=>{ const v=($('ig').value||'').trim(); if(!v){ $('ig').focus(); return; }
     $('igb').disabled=true; $('igb').textContent='Conectando…';
