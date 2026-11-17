@@ -199,6 +199,14 @@
   #v4 .pie3{margin:10px 2px 0;font-size:13px;color:var(--suave)}
   #v4 .pb{display:block;height:5px;border-radius:3px;background:#ECE6DB;margin-top:7px;overflow:hidden} #v4 .pb i{display:block;height:100%;background:var(--oliva2)}
   #v4 .falt b{color:var(--tinta)}
+  #v4 .cta4 .c1{display:flex;align-items:center;gap:14px;padding:16px 16px 12px}
+  #v4 .cta4 .c1 .tx{flex:1;min-width:0} #v4 .cta4 .c1 b{display:block;font-size:16.5px;line-height:22px} #v4 .cta4 .c1 small{display:block;font-size:14.5px;color:var(--mute);line-height:20px;margin-top:2px}
+  #v4 .estado.mal{background:var(--rosa);color:var(--vino)}
+  #v4 .led{display:inline-block;width:8px;height:8px;border-radius:50%;background:#5E8A3A;margin-right:6px;vertical-align:1px} #v4 .estado.mal .led{background:var(--vino)}
+  #v4 .cta4 .cn{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 12px} #v4 .cta4 .cn span{background:#EEE8DE;border-radius:8px;padding:5px 9px;font-size:13px;font-weight:600;color:#4B4958}
+  #v4 .cta4 .c2{padding:0 16px} #v4 .cta4 .dt{background:#F6F1EA} #v4 .cta4 .dt.hi{background:var(--navy);border-color:var(--navy)} #v4 .cta4 .dt.hi b{color:#fff} #v4 .cta4 .dt.hi small{color:#C9CCE6}
+  #v4 .cta4 .dt small{margin-bottom:0}
+  #v4 .cta4 .como{margin:12px 16px 10px;font-size:14px;line-height:21px;color:var(--mute)}
   #v4 .costo{text-align:right;flex:none} #v4 .costo b{font-size:17px} #v4 .costo small{font-size:12.5px}
   #v4 .hall{display:flex;gap:14px;align-items:flex-start;padding:16px}
   #v4 .hall .tile{margin-top:0} #v4 .hall>span:last-child{padding-top:8px} #v4 .hall b{display:block;font-size:16.5px;line-height:22px} #v4 .hall p{margin:3px 0 0;font-size:15px;line-height:22px;color:#4B4958}
@@ -305,6 +313,7 @@
     const dr=DROPS[0];
     return `<div class="hola"><h1>Hola, ${esc(nom)}</h1><span class="pill">${I('cal')}${fecha}</span></div>
       ${hero}
+      ${bloqueCuenta()}
       <div class="tt"><h2>Próximas fechas</h2><button class="lk" data-ir="proyecto">Ver agenda ${I('chev')}</button></div>
       <div class="box">${prox.length?prox.map(filaAgenda).join(''):`<div class="vacio">No tenés fechas próximas. Sumá una desde Proyecto.</div>`}</div>
       <div class="tt"><h2>Seguí aprendiendo</h2></div>
@@ -408,6 +417,21 @@
     }
     return `<h1>Métricas</h1><div class="seg"><button data-subm="reporte" class="${SUBM==='reporte'?'on':''}">Reporte</button><button data-subm="datos" class="${SUBM==='datos'?'on':''}">Datos</button></div>${rep}`;
   }
+  // 17/11: estado de la cuenta publicitaria en Inicio (clave para Agus): activa, campañas, inversión diaria, saldo y cuándo se cobra
+  function bloqueCuenta(){ if(!CTA||!CTA.hay) return '';
+    const DS=['dom','lun','mar','mié','jue','vie','sáb'], fch=f=>{ const x=new Date(String(f).slice(0,10)+'T12:00:00'); return DS[x.getDay()]+' '+x.getDate()+' '+MES[x.getMonth()]; };
+    const una=(c,titulo)=>{ const P=c.pago||{}, us=P.moneda==='USD', pl=v=>v==null?'—':us?'USD '+nf(v,2):'$ '+nf(v,0), met=String(P.metodo||'').replace(/\s*\*+\s*/,' ••'), px=P.proximo, N=(c.nombres||[]).filter(Boolean);
+      const est=c.activa?'Activa':cap(c.estado||'');
+      const como=P.prepago?'Cuenta prepaga: se descuenta de los fondos cargados.':P.diario?`Se cobra todos los días${met?' a la '+esc(met):''}${P.umbral!=null?`, o antes si el saldo llega a ${pl(P.umbral)}`:''}.`
+        :`Se cobra sola${met?' a la '+esc(met):''} cuando el saldo llega ${P.umbral!=null?'a '+pl(P.umbral):'al límite que fija Meta'}${P.fecha_ciclo?` o el ${fch(P.fecha_ciclo)}, lo que pase primero`:''}.`;
+      return `<div class="box cta4"><div class="c1"><span class="tile ${c.activa?'':'r'}">${I('megafono')}</span><span class="tx"><b>${esc(titulo)}</b><small>${nf(c.campanas||0)} ${c.campanas===1?'campaña corriendo':'campañas corriendo'}</small></span><span class="estado ${c.activa?'':'mal'}"><i class="led"></i>${esc(est)}</span></div>
+        ${N.length?`<div class="cn">${N.map(z=>`<span>${esc(z)}</span>`).join('')}</div>`:''}
+        <div class="dgrid c2">${P.inversion_diaria!=null?`<div class="dt"><b>${pl(P.inversion_diaria)}</b><small>Inversión por día</small></div>`:''}
+          ${px&&!P.prepago?`<div class="dt hi"><b>${fch(px.fecha)}</b><small>Próximo cobro · ${pl(px.monto)}${px.aprox?' aprox.':''}</small></div>`:P.saldo!=null?`<div class="dt"><b>${pl(P.saldo)}</b><small>Saldo a pagar</small></div>`:''}</div>
+        ${P.saldo!=null||P.umbral!=null?`<p class="como">${P.saldo!=null&&px?`Hoy el saldo es de ${pl(P.saldo)}. `:''}${como}</p>`:''}
+        ${c.act?`<a class="lk" style="margin:2px 16px 16px" href="https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=${encodeURIComponent(c.act)}" target="_blank" rel="noopener">Abrir en Meta ${I('ext')}</a>`:''}</div>`; };
+    const L=(CTA.cuentas||[]).length>1?CTA.cuentas:[CTA];
+    return `<div class="tt"><h2>${L.length>1?'Tus cuentas publicitarias':'Cuenta publicitaria'}</h2></div>${L.map((c,i)=>una(c,L.length>1?(c.nombre||'Cuenta '+(i+1)):'Anuncios en Meta')).join('<div style="height:12px"></div>')}`; }
   function metas(){ const M=metricas(), H=(D.hitos||[]).filter(h=>h.metrica!=='ig_followers_total'||h.objetivo===META());
     const NOM={ig_followers_total:'seguidores en Instagram',msj_mensajes:'consultas',tk_tickets:'entradas vendidas'};
     const VT=Object.values((D.cliente||{}).ventas||{}).filter(x=>x&&x.tipo==='ticketera').sort((a,b)=>String(a.captura||a.actualizado)<String(b.captura||b.actualizado)?-1:1).pop();
