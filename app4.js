@@ -160,7 +160,7 @@
   #v4 .cmp i{display:block;height:5px;border-radius:3px;background:#E2E8A8} #v4 .cmp i.p{background:#8F97C9}
   #v4 .rep .sub{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid rgba(255,255,255,.16);margin-top:16px;padding-top:14px}
   #v4 .rep .sub>div{min-width:0} #v4 .rep .sub>div+div{border-left:1px solid rgba(255,255,255,.16);padding-left:16px}
-  #v4 .rep .n{color:#fff;display:flex;align-items:center;gap:8px;font-size:30px;font-weight:700;letter-spacing:-1px;line-height:36px;white-space:nowrap}
+  #v4 .rep .n{color:#fff;flex-wrap:wrap;row-gap:4px;display:flex;align-items:center;gap:8px;font-size:30px;font-weight:700;letter-spacing:-1px;line-height:36px;white-space:nowrap}
   #v4 .rep .n small{font-size:14px;letter-spacing:0;opacity:.8}
   #v4 .rep .n .mini{font-size:12px;letter-spacing:0;background:rgba(255,255,255,.13);border-radius:7px;padding:3px 7px;color:#E2E8A8}
   #v4 .rep .n .mini.mal{color:#F4B6C4}
@@ -208,6 +208,25 @@
   #v4 .cta4 .c2{padding:0 16px} #v4 .cta4 .dt{background:#F6F1EA} #v4 .cta4 .dt.hi{background:var(--navy);border-color:var(--navy)} #v4 .cta4 .dt.hi b{color:#fff} #v4 .cta4 .dt.hi small{color:#C9CCE6}
   #v4 .cta4 .dt small{margin-bottom:0}
   #v4 .cta4 .como{margin:12px 16px 10px;font-size:14px;line-height:21px;color:var(--mute)}
+  #v4 .dest{background:linear-gradient(160deg,#252B5C,#1B2049);color:#fff;border-radius:22px;padding:18px 18px 16px;margin-top:4px}
+  #v4 .dest .k,#v4 .mesp .k{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:#E2E8A8}
+  #v4 .dest .k .i{width:17px;height:17px} #v4 .dest .k span{margin-left:auto;color:rgba(255,255,255,.7);letter-spacing:.5px}
+  #v4 .dest .g,#v4 .mesp .g{display:grid;grid-template-columns:1fr 1fr;gap:16px 14px;margin-top:14px}
+  #v4 .dest b,#v4 .mesp b{display:block;font-family:"Playfair Display",Georgia,serif;font-size:30px;line-height:34px;letter-spacing:-.5px}
+  #v4 .dest small,#v4 .mesp small{display:block;font-size:14px;color:rgba(255,255,255,.85);line-height:19px;margin-top:2px}
+  #v4 .dest em{display:inline-block;font-style:normal;font-size:12px;font-weight:700;background:rgba(255,255,255,.13);color:#E2E8A8;border-radius:7px;padding:3px 7px;margin-top:6px} #v4 .dest em.mal{color:#F4B6C4}
+  #v4 .mesp{background:var(--navy);color:#fff;border-radius:22px;padding:18px;margin-top:14px} #v4 .mesp .k{color:#fff}
+  #v4 .mesp p{margin:16px 0 0;padding-top:14px;border-top:1px solid rgba(255,255,255,.16);font-size:14px;line-height:21px;color:rgba(255,255,255,.82)}
+  #v4 .perh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:26px 0 10px} #v4 .perh span{font-size:12.5px;font-weight:700;letter-spacing:1.2px;color:#5C5868;text-transform:uppercase;white-space:nowrap}
+  #v4 .redes{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto} #v4 .redes button{flex:1;min-width:max-content;height:44px;border-radius:22px;border:1px solid var(--linea);background:var(--card);font-size:15.5px;color:#4B4958;padding:0 16px}
+  #v4 .redes button.on{background:var(--vino);border-color:var(--vino);color:#fff;font-weight:700}
+  #v4 .pbig{background:var(--card);border:1px solid var(--linea);border-radius:20px;padding:16px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:center}
+  #v4 .pbig .n{font-family:"Playfair Display",Georgia,serif;font-weight:700;font-size:40px;line-height:44px;letter-spacing:-1px}
+  #v4 .pbig small{display:block;font-size:15px;color:var(--mute)} #v4 .pbig em{display:inline-flex;align-items:center;gap:4px;font-style:normal;font-weight:700;font-size:15px;color:#4E7A2C;margin-top:12px} #v4 .pbig em.mal{color:var(--vino)} #v4 .pbig em .i{width:17px;height:17px}
+  #v4 .pbig p{margin:2px 0 0;font-size:14px;color:var(--suave)} #v4 .pbig .sp svg{width:100%;height:96px;display:block}
+  #v4 .pm{background:var(--card);border:1px solid var(--linea);border-radius:18px;padding:14px;display:flex;flex-direction:column}
+  #v4 .pm b{font-family:"Playfair Display",Georgia,serif;font-size:26px;line-height:30px;letter-spacing:-.5px;white-space:nowrap} #v4 .pm small{font-size:13.5px;color:var(--mute);line-height:18px}
+  #v4 .bb{display:flex;align-items:flex-end;gap:5px;height:56px;margin-top:14px} #v4 .bb i{flex:1;border-radius:4px 4px 2px 2px;display:block}
   #v4 .costo{text-align:right;flex:none} #v4 .costo b{font-size:17px} #v4 .costo small{font-size:12.5px}
   #v4 .hall{display:flex;gap:14px;align-items:flex-start;padding:16px}
   #v4 .hall .tile{margin-top:0} #v4 .hall>span:last-child{padding-top:8px} #v4 .hall b{display:block;font-size:16.5px;line-height:22px} #v4 .hall p{margin:3px 0 0;font-size:15px;line-height:22px;color:#4B4958}
@@ -368,8 +387,8 @@
   function scMetricas(){
     const M=metricas(), tj=TJ&&TJ.hay?TJ:null;
     const per=tj?rango(tj.desde,tj.hasta):rango(M.desde,M.hasta);
-    let rep='';
-    if(SUBM==='reporte'){
+    let rep='', CARD='';
+    {
       const h0=tj&&tj.hero&&tj.hero[0], h1=tj&&tj.hero&&tj.hero[1], m0=tj&&tj.minis&&tj.minis[0];
       const pInt=s=>s?parseInt(String(s).replace('+',''),10):null;
       const p0=h0?pInt(h0.delta):null;
@@ -379,15 +398,18 @@
         return `<div><div class="n">${pre?`<small>${esc(pre)}</small>`:''}${esc(num)}${d}</div><div class="sl">${esc(x.label||x.titulo||'')}</div></div>`; };
       const hall=M.inf&&(M.inf.hallazgos||[])[0], ht=hall?(typeof hall==='object'?hall.t:hall):'';
       const acc=tj&&tj.acciones&&tj.acciones[0];
-      rep=`<div class="tt" style="margin-top:4px"><h2>Tu reporte</h2>${per?`<span class="pill">${I('cal')}${per}</span>`:''}</div>
+      CARD=`<div class="tt" style="margin-top:4px"><h2>${SUBM==='reporte'?'Tu reporte':'Lo destacado'}</h2>${per?`<span class="pill">${I('cal')}${per}</span>`:''}</div>
         ${h0?`<div class="rep"><div class="top"><div><div class="big">${esc(h0.prefijo?h0.prefijo+' ':'')}${esc(h0.valor)}</div><div class="lab">${esc(cap(h0.label))}</div></div>
           <div style="text-align:right">${h0.delta?`<span class="chip ${h0.bien===false?'mal':''}">${I(String(h0.delta).startsWith('-')?'baja':'sube')}${esc(h0.delta)}</span>`:''}
           ${p0!=null?`<div class="cmp"><span>Este período</span><i style="width:${Math.max(18,Math.min(76,Math.round(76*Math.min(1,(100+p0)/Math.max(100,100+p0)))))}px"></i><span>Promedio</span><i class="p" style="width:${Math.max(18,Math.min(76,Math.round(76*Math.min(1,100/Math.max(100,100+p0)))))}px"></i></div>`:''}</div></div>
-          <div class="sub">${sub(h1)}${sub(m0)}</div><div class="vs">Cambios vs. el promedio ${tj.cadencia&&tj.cadencia>8?'de los 4 reportes anteriores':'de las últimas 4 semanas'}</div></div>`:`<div class="box"><div class="vacio">Tu primer reporte se arma con la próxima medición.</div></div>`}
+          <div class="sub">${sub(h1)}${sub(m0)}</div><div class="vs">Cambios vs. el promedio ${tj.cadencia&&tj.cadencia>8?'de los 4 reportes anteriores':'de las últimas 4 semanas'}</div></div>`:`<div class="box"><div class="vacio">Tu primer reporte se arma con la próxima medición.</div></div>`}`;
+      if(SUBM==='reporte') rep=`${CARD}
         ${ht?`<div class="tt"><h2>Qué explica el cambio</h2></div><div class="box exp"><span class="tile" style="margin-top:0">${I('foco')}</span><p>${esc(ht)}</p></div>`:''}
         ${acc?`<div class="hacer" style="margin-top:16px"><div class="kk">${I('lista')}Qué hacer ${tj.cadencia&&tj.cadencia>8?'ahora':'esta semana'}</div><h3>${esc(acc.titulo)}</h3><button class="bt n" data-agendar="${esc(acc.titulo)}">${I('cal')}Agendar esta prueba</button></div>`:''}
+        <button class="bt n" data-subm="datos" style="width:100%;margin-top:16px">${I('barras')}Métricas completas</button>
         <div class="pieR"><button class="lk" id="v4an">Ver análisis completo ${I('flecha')}</button><a class="bt" href="${W}/tarjeta?c=${encodeURIComponent(slug)}&k=${encodeURIComponent(tok)}" download="reporte.jpg" target="_blank" style="height:46px">${I('bajar')}Descargar</a></div>`;
-    } else {
+    }
+    if(SUBM!=='reporte'){
       const U=M.U, tot=M.ult('ig_followers_total'), nue=U.ig_followers_nuevos, meta=META();
       const LAB={ig_followers_nuevos:['Seguidores nuevos','n'],ig_alcance:['Alcance en Instagram','n'],ig_visitas:['Visitas al perfil','n'],ig_costo_follower:['Costo por seguidor','$2'],ig_inversion:['Invertido en seguidores','$'],
         frm_visitas:['Visitas a la web','n'],frm_clics:['Clics al link','n'],frm_alcance:['Alcance de la campaña web','n'],frm_mensajes:['Mensajes','n'],frm_costo_visita:['Costo por visita','$2'],frm_inversion:['Invertido en la web','$'],
@@ -402,13 +424,10 @@
       const CJ=(CTA&&CTA.conjuntos)||[], P=CTA&&CTA.pago;
       const lista=(L,n)=>{ L=L.map(z=>({...z,nombre:PA[z.nombre]||z.nombre}));  const t=Number(U.ig_followers_total)||0, m=Math.max(...L.map(z=>Number(z.seguidores)||0))||1; return `<div class="box">${L.slice(0,10).map(z=>`<div class="row"><span class="tx"><b>${esc(z.nombre)}</b><span class="pb"><i style="width:${Math.max(3,Math.round((Number(z.seguidores)||0)*100/m))}%"></i></span></span><span class="costo"><b>${z.seguidores==null?'—':nf(z.seguidores)}</b>${t&&z.seguidores?`<small>${nf(z.seguidores*100/t,1)}%</small>`:''}</span></div>`).join('')}</div>`; };
       const paises=M.R.slice().reverse().map(r=>r.metricas.ig_paises).find(x=>x&&x.length), ciudades=M.R.slice().reverse().map(r=>r.metricas.ig_ciudades||r.metricas.ig_ciudades_camp).find(x=>x&&x.length);
-      rep=`<div class="tt" style="margin-top:4px"><h2>Tus números</h2>${per?`<span class="pill">${I('cal')}${per}</span>`:''}</div>
-        ${tot!=null?`<div class="box ig"><div class="k"><span class="tile r">${I('camara')}</span>Instagram${nue!=null?`<span class="estado">${I('sube')} ${nue>0?'+':''}${nf(nue)} en el período</span>`:''}</div>
-          <div class="big">${nf(tot)}<small>seguidores</small></div>
-          ${meta?`<div class="bar2"><i style="width:${Math.min(100,Math.round(tot*100/meta))}%"></i></div><div class="falt"><span>${tot>=meta?`Meta de ${nf(meta)} superada`:`Faltan ${nf(meta-tot)} para la meta de ${nf(meta)}`}</span><b>${Math.min(100,Math.round(tot*100/meta))}%</b></div>`:''}</div>`:''}
-        ${evo}
+      rep=`${CARD}${resumenMes()}${panelPeriodo()}
         ${bloqueWeb()}
-        ${grupos.map(([t,ic,c,f])=>{ const x=tiles(f); return x?`<div class="tt"><h2>${t}</h2></div><div class="dgrid">${x}</div>`:''; }).join('')}
+        <div class="tt"><h2>Todos los números</h2></div>
+        ${grupos.map(([t,ic,c,f])=>{ const x=tiles(f); return x?`<div class="sub2">${t}</div><div class="dgrid">${x}</div>`:''; }).join('')}
         ${metas()}
         ${paises?`<div class="tt"><h2>Dónde están tus seguidores</h2></div><div class="sub2" style="margin-top:0">Países</div>${lista(paises)}`:''}
         ${ciudades?`<div class="sub2">Ciudades</div>${lista(ciudades)}`:''}
@@ -418,7 +437,7 @@
           <div class="dt"><b>${plata(P.inversion_diaria)}</b><small>Inversión por día</small></div><div class="dt"><b>${plata(P.hoy)}</b><small>Gastado hoy</small></div>
           ${P.saldo!=null?`<div class="dt"><b>${plata(P.saldo)}</b><small>A pagar en el próximo cobro</small></div>`:''}<div class="dt"><b class="ch">${esc(P.metodo||'—')}</b><small>Medio de pago</small></div></div>`:''}`;
     }
-    return `<h1>Métricas</h1><div class="seg"><button data-subm="reporte" class="${SUBM==='reporte'?'on':''}">Reporte</button><button data-subm="datos" class="${SUBM==='datos'?'on':''}">Datos</button></div>${rep}`;
+    return `<h1>Métricas</h1><div class="seg"><button data-subm="reporte" class="${SUBM==='reporte'?'on':''}">Reporte</button><button data-subm="datos" class="${SUBM==='datos'?'on':''}">Métricas completas</button></div>${rep}`;
   }
   // 17/11: estado de la cuenta publicitaria en Inicio (clave para Agus): activa, campañas, inversión diaria, saldo y cuándo se cobra
   function bloqueCuenta(){ if(!CTA||!CTA.hay) return '';
@@ -456,6 +475,52 @@
       const t=h.titulo&&h.titulo!==h.metrica?h.titulo:`${nf(o)} ${NOM[h.metrica]||h.metrica}`;
       return `<div class="row"><span class="tx"><b>${esc(t)}</b><span class="pb"><i style="width:${Math.max(3,pc)}%"></i></span><small>${nf(v)} de ${nf(o)}${pc>=100?' · lograda':''}</small></span><span class="costo"><b>${pc}%</b></span></div>`; }).filter(Boolean);
     return L.length?`<div class="tt"><h2>Tus metas</h2></div><div class="box">${L.join('')}</div>`:''; }
+  // 17/11: panel de métricas como en la app anterior: destacado de la semana, resumen del mes y resumen del período por red
+  const VINO='#7A1F3A', OLI='#87863A', ROSA='#E2767C';
+  function destacado(){ const tj=TJ&&TJ.hay?TJ:null; if(!tj) return ''; const H=[...(tj.hero||[]),...(tj.minis||[])].slice(0,4); if(!H.length) return '';
+    return `<div class="dest"><div class="k">${I('estrella')}Lo destacado de ${tj.cadencia&&tj.cadencia>8?'este período':'la semana'}<span>${rango(tj.desde,tj.hasta)}</span></div>
+      <div class="g">${H.map(x=>{ const d=x.delta||(x.sub&&/(\d+)%/.test(x.sub)?((/menos/.test(x.sub)?'-':'+')+x.sub.match(/(\d+)%/)[1]+'%'):''); const bien=x.bien!=null?x.bien:(/costo/i.test(x.titulo||x.label||'')?String(d).startsWith('-'):!String(d).startsWith('-'));
+        return `<div><b>${esc(x.prefijo?x.prefijo+' ':'')}${esc(x.valor)}</b><small>${esc(cap(x.label||x.titulo||''))}</small>${d?`<em class="${bien?'':'mal'}">${esc(d)} vs. promedio</em>`:''}</div>`; }).join('')}</div></div>`; }
+  function resumenMes(){ const M=metricas(), Rr=M.R, ult=Rr[Rr.length-1]; if(!ult) return ''; const DD=x=>new Date(String(x).slice(0,10)+'T00:00:00Z'), dia=864e5;
+    const fu=DD(ult.hasta), ini=new Date(Date.UTC(fu.getUTCFullYear(),fu.getUTCMonth()-1,1)), fin=new Date(Date.UTC(fu.getUTCFullYear(),fu.getUTCMonth(),1));
+    const sum=fn=>{ let t=0,hay=false; Rr.forEach(r=>{ const v=fn(r.metricas||{}); if(v==null||isNaN(Number(v))) return; const d0=DD(r.desde); let d1=DD(r.hasta); if(Math.round((d1-d0)/dia)===6) d1=new Date(+d1+dia);
+      const tot=Math.max(1,(d1-d0)/dia), den=Math.max(0,(Math.min(d1,fin)-Math.max(d0,ini))/dia); if(den>0){ t+=Number(v)*den/tot; hay=true; } }); return hay?t:null; };
+    const ML=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][ini.getUTCMonth()], S=SIM()==='USD'?'USD ':'$ ', it=[];
+    const vV=sum(m=>m.vta_ventas), vF=sum(m=>m.vta_ingreso!=null?m.vta_ingreso:m.vta_ingreso_pixel), vI=sum(m=>m.vta_inversion), tT=sum(m=>m.tk_tickets), sN=sum(m=>m.ig_followers_nuevos), mM=sum(m=>m.msj_mensajes), fV=sum(m=>m.frm_visitas);
+    const inv=sum(m=>{ let t=0,h=false; Object.keys(m).forEach(k=>{ if(/^(ig|msj|vta|tk|frm|stm|ld|tr|spad|ytad|lan)_inversion$/.test(k)&&m[k]!=null){ t+=Number(m[k]); h=true; } }); return h?t:null; });
+    if(vV!=null) it.push([nf(Math.round(vV)),'ventas']); if(vF!=null) it.push([S+nf(Math.round(vF)),'facturado']);
+    if(tT!=null) it.push([nf(Math.round(tT)),'entradas vendidas']); if(sN!=null) it.push(['+'+nf(Math.round(sN)),'seguidores nuevos']);
+    if(mM!=null) it.push([nf(Math.round(mM)),'consultas por mensaje']); if(fV!=null) it.push([nf(Math.round(fV)),'visitas a la web']);
+    if(inv!=null) it.push([S+nf(Math.round(inv)),'invertido en publicidad']);
+    if(vF!=null&&vI) it.push([nf(vF/vI,1)+'x','retorno por dólar']); else { const iI=sum(m=>m.ig_inversion); if(sN&&iI) it.push([S+nf(iI/sN,iI/sN<100?2:0),'costo por seguidor']); }
+    if(it.length<2) return '';
+    return `<div class="mesp"><div class="k">Resumen de ${ML}</div><div class="g">${it.slice(0,6).map(([v,l])=>`<div><b>${v}</b><small>${l}</small></div>`).join('')}</div><p>La suma de todos los reportes de ${ML}. Si un período cruza de un mes a otro, se reparte por días.</p></div>`; }
+  function panelPeriodo(){ const M=metricas(), Rr=M.R, U=M.U; if(!Rr.length) return '';
+    const tiene=k=>Rr.slice(-4).some(r=>r.metricas[k]!=null);
+    const spk=['sp_oyentes_perfil','sp_monthly','sp_oyentes','sp_listeners'].find(tiene)||'sp_oyentes';
+    const RED={ig:['Instagram','ig_followers_total','seguidores',VINO,['ig_costo_follower','costo por seguidor',1,ROSA],['ig_inversion','inversión en el período',1,OLI],()=>U.ig_followers_nuevos!=null?`${U.ig_followers_nuevos>0?'+':''}${nf(U.ig_followers_nuevos)} en el período`:''],
+      tk:['Entradas','tk_tickets','entradas vendidas por la pauta','#2F7A4F',['tk_costo_ticket','costo por entrada',1,ROSA],['tk_inversion','inversión en el período',1,OLI],()=>U.tk_roas!=null?`Retorno: ${nf(U.tk_roas,2)}x lo invertido`:''],
+      msj:['Mensajes','msj_mensajes','mensajes recibidos','#25A35A',['msj_costo_mensaje','costo por mensaje',1,ROSA],['msj_inversion','inversión en el período',1,OLI],()=>''],
+      vta:['Ventas','vta_ventas','ventas en el período','#2F7A4F',['vta_costo_venta','costo por venta',1,ROSA],['vta_inversion','inversión en el período',1,OLI],()=>''],
+      frm:['Web','frm_visitas','visitas a la página','#2E3A7A',['frm_costo_visita','costo por visita',1,ROSA],['frm_inversion','inversión en el período',1,OLI],()=>U.frm_mensajes!=null?`${nf(U.frm_mensajes)} consultas en el período`:''],
+      sp:['Spotify',spk,'oyentes mensuales','#1DB954',['sp_streams','reproducciones',0,'#1DB954'],['sp_followers','seguidores en Spotify',0,OLI],()=>''],
+      yt:['YouTube','yt_views','vistas','#FF0000',['yt_subs_nuevos','suscriptores nuevos',0,ROSA],['yt_horas','horas vistas',0,OLI],()=>U.yt_subs!=null?`${nf(U.yt_subs)} suscriptores`:'']};
+    Object.keys(RED).forEach(k=>{ if(!tiene(RED[k][1])) delete RED[k]; }); const K=Object.keys(RED); if(!K.length) return '';
+    let red=LS('red'); if(!RED[red]) red=K[0]; const [nom,key,lab,col,A,B,ex]=RED[red];
+    const serie=k=>Rr.slice(-8).map(r=>r.metricas[k]).map(v=>v==null?null:Number(v));
+    const money=(v,d)=>v==null?'—':(SIM()==='USD'?'USD ':'$ ')+nf(v,d!=null?d:(Math.abs(v)<100?2:0));
+    const linea=S=>{ const V=S.map((v,i)=>[i,v]).filter(x=>x[1]!=null); if(V.length<2) return ''; const W=200,H=96,n=S.length-1||1,mn=Math.min(...V.map(x=>x[1])),mx=Math.max(...V.map(x=>x[1])),rg=(mx-mn)||1, X=i=>8+i*(W-16)/n, Y=v=>H-10-(v-mn)/rg*(H-22);
+      return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><path d="${V.map((p,j)=>(j?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ')}" fill="none" stroke="${col}" stroke-width="2.4" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>${V.map(p=>`<circle cx="${X(p[0]).toFixed(1)}" cy="${Y(p[1]).toFixed(1)}" r="3.6" fill="${col}"/>`).join('')}</svg>`; };
+    const barras=(S,c)=>{ const V=S.filter(v=>v!=null); if(V.length<2) return ''; const mx=Math.max(...V.map(Math.abs))||1; return `<div class="bb">${S.map((v,i)=>v==null?'<i style="height:0"></i>':`<i style="height:${Math.max(6,Math.round(Math.abs(v)*100/mx))}%;background:${c};opacity:${(0.45+0.55*i/(S.length-1)).toFixed(2)}"></i>`).join('')}</div>`; };
+    const mini=c=>{ const v=U[c[0]]!=null?Number(U[c[0]]):null; return `<div class="pm"><b>${c[2]?money(v):v==null?'—':nf(v,c[0]==='yt_horas'?1:0)}</b><small>${c[1]}</small>${barras(serie(c[0]),c[3])}</div>`; };
+    const v=M.ult(key), pr=M.prom(key)!=null&&key!=='ig_followers_total'?pct(Number(U[key]),M.prom(key)):(()=>{ const S=serie(key).filter(x=>x!=null); return S.length>1&&S[S.length-2]?Math.round((S[S.length-1]-S[S.length-2])*100/S[S.length-2]):null; })();
+    const act=U.actualizado?String(U.actualizado):'';
+    return `<div class="perh"><h2>Resumen del período</h2><span>Del ${fC(M.desde)} al ${fC(M.hasta)}</span></div>
+      ${act?`<p class="pie3" style="margin:-4px 2px 12px">Números actualizados el ${fC(act.slice(0,10))}${/T\d\d:\d\d/.test(act)?' a las '+act.slice(11,16)+' hs':''}</p>`:''}
+      ${K.length>1?`<div class="redes">${K.map(k=>`<button data-red="${k}" class="${k===red?'on':''}">${RED[k][0]}</button>`).join('')}</div>`:''}
+      <div class="pbig"><div class="pt0"><div class="n">${nf(v,Number.isInteger(v)?0:1)}</div><small>${lab}</small>${pr!=null?`<em class="${pr<0?'mal':''}">${I(pr<0?'baja':'sube')}${pr>0?'+':''}${pr}%</em>`:''}<p>${ex()}</p></div><div class="sp">${linea(serie(key))}</div></div>
+      <div class="dgrid" style="margin-top:12px">${mini(A)}${mini(B)}</div>`; }
+  const fC=f=>{ if(!f) return ''; const p=String(f).slice(0,10).split('-'); return p[2]+'/'+p[1]; };
   function bloqueWeb(){ const V=USOW; if(!V||!WEBS.length) return '';
     const OR={anuncio:'Anuncios',ig:'Instagram',fb:'Facebook',meta:'Instagram / Facebook',busc:'Google y buscadores',wa:'WhatsApp',yt:'YouTube',x:'X',semilla:'Semilla',otro:'Otras páginas',directo:'Directo o link guardado'};
     const CL={wa:'WhatsApp',ig:'Instagram',mail:'Mail',tel:'Llamadas',spotify:'Spotify',youtube:'YouTube',steam:'Steam',otro:'Otros'};
@@ -561,7 +626,8 @@
   function eventos(r){
     r.querySelectorAll('[data-ir]').forEach(b=>b.onclick=()=>ir(b.dataset.ir));
     r.querySelectorAll('[data-prox]').forEach(b=>b.onclick=()=>prox(b.dataset.prox));
-    r.querySelectorAll('[data-subm]').forEach(b=>b.onclick=()=>{ SUBM=b.dataset.subm; LS('subm',SUBM); pintar(); });
+    r.querySelectorAll('[data-red]').forEach(b=>b.onclick=()=>{ LS('red',b.dataset.red); pintar(); });
+    r.querySelectorAll('[data-subm]').forEach(b=>b.onclick=()=>{ SUBM=b.dataset.subm; LS('subm',SUBM); pintar(); window.scrollTo(0,0); });
     r.querySelectorAll('[data-subf]').forEach(b=>b.onclick=()=>{ SUBF=b.dataset.subf; LS('subf2',SUBF); TAB='formacion'; LS('tab','formacion'); pintar(); window.scrollTo(0,0); });
     r.querySelectorAll('[data-clase]').forEach(b=>b.onclick=()=>ir('clase:'+b.dataset.clase));
     r.querySelectorAll('[data-mod]').forEach(b=>b.onclick=()=>{ LS('mod',LS('mod')===b.dataset.mod?'':b.dataset.mod); pintar(); });
