@@ -283,7 +283,8 @@
   const chip=(p,menos)=>{ if(p==null) return ''; const bien=(p>=0)!==!!menos; return `<span class="chip ${bien?'':'mal'}">${I(p>=0?'sube':'baja')}${p>0?'+':''}${p}%</span>`; };
   const SIM=()=>((D.cliente||{}).moneda==='USD'?'USD':'$');
   const plata=v=>v==null?'—':(SIM()==='USD'?'USD '+nf(v,v<100?2:0):'$ '+nf(v,0));
-  const META=()=>{ const h=(D.hitos||[]).find(x=>x.metrica==='ig_followers_total'); return h?Number(h.objetivo):null; };
+  const META=()=>{ const H=(D.hitos||[]).filter(x=>x.metrica==='ig_followers_total').map(x=>Number(x.objetivo)).sort((a,b)=>a-b); if(!H.length) return null; const t=metricas().ult('ig_followers_total')||0; return H.find(o=>o>t)||H[H.length-1]; };
+  const PA={AR:'Argentina',UY:'Uruguay',CL:'Chile',MX:'México',ES:'España',US:'Estados Unidos',CO:'Colombia',PE:'Perú',BR:'Brasil',PY:'Paraguay',BO:'Bolivia',EC:'Ecuador',VE:'Venezuela',IT:'Italia',FR:'Francia',DE:'Alemania',GB:'Reino Unido',CR:'Costa Rica',GT:'Guatemala',DO:'Rep. Dominicana',PA:'Panamá',CU:'Cuba',CA:'Canadá',PT:'Portugal',NL:'Países Bajos',CH:'Suiza',IL:'Israel',AU:'Australia',SV:'El Salvador',HN:'Honduras',NI:'Nicaragua',PR:'Puerto Rico'};
 
   // ---------- pantallas ----------
   function hd(){ const ini=INI();
@@ -378,17 +379,17 @@
       const U=M.U, tot=M.ult('ig_followers_total'), nue=U.ig_followers_nuevos, meta=META();
       const LAB={ig_followers_nuevos:['Seguidores nuevos','n'],ig_alcance:['Alcance en Instagram','n'],ig_visitas:['Visitas al perfil','n'],ig_costo_follower:['Costo por seguidor','$2'],ig_inversion:['Invertido en seguidores','$'],
         frm_visitas:['Visitas a la web','n'],frm_clics:['Clics al link','n'],frm_alcance:['Alcance de la campaña web','n'],frm_mensajes:['Mensajes','n'],frm_costo_visita:['Costo por visita','$2'],frm_inversion:['Invertido en la web','$'],
-        pres_gastado:['Invertido en el período','$'],pres_diario:['Presupuesto diario','$'],sp_oyentes:['Oyentes en Spotify','n'],sp_oyentes_perfil:['Oyentes del perfil','n'],sp_seguidores:['Seguidores en Spotify','n'],sp_streams:['Reproducciones','n'],
+        pres_gastado:['Invertido en el período','$'],ig_inversion_diaria:['Inversión diaria en seguidores','$'],tk_tickets:['Entradas vendidas por la pauta','n'],tk_costo_ticket:['Costo por entrada','$2'],tk_inversion:['Invertido en entradas','$'],tk_roas:['Retorno de lo invertido','x'],pres_diario:['Presupuesto diario','$'],sp_oyentes:['Oyentes en Spotify','n'],sp_oyentes_perfil:['Oyentes del perfil','n'],sp_seguidores:['Seguidores en Spotify','n'],sp_streams:['Reproducciones','n'],
         yt_subs:['Suscriptores en YouTube','n'],yt_subs_nuevos:['Suscriptores nuevos','n'],yt_vistas:['Vistas en YouTube','n'],vta_ventas:['Ventas','n'],vta_costo_venta:['Costo por venta','$2'],msj_mensajes:['Conversaciones','n'],msj_costo_mensaje:['Costo por conversación','$2']};
-      const val=(k,t)=>{ const v=Number(U[k]); return t==='n'?nf(v):SIM()==='USD'?'USD '+nf(v,t==='$2'?2:(v<100?2:0)):'$ '+nf(v,0); };
-      const grupos=[['Instagram','camara','r',k=>/^ig_/.test(k)],['Web y Formación','web','c',k=>/^frm_/.test(k)],['Spotify','musica','',k=>/^sp_/.test(k)],['YouTube','clip','r',k=>/^yt_/.test(k)],['Ventas y mensajes','bolsa','',k=>/^(vta|msj)_/.test(k)],['Inversión','billetera','c',k=>/^pres_/.test(k)]];
+      const val=(k,t)=>{ const v=Number(U[k]); return t==='n'?nf(v):t==='x'?nf(v,2)+'x':SIM()==='USD'?'USD '+nf(v,t==='$2'?2:(v<100?2:0)):'$ '+nf(v,0); };
+      const grupos=[['Entradas'+(U.tk_nombre?' · '+U.tk_nombre:''),'ticket','',k=>/^tk_[a-z]+$/.test(k)&&!/^tk_p\d/.test(k)],['Instagram','camara','r',k=>/^ig_/.test(k)],['Web y Formación','web','c',k=>/^frm_/.test(k)],['Spotify','musica','',k=>/^sp_/.test(k)],['YouTube','clip','r',k=>/^yt_/.test(k)],['Ventas y mensajes','bolsa','',k=>/^(vta|msj)_/.test(k)],['Inversión','billetera','c',k=>/^pres_/.test(k)]];
       const tiles=f=>Object.keys(LAB).filter(k=>f(k)&&U[k]!=null&&k!=='ig_followers_total').map(k=>{ const pp=pct(Number(U[k]),M.prom(k)), menos=/costo/.test(k);
         return `<div class="dt"><b>${val(k,LAB[k][1])}</b><small>${LAB[k][0]}</small>${pp!=null&&!/^pres_/.test(k)?`<span class="dd ${((pp>=0)!==menos)?'':'mal'}">${pp>0?'+':''}${pp}% vs. promedio</span>`:''}</div>`; }).join('');
       const H=M.R.filter(r=>r.metricas.ig_followers_total!=null).slice(-8), mx=Math.max(...H.map(r=>Number(r.metricas.ig_followers_total))), mn=Math.min(...H.map(r=>Number(r.metricas.ig_followers_total)));
       const evo=H.length>1?`<div class="tt"><h2>Cómo creció</h2></div><div class="box evo"><div class="bars">${H.map(r=>{ const v=Number(r.metricas.ig_followers_total); return `<div><span>${nf(v/1000,1)}k</span><i style="height:${Math.round(18+82*(v-mn)/Math.max(1,mx-mn))}%"></i><small>${fCorta(r.hasta)}</small></div>`; }).join('')}</div><p class="pie3">Seguidores en Instagram al cierre de cada reporte</p></div>`:'';
       const CJ=(CTA&&CTA.conjuntos)||[], P=CTA&&CTA.pago;
-      const lista=(L,n)=>{ const t=Number(U.ig_followers_total)||0, m=Math.max(...L.map(z=>Number(z.seguidores)||0))||1; return `<div class="box">${L.slice(0,10).map(z=>`<div class="row"><span class="tx"><b>${esc(z.nombre)}</b><span class="pb"><i style="width:${Math.max(3,Math.round((Number(z.seguidores)||0)*100/m))}%"></i></span></span><span class="costo"><b>${z.seguidores==null?'—':nf(z.seguidores)}</b>${t&&z.seguidores?`<small>${nf(z.seguidores*100/t,1)}%</small>`:''}</span></div>`).join('')}</div>`; };
-      const paises=M.R.slice().reverse().map(r=>r.metricas.ig_paises).find(x=>x&&x.length), ciudades=M.R.slice().reverse().map(r=>r.metricas.ig_ciudades_camp).find(x=>x&&x.length);
+      const lista=(L,n)=>{ L=L.map(z=>({...z,nombre:PA[z.nombre]||z.nombre}));  const t=Number(U.ig_followers_total)||0, m=Math.max(...L.map(z=>Number(z.seguidores)||0))||1; return `<div class="box">${L.slice(0,10).map(z=>`<div class="row"><span class="tx"><b>${esc(z.nombre)}</b><span class="pb"><i style="width:${Math.max(3,Math.round((Number(z.seguidores)||0)*100/m))}%"></i></span></span><span class="costo"><b>${z.seguidores==null?'—':nf(z.seguidores)}</b>${t&&z.seguidores?`<small>${nf(z.seguidores*100/t,1)}%</small>`:''}</span></div>`).join('')}</div>`; };
+      const paises=M.R.slice().reverse().map(r=>r.metricas.ig_paises).find(x=>x&&x.length), ciudades=M.R.slice().reverse().map(r=>r.metricas.ig_ciudades||r.metricas.ig_ciudades_camp).find(x=>x&&x.length);
       rep=`<div class="tt" style="margin-top:4px"><h2>Tus números</h2>${per?`<span class="pill">${I('cal')}${per}</span>`:''}</div>
         ${tot!=null?`<div class="box ig"><div class="k"><span class="tile r">${I('camara')}</span>Instagram${nue!=null?`<span class="estado">${I('sube')} ${nue>0?'+':''}${nf(nue)} en el período</span>`:''}</div>
           <div class="big">${nf(tot)}<small>seguidores</small></div>
@@ -396,8 +397,9 @@
         ${evo}
         ${bloqueWeb()}
         ${grupos.map(([t,ic,c,f])=>{ const x=tiles(f); return x?`<div class="tt"><h2>${t}</h2></div><div class="dgrid">${x}</div>`:''; }).join('')}
-        ${paises?`<div class="tt"><h2>Países</h2></div>${lista(paises)}`:''}
-        ${ciudades?`<div class="tt"><h2>Ciudades</h2></div>${lista(ciudades)}`:''}
+        ${metas()}
+        ${paises?`<div class="tt"><h2>Dónde están tus seguidores</h2></div><div class="sub2" style="margin-top:0">Países</div>${lista(paises)}`:''}
+        ${ciudades?`<div class="sub2">Ciudades</div>${lista(ciudades)}`:''}
         ${CJ.length?`<div class="tt"><h2>Públicos de anuncios</h2>${CTA.act?`<a class="lk" href="https://adsmanager.facebook.com/adsmanager/manage/adsets?act=${encodeURIComponent(CTA.act)}" target="_blank" rel="noopener">Ver en Meta ${I('ext')}</a>`:''}</div>
           <div class="box">${CJ.map(z=>`<div class="row"><span class="tile ${z.resultado==='ventas'?'':'c'}">${I(z.resultado==='ventas'?'bolsa':'gente')}</span><span class="tx"><b>${esc(z.nombre)}</b><small>${nf(z.resultados)} ${esc(z.resultado||'resultados')} · ${nf(z.alcance)} de alcance · ${plata(z.diaria)} por día</small></span><span class="costo"><b>${z.costo!=null?plata(z.costo):'—'}</b><small>${esc(z.por||'')}</small></span></div>`).join('')}</div>`:''}
         ${P?`<div class="tt"><h2>Cuenta publicitaria</h2></div><div class="dgrid">
@@ -406,10 +408,16 @@
     }
     return `<h1>Métricas</h1><div class="seg"><button data-subm="reporte" class="${SUBM==='reporte'?'on':''}">Reporte</button><button data-subm="datos" class="${SUBM==='datos'?'on':''}">Datos</button></div>${rep}`;
   }
+  function metas(){ const M=metricas(), H=(D.hitos||[]).filter(h=>h.metrica!=='ig_followers_total'||h.objetivo===META());
+    const NOM={ig_followers_total:'seguidores en Instagram',msj_mensajes:'consultas',tk_tickets:'entradas vendidas'};
+    const VT=Object.values((D.cliente||{}).ventas||{}).filter(x=>x&&x.tipo==='ticketera').sort((a,b)=>String(a.captura||a.actualizado)<String(b.captura||b.actualizado)?-1:1).pop();
+    const L=H.map(h=>{ let v=M.ult(h.metrica); if(h.metrica==='tk_tickets'&&/vendidas/i.test(h.titulo||'')&&VT) v=Number(VT.ventas); if(v==null) return ''; const o=Number(h.objetivo), pc=Math.min(100,Math.round(v*100/o));
+      const t=h.titulo&&h.titulo!==h.metrica?h.titulo:`${nf(o)} ${NOM[h.metrica]||h.metrica}`;
+      return `<div class="row"><span class="tx"><b>${esc(t)}</b><span class="pb"><i style="width:${Math.max(3,pc)}%"></i></span><small>${nf(v)} de ${nf(o)}${pc>=100?' · lograda':''}</small></span><span class="costo"><b>${pc}%</b></span></div>`; }).filter(Boolean);
+    return L.length?`<div class="tt"><h2>Tus metas</h2></div><div class="box">${L.join('')}</div>`:''; }
   function bloqueWeb(){ const V=USOW; if(!V||!WEBS.length) return '';
     const OR={anuncio:'Anuncios',ig:'Instagram',fb:'Facebook',meta:'Instagram / Facebook',busc:'Google y buscadores',wa:'WhatsApp',yt:'YouTube',x:'X',semilla:'Semilla',otro:'Otras páginas',directo:'Directo o link guardado'};
     const CL={wa:'WhatsApp',ig:'Instagram',mail:'Mail',tel:'Llamadas',spotify:'Spotify',youtube:'YouTube',steam:'Steam',otro:'Otros'};
-    const PA={AR:'Argentina',UY:'Uruguay',CL:'Chile',MX:'México',ES:'España',US:'Estados Unidos',CO:'Colombia',PE:'Perú',BR:'Brasil',PY:'Paraguay',BO:'Bolivia',EC:'Ecuador',VE:'Venezuela',IT:'Italia',FR:'Francia',DE:'Alemania',GB:'Reino Unido',CR:'Costa Rica',GT:'Guatemala',DO:'Rep. Dominicana',PA:'Panamá',CU:'Cuba'};
     const dp=V.semana_ant?Math.round((V.semana-V.semana_ant)*100/V.semana_ant):null, mx=Math.max(1,...V.dias.map(x=>x.n));
     const fila=(t,n,tot)=>`<div class="row"><span class="tx"><b>${esc(t)}</b><span class="pb"><i style="width:${Math.max(3,Math.round(n*100/Math.max(1,tot)))}%"></i></span></span><span class="costo"><b>${nf(n)}</b>${tot?`<small>${nf(n*100/tot,0)}%</small>`:''}</span></div>`;
     const cons=Object.entries(V.clics||{}).sort((a,b)=>b[1]-a[1]);
@@ -487,9 +495,11 @@
         <button class="row" data-prox="Notificaciones"><span class="tile">${I('campana')}</span><span class="tx"><b>Notificaciones</b><small>Elegí qué avisos recibir</small></span><span class="go">${I('chev')}</span></button></div>
       <a class="salir" href="https://semillaredes.com/">Salir de la app ${I('salir')}</a>`;
   }
-  const INI=()=>(slug==='semilla-redes'?'AC':((D.cliente||{}).nombre||'?').split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase());
-  const SALUDO=()=>(slug==='semilla-redes'?'Agus':((D.cliente||{}).nombre||'').split(' ')[0]);
-  const SALUDO_LARGO=()=>(slug==='semilla-redes'?'Agus Calcagno':(D.cliente||{}).nombre||'');
+  const PERS={'semilla-redes':['Agus','AC','Agus Calcagno'],'berco-estudio':['María','MV','María Valiente']};
+  const NOMB=()=>String((D.cliente||{}).nombre||'').split('|')[0].trim();
+  const INI=()=>{ if(PERS[slug]) return PERS[slug][1]; const w=NOMB().split(/\s+/).filter(x=>/^\p{L}/u.test(x)); return (w.length>1?w[0][0]+w[1][0]:(w[0]||'?').slice(0,2)).toUpperCase(); };
+  const SALUDO=()=>PERS[slug]?PERS[slug][0]:NOMB().split(/\s+/)[0];
+  const SALUDO_LARGO=()=>PERS[slug]?PERS[slug][2]:NOMB();
 
   // ---------- armado ----------
   function pintar(){
