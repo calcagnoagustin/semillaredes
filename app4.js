@@ -780,6 +780,22 @@
     if(NOT.some(n=>!n.leida)) rpc('sub_notifs_leer',{p_slug:slug,p_k:tok}).then(()=>{ NOT.forEach(n=>n.leida=true); }).catch(()=>{}); }
   function conexiones(){ hoja('Redes conectadas','<div id="v4cxm"></div>',h=>{ const ir=()=>window.SRConexiones.montar(h.querySelector('#v4cxm'),{slug,k:tok,plegado:false});
       if(window.SRConexiones) ir(); else { const s=document.createElement('script'); s.src='/conexiones.js?v='+(window.SR_VER||Date.now()); s.onload=ir; document.head.appendChild(s); } }); }
+  // 18/11: burbuja flotante de SemillaIA (se puede arrastrar; tocarla abre el chat). Vive fuera de #v4 para no perderse al repintar.
+  function burbuja(){ if(document.getElementById('v4fab')) return; const b=document.createElement('button'); b.id='v4fab'; b.setAttribute('aria-label','Hablar con SemillaIA');
+    b.innerHTML='<img src="/assets/icono-semillaia-192.png" alt="">';
+    const st=document.createElement('style'); st.textContent=`#v4fab{position:fixed;z-index:40;width:60px;height:60px;border-radius:50%;border:3px solid #fff;padding:0;background:#1E2350;box-shadow:0 6px 18px rgba(30,35,80,.28);cursor:grab;touch-action:none;overflow:hidden;right:16px;bottom:calc(104px + env(safe-area-inset-bottom,0px))}
+      #v4fab img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}#v4fab.mov{cursor:grabbing;transform:scale(1.06)}`; document.head.appendChild(st);
+    document.body.appendChild(b);
+    const lim=(x,y)=>[Math.max(8,Math.min(innerWidth-68,x)),Math.max(70,Math.min(innerHeight-150,y))];
+    const poner=(x,y)=>{ [x,y]=lim(x,y); b.style.left=x+'px'; b.style.top=y+'px'; b.style.right='auto'; b.style.bottom='auto'; };
+    try{ const g=JSON.parse(LS('fab')||'null'); if(g) poner(g[0]*innerWidth,g[1]*innerHeight); }catch(e){}
+    let d=null;
+    b.addEventListener('pointerdown',e=>{ const r=b.getBoundingClientRect(); d={x:e.clientX,y:e.clientY,ox:e.clientX-r.left,oy:e.clientY-r.top,m:false}; b.setPointerCapture(e.pointerId); });
+    b.addEventListener('pointermove',e=>{ if(!d) return; if(!d.m&&Math.hypot(e.clientX-d.x,e.clientY-d.y)<8) return; d.m=true; b.classList.add('mov'); poner(e.clientX-d.ox,e.clientY-d.oy); });
+    b.addEventListener('pointerup',e=>{ if(!d) return; const m=d.m; d=null; b.classList.remove('mov');
+      if(m){ const r=b.getBoundingClientRect(); const x=r.left+30<innerWidth/2?12:innerWidth-72; poner(x,r.top); LS('fab',JSON.stringify([x/innerWidth,r.top/innerHeight])); } else chat(); });
+    b.addEventListener('pointercancel',()=>{ d=null; b.classList.remove('mov'); });
+    addEventListener('resize',()=>{ const r=b.getBoundingClientRect(); if(b.style.left) poner(r.left,r.top); }); }
   function chat(){ if(!CHAT.length) CHAT.push({rol:'ia',texto:`Hola ${SALUDO()}, soy SemillaIA. ¿En qué te ayudo?`});
     hoja('SemillaIA',`<div class="msgs" id="v4ms"></div><form class="chatf" id="v4cf"><input id="v4ci" placeholder="Preguntame lo que quieras" autocomplete="off"><button aria-label="Enviar">${I('flecha')}</button></form>`,h=>{
       const ms=h.querySelector('#v4ms'); let esp=false;
@@ -808,7 +824,7 @@
       const f=document.createElement('link'); f.rel='stylesheet'; f.href='https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Playfair+Display:wght@700&display=swap'; document.head.appendChild(f); }
     document.body.classList.add('v4');
     if(['inicio','proyecto','metricas','formacion','cuenta','analisis'].indexOf(TAB)<0) TAB='inicio';
-    pintar(); cargarResto();
+    pintar(); cargarResto(); burbuja();
     if(location.hash==='#ventas'&&!window.__v4v){ window.__v4v=1; setTimeout(()=>{ TAB='proyecto'; pintar(); ventas(); },1200); }
   };
 })();
