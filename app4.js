@@ -343,6 +343,7 @@
     return `<div class="hola"><h1>Hola, ${esc(nom)}</h1><span class="pill">${I('cal')}${fecha}</span></div>
       ${hero}
       ${bloqueCuenta()}
+      ${bloqueCruce()?`<div class="tt"><h2>Seguimiento de campañas</h2></div>${bloqueCruce()}`:''}
       ${bloqueCampanas()}
       ${(document.querySelector('#app .ventaBox')||(D.cliente||{}).ventas_log_on||(D.ventas_log||[]).length)?`<div class="box" style="margin-top:12px"><button class="row" id="v4vtas"><span class="tile">${I('bolsa')}</span><span class="tx"><b>Cargar ventas</b><small>Lo que vendiste en el período</small></span><span class="go">${I('chev')}</span></button></div>`:''}
       <div class="tt"><h2>Próximas fechas</h2><button class="lk" data-ir="proyecto">Ver agenda ${I('chev')}</button></div>
@@ -473,6 +474,32 @@
     const L=(CTA.cuentas||[]).length>1?CTA.cuentas:[CTA];
     return `<div class="tt"><h2>${L.length>1?'Tus cuentas publicitarias':'Cuenta publicitaria'}</h2></div>${L.map((c,i)=>una(c,L.length>1?(c.nombre||'Cuenta '+(i+1)):'Anuncios en Meta')).join('<div style="height:12px"></div>')}`; }
   /* 18/11 (Agus): campañas corriendo en Inicio, con su detalle por público y gráficas. Salen de sub_campanas (tipo 'destacada'), que actualiza destacada.py en la VM. */
+  /* 18/11 (Agus, Hernán): comparación de costo por seguidor entre dos campañas (sub_campanas tipo 'cruce', lo arma cruce_seguidores.py).
+     Meta no da seguidores por campaña: los seguidores nuevos de cada día se reparten según las visitas al perfil que trajo cada una. */
+  function bloqueCruce(){
+    const L=((D&&D.campanas)||[]).filter(k=>(k.metricas||{}).tipo==='cruce'&&(k.metricas.campanas||[]).length); if(!L.length) return '';
+    const fdm=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
+    return L.map(k=>{ const M=k.metricas, C=M.campanas, en=M.en||'USD', pl=(v,d)=>v==null?'—':(en==='USD'?'USD '+nf(v,d==null?2:d):'$ '+nf(v,0));
+      const COL=['#7A1F3A','#1E2350'], D2=M.dias||[];
+      const val=C.map(c=>c.u7&&c.u7.costo!=null?c.u7.costo:c.costo), mejor=val.every(v=>v!=null)?val.indexOf(Math.min(...val)):-1;
+      const fila=(c,i)=>`<div class="row" style="align-items:flex-start"><span class="tile" style="background:${i?'var(--celeste)':'var(--rosa)'};color:${COL[i]}">${I('gente')}</span><span class="tx"><b>${esc(c.nombre)}</b>
+          <small>${c.diaria!=null?pl(c.diaria)+' por día · ':''}${nf(c.seguidores)} seguidores · ${pl(c.usd)} invertidos</small>
+          <small>Últimos 7 días: ${c.u7&&c.u7.costo!=null?'<b>'+pl(c.u7.costo)+'</b> por seguidor ('+nf(c.u7.seguidores)+' seguidores)':'sin seguidores todavía'}</small>
+          ${i===mejor?'<span class="estado" style="margin-top:6px">Más barata</span>':''}</span>
+          <span class="costo"><b>${pl(c.costo)}</b><small>por seguidor<br>desde el ${fdm(M.desde)}</small></span></div>`;
+      // gráfica: costo por seguidor acumulado de cada campaña, día por día
+      const W=320,H=170,PX=30,PT=18,PB=26, ser=C.map(c=>D2.map(z=>(z[c.clave]||{}).costo_acum??null)), todos=ser.flat().filter(v=>v!=null);
+      let G='';
+      if(D2.length>1&&todos.length>1){ const mn=Math.min(...todos), mx=Math.max(...todos), rg=(mx-mn)||1, X=i=>PX+i*(W-PX*2)/(D2.length-1), Y=v=>PT+(1-(v-mn)/rg)*(H-PT-PB), paso=Math.ceil(D2.length/6);
+        const lineas=ser.map((S,j)=>{ const ok=S.map((v,i)=>[i,v]).filter(z=>z[1]!=null); if(ok.length<1) return ''; return `<path d="${ok.map((z,q)=>(q?'L':'M')+X(z[0]).toFixed(1)+' '+Y(z[1]).toFixed(1)).join(' ')}" fill="none" stroke="${COL[j]}" stroke-width="2.2" stroke-linejoin="round"/>${ok.filter((z,q)=>q===ok.length-1).map(z=>`<circle cx="${X(z[0]).toFixed(1)}" cy="${Y(z[1]).toFixed(1)}" r="3.5" fill="${COL[j]}"/><text x="${(X(z[0])-4).toFixed(1)}" y="${(Y(z[1])-8).toFixed(1)}" text-anchor="end" font-size="10.5" font-weight="700" fill="${COL[j]}" paint-order="stroke" stroke="#FDFBF8" stroke-width="4">${pl(z[1])}</text>`).join('')}`; }).join('');
+        const marcas=(M.cambios||[]).map(c=>{ const i=D2.findIndex(z=>z.f===c.f); return i<0?'':`<line x1="${X(i).toFixed(1)}" x2="${X(i).toFixed(1)}" y1="${PT-6}" y2="${H-PB}" stroke="#87863A" stroke-dasharray="3 3"/>`; }).join('');
+        const fechas=D2.map((z,i)=>(i%paso===0||i===D2.length-1)?`<text x="${X(i).toFixed(1)}" y="${H-8}" text-anchor="middle" font-size="10" fill="#8C8896">${fdm(z.f)}</text>`:'').join('');
+        G=`<p class="gt">Costo por seguidor acumulado</p><svg viewBox="0 0 ${W} ${H}" class="gsv" role="img">${marcas}${lineas}${fechas}</svg>
+          <p class="gn">${C.map((c,j)=>`<span style="color:${COL[j]};font-weight:700">●</span> ${esc(c.nombre)}`).join(' &nbsp; ')}${(M.cambios||[]).length?`<br><span style="color:#87863A;font-weight:700">┆</span> ${M.cambios.map(c=>fdm(c.f)+': '+esc(c.t)).join(' · ')}`:''}</p>`; }
+      return `<div class="box cmp4"><div class="c1"><span class="tile">${I('barras')}</span><span class="tx"><b>Costo por seguidor</b><small>${C.map(c=>esc(c.nombre)).join(' vs. ')} · desde el ${fdm(M.desde)}</small></span></div>
+        <div class="pub" style="margin-top:0">${C.map(fila).join('')}</div>
+        ${G?`<details open><summary>Ver gráfica ${I('chev')}</summary>${G}</details>`:''}
+        <div class="pie4">Instagram no dice de qué campaña viene cada seguidor: los seguidores nuevos de cada día se reparten entre las campañas según las visitas al perfil que trajo cada una.${M.actualizado_txt?' Actualizado el '+esc(M.actualizado_txt)+' hs.':''}</div></div>`; }).join('<div style="height:12px"></div>'); }
   function bloqueCampanas(modo){   /* 18/11: modo 'graf' = solo las gráficas (van en Métricas); sin modo = tarjeta de Inicio con la última semana */
     const OCULTAS={'spam-seguidores':1};
     const L=((D&&D.campanas)||[]).filter(k=>{ const M=k.metricas||{}; return M.tipo==='destacada'&&M.estado==='activa'&&!OCULTAS[k.codigo]; });
@@ -487,6 +514,9 @@
       const tiles=SM?[[nf(SM.visitas),cap(RES),1],[SM.costo_visita!=null?pl(SM.costo_visita):'—','Costo por '+RES1],[pl(SM.inversion,us?2:0),'Invertido'],[nf(SM.alcance),'Personas alcanzadas'],[pl(M.diaria),'Inversión por día'],[SM.frecuencia?nf(SM.frecuencia,1):'—','Veces que lo vio cada persona']]
         :ventas?[[nf(M.ventas),M.ventas===1?'Venta':'Ventas',1],[pl(M.costo_venta),'Costo por venta'],[pl(M.ingreso),'Facturado'],[M.roas!=null?nf(M.roas,2)+'x':'—','Retorno (ROAS)'],[pl(M.inversion,us?0:0),'Invertido'],[pl(M.diaria),'Inversión por día']]
         :[[nf(M.visitas),cap(RES),1],[pl(M.costo_visita),'Costo por '+RES1],[pl(M.inversion,us?0:0),'Invertido'],[nf(M.alcance),'Personas alcanzadas'],[pl(M.diaria),'Inversión por día'],[M.frecuencia?nf(M.frecuencia,1):'—','Veces que lo vio cada persona']];
+      { const CX=(((D&&D.campanas)||[]).find(z=>(z.metricas||{}).tipo==='cruce')||{}).metricas, cc=CX&&(CX.campanas||[]).find(c=>c.nombre===k.nombre);   // 18/11 (Hernán): costo por seguidor de la campaña
+        if(cc&&!ventas){ const v=tiles[0], cv=tiles[1], inv=tiles[2], dia=tiles[4]; tiles.length=0;
+          tiles.push(v,[cc.u7&&cc.u7.costo!=null?pl(cc.u7.costo):'—','Costo por seguidor (7 días)',1],[nf(cc.u7?cc.u7.seguidores:0),'Seguidores nuevos (7 días)'],cv,inv,dia); } }
       // gráfica: ventas = acumulado diario; resto = por día (≤31 días) o por semana
       let G='';
       if(ventas&&(M.serie||[]).length>1){ const S=M.serie; G=`<p class="gt">Ventas acumuladas</p>${graf(S,S.map(z=>z[1]),'#2F7A4F',x=>nf(x))}<p class="gt">Costo por venta acumulado</p>${graf(S,S.map(z=>z[1]?z[2]/z[1]:null),'#7A1F3A',x=>nf(x,2))}<p class="gn">Al cierre de cada día, desde el inicio de la campaña.</p>`; }
