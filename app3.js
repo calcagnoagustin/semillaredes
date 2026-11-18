@@ -277,6 +277,10 @@
   #v3 .dest .dh b{display:block;font:700 30px/1 'Playfair Display',Georgia,serif;color:#2F7A4F;white-space:nowrap}#v3 .dest .dh b em{font-style:normal;font-size:17px;margin-right:3px}
   #v3 .dest .dh small{display:block;font-size:13px;font-weight:600;color:#55525F;margin-top:6px}
   #v3 .dest .gpr{border-top:1px solid #EDE6D8;padding-top:12px;margin-top:14px}
+  #v3 .dest .dcj{border-top:1px solid #EDE6D8;margin-top:14px;padding-top:12px}#v3 .dest .dcj .dpt{margin-bottom:4px}
+  #v3 .dest .dcjr{padding:10px 0}#v3 .dest .dcjr+.dcjr{border-top:1px solid #EDE6D8}
+  #v3 .dest .dcjr .n{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:15px;font-weight:700;color:#24242C}#v3 .dest .dcjr .n small{flex:none;font-size:12.5px;font-weight:600;color:#55525F}
+  #v3 .dest .dcjr .v{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;margin-top:6px;font-size:13px;color:#55525F}#v3 .dest .dcjr .v b{color:#24242C;font-weight:700}
   #v3 .dest .gprh{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
   #v3 .dest .gprh .e{font-size:11.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#55525F}
   #v3 .dest .gprh .pc{font:700 22px/1 'Playfair Display',Georgia,serif;color:#2F7A4F}
@@ -837,7 +841,22 @@
         if(um.ig_visitas!=null) it.push([nf(um.ig_visitas),'visitas al perfil']); if(um.ig_visitas) it.push([nf(um.ig_followers_nuevos*100/um.ig_visitas,1)+'%','de las visitas siguieron']);
         if(um.ig_inversion!=null) it.push([SIM+nf(um.ig_inversion),'invertidos']); if(um.ig_followers_total!=null) it.push([nf(um.ig_followers_total),'seguidores en total']); }
       else { if(M.visitas!=null) it.push([nf(M.visitas),M.resultado||'resultados']); if(M.alcance!=null) it.push([nf(M.alcance),'personas alcanzadas']);
-      if(M.inversion!=null) it.push([SIM+nf(M.inversion),'invertidos']); if(M.costo_visita!=null) it.push([SIM+nf(M.costo_visita,2),'por '+String(M.resultado||'resultado').replace(/s(\s|$)/,'$1').replace(/es al /,' al ')]); } }
+      if(M.inversion!=null) it.push([SIM+nf(M.inversion),'invertidos']); if(M.costo_visita!=null) it.push([SIM+nf(M.costo_visita,2),'por '+String(M.resultado||'resultado').replace(/s(\s|$)/,'$1').replace(/es al /,' al ')]); } 
+        // 18/11 (Agus): gráfica en TODAS las destacadas. serie_r = [fecha, resultados del día, inversión del día]
+        const SR=M.serie_r||[]; if(SR.length>1){ const RES=String(M.resultado||'resultados'), RES1=RES.replace(/s(\s|$)/,'$1').replace(/es al /,' al ');
+          let P=[], tit1, tit2, nota;
+          if(SR.length<=31){ let a=0,b=0; P=SR.map(z=>{ a+=z[1]; b+=z[2]; return [z[0],a,b]; }); tit1=RES.charAt(0).toUpperCase()+RES.slice(1)+' acumuladas'; tit2='Costo por '+RES1+' acumulado'; nota='Al cierre de cada día. Costo = inversión ÷ '+RES+' hasta ese día, en '+(SIM.trim()||'USD')+'.'; }
+          else { const W={}; SR.forEach(z=>{ const d=new Date(z[0]+'T12:00:00'), off=(7-d.getDay())%7; d.setDate(d.getDate()+off); const k=d.toISOString().slice(0,10), w=W[k]||(W[k]=[k,0,0]); w[1]+=z[1]; w[2]+=z[2]; });
+            P=Object.values(W).sort((a,b)=>a[0]<b[0]?-1:1).slice(-12); tit1=RES.charAt(0).toUpperCase()+RES.slice(1)+' por semana'; tit2='Costo por '+RES1+' por semana'; nota='Cada punto es una semana (abajo, el domingo en que cierra; la última puede estar en curso). Costo = inversión de la semana ÷ '+RES+', en '+(SIM.trim()||'USD')+'.'; }
+          const L=(vals,col,fmt)=>{ const W2=320,H2=150,PX=28,PT=22,PB=26, ok=vals.map((x,i)=>[i,x]).filter(z=>z[1]!=null); if(ok.length<2) return ''; const v=ok.map(z=>z[1]), mn=Math.min(...v), mx=Math.max(...v), rg=(mx-mn)||1;
+            const X=i=>PX+i*(W2-PX*2)/(vals.length-1), Y=x=>PT+(1-(x-mn)/rg)*(H2-PT-PB), paso=Math.ceil(ok.length/7);
+            return `<svg viewBox="0 0 ${W2} ${H2}" class="gsvg"><path d="${ok.map((z,k)=>(k?'L':'M')+X(z[0]).toFixed(1)+' '+Y(z[1]).toFixed(1)).join(' ')}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round"/>${ok.map((z,k)=>`<circle cx="${X(z[0]).toFixed(1)}" cy="${Y(z[1]).toFixed(1)}" r="3" fill="${col}"/>${(k%paso===0||k===ok.length-1)?`<text x="${X(z[0]).toFixed(1)}" y="${(Y(z[1])-8).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${col}" paint-order="stroke" stroke="#FBF8F2" stroke-width="4" stroke-linejoin="round">${fmt(z[1])}</text><text x="${X(z[0]).toFixed(1)}" y="${H2-8}" text-anchor="middle" font-size="10" fill="#8A8577">${String(P[z[0]][0]).slice(8,10)}/${String(P[z[0]][0]).slice(5,7)}</text>`:''}`).join('')}</svg>`; };
+          gra=`<details class="gcur"><summary>Ver gráfica <span class="fl">▸</span></summary><p class="gst">${esc(tit1)}</p>${L(P.map(z=>z[1]),'#2F7A4F',x=>nf(x))}<p class="gst">${esc(tit2)}</p>${L(P.map(z=>z[1]?z[2]/z[1]:null),VINO,x=>nf(x,2))}<p class="gnota">${esc(nota)}</p></details>`; }
+        if(Array.isArray(M.conjuntos)&&M.conjuntos.length){ const RES=String(M.resultado||'resultados'), RES1=RES.replace(/s(\s|$)/,'$1').replace(/es al /,' al ');
+          gra=`<div class="dcj"><div class="dpt">Públicos activos (${M.conjuntos.length})</div>${M.conjuntos.map(c=>`<div class="dcjr"><div class="n"><span>${esc(c.nombre)}</span><small>${c.diaria!=null?SIM+nf(c.diaria)+' por día':''}</small></div>
+            <div class="v"><span>Últimos 7 días: <b>${nf(c.res7||0)}</b> ${esc(RES)}</span><span>${c.costo7!=null?`<b>${SIM}${nf(c.costo7,2)}</b> por ${esc(RES1)}`:'sin resultados'}</span>
+            <span>Desde el ${fl(c.inicio)}: <b>${nf(c.resultados)}</b></span><span><b>${SIM}${nf(c.inversion)}</b> invertidos</span></div></div>`).join('')}</div>`+gra; }
+      }
       return `<div class="dest"><div class="de">Campaña destacada<span class="${on?'on':''}"><i></i>${on?'Activa':M.estado==='sin_circular'?'Sin circular':'Terminada'}</span></div>
         <h3>${esc(k.nombre)}</h3><div class="ds">${M.etiqueta?esc(M.etiqueta)+' · ':''}${M.show?'Show el '+fl(M.show)+' · ':''}${PER&&dh?'Del '+fl(UR0.desde)+' al '+fl(UR0.hasta):(M.desde?'Desde el '+fl(M.desde):'')+(M.hasta?' hasta el '+fl(M.hasta):'')}${M.diaria?' · '+SIM+nf(M.diaria)+' por día hoy':''}</div>
         ${dh}${it.length?`<div class="dg">${it.map(x=>`<div><b>${x[0]}</b><small>${esc(x[1])}</small></div>`).join('')}</div>`:'<div class="ds" style="margin-top:12px">Los números aparecen en la próxima actualización.</div>'}${esc2}${gra}
