@@ -4,16 +4,11 @@
 (function(){
   if(window.V3) return;
   (function(){ const st=document.createElement('style'); st.id='v4pre'; st.textContent=`html,body{background:#F6F1EA!important}.wrap{display:none!important}
-    #v4splash{position:fixed;inset:0;z-index:99;background:#F6F1EA;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;font-family:"DM Sans",system-ui,sans-serif;color:#1E2350}
-    #v4splash img{width:76px;height:76px;object-fit:contain}
-    #v4splash .wm{display:flex;align-items:center;gap:8px;font-weight:700;font-size:26px;letter-spacing:-.6px;line-height:1}
-    #v4splash .wm b{color:#87863A}
-    #v4splash .beta{font-size:9.5px;font-weight:700;letter-spacing:1px;color:#7A1F3A;border:1px solid #7A1F3A;border-radius:6px;padding:2px 5px 1px;line-height:1;text-transform:uppercase}
-    #v4splash i{display:block;width:36px;height:3px;border-radius:2px;background:#E2DCCF;overflow:hidden;position:relative;margin-top:6px}
-    #v4splash i::after{content:"";position:absolute;inset:0;width:40%;background:#87863A;border-radius:2px;animation:v4c 1s ease-in-out infinite alternate}
-    @keyframes v4c{to{transform:translateX(150%)}}`; document.head.appendChild(st);
+    #v4splash{position:fixed;inset:0;z-index:99;background:#F6F1EA}
+    #v4splash::after{content:'';position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;background:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cline x1='50' y1='50' x2='50.0' y2='17.0' stroke='%238C8040' stroke-width='2.6'/%3E%3Ccircle cx='50.0' cy='12.0' r='6.5' fill='%238C8040'/%3E%3Cline x1='50' y1='50' x2='73.3' y2='26.7' stroke='%238C8040' stroke-width='2.6'/%3E%3Ccircle cx='76.9' cy='23.1' r='6.5' fill='%238C8040'/%3E%3Cline x1='50' y1='50' x2='83.0' y2='50.0' stroke='%238C8040' stroke-width='2.6'/%3E%3Ccircle cx='88.0' cy='50.0' r='6.5' fill='%238C8040'/%3E%3Cline x1='50' y1='50' x2='73.3' y2='73.3' stroke='%238C8040' stroke-width='2.6'/%3E%3Ccircle cx='76.9' cy='76.9' r='6.5' fill='%238C8040'/%3E%3Cline x1='50' y1='50' x2='50.0' y2='83.0' stroke='%238C8040' stroke-width='2.6'/%3E%3Ccircle cx='50.0' cy='88.0' r='6.5' fill='%238C8040'/%3E%3Cline x1='50' y1='50' x2='26.7' y2='73.3' stroke='%238C8040' stroke-width='2.6'/%3E%3Ccircle cx='23.1' cy='76.9' r='6.5' fill='%238C8040'/%3E%3Cline x1='50' y1='50' x2='17.0' y2='50.0' stroke='%238C8040' stroke-width='2.6'/%3E%3Ccircle cx='12.0' cy='50.0' r='6.5' fill='%238C8040'/%3E%3Cline x1='50' y1='50' x2='26.7' y2='26.7' stroke='%238C8040' stroke-width='2.6'/%3E%3Ccircle cx='23.1' cy='23.1' r='6.5' fill='%238C8040'/%3E%3Cpath d='M50 21Q81 50 50 79Q19 50 50 21Z' fill='%238C8040'/%3E%3Cpath d='M50 23V77' stroke='%23F2EDE4' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;animation:v4spl 1.4s linear infinite}   /* 18/11 (Agus): la semillita vieja que gira, como en la app anterior */
+    @keyframes v4spl{to{transform:rotate(360deg)}}`; document.head.appendChild(st);
     const sp=()=>{ if(document.getElementById('v4')||document.getElementById('v4splash')) return; const d=document.createElement('div'); d.id='v4splash';
-      d.innerHTML='<img src="/assets/marca-semilla-oliva.png" alt=""><span class="wm">semilla<b>IA</b><span class="beta">Beta</span></span><i></i><small style="font-size:12px;color:#8C8896;margin-top:4px">Versión 4.0</small>'; document.body.appendChild(d); };
+      d.setAttribute('aria-label','Cargando'); document.body.appendChild(d); };
     if(document.body) sp(); else document.addEventListener('DOMContentLoaded',sp);
     setTimeout(()=>{ const e=document.getElementById('error'); if(e&&!e.classList.contains('oculto')){ const w=document.querySelector('.wrap'); w&&w.style.setProperty('display','block','important'); const x=document.getElementById('v4splash'); x&&x.remove(); } },8000); })();
   const W='https://vm.semillaredes.com/web';
@@ -386,6 +381,7 @@
       <div class="box">${pend.length?(verT?pend:pend.slice(0,3)).map(filaTarea).join(''):`<div class="vacio">No tenés tareas pendientes.</div>`}
         <button class="row" id="v4nt" style="color:var(--vino)"><span class="circ" style="border-style:dashed;border-color:var(--vino);color:var(--vino)">${I('mas')}</span><span class="tx"><b style="color:var(--vino)">Nueva tarea</b></span></button></div>
       ${hech.length?`<button class="lk" id="v4vh" style="margin-top:12px">${LS('verhechas')==='1'?'Ocultar':'Ver'} hechas (${hech.length}) ${I('chev')}</button>${LS('verhechas')==='1'?`<div class="box" style="margin-top:10px">${hech.map(filaTarea).join('')}</div>`:''}`:''}
+      ${metas()}
       <div class="tt"><h2>Tus webs</h2></div>
       <div class="box">${WEBS.length?WEBS.map(w=>`<a class="row" href="${esc(w.url)}${w.url.includes('?')?'&':'?'}editar=${encodeURIComponent(w.slug||slug)}&k=${encodeURIComponent(tok)}" target="_blank" rel="noopener"><span class="tile c">${I('web')}</span><span class="tx"><b>${esc(w.titulo||w.nombre||w.url.replace(/^https?:\/\//,'').replace(/\/$/,''))}</b><small>${esc(w.url.replace(/^https?:\/\//,'').replace(/\/$/,''))}${USOW?` · ${nf(((USOW.webs||[]).find(x=>x.id===w.id)||{}).n||0)} visitas en 30 días`:''}</small></span><span class="lk">Editá ${I('ext')}</span></a>`).join(''):`<div class="vacio">Todavía no tenés webs con Semilla.</div>`}</div>
       <div class="tt"><h2>Recursos</h2></div>
@@ -518,14 +514,33 @@
       ${slug==='berco-estudio'?`<a class="bt n" style="margin-top:12px;width:100%;justify-content:center" href="https://vm.semillaredes.com/web/invitados?c=${encodeURIComponent(slug)}&k=${encodeURIComponent(tok)}" target="_blank" rel="noopener">${I('lista')}Marcar invitados de la semana</a>`:''}
       ${F.length?`<div class="sub2">Próximas funciones</div><div class="box">${F.map(fila).join('')}</div>`:''}
       ${P.length?`<div class="sub2">Funciones que ya pasaron</div><div class="box">${P.map(fila).join('')}</div>`:''}`; }
-  function metas(){ const M=metricas(), H=(D.hitos||[]).filter(h=>h.metrica!=='ig_followers_total'||h.objetivo===META());
-    const NOM={sp_oyentes_perfil:'oyentes mensuales en Spotify',sp_monthly:'oyentes mensuales en Spotify',ig_followers_total:'seguidores en Instagram',msj_mensajes:'consultas',tk_tickets:'entradas vendidas'};
+  // 18/11 (Agus): metas (hitos) con alta y baja, como en la app anterior; se ven en Proyecto y en Métricas
+  const HMET={ig_followers_total:['Seguidores en Instagram','seguidores en Instagram'],ig_followers_nuevos:['Seguidores nuevos por período','seguidores nuevos en un período'],ig_visitas:['Visitas al perfil por período','visitas al perfil en un período'],
+    sp_oyentes_perfil:['Oyentes mensuales en Spotify','oyentes mensuales en Spotify'],sp_followers:['Seguidores en Spotify','seguidores en Spotify'],sp_streams:['Reproducciones en Spotify por período','reproducciones en Spotify'],
+    yt_subs:['Suscriptores en YouTube','suscriptores en YouTube'],yt_views:['Vistas en YouTube por período','vistas en YouTube en un período'],
+    msj_mensajes:['Consultas por período','consultas'],msj_conversiones:['Ventas por período','ventas en un período'],vta_ventas:['Ventas por período','ventas en un período'],tk_tickets:['Entradas vendidas','entradas vendidas']};
+  function metas(){ const M=metricas(), H=D.hitos||[];
+    const NOM={sp_monthly:'oyentes mensuales en Spotify',sp_oyentes:'oyentes mensuales en Spotify'};
     const VT=Object.values((D.cliente||{}).ventas||{}).filter(x=>x&&x.tipo==='ticketera').sort((a,b)=>String(a.captura||a.actualizado)<String(b.captura||b.actualizado)?-1:1).pop();
     const L=H.map(h=>{ let v=M.ult(h.metrica); if(/^sp_(monthly|oyentes|listeners|oyentes_perfil)$/.test(h.metrica)&&M.ult('sp_oyentes_perfil')!=null) v=M.ult('sp_oyentes_perfil');   /* 18/11: oyentes mensuales = los del perfil */
-      if(h.metrica==='tk_tickets'&&/vendidas/i.test(h.titulo||'')&&VT) v=Number(VT.ventas); if(v==null) return ''; const o=Number(h.objetivo), pc=Math.min(100,Math.round(v*100/o));
-      const t=h.titulo&&h.titulo!==h.metrica?h.titulo:`${nf(o)} ${NOM[h.metrica]||h.metrica}`;
-      return `<div class="row"><span class="tx"><b>${esc(t)}</b><span class="pb"><i style="width:${Math.max(3,pc)}%"></i></span><small>${nf(v)} de ${nf(o)}${pc>=100?' · lograda':''}</small></span><span class="costo"><b>${pc}%</b></span></div>`; }).filter(Boolean);
-    return L.length?`<div class="tt"><h2>Tus metas</h2></div><div class="box">${L.join('')}</div>`:''; }
+      if(h.metrica==='tk_tickets'&&/vendidas/i.test(h.titulo||'')&&VT) v=Number(VT.ventas); const o=Number(h.objetivo), pc=v==null?0:Math.min(100,Math.round(v*100/o));
+      const t=h.titulo&&!/^[a-z]+_[a-z_]+$/.test(h.titulo)?h.titulo:`${nf(o)} ${(HMET[h.metrica]||[])[1]||NOM[h.metrica]||h.metrica}`;
+      return `<button class="row" data-hito="${esc(h.id||'')}" style="cursor:pointer"><span class="tx"><b>${esc(t)}</b><span class="pb"><i style="width:${Math.max(3,pc)}%"></i></span><small>${v==null?'Sin datos todavía':`${nf(v)} de ${nf(o)}${pc>=100?' · lograda':''}`}</small></span><span class="costo"><b>${v==null?'—':pc+'%'}</b></span></button>`; });
+    return `<div class="tt"><h2>Tus metas</h2><button class="bt" data-hnueva="1" style="height:46px;background:var(--salvia);border-color:transparent">${I('mas')}Agregar</button></div>
+      <div class="box">${L.length?L.join(''):'<div class="vacio">Todavía no tenés metas. Sumá una: por ejemplo, a cuántos seguidores querés llegar.</div>'}</div>`; }
+  function nuevaMeta(){ const M=metricas(); const DISP=Object.keys(HMET).filter(k=>M.R.some(r=>r.metricas[k]!=null)&&!(k==='vta_ventas'&&M.R.some(r=>r.metricas.msj_conversiones!=null)));
+    if(!DISP.length){ hoja('Nueva meta',`<p style="font-size:16px;line-height:24px;color:#4B4958">Las metas se arman con tus números medidos. Apenas tengas tu primer reporte vas a poder sumar una.</p>`); return; }
+    hoja('Nueva meta',`<label style="display:block;font-size:14px;font-weight:700;color:#4B4958;margin:0 0 6px">¿Qué querés medir?</label><select id="v4hm">${DISP.map(k=>`<option value="${k}">${HMET[k][0]}</option>`).join('')}</select>
+      <input id="v4ho" inputmode="decimal" placeholder="A qué número querés llegar"><input id="v4ht" placeholder="Nombre (opcional)"><button class="bt n" id="v4hok" style="width:100%">${I('mas')}Guardar meta</button><p class="pie3" id="v4her"></p>`,(h,c)=>{
+      const q=x=>h.querySelector(x); setTimeout(()=>q('#v4ho').focus(),60);
+      q('#v4hok').onclick=async()=>{ const o=parseFloat((q('#v4ho').value||'').replace(/\./g,'').replace(',','.')); if(!o||o<=0){ q('#v4her').textContent='Poné a qué número querés llegar.'; return; }
+        q('#v4hok').disabled=true; window.SRE&&window.SRE('hito_nuevo',{});
+        const r=await rpc('sub_hito_cliente_alta',{p_slug:slug,p_k:tok,p_metrica:q('#v4hm').value,p_objetivo:o,p_titulo:q('#v4ht').value.trim()||null}).catch(()=>null);
+        if(r&&r.ok){ c(); recargar(); } else { q('#v4hok').disabled=false; q('#v4her').textContent=r&&r.error==='demasiados'?'Ya tenés 8 metas: borrá alguna primero.':'No se pudo guardar. Probá de nuevo.'; } }; }); }
+  function verMeta(id){ const m=(D.hitos||[]).find(x=>String(x.id)===String(id)); if(!m) return;
+    hoja('Meta',`<p style="font-size:16px;line-height:24px;color:#4B4958;margin:0 0 14px">${esc(m.titulo&&!/^[a-z]+_[a-z_]+$/.test(m.titulo)?m.titulo:nf(m.objetivo)+' '+((HMET[m.metrica]||[])[1]||''))}</p><button class="bt" id="v4hb" style="width:100%;color:var(--vino)">Borrar esta meta</button>`,(h,c)=>{
+      const b=h.querySelector('#v4hb'); b.onclick=async()=>{ if(!b.dataset.seg){ b.dataset.seg='1'; b.textContent='¿Seguro? Tocá para borrar'; return; } b.disabled=true;
+        const r=await rpc('sub_hito_cliente_borrar',{p_slug:slug,p_k:tok,p_id:id}).catch(()=>null); c(); if(r&&r.ok) recargar(); }; }); }
   // 17/11: panel de métricas como en la app anterior: destacado de la semana, resumen del mes y resumen del período por red
   const VINO='#7A1F3A', OLI='#87863A', ROSA='#E2767C';
   function destacado(){ const tj=TJ&&TJ.hay?TJ:null; if(!tj) return ''; const H=[...(tj.hero||[]),...(tj.minis||[])].slice(0,4); if(!H.length) return '';
@@ -694,6 +709,7 @@
       const x=await rpc('sub_tarea_cliente',{p_slug:slug,p_k:tok,p_id:b.dataset.hecha,p_estado:e}).catch(()=>null); setTimeout(x&&x.ok?recargar:pintar,450); });
     r.querySelectorAll('[data-tarea]').forEach(b=>b.onclick=()=>editarTarea(b.dataset.tarea));
     r.querySelectorAll('[data-agendar]').forEach(b=>b.onclick=()=>nuevaTarea(b.dataset.agendar));
+    r.querySelectorAll('[data-hnueva]').forEach(b=>b.onclick=nuevaMeta); r.querySelectorAll('[data-hito]').forEach(b=>b.onclick=()=>verMeta(b.dataset.hito));
     const on=(id,f)=>{ const e=r.querySelector('#'+id); if(e) e.onclick=f; };
     on('v4an',()=>ir('analisis')); on('v4tarea',()=>nuevaTarea('')); on('v4chat',chat); on('v4fecha',nuevaFecha); on('v4bell',avisos); on('v4cx',conexiones); on('v4mat',materiales); on('v4vtas',ventas);
     on('v4nt',()=>nuevaTarea('')); on('v4vh',()=>{ LS('verhechas',LS('verhechas')==='1'?'0':'1'); pintar(); });
