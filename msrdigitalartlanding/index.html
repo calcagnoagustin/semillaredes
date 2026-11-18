@@ -134,6 +134,45 @@ section{padding:104px 0}
 .contacto .redes a{color:var(--tinta);text-decoration:none;border-bottom:1px solid rgba(236,234,242,.3)}
 .contacto .redes a:hover{border-color:var(--neon)}
 
+/* obra artística (18/11) */
+.obra{background:var(--panel)}
+.obra .sub2{font-family:'Syne',sans-serif;font-size:13px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:var(--agua);margin:56px 0 0;display:flex;align-items:center;gap:14px}
+.obra .sub2::after{content:"";flex:1;height:1px;background:var(--linea)}
+.obras{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:26px}
+.ob{display:flex;flex-direction:column;text-decoration:none;color:inherit;background:var(--panel2);border:1px solid var(--linea);border-radius:16px;overflow:hidden;transition:transform .2s,border-color .2s}
+.ob:hover{transform:translateY(-3px);border-color:rgba(255,90,95,.5)}
+.ob .im{aspect-ratio:4/5;overflow:hidden;background:#000}
+.ob .im img{width:100%;height:100%;object-fit:cover}
+.ob .tx{padding:16px 18px 18px}
+.ob h3{font-size:19px}
+.ob small{display:block;color:var(--gris);font-size:14px;margin-top:6px}
+@media(max-width:860px){.obras{grid-template-columns:1fr 1fr;gap:12px}.ob .tx{padding:12px 14px 14px}.ob h3{font-size:16px}.ob small{font-size:13px}}
+.pdatos{display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:start;margin-top:26px}
+.pdatos h3{font-size:clamp(28px,3.4vw,40px)}
+.pdatos p.lead{font-size:19px;color:var(--tinta);margin-top:16px}
+.pdatos p.cuerpo{margin-top:14px;color:var(--gris)}
+.vars{list-style:none;padding:0;margin:26px 0 0;border-top:1px solid var(--linea)}
+.vars li{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:11px 0;border-bottom:1px solid var(--linea);font-size:15.5px}
+.vars li b{font-family:'Syne',sans-serif;font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--agua);align-self:center}
+.vars li span{color:var(--tinta)}
+.pdatos .cita{margin-top:28px;padding-left:20px;border-left:2px solid var(--neon);font-size:25px;line-height:1.3;color:#fff}
+.mosaico{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mosaico a{display:block;border-radius:14px;overflow:hidden;aspect-ratio:1/1;position:relative}
+.mosaico a img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.mosaico a:hover img{transform:scale(1.04)}
+.mosaico a span{position:absolute;left:10px;bottom:10px;font-size:12.5px;font-weight:500;background:rgba(11,13,20,.75);padding:5px 10px;border-radius:999px}
+@media(max-width:860px){.pdatos{grid-template-columns:1fr;gap:30px}.vars li{grid-template-columns:104px 1fr}}
+
+/* muestras y exposiciones (18/11) */
+.muestras .lista{margin-top:34px;border-top:1px solid var(--linea)}
+.mu{display:grid;grid-template-columns:92px 1fr auto;align-items:start;gap:26px;padding:22px 0;border-bottom:1px solid var(--linea);text-decoration:none;color:inherit;transition:background .2s}
+a.mu:hover{background:rgba(255,90,95,.06)}
+.mu .an{font-family:'Syne',sans-serif;font-weight:800;font-size:30px;line-height:1;text-align:center;margin-top:-2px}
+.mu .tit{font-size:20px;line-height:1.3}
+.mu .tit small{display:block;font-size:14.5px;color:var(--gris);margin-top:5px;line-height:1.45}
+.mu .lnk{align-self:center;font-family:'Syne',sans-serif;font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--neon);white-space:nowrap}
+@media(max-width:640px){.mu{grid-template-columns:56px 1fr;gap:14px;padding:18px 0}.mu .an{font-size:22px;margin-top:0}.mu .lnk{align-self:start}.mu .tit{font-size:17px}.mu .lnk{grid-column:2}}
+
 footer{border-top:1px solid var(--linea);padding:28px 0;font-size:13.5px;color:var(--gris)}
 footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 footer a{color:var(--gris);text-decoration:none}
@@ -143,7 +182,7 @@ footer a{color:var(--gris);text-decoration:none}
 
 <header class="hero" data-b="1">
   <img class="fondo" src="img/naturaleza-codigo.jpg" alt="Obra Naturaleza y el Código, de MSR Digital Art" data-e="1">
-  <nav class="nav" data-b="2"><b data-e="2">MSR DIGITAL ART</b><div class="links"><a href="#servicios" data-e="3">Servicios</a><a href="#sobre" data-e="4">Sobre mí</a><a class="cta" href="#contacto" data-e="5">Conversemos</a></div></nav>
+  <nav class="nav" data-b="2"><b data-e="2">MSR DIGITAL ART</b><div class="links"><a href="#servicios" data-e="3">Servicios</a><a href="#obra">Obra</a><a href="#sobre" data-e="4">Sobre mí</a><a class="cta" href="#contacto" data-e="5">Conversemos</a></div></nav>
   <div class="wrap">
     <div class="quien"><img src="img/autorretrato.jpg" alt="MSR Digital Art" data-e="6"><div><b data-e="7">MSR Digital Art</b>Artista visual · IA · Arte generativo · Buenos Aires</div></div>
     <h1 data-e="8">Arte digital, fotografía e IA para imaginar <em>nuevos futuros visuales.</em></h1>
@@ -238,6 +277,38 @@ footer a{color:var(--gris);text-decoration:none}
       <p class="cita poe" data-e="76">Creando puentes entre lo humano y lo digital.</p>
       <div class="tray"><span data-e="77">PremioBArte</span><span data-e="78">FIBAC</span><span data-e="79">Labitconf</span><span data-e="80">Museum Week</span><span data-e="81">La Crypta</span><span data-e="82">Bitcoin Argentina</span><span data-e="83">Pabellón de Bellas Artes — UCA</span><span data-e="84">ArtLab</span><span data-e="85">Feria Regional Educación, Arte, Ciencia y Tecnología</span><span data-e="86">Cruzada21</span></div>
     </div>
+  </div>
+</section>
+
+<section class="obra" id="obra">
+  <div class="wrap">
+    <p class="eti">Obra artística</p>
+    <h2>Obra</h2>
+    <p class="bajada">Arte digital e investigación: la convivencia entre humanidad, naturaleza y sistemas artificiales.</p>
+
+    <p class="sub2">Arte digital</p>
+    <div class="obras"><a class="ob" href="https://www.instagram.com/p/DYE-Wp-EVTY/" target="_blank" rel="noopener"><div class="im"><img src="img/obra-hallazgo.jpg" alt="Obra El hallazgo, de MSR Digital Art" loading="lazy"></div><div class="tx"><h3>El hallazgo</h3><small>Arte generativo con IA · 70 × 50 cm · 2026</small></div></a><a class="ob" href="https://www.instagram.com/reel/DZQG7Q3RjmE/" target="_blank" rel="noopener"><div class="im"><img src="img/obra-portadores.jpg" alt="Obra Los portadores de memoria, de MSR Digital Art" loading="lazy"></div><div class="tx"><h3>Los portadores de memoria</h3><small>Arte generativo con IA · 2026</small></div></a><a class="ob" href="https://www.instagram.com/reel/DZLoQV4JgYY/" target="_blank" rel="noopener"><div class="im"><img src="img/obra-altar.jpg" alt="Obra El altar del código, de MSR Digital Art" loading="lazy"></div><div class="tx"><h3>El altar del código</h3><small>Arte generativo · 2026</small></div></a><a class="ob" href="https://www.instagram.com/reel/DZLnMtDJ6YG/" target="_blank" rel="noopener"><div class="im"><img src="img/obra-raices.jpg" alt="Obra Raíces del sistema, de MSR Digital Art" loading="lazy"></div><div class="tx"><h3>Raíces del sistema</h3><small>Arte generativo · 2026</small></div></a><a class="ob" href="https://www.instagram.com/reel/DGCQU5-J3xv/" target="_blank" rel="noopener"><div class="im"><img src="img/obra-bosque.jpg" alt="Obra Bosque, de MSR Digital Art" loading="lazy"></div><div class="tx"><h3>Bosque</h3><small>Naturaleza y datos climáticos · 2025</small></div></a><a class="ob" href="https://www.instagram.com/reel/DB6Xe4nO32i/" target="_blank" rel="noopener"><div class="im"><img src="img/obra-ciudad-bit.jpg" alt="Obra Ciudad Bit, de MSR Digital Art" loading="lazy"></div><div class="tx"><h3>Ciudad Bit</h3><small>IA y animación · PremioBArte 2024</small></div></a></div>
+
+    <p class="sub2">Investigación artística</p>
+    <div class="pdatos">
+      <div>
+        <h3>Paisaje de Datos</h3>
+        <p class="lead">Todos los días, en distintos horarios, vuelvo al mismo lugar: la costa de mi ciudad. Fotografío el humedal, el agua, el cielo, los animales y las huellas que dejamos en el paisaje.</p>
+        <p class="cuerpo">Además de la imagen registro otra capa del paisaje: temperatura, humedad, viento, presión y lluvia. En Paisaje de Datos esos registros empiezan a modificar la fotografía, que deja de ser un punto final y pasa a ser la primera capa de una memoria digital en transformación.</p>
+        <ul class="vars"><li><b>Temperatura</b><span>se convierte en intensidad</span></li><li><b>Humedad</b><span>en densidad</span></li><li><b>Viento</b><span>en movimiento</span></li><li><b>Lluvia</b><span>en caída</span></li><li><b>Presión</b><span>en expansión o compresión</span></li></ul>
+        <p class="cita poe">Cada dato, una pregunta. Cada imagen, una memoria.</p>
+      </div>
+      <div class="mosaico"><a href="https://www.instagram.com/p/DfqRjzWST8H/" target="_blank" rel="noopener"><img src="img/pd-costa.jpg" alt="Paisaje de Datos: Costa" loading="lazy"><span>Costa</span></a><a href="https://www.instagram.com/p/DdFbqNsidQ-/" target="_blank" rel="noopener"><img src="img/pd-fuerza-invisible.jpg" alt="Paisaje de Datos: La fuerza invisible" loading="lazy"><span>La fuerza invisible</span></a><a href="https://www.instagram.com/p/DdRQhP-oMBX/" target="_blank" rel="noopener"><img src="img/pd-registro.jpg" alt="Paisaje de Datos: El registro diario" loading="lazy"><span>El registro diario</span></a><a href="https://www.instagram.com/p/DeK2RhLCQpx/" target="_blank" rel="noopener"><img src="img/pd-proceso.jpg" alt="Paisaje de Datos: Paso a paso" loading="lazy"><span>Paso a paso</span></a></div>
+    </div>
+  </div>
+</section>
+
+<section class="muestras" id="muestras">
+  <div class="wrap">
+    <p class="eti">Trayectoria</p>
+    <h2>Muestras y exposiciones</h2>
+    <p class="bajada">Festivales, premios, museos y muestras colectivas donde se expuso la obra.</p>
+    <div class="lista"><a class="mu" href="https://www.instagram.com/p/DdFbqNsidQ-/" target="_blank" rel="noopener"><div class="an">2026</div><div class="tit">FIBAC 2026 · “La fuerza invisible”<small>Festival Iberoamericano de Arte y Cultura por la Paz y el Medio Ambiente. Salón de los Espejos, San Pedro (Buenos Aires). Obra de la investigación Paisaje de Datos.</small></div><span class="lnk">Ver ↗</span></a><a class="mu" href="https://www.instagram.com/p/DXsZ1mJifCW/" target="_blank" rel="noopener"><div class="an">2026</div><div class="tit">Galería Virtual Arte Vivo<small>Muestra colectiva virtual con 16 artistas. Curaduría de Patricia Minski. Obras: “El hallazgo”, “El altar del código” y “Raíces del sistema”.</small></div><span class="lnk">Ver ↗</span></a><a class="mu" href="https://www.instagram.com/reel/DaDDmHhxl79/" target="_blank" rel="noopener"><div class="an">2026</div><div class="tit">Meetup “Arte Digital & Audiencias”<small>Artista invitada al panel en el Museo de Arte Popular José Hernández (MAP), Buenos Aires.</small></div><span class="lnk">Ver ↗</span></a><a class="mu" href="https://www.instagram.com/p/DQPJZiyEdRV/" target="_blank" rel="noopener"><div class="an">2025</div><div class="tit">Premio B·Arte 2025 · LaBitConf<small>Obra seleccionada en la edición homenaje a Satoshi Nakamoto. Costa Salguero, Buenos Aires.</small></div><span class="lnk">Ver ↗</span></a><a class="mu" href="https://www.instagram.com/p/DOcddf9EYSS/" target="_blank" rel="noopener"><div class="an">2025</div><div class="tit">FIBAC 2025 · “Sin naturaleza, no hay paz”<small>Festival Iberoamericano de Arte y Cultura por la Paz y el Medio Ambiente.</small></div><span class="lnk">Ver ↗</span></a><a class="mu" href="https://www.instagram.com/reel/DKpZjUrRWFG/" target="_blank" rel="noopener"><div class="an">2025</div><div class="tit">Museum Week 2025<small>Obra sobre la belleza y la fragilidad de la vida marina.</small></div><span class="lnk">Ver ↗</span></a><a class="mu" href="https://www.instagram.com/p/DFvuF0GJIdK/" target="_blank" rel="noopener"><div class="an">2025</div><div class="tit">Dataland Museum<small>Primera obra en Dataland, museo de arte basado en inteligencia artificial.</small></div><span class="lnk">Ver ↗</span></a><a class="mu" href="https://www.instagram.com/p/DCQJrBcu1mY/" target="_blank" rel="noopener"><div class="an">2024</div><div class="tit">Hashtag #2 “Eutopía”<small>Muestra colectiva en el Pabellón de las Bellas Artes de la UCA, incluida la Noche de los Museos. Curaduría de Gabriela Serkin.</small></div><span class="lnk">Ver ↗</span></a><a class="mu" href="https://www.instagram.com/reel/DB6Xe4nO32i/" target="_blank" rel="noopener"><div class="an">2024</div><div class="tit">Premio B·Arte 2024 · LaBitConf<small>Obras seleccionadas: “Ciudad Bit” y “El ojo del nodo”. Segundo año consecutivo.</small></div><span class="lnk">Ver ↗</span></a><a class="mu" href="https://www.instagram.com/p/C-bf_nDOvQF/" target="_blank" rel="noopener"><div class="an">2024</div><div class="tit">Feria Regional de Educación, Arte, Ciencias y Tecnología<small>Mención al proyecto educativo “Imaginando personajes creados con IA y Arte”.</small></div><span class="lnk">Ver ↗</span></a><a class="mu" href="https://www.instagram.com/p/C6_-zAIORVA/" target="_blank" rel="noopener"><div class="an">2024</div><div class="tit">Certamen Humanidad<small>Obra “Visión de la humanidad”. Espacio Cultural Bitcoin, Buenos Aires.</small></div><span class="lnk">Ver ↗</span></a><a class="mu" href="https://www.instagram.com/p/C0iGw6iO0Wj/" target="_blank" rel="noopener"><div class="an">2023</div><div class="tit">Premio B·Arte 2023 · LaBitConf<small>Dos obras seleccionadas entre 337 artistas.</small></div><span class="lnk">Ver ↗</span></a></div>
   </div>
 </section>
 
