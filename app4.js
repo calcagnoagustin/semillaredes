@@ -427,11 +427,11 @@
       const U=M.U, tot=M.ult('ig_followers_total'), nue=U.ig_followers_nuevos, meta=META();
       const LAB={ig_followers_nuevos:['Seguidores nuevos','n'],ig_conv:['Tasa de conversión: visitas al perfil que siguieron','%'],ig_visitas:['Visitas al perfil','n'],ig_alcance:['Alcance en Instagram','n'],ig_costo_follower:['Costo por seguidor','$2'],ig_inversion:['Invertido en seguidores','$'],
         frm_visitas:['Visitas a la web','n'],frm_clics:['Clics al link','n'],frm_alcance:['Alcance de la campaña web','n'],frm_mensajes:['Mensajes','n'],frm_costo_visita:['Costo por visita','$2'],frm_inversion:['Invertido en la web','$'],
-        pres_gastado:['Invertido en el período','$'],ig_inversion_diaria:['Inversión diaria en seguidores','$'],tk_tickets:['Entradas vendidas por la pauta','n'],tk_costo_ticket:['Costo por entrada','$2'],tk_inversion:['Invertido en entradas','$'],tk_roas:['Retorno de lo invertido','x'],pres_diario:['Presupuesto diario','$'],sp_oyentes:['Oyentes en Spotify','n'],sp_oyentes_perfil:['Oyentes del perfil','n'],sp_seguidores:['Seguidores en Spotify','n'],sp_streams:['Reproducciones','n'],
+        pres_gastado:['Invertido en el período','$'],ig_inversion_diaria:['Inversión diaria en seguidores','$'],tk_tickets:['Entradas vendidas por la pauta','n'],tk_costo_ticket:['Costo por entrada','$2'],tk_inversion:['Invertido en entradas','$'],tk_roas:['Retorno de lo invertido','x'],pres_diario:['Presupuesto diario','$'],sp_oyentes:['Oyentes en Spotify','n'],sp_oyentes_perfil:['Oyentes mensuales','n'],sp_seguidores:['Seguidores en Spotify','n'],sp_streams:['Reproducciones','n'],
         yt_subs:['Suscriptores en YouTube','n'],yt_subs_nuevos:['Suscriptores nuevos','n'],yt_vistas:['Vistas en YouTube','n'],vta_ventas:['Ventas','n'],vta_costo_venta:['Costo por venta','$2'],msj_mensajes:['Conversaciones','n'],msj_costo_mensaje:['Costo por conversación','$2']};
       const val=(k,t)=>{ const v=Number(U[k]); return t==='n'?nf(v):t==='%'?nf(v,1)+'%':t==='x'?nf(v,2)+'x':SIM()==='USD'?'USD '+nf(v,t==='$2'?2:(v<100?2:0)):'$ '+nf(v,0); };
       const grupos=[['Entradas'+(U.tk_nombre?' · '+U.tk_nombre:''),'ticket','',k=>/^tk_[a-z]+$/.test(k)&&!/^tk_p\d/.test(k)],['Instagram','camara','r',k=>/^ig_/.test(k)],['Web y Formación','web','c',k=>/^frm_/.test(k)],['Spotify','musica','',k=>/^sp_/.test(k)],['YouTube','clip','r',k=>/^yt_/.test(k)],['Ventas y mensajes','bolsa','',k=>/^(vta|msj)_/.test(k)],['Inversión','billetera','c',k=>/^pres_/.test(k)]];
-      const tiles=f=>Object.keys(LAB).filter(k=>f(k)&&U[k]!=null&&k!=='ig_followers_total').map(k=>{ const pp=pct(Number(U[k]),M.prom(k)), menos=/costo/.test(k);
+      const tiles=f=>Object.keys(LAB).filter(k=>f(k)&&U[k]!=null&&k!=='ig_followers_total'&&!(k==='sp_oyentes'&&U.sp_oyentes_perfil!=null)).map(k=>{ const pp=pct(Number(U[k]),M.prom(k)), menos=/costo/.test(k);
         // 18/11 (Agus): cada métrica con su gráfica (barras de los últimos reportes; la última en azul)
         const S=M.R.slice(-8).map(r=>r.metricas[k]==null?null:Number(r.metricas[k])), ok=S.filter(x=>x!=null&&x>=0), mxS=Math.max(...ok,0);
         const gb=ok.length>=2&&mxS>0?`<div class="bars mini" aria-hidden="true">${S.map(x=>`<div><i style="height:${x==null||x<0?0:Math.max(4,Math.round(x*100/mxS))}%"></i></div>`).join('')}</div>`:'';
@@ -441,7 +441,7 @@
       const CJ=(CTA&&CTA.conjuntos)||[], P=CTA&&CTA.pago;
       const lista=(L,n)=>{ L=L.map(z=>({...z,nombre:PA[z.nombre]||z.nombre}));  const t=Number(U.ig_followers_total)||0, m=Math.max(...L.map(z=>Number(z.seguidores)||0))||1; return `<div class="box">${L.slice(0,10).map(z=>`<div class="row"><span class="tx"><b>${esc(z.nombre)}</b><span class="pb"><i style="width:${Math.max(3,Math.round((Number(z.seguidores)||0)*100/m))}%"></i></span></span><span class="costo"><b>${z.seguidores==null?'—':nf(z.seguidores)}</b>${t&&z.seguidores?`<small>${nf(z.seguidores*100/t,1)}%</small>`:''}</span></div>`).join('')}</div>`; };
       const paises=M.R.slice().reverse().map(r=>r.metricas.ig_paises).find(x=>x&&x.length), ciudades=M.R.slice().reverse().map(r=>r.metricas.ig_ciudades||r.metricas.ig_ciudades_camp).find(x=>x&&x.length);
-      rep=`${CARD}${resumenMes()}${panelPeriodo()}
+      rep=`${CARD}${resumenMes()}${panelPeriodo()}${bloqueCampanas('graf')}
         ${bloqueWeb()}
         <div class="tt"><h2>Todos los números</h2></div>
         ${grupos.map(([t,ic,c,f])=>{ const x=tiles(f); return x?`<div class="sub2">${t}</div><div class="dgrid">${x}</div>`:''; }).join('')}
@@ -473,7 +473,7 @@
     const L=(CTA.cuentas||[]).length>1?CTA.cuentas:[CTA];
     return `<div class="tt"><h2>${L.length>1?'Tus cuentas publicitarias':'Cuenta publicitaria'}</h2></div>${L.map((c,i)=>una(c,L.length>1?(c.nombre||'Cuenta '+(i+1)):'Anuncios en Meta')).join('<div style="height:12px"></div>')}`; }
   /* 18/11 (Agus): campañas corriendo en Inicio, con su detalle por público y gráficas. Salen de sub_campanas (tipo 'destacada'), que actualiza destacada.py en la VM. */
-  function bloqueCampanas(){
+  function bloqueCampanas(modo){   /* 18/11: modo 'graf' = solo las gráficas (van en Métricas); sin modo = tarjeta de Inicio con la última semana */
     const OCULTAS={'spam-seguidores':1};
     const L=((D&&D.campanas)||[]).filter(k=>{ const M=k.metricas||{}; return M.tipo==='destacada'&&M.estado==='activa'&&!OCULTAS[k.codigo]; });
     if(!L.length) return '';
@@ -483,8 +483,9 @@
       return `<svg viewBox="0 0 ${W} ${H}" class="gsv" role="img"><path d="${ok.map((z,k)=>(k?'L':'M')+X(z[0]).toFixed(1)+' '+Y(z[1]).toFixed(1)).join(' ')}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round"/>${ok.map((z,k)=>`<circle cx="${X(z[0]).toFixed(1)}" cy="${Y(z[1]).toFixed(1)}" r="3" fill="${col}"/>${(k%paso===0||k===ok.length-1)?`<text x="${X(z[0]).toFixed(1)}" y="${(Y(z[1])-8).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${col}" paint-order="stroke" stroke="#FDFBF8" stroke-width="4" stroke-linejoin="round">${fmt(z[1])}</text><text x="${X(z[0]).toFixed(1)}" y="${H-8}" text-anchor="middle" font-size="10" fill="#8C8896">${fdm(P[z[0]][0])}</text>`:''}`).join('')}</svg>`; };
     const una=k=>{ const M=k.metricas||{}, us=(M.moneda||SIM())==='USD', pl=(v,d)=>v==null?'—':us?'USD '+nf(v,d==null?2:d):'$ '+nf(v,0);
       const RES=String(M.resultado||'resultados'), RES1=RES.replace(/s(\s|$)/,'$1').replace(/es al /,' al ');
-      const ventas=M.ventas!=null;
-      const tiles=ventas?[[nf(M.ventas),M.ventas===1?'Venta':'Ventas',1],[pl(M.costo_venta),'Costo por venta'],[pl(M.ingreso),'Facturado'],[M.roas!=null?nf(M.roas,2)+'x':'—','Retorno (ROAS)'],[pl(M.inversion,us?0:0),'Invertido'],[pl(M.diaria),'Inversión por día']]
+      const ventas=M.ventas!=null, SM=!ventas&&M.sem?M.sem:null;
+      const tiles=SM?[[nf(SM.visitas),cap(RES),1],[SM.costo_visita!=null?pl(SM.costo_visita):'—','Costo por '+RES1],[pl(SM.inversion,us?2:0),'Invertido'],[nf(SM.alcance),'Personas alcanzadas'],[pl(M.diaria),'Inversión por día'],[SM.frecuencia?nf(SM.frecuencia,1):'—','Veces que lo vio cada persona']]
+        :ventas?[[nf(M.ventas),M.ventas===1?'Venta':'Ventas',1],[pl(M.costo_venta),'Costo por venta'],[pl(M.ingreso),'Facturado'],[M.roas!=null?nf(M.roas,2)+'x':'—','Retorno (ROAS)'],[pl(M.inversion,us?0:0),'Invertido'],[pl(M.diaria),'Inversión por día']]
         :[[nf(M.visitas),cap(RES),1],[pl(M.costo_visita),'Costo por '+RES1],[pl(M.inversion,us?0:0),'Invertido'],[nf(M.alcance),'Personas alcanzadas'],[pl(M.diaria),'Inversión por día'],[M.frecuencia?nf(M.frecuencia,1):'—','Veces que lo vio cada persona']];
       // gráfica: ventas = acumulado diario; resto = por día (≤31 días) o por semana
       let G='';
@@ -495,11 +496,13 @@
           P=Object.values(WK).sort((a,b)=>a[0]<b[0]?-1:1).slice(-12); t1=cap(RES)+' por semana'; t2='Costo por '+RES1+' por semana'; n='Cada punto es una semana; abajo, el domingo en que cierra (la última puede estar en curso).'; }
         G=`<p class="gt">${esc(t1)}</p>${graf(P,P.map(z=>z[1]),'#2F7A4F',x=>nf(x))}<p class="gt">${esc(t2)}</p>${graf(P,P.map(z=>z[1]?z[2]/z[1]:null),'#7A1F3A',x=>nf(x,2))}<p class="gn">${esc(n)} Costo = inversión ÷ ${esc(RES)}${us?', en dólares':''}.</p>`; }
       const CJ=M.conjuntos||[];
-      return `<div class="box cmp4"><div class="c1"><span class="tile">${I(ventas?'bolsa':'megafono')}</span><span class="tx"><b>${esc(k.nombre)}</b><small>${M.etiqueta?esc(M.etiqueta)+' · ':''}Desde el ${fdm(M.desde)}${M.desde&&M.desde.slice(0,4)!==String(new Date().getFullYear())?'/'+M.desde.slice(2,4):''}</small></span><span class="estado"><i class="led"></i>Activa</span></div>
+      if(modo==='graf') return G?`<div class="box cmp4"><div class="c1"><span class="tile">${I(ventas?'bolsa':'megafono')}</span><span class="tx"><b>${esc(k.nombre)}</b><small>Desde el ${fdm(M.desde)}${M.desde&&M.desde.slice(0,4)!==String(new Date().getFullYear())?'/'+M.desde.slice(2,4):''}</small></span></div><div style="padding:0 16px 14px">${G}</div></div>`:'';
+      return `<div class="box cmp4"><div class="c1"><span class="tile">${I(ventas?'bolsa':'megafono')}</span><span class="tx"><b>${esc(k.nombre)}</b><small>${M.etiqueta?esc(M.etiqueta)+' · ':''}${SM?`Última semana · del ${fdm(SM.desde)} al ${fdm(SM.hasta)}`:`Desde el ${fdm(M.desde)}${M.desde&&M.desde.slice(0,4)!==String(new Date().getFullYear())?'/'+M.desde.slice(2,4):''}`}</small></span><span class="estado"><i class="led"></i>Activa</span></div>
         <div class="dgrid c2">${tiles.map(([v,l,hi])=>`<div class="dt ${hi?'hi':''}"><b>${v}</b><small>${esc(l)}</small></div>`).join('')}</div>
-        ${CJ.length?`<div class="pub"><div class="sub2">${CJ.length===1?'Público activo':'Públicos activos ('+CJ.length+')'}</div>${CJ.map(c=>`<div class="row"><span class="tx"><b>${esc(c.nombre)}</b><small>Últimos 7 días: ${nf(c.res7||0)} ${esc(RES)}${c.diaria!=null?' · '+pl(c.diaria)+' por día':''}</small><small>Desde el ${fdm(c.inicio)}${c.inicio&&c.inicio.slice(0,4)!==String(new Date().getFullYear())?'/'+c.inicio.slice(2,4):''}: ${nf(c.resultados)} ${esc(RES)} con ${pl(c.inversion,0)}</small></span><span class="costo"><b>${c.costo7!=null?pl(c.costo7):'—'}</b><small>por ${esc(RES1)}<br>últimos 7 días</small></span></div>`).join('')}</div>`:''}
-        ${G?`<details><summary>Ver gráficas ${I('chev')}</summary>${G}</details>`:''}
-        <div class="pie4">Acumulado de toda la campaña según Meta${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; };
+        ${CJ.length?`<div class="pub"><div class="sub2">${CJ.length===1?'Público activo':'Públicos activos ('+CJ.length+')'}</div>${CJ.map(c=>`<div class="row"><span class="tx"><b>${esc(c.nombre)}</b><small>${nf(c.res7||0)} ${esc(RES)} con ${pl(c.inv7!=null?c.inv7:0)}${c.diaria!=null?' · '+pl(c.diaria)+' por día':''}</small></span><span class="costo"><b>${c.costo7!=null?pl(c.costo7):'—'}</b><small>por ${esc(RES1)}</small></span></div>`).join('')}</div>`:''}
+        ${G?`<button class="lk" data-ir="metricas" style="margin:4px 16px 0">Ver la evolución en Métricas ${I('chev')}</button>`:''}
+        <div class="pie4">${SM?'Últimos 7 días según Meta':'Acumulado de toda la campaña según Meta'}${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; };
+    if(modo==='graf'){ const X=L.map(una).filter(Boolean); return X.length?`<div class="tt"><h2>${X.length>1?'Evolución de tus campañas':'Evolución de tu campaña'}</h2></div>${X.join('<div style="height:12px"></div>')}`:''; }
     return `<div class="tt"><h2>${L.length>1?'Tus campañas':'Tu campaña'}</h2></div>${L.map(una).join('<div style="height:12px"></div>')}`; }
   /* 17/11: ticketera (Berco). La VM lee las entradas por función cada martes; María marca los invitados en una página aparte. */
   function tkUlt(){ return Object.values((D.cliente||{}).ventas||{}).filter(x=>x&&x.tipo==='ticketera'&&Array.isArray(x.funciones)).sort((a,b)=>String(a.captura||a.actualizado)<String(b.captura||b.actualizado)?-1:1).pop()||null; }
@@ -516,9 +519,10 @@
       ${F.length?`<div class="sub2">Próximas funciones</div><div class="box">${F.map(fila).join('')}</div>`:''}
       ${P.length?`<div class="sub2">Funciones que ya pasaron</div><div class="box">${P.map(fila).join('')}</div>`:''}`; }
   function metas(){ const M=metricas(), H=(D.hitos||[]).filter(h=>h.metrica!=='ig_followers_total'||h.objetivo===META());
-    const NOM={ig_followers_total:'seguidores en Instagram',msj_mensajes:'consultas',tk_tickets:'entradas vendidas'};
+    const NOM={sp_oyentes_perfil:'oyentes mensuales en Spotify',sp_monthly:'oyentes mensuales en Spotify',ig_followers_total:'seguidores en Instagram',msj_mensajes:'consultas',tk_tickets:'entradas vendidas'};
     const VT=Object.values((D.cliente||{}).ventas||{}).filter(x=>x&&x.tipo==='ticketera').sort((a,b)=>String(a.captura||a.actualizado)<String(b.captura||b.actualizado)?-1:1).pop();
-    const L=H.map(h=>{ let v=M.ult(h.metrica); if(h.metrica==='tk_tickets'&&/vendidas/i.test(h.titulo||'')&&VT) v=Number(VT.ventas); if(v==null) return ''; const o=Number(h.objetivo), pc=Math.min(100,Math.round(v*100/o));
+    const L=H.map(h=>{ let v=M.ult(h.metrica); if(/^sp_(monthly|oyentes|listeners|oyentes_perfil)$/.test(h.metrica)&&M.ult('sp_oyentes_perfil')!=null) v=M.ult('sp_oyentes_perfil');   /* 18/11: oyentes mensuales = los del perfil */
+      if(h.metrica==='tk_tickets'&&/vendidas/i.test(h.titulo||'')&&VT) v=Number(VT.ventas); if(v==null) return ''; const o=Number(h.objetivo), pc=Math.min(100,Math.round(v*100/o));
       const t=h.titulo&&h.titulo!==h.metrica?h.titulo:`${nf(o)} ${NOM[h.metrica]||h.metrica}`;
       return `<div class="row"><span class="tx"><b>${esc(t)}</b><span class="pb"><i style="width:${Math.max(3,pc)}%"></i></span><small>${nf(v)} de ${nf(o)}${pc>=100?' · lograda':''}</small></span><span class="costo"><b>${pc}%</b></span></div>`; }).filter(Boolean);
     return L.length?`<div class="tt"><h2>Tus metas</h2></div><div class="box">${L.join('')}</div>`:''; }
