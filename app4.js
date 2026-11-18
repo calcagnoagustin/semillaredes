@@ -232,6 +232,8 @@
   #v4 .pm{background:var(--card);border:1px solid var(--linea);border-radius:18px;padding:14px;display:flex;flex-direction:column}
   #v4 .pm b{font-family:"Playfair Display",Georgia,serif;font-size:26px;line-height:30px;letter-spacing:-.5px;white-space:nowrap} #v4 .pm small{font-size:13.5px;color:var(--mute);line-height:18px}
   #v4 .bb{display:flex;align-items:flex-end;gap:5px;height:56px;margin-top:14px} #v4 .bb i{flex:1;border-radius:4px 4px 2px 2px;display:block}
+  #v4 .todo4{margin-top:22px;background:var(--card);border:1px solid var(--linea);border-radius:20px;overflow:hidden} #v4 .todo4>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:16px;font-weight:700;font-size:16px;color:var(--vino)} #v4 .todo4>summary::-webkit-details-marker{display:none} #v4 .todo4>summary svg{transition:transform .2s} #v4 .todo4[open]>summary svg{transform:rotate(90deg)}
+  #v4 .todo4 #app{padding:0 14px 16px} #v4 .todo4 #app h1{font-size:24px;margin:4px 0} #v4 .todo4 #app h2{font-size:20px;margin:22px 0 4px}
   #v4 .v4clasico .ventaBox{background:var(--card);border:1px solid var(--linea);border-radius:18px;padding:16px;margin-bottom:12px;font-family:inherit}
   #v4 .costo{text-align:right;flex:none} #v4 .costo b{font-size:17px} #v4 .costo small{font-size:12.5px}
   #v4 .hall{display:flex;gap:14px;align-items:flex-start;padding:16px}
@@ -342,6 +344,7 @@
       ${hero}
       ${bloqueCuenta()}
       ${bloqueCampanas()}
+      ${(document.querySelector('#app .ventaBox')||(D.cliente||{}).ventas_log_on||(D.ventas_log||[]).length)?`<div class="box" style="margin-top:12px"><button class="row" id="v4vtas"><span class="tile">${I('bolsa')}</span><span class="tx"><b>Cargar ventas</b><small>Lo que vendiste en el período</small></span><span class="go">${I('chev')}</span></button></div>`:''}
       <div class="tt"><h2>Próximas fechas</h2><button class="lk" data-ir="proyecto">Ver agenda ${I('chev')}</button></div>
       <div class="box">${prox.length?prox.map(filaAgenda).join(''):`<div class="vacio">No tenés fechas próximas. Sumá una desde Proyecto.</div>`}</div>
       <div class="tt"><h2>Seguí aprendiendo</h2></div>
@@ -442,6 +445,7 @@
         <div class="tt"><h2>Todos los números</h2></div>
         ${grupos.map(([t,ic,c,f])=>{ const x=tiles(f); return x?`<div class="sub2">${t}</div><div class="dgrid">${x}</div>`:''; }).join('')}
         ${M.R.length>=2?`<p class="pie3" style="margin-top:10px">Las barras muestran cada métrica en los últimos ${Math.min(8,M.R.length)} reportes; la última, en azul, es la de este período.</p>`:''}
+        <details class="todo4" id="v4todo"><summary>Ver todas las gráficas ${I('chev')}</summary></details>
         ${metas()}
         ${paises?`<div class="tt"><h2>Dónde están tus seguidores</h2></div><div class="sub2" style="margin-top:0">Países</div>${lista(paises)}`:''}
         ${ciudades?`<div class="sub2">Ciudades</div>${lista(ciudades)}`:''}
@@ -686,8 +690,10 @@
     const nb=TAB.startsWith('clase:')?'formacion':TAB==='analisis'?'metricas':TAB;
     const N=[['inicio','casa','Inicio'],['proyecto','carpeta','Proyecto'],['metricas','barras','Métricas'],['formacion','gorro','Formación']];
     const spl=document.getElementById('v4splash'); if(spl) spl.remove();
+    const app=document.getElementById('app'), wr=document.querySelector('.wrap'); if(app&&wr&&!wr.contains(app)) wr.appendChild(app);   // 18/11: el panel completo vuelve a su lugar antes de reescribir
     r.innerHTML=hd()+`<div class="sc on">${sc}</div>`+`<nav class="v4n" id="v3nav">${N.map(([k,ic,t])=>`<button data-ir="${k==='metricas'?'ia':k}" class="${nb===k?'on':''}"><span class="ic">${I(ic)}</span>${t}</button>`).join('')}</nav>`;
     eventos(r);
+    const td=r.querySelector('#v4todo'); if(app&&td){ td.appendChild(app); app.classList.remove('oculto'); if(LS('todo')==='1') td.open=true; td.ontoggle=()=>LS('todo',td.open?'1':'0'); }   // 18/11 (Agus): las gráficas de antes (panel completo, como en la app 3)
   }
   function ir(t){ if(t==='ia') t='metricas'; TAB=t; if(!t.startsWith('clase:')) LS('tab',t); pintar(); window.scrollTo(0,0); window.SRE&&window.SRE('v4_'+t.split(':')[0],{}); }
   function hoja(titulo,html,al){ const h=document.createElement('div'); h.className='hoja'; h.innerHTML=`<div class="cj"><button class="cerrar" aria-label="Cerrar">×</button><h2>${titulo}</h2>${html}</div>`;
