@@ -1345,7 +1345,13 @@ function pintarSemilla(d){
 // 18/11: detalle de Tiendanube: libros (promos y sueltos) y de dónde vinieron los pedidos
 function tnDetalle(v){ const A=v.atribucion||[], nf=x=>Number(x||0).toLocaleString('es-AR');
   return `<p class="que" style="margin-top:8px"><b>${nf(v.libros)} libros</b>: ${nf(v.promos)} ${v.promos===1?'promo':'promos'} de 3 libros y ${nf(v.sueltos)} ${v.sueltos===1?'libro suelto':'libros sueltos'}.${v.regalos?` ${v.regalos} ${v.regalos===1?'pedido fue regalo':'pedidos fueron regalo'} (sin cobro).`:''}</p>`+
-    (A.length?`<div class="tnAt" style="margin-top:10px">${A.map(z=>`<div style="display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid #ECE5DA;font-size:14px"><span><b>${z.origen}</b><br><span style="color:#5F5D6B">${nf(z.promos)} promos · ${nf(z.sueltos)} sueltos</span></span><span style="text-align:right;white-space:nowrap"><b>${nf(z.pedidos)}</b> ${z.pedidos===1?'pedido':'pedidos'}<br><span style="color:#5F5D6B">$ ${nf(Math.round(z.facturado_ars))}</span></span></div>`).join('')}</div><p class="que" style="margin-top:6px;font-size:12.5px">De dónde vino cada pedido, según la visita que terminó en compra.</p>`:''); }
+    (A.length?`<div class="tnAt" style="margin-top:10px">${A.map(z=>`<div style="display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid #ECE5DA;font-size:14px"><span><b>${z.origen}</b><br><span style="color:#5F5D6B">${nf(z.promos)} promos · ${nf(z.sueltos)} sueltos</span></span><span style="text-align:right;white-space:nowrap"><b>${nf(z.pedidos)}</b> ${z.pedidos===1?'pedido':'pedidos'}<br><span style="color:#5F5D6B">$ ${nf(Math.round(z.facturado_ars))}</span></span></div>`).join('')}</div><p class="que" style="margin-top:6px;font-size:12.5px">De dónde vino cada pedido, según la visita que terminó en compra.</p>`:'')+tnPixel(v.pixel_anuncios||[]); }
+// 18/11: qué vendió cada anuncio, según el píxel (conversiones por producto de la cuenta de Meta)
+function tnPixel(L){ L=L.filter(z=>z.inversion_usd>0); if(!L.length) return ''; const nf=x=>Number(x||0).toLocaleString('es-AR'), us=x=>'USD '+Number(x||0).toLocaleString('es-AR',{maximumFractionDigits:0});
+  return `<h4 style="margin:16px 0 4px;font-size:15px">Qué vendió cada anuncio</h4>`+L.map(z=>{ const P=Object.entries(z.productos||{}).sort((a,b)=>b[1]-a[1]);
+    return `<div style="padding:9px 0;border-top:1px solid #ECE5DA;font-size:14px"><div style="display:flex;justify-content:space-between;gap:10px"><b>${z.anuncio||'Anuncio'}</b><span style="white-space:nowrap">${us(z.inversion_usd)}</span></div>
+      <div style="color:#5F5D6B;margin-top:3px">${z.compras?`${nf(z.compras)} ${z.compras===1?'compra':'compras'}${P.length?': '+P.map(([n,c])=>nf(c)+' '+n).join(' · '):''} · ${us(z.inversion_usd/z.compras)} por compra`:'Sin compras en el período'}</div></div>`; }).join('')+
+    `<p class="que" style="margin-top:6px;font-size:12.5px">Según el píxel de Meta en la tienda (compras atribuidas a cada anuncio). Puede no coincidir exacto con los pedidos de Tiendanube.</p>`; }
 let PER_SEL=null, PER_ABIERTO=false, ULT_D=null;
 function pintarVentas(d){
   ULT_D=d;
@@ -1359,7 +1365,7 @@ function pintarVentas(d){
     if(v&&v.fuente==='tiendanube'&&Number(x.vta_inversion)>0){   // 18/11 (Agus): ganancia exacta con los pedidos de Tiendanube
       const inv=Number(x.vta_inversion), ing=Number(v.ingreso), t=Number(v.tasa)||1, U=a=>Number(a||0)/t;
       x.vta_ganancia=Math.round((ing-Number(v.costos_usd||0)-inv)*100)/100; x.vta_roas=Math.round(ing/inv*100)/100; x.vta_roi=Math.round(x.vta_ganancia/inv*100);
-      x._tn=v;
+      x._tn=Object.assign({},v,{pixel_anuncios:x.vta_pixel_anuncios||v.pixel_anuncios||[]});
       x._cuenta=`facturado ${mon(ing,2)} (${v.pedidos} pedidos), menos impresión de ${v.libros} libros ${mon(U(v.impresion_ars),2)}, correo ${mon(U(v.correo_ars),2)}, Pagonube ${mon(U(v.pagonube_ars),2)} y publicidad ${mon(inv,2)} = <b>${mon(x.vta_ganancia,2)}</b>. En pesos: $ ${Math.round(Number(v.ganancia_ars)).toLocaleString('es-AR')}, al contado con liquidación de $ ${Number(t).toLocaleString('es-AR')}`; return; }
     if(x.vta_ingreso!=null&&Number(x.vta_inversion)>0){ const inv=Number(x.vta_inversion), ing=Number(x.vta_ingreso);
       x.vta_ganancia=Math.round((ing*MG-inv)*100)/100; x.vta_roas=Math.round(ing/inv*100)/100; x.vta_roi=Math.round(x.vta_ganancia/inv*100);
