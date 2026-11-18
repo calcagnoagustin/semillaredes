@@ -312,6 +312,7 @@
   // ---------- datos ----------
   function metricas(){
     const R=(D.reportes||[]).filter(r=>r.metricas).slice().sort((a,b)=>a.hasta<b.hasta?-1:1);
+    R.forEach(r=>{ const m=r.metricas; if(m.ig_conv==null&&Number(m.ig_visitas)>0&&m.ig_followers_nuevos!=null&&Number(m.ig_followers_nuevos)<=Number(m.ig_visitas)) m.ig_conv=Math.round(Number(m.ig_followers_nuevos)*1000/Number(m.ig_visitas))/10; });   // 18/11 (Agus): tasa de conversión = seguidores nuevos ÷ visitas al perfil
     const U=(R[R.length-1]||{}).metricas||{}, prev=R.slice(-5,-1).map(r=>r.metricas||{});
     const prom=k=>{ const v=prev.map(m=>Number(m[k])).filter(x=>!isNaN(x)&&x!==0); return v.length?v.reduce((a,b)=>a+b,0)/v.length:null; };
     const ult=k=>{ for(let i=R.length-1;i>=0;i--){ const v=(R[i].metricas||{})[k]; if(v!=null) return Number(v); } return null; };
@@ -424,14 +425,17 @@
     }
     if(SUBM!=='reporte'){
       const U=M.U, tot=M.ult('ig_followers_total'), nue=U.ig_followers_nuevos, meta=META();
-      const LAB={ig_followers_nuevos:['Seguidores nuevos','n'],ig_alcance:['Alcance en Instagram','n'],ig_visitas:['Visitas al perfil','n'],ig_costo_follower:['Costo por seguidor','$2'],ig_inversion:['Invertido en seguidores','$'],
+      const LAB={ig_followers_nuevos:['Seguidores nuevos','n'],ig_conv:['Tasa de conversión: visitas al perfil que siguieron','%'],ig_visitas:['Visitas al perfil','n'],ig_alcance:['Alcance en Instagram','n'],ig_costo_follower:['Costo por seguidor','$2'],ig_inversion:['Invertido en seguidores','$'],
         frm_visitas:['Visitas a la web','n'],frm_clics:['Clics al link','n'],frm_alcance:['Alcance de la campaña web','n'],frm_mensajes:['Mensajes','n'],frm_costo_visita:['Costo por visita','$2'],frm_inversion:['Invertido en la web','$'],
         pres_gastado:['Invertido en el período','$'],ig_inversion_diaria:['Inversión diaria en seguidores','$'],tk_tickets:['Entradas vendidas por la pauta','n'],tk_costo_ticket:['Costo por entrada','$2'],tk_inversion:['Invertido en entradas','$'],tk_roas:['Retorno de lo invertido','x'],pres_diario:['Presupuesto diario','$'],sp_oyentes:['Oyentes en Spotify','n'],sp_oyentes_perfil:['Oyentes del perfil','n'],sp_seguidores:['Seguidores en Spotify','n'],sp_streams:['Reproducciones','n'],
         yt_subs:['Suscriptores en YouTube','n'],yt_subs_nuevos:['Suscriptores nuevos','n'],yt_vistas:['Vistas en YouTube','n'],vta_ventas:['Ventas','n'],vta_costo_venta:['Costo por venta','$2'],msj_mensajes:['Conversaciones','n'],msj_costo_mensaje:['Costo por conversación','$2']};
-      const val=(k,t)=>{ const v=Number(U[k]); return t==='n'?nf(v):t==='x'?nf(v,2)+'x':SIM()==='USD'?'USD '+nf(v,t==='$2'?2:(v<100?2:0)):'$ '+nf(v,0); };
+      const val=(k,t)=>{ const v=Number(U[k]); return t==='n'?nf(v):t==='%'?nf(v,1)+'%':t==='x'?nf(v,2)+'x':SIM()==='USD'?'USD '+nf(v,t==='$2'?2:(v<100?2:0)):'$ '+nf(v,0); };
       const grupos=[['Entradas'+(U.tk_nombre?' · '+U.tk_nombre:''),'ticket','',k=>/^tk_[a-z]+$/.test(k)&&!/^tk_p\d/.test(k)],['Instagram','camara','r',k=>/^ig_/.test(k)],['Web y Formación','web','c',k=>/^frm_/.test(k)],['Spotify','musica','',k=>/^sp_/.test(k)],['YouTube','clip','r',k=>/^yt_/.test(k)],['Ventas y mensajes','bolsa','',k=>/^(vta|msj)_/.test(k)],['Inversión','billetera','c',k=>/^pres_/.test(k)]];
       const tiles=f=>Object.keys(LAB).filter(k=>f(k)&&U[k]!=null&&k!=='ig_followers_total').map(k=>{ const pp=pct(Number(U[k]),M.prom(k)), menos=/costo/.test(k);
-        return `<div class="dt"><b>${val(k,LAB[k][1])}</b><small>${LAB[k][0]}</small>${pp!=null&&!/^pres_/.test(k)?`<span class="dd ${((pp>=0)!==menos)?'':'mal'}">${pp>0?'+':''}${pp}% vs. promedio</span>`:''}</div>`; }).join('');
+        // 18/11 (Agus): cada métrica con su gráfica (barras de los últimos reportes; la última en azul)
+        const S=M.R.slice(-8).map(r=>r.metricas[k]==null?null:Number(r.metricas[k])), ok=S.filter(x=>x!=null&&x>=0), mxS=Math.max(...ok,0);
+        const gb=ok.length>=2&&mxS>0?`<div class="bars mini" aria-hidden="true">${S.map(x=>`<div><i style="height:${x==null||x<0?0:Math.max(4,Math.round(x*100/mxS))}%"></i></div>`).join('')}</div>`:'';
+        return `<div class="dt"><b>${val(k,LAB[k][1])}</b><small>${LAB[k][0]}</small>${pp!=null&&!/^pres_/.test(k)?`<span class="dd ${((pp>=0)!==menos)?'':'mal'}">${pp>0?'+':''}${pp}% vs. promedio</span>`:''}${gb}</div>`; }).join('');
       const H=M.R.filter(r=>r.metricas.ig_followers_total!=null).slice(-8), mx=Math.max(...H.map(r=>Number(r.metricas.ig_followers_total))), mn=Math.min(...H.map(r=>Number(r.metricas.ig_followers_total)));
       const evo=H.length>1?`<div class="tt"><h2>Cómo creció</h2></div><div class="box evo"><div class="bars">${H.map(r=>{ const v=Number(r.metricas.ig_followers_total); return `<div><span>${nf(v/1000,1)}k</span><i style="height:${Math.round(18+82*(v-mn)/Math.max(1,mx-mn))}%"></i><small>${fCorta(r.hasta)}</small></div>`; }).join('')}</div><p class="pie3">Seguidores en Instagram al cierre de cada reporte</p></div>`:'';
       const CJ=(CTA&&CTA.conjuntos)||[], P=CTA&&CTA.pago;
@@ -441,6 +445,7 @@
         ${bloqueWeb()}
         <div class="tt"><h2>Todos los números</h2></div>
         ${grupos.map(([t,ic,c,f])=>{ const x=tiles(f); return x?`<div class="sub2">${t}</div><div class="dgrid">${x}</div>`:''; }).join('')}
+        ${M.R.length>=2?`<p class="pie3" style="margin-top:10px">Las barras muestran cada métrica en los últimos ${Math.min(8,M.R.length)} reportes; la última, en azul, es la de este período.</p>`:''}
         ${metas()}
         ${paises?`<div class="tt"><h2>Dónde están tus seguidores</h2></div><div class="sub2" style="margin-top:0">Países</div>${lista(paises)}`:''}
         ${ciudades?`<div class="sub2">Ciudades</div>${lista(ciudades)}`:''}
@@ -492,7 +497,7 @@
       const CJ=M.conjuntos||[];
       return `<div class="box cmp4"><div class="c1"><span class="tile">${I(ventas?'bolsa':'megafono')}</span><span class="tx"><b>${esc(k.nombre)}</b><small>${M.etiqueta?esc(M.etiqueta)+' · ':''}Desde el ${fdm(M.desde)}${M.desde&&M.desde.slice(0,4)!==String(new Date().getFullYear())?'/'+M.desde.slice(2,4):''}</small></span><span class="estado"><i class="led"></i>Activa</span></div>
         <div class="dgrid c2">${tiles.map(([v,l,hi])=>`<div class="dt ${hi?'hi':''}"><b>${v}</b><small>${esc(l)}</small></div>`).join('')}</div>
-        ${CJ.length?`<div class="pub"><div class="sub2">${CJ.length===1?'Público activo':'Públicos activos ('+CJ.length+')'}</div>${CJ.map(c=>`<div class="row"><span class="tx"><b>${esc(c.nombre)}</b><small>Últimos 7 días: ${nf(c.res7||0)} ${esc(RES)}${c.diaria!=null?' · '+pl(c.diaria)+' por día':''}</small><small>Desde el ${fdm(c.inicio)}: ${nf(c.resultados)} ${esc(RES)} con ${pl(c.inversion,0)}</small></span><span class="costo"><b>${c.costo7!=null?pl(c.costo7):'—'}</b><small>por ${esc(RES1)}<br>últimos 7 días</small></span></div>`).join('')}</div>`:''}
+        ${CJ.length?`<div class="pub"><div class="sub2">${CJ.length===1?'Público activo':'Públicos activos ('+CJ.length+')'}</div>${CJ.map(c=>`<div class="row"><span class="tx"><b>${esc(c.nombre)}</b><small>Últimos 7 días: ${nf(c.res7||0)} ${esc(RES)}${c.diaria!=null?' · '+pl(c.diaria)+' por día':''}</small><small>Desde el ${fdm(c.inicio)}${c.inicio&&c.inicio.slice(0,4)!==String(new Date().getFullYear())?'/'+c.inicio.slice(2,4):''}: ${nf(c.resultados)} ${esc(RES)} con ${pl(c.inversion,0)}</small></span><span class="costo"><b>${c.costo7!=null?pl(c.costo7):'—'}</b><small>por ${esc(RES1)}<br>últimos 7 días</small></span></div>`).join('')}</div>`:''}
         ${G?`<details><summary>Ver gráficas ${I('chev')}</summary>${G}</details>`:''}
         <div class="pie4">Acumulado de toda la campaña según Meta${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; };
     return `<div class="tt"><h2>${L.length>1?'Tus campañas':'Tu campaña'}</h2></div>${L.map(una).join('<div style="height:12px"></div>')}`; }
