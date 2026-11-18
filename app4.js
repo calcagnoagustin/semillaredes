@@ -343,6 +343,7 @@
     return `<div class="hola"><h1>Hola, ${esc(nom)}</h1><span class="pill">${I('cal')}${fecha}</span></div>
       ${hero}
       ${bloqueCuenta()}
+      ${bloqueWishlist()}
       ${bloqueCruce()?`<div class="tt"><h2>Seguimiento de campañas</h2></div>${bloqueCruce()}`:''}
       ${bloqueCampanas()}
       ${(document.querySelector('#app .ventaBox')||(D.cliente||{}).ventas_log_on||(D.ventas_log||[]).length)?`<div class="box" style="margin-top:12px"><button class="row" id="v4vtas"><span class="tile">${I('bolsa')}</span><span class="tx"><b>Cargar ventas</b><small>Lo que vendiste en el período</small></span><span class="go">${I('chev')}</span></button></div>`:''}
@@ -476,6 +477,25 @@
   /* 18/11 (Agus): campañas corriendo en Inicio, con su detalle por público y gráficas. Salen de sub_campanas (tipo 'destacada'), que actualiza destacada.py en la VM. */
   /* 18/11 (Agus, Hernán): comparación de costo por seguidor entre dos campañas (sub_campanas tipo 'cruce', lo arma cruce_seguidores.py).
      Meta no da seguidores por campaña: los seguidores nuevos de cada día se reparten según las visitas al perfil que trajo cada una. */
+  /* 18/11 (Agus, Spam Studios): wishlists de Steam por país de la semana, cuáles vienen de países con campaña y el costo por wishlist (total y por país). */
+  function bloqueWishlist(){
+    const R=((D&&D.reportes)||[]).filter(r=>r.metricas&&r.metricas.stm_wishlist!=null).sort((a,b)=>a.hasta<b.hasta?-1:1); if(!R.length) return '';
+    const U=R[R.length-1], m=U.metricas, P=(m.stm_wl_paises||[]).slice().sort((a,b)=>b.wishlists-a.wishlists), fdm=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
+    const en=(D.cliente||{}).moneda==='USD', pl=v=>v==null?'—':(en?'USD '+nf(v,2):'$ '+nf(v,0));
+    const cp=(m.stm_wl_campana||{}).paises||P.filter(x=>x.inversion).map(x=>x.pais), enC=x=>cp.includes(x.pais);
+    const wc=P.filter(enC).reduce((a,x)=>a+x.wishlists,0), wo=P.filter(x=>!enC(x)).reduce((a,x)=>a+x.wishlists,0), inv=Number(m.stm_inversion||0)||null;
+    const tiles=[[nf(m.stm_wishlist),'Wishlists de la semana',1],[pl(m.stm_costo_wishlist),'Costo por wishlist (total)',1],[nf(wc),'De países con campaña'],[nf(wo),'De otros países'],[pl(inv&&wc?inv/wc:null),'Costo por wishlist de países con campaña'],[pl(inv),'Invertido en la campaña']];
+    const fila=x=>`<div class="row" style="align-items:flex-start"><span class="tx"><b>${esc(x.nombre)}</b>${enC(x)?'<span class="estado" style="margin-left:8px;padding:2px 8px;font-size:12px">Campaña</span>':''}
+        <small>${enC(x)?(x.inversion?`${pl(x.inversion)} invertidos`:'Con campaña'):'Sin campaña en este país'}</small></span>
+        <span class="costo"><b>${nf(x.wishlists)}</b><small>${x.wishlists===1?'wishlist':'wishlists'}${x.costo!=null?'<br>'+pl(x.costo)+' c/u':''}</small></span></div>`;
+    const H=R.slice(-8), mx=Math.max(1,...H.map(r=>Number(r.metricas.stm_wishlist)));
+    const evo=H.length>1?`<details><summary>Ver evolución ${I('chev')}</summary><p class="gt">Wishlists por semana</p><div class="bars" style="height:130px">${H.map(r=>{ const v=Number(r.metricas.stm_wishlist); return `<div><span>${nf(v)}</span><i style="height:${Math.round(14+86*v/mx)}%"></i><small>${fdm(r.hasta)}</small></div>`; }).join('')}</div>
+      <p class="gt" style="margin-top:14px">Costo por wishlist por semana</p><div class="bars mini" style="height:90px">${H.map(r=>{ const v=Number(r.metricas.stm_costo_wishlist)||0, M2=Math.max(1,...H.map(z=>Number(z.metricas.stm_costo_wishlist)||0)); return `<div><span>${v?nf(v):'—'}</span><i style="height:${Math.round(10+90*v/M2)}%;background:var(--vino)"></i><small>${fdm(r.hasta)}</small></div>`; }).join('')}</div></details>`:'';
+    return `<div class="tt"><h2>Wishlists en Steam</h2><span class="pill">${I('cal')}${fdm(m.stm_periodo_desde||U.desde)} – ${fdm(m.stm_periodo_hasta||U.hasta)}</span></div>
+      <div class="box cmp4"><div class="dgrid c2" style="padding-top:16px">${tiles.map(([v,l,hi])=>`<div class="dt ${hi?'hi':''}"><b>${v}</b><small>${esc(l)}</small></div>`).join('')}</div>
+        ${P.length?`<div class="pub"><div class="sub2">Por país</div>${P.map(fila).join('')}</div>`:''}
+        ${evo}
+        <div class="pie4">Wishlists según Steam${m.stm_wishlist_bajas?` (${nf(m.stm_wishlist_bajas)} ${m.stm_wishlist_bajas===1?'baja':'bajas'} en la semana)`:''}. El costo total es toda la inversión de la semana dividida todas las wishlists; el de cada país, lo invertido en ese país dividido sus wishlists. Campaña activa en ${cp.map(c=>({MX:'México',US:'EE. UU.',IN:'India'})[c]||c).join(', ')}.</div></div>`; }
   function bloqueCruce(){
     const L=((D&&D.campanas)||[]).filter(k=>(k.metricas||{}).tipo==='cruce'&&(k.metricas.campanas||[]).length); if(!L.length) return '';
     const fdm=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
