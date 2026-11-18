@@ -727,7 +727,7 @@
     'andrea-guedella':['Andrea','AG','Andrea Guedella'],'animales-del-rock':['Mariana','MT','Mariana Tavella'],'mavela':['Mariana','MT','Mariana Tavella'],'betsy-grinblat':['Betsy','BG','Betsy Grinblat'],
     'federico-andahazi':['Federico','FA','Federico Andahazi'],'felipe-gonzalez':['Felipe','FG','Felipe González'],'flor-del-valle':['Flor','FL','Flor Lanusse'],'flor-scott':['Flor','FS','Flor Scott'],
     'hernan-onirico':['Hernán','HO','Hernán Onírico'],'jimena-mercedes':['Jimena','JP','Jimena Pesado'],'koino':['Jeremías','KO','Koino'],'lara-fichera':['Lara','LF','Lara Fichera'],'lu-glass':['Lucila','LG','Lu Glass'],
-    'maria-marta-crespo':['María Marta','MC','María Marta Crespo'],'silvina':['Silvina','SI','Silvina'],'sin-fronteras-duo':['Santiago','SE','Santiago Echeverria'],'spam-studio':['Ariel','SS','Spam Studio'],'yamila-beraja':['Yamila','YB','Yamila Beraja']};
+    'maria-marta-crespo':['María Marta','MC','María Marta Crespo'],'silvina':['Silvina','SI','Silvina'],'sin-fronteras-duo':['Santiago','SE','Santiago Echeverria'],'spam-studio':['Lean','LP','Leandro Polack'],'yamila-beraja':['Yamila','YB','Yamila Beraja']};
   const NOMB=()=>String((D.cliente||{}).nombre||'').split('|')[0].trim();
   const INI=()=>{ if(PERS[slug]) return PERS[slug][1]; const w=NOMB().split(/\s+/).filter(x=>/^\p{L}/u.test(x)); return (w.length>1?w[0][0]+w[1][0]:(w[0]||'?').slice(0,2)).toUpperCase(); };
   const SALUDO=()=>{ if(PERS[slug]) return PERS[slug][0]; const n=NOMB(); return n===n.toUpperCase()?n.toLowerCase().replace(/(^|\s)\S/g,x=>x.toUpperCase()):n; };
