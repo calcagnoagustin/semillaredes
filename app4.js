@@ -299,7 +299,7 @@
   `;
 
   // ---------- estado ----------
-  let D=null, TAB=LS('tab')||'inicio', SUBM=LS('subm')||'reporte', SUBF=LS('subf2')||'drops', DROPS=[], TJ=null, CTA=null, FECHAS=[], WEBS=[], NOT=[], DIA_SEL=null, CHAT=[], USOW=null;
+  let D=null, TAB=LS('tab')||'inicio', SUBM=LS('subm')||'reporte', SUBF=LS('subf2')||'drops', DROPS=[], TJ=null, CTA=null, FECHAS=[], WEBS=[], NOT=[], DIA_SEL=null, WL_I=null, CHAT=[], USOW=null;
   const CLASES=[['Modelo de negocio','maletin',[['HE8pjQ0pbV8','Presentación de la Formación'],['1IWynYu2gRI','Tu arte como negocio digital'],['sgggTfqdWjk','Pensá un producto como artista'],['t711FU0w5yk','Ordená tus objetivos y próximos pasos']]],
     ['Comunicación','burbuja',[['84f7zYFQp3E','Excel de negocio: ingresos y gastos'],['8iI_anZtXpQ','Comunicá tu identidad'],['oo9d7a-02xw','Mostrá tu producto para que conecte'],['SN7WmmLunLY','Contenidos sostenibles']]],
     ['Publicidad','megafono',[['ozn7ch2Ui3k','Campaña de lanzamiento: Spotify, Meta y YouTube'],['tv8hQXAMwKc','Configurá Ads Manager y Business Manager'],['Ec_YHoGOq34','Conseguí más seguidores'],['8ANApErBj2M','Campañas de productos'],['OsvHvTZlTk0','Métricas y proyectiva']]]];
@@ -478,24 +478,47 @@
   /* 18/11 (Agus, Hernán): comparación de costo por seguidor entre dos campañas (sub_campanas tipo 'cruce', lo arma cruce_seguidores.py).
      Meta no da seguidores por campaña: los seguidores nuevos de cada día se reparten según las visitas al perfil que trajo cada una. */
   /* 18/11 (Agus, Spam Studios): wishlists de Steam por país de la semana, cuáles vienen de países con campaña y el costo por wishlist (total y por país). */
-  function bloqueWishlist(){
+  function bloqueWishlist(){   /* 18/11: flechas para ver semanas anteriores + evolución total y por país */
     const R=((D&&D.reportes)||[]).filter(r=>r.metricas&&r.metricas.stm_wishlist!=null).sort((a,b)=>a.hasta<b.hasta?-1:1); if(!R.length) return '';
-    const U=R[R.length-1], m=U.metricas, P=(m.stm_wl_paises||[]).slice().sort((a,b)=>b.wishlists-a.wishlists), fdm=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
+    const n=R.length; if(WL_I==null||WL_I>n-1) WL_I=n-1; if(WL_I<0) WL_I=0; const ix=WL_I;
+    const U=R[ix], m=U.metricas, P=(m.stm_wl_paises||[]).slice().sort((a,b)=>b.wishlists-a.wishlists), fdm=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
     const en=(D.cliente||{}).moneda==='USD', pl=v=>v==null?'—':(en?'USD '+nf(v,2):'$ '+nf(v,0));
+    const PN={MX:'México',US:'EE. UU.',IN:'India'};
     const cp=(m.stm_wl_campana||{}).paises||P.filter(x=>x.inversion).map(x=>x.pais), enC=x=>cp.includes(x.pais);
     const wc=P.filter(enC).reduce((a,x)=>a+x.wishlists,0), wo=P.filter(x=>!enC(x)).reduce((a,x)=>a+x.wishlists,0), inv=Number(m.stm_inversion||0)||null;
-    const tiles=[[nf(m.stm_wishlist),'Wishlists de la semana',1],[pl(m.stm_costo_wishlist),'Costo por wishlist (total)',1],[nf(wc),'De países con campaña'],[nf(wo),'De otros países'],[pl(inv&&wc?inv/wc:null),'Costo por wishlist de países con campaña'],[pl(inv),'Invertido en la campaña']];
+    const ant=ix>0?Number(R[ix-1].metricas.stm_wishlist):null, dif=ant!=null?Number(m.stm_wishlist)-ant:null;
+    const tiles=P.length?[[nf(m.stm_wishlist),'Wishlists de la semana',1],[pl(m.stm_costo_wishlist),'Costo por wishlist (total)',1],[nf(wc),'De países con campaña'],[nf(wo),'De otros países'],[pl(inv&&wc?inv/wc:null),'Costo por wishlist de países con campaña'],[pl(inv),'Invertido en la campaña']]
+      :[[nf(m.stm_wishlist),'Wishlists de la semana',1],[pl(m.stm_costo_wishlist),'Costo por wishlist (total)',1],[pl(inv),'Invertido en la campaña'],[dif==null?'—':(dif>0?'+':'')+nf(dif),'Contra la semana anterior']];
     const fila=x=>`<div class="row" style="align-items:flex-start"><span class="tx"><b>${esc(x.nombre)}</b>${enC(x)?'<span class="estado" style="margin-left:8px;padding:2px 8px;font-size:12px">Campaña</span>':''}
         <small>${enC(x)?(x.inversion?`${pl(x.inversion)} invertidos`:'Con campaña'):'Sin campaña en este país'}</small></span>
         <span class="costo"><b>${nf(x.wishlists)}</b><small>${x.wishlists===1?'wishlist':'wishlists'}${x.costo!=null?'<br>'+pl(x.costo)+' c/u':''}</small></span></div>`;
-    const H=R.slice(-8), mx=Math.max(1,...H.map(r=>Number(r.metricas.stm_wishlist)));
-    const evo=H.length>1?`<details><summary>Ver evolución ${I('chev')}</summary><p class="gt">Wishlists por semana</p><div class="bars" style="height:130px">${H.map(r=>{ const v=Number(r.metricas.stm_wishlist); return `<div><span>${nf(v)}</span><i style="height:${Math.round(14+86*v/mx)}%"></i><small>${fdm(r.hasta)}</small></div>`; }).join('')}</div>
-      <p class="gt" style="margin-top:14px">Costo por wishlist por semana</p><div class="bars mini" style="height:90px">${H.map(r=>{ const v=Number(r.metricas.stm_costo_wishlist)||0, M2=Math.max(1,...H.map(z=>Number(z.metricas.stm_costo_wishlist)||0)); return `<div><span>${v?nf(v):'—'}</span><i style="height:${Math.round(10+90*v/M2)}%;background:var(--vino)"></i><small>${fdm(r.hasta)}</small></div>`; }).join('')}</div></details>`:'';
-    return `<div class="tt"><h2>Wishlists en Steam</h2><span class="pill">${I('cal')}${fdm(m.stm_periodo_desde||U.desde)} – ${fdm(m.stm_periodo_hasta||U.hasta)}</span></div>
+    // gráfica de línea: una serie, punto de la semana elegida resaltado
+    const linea=(vals,col,fmt,sel,W=320,H=160)=>{ const PX=24,PT=24,PB=26, ok=vals.map((v,i)=>[i,v]).filter(z=>z[1]!=null); if(ok.length<2) return '';
+      const v=ok.map(z=>z[1]), mx=Math.max(...v,1), X=i=>PX+i*(W-PX*2)/Math.max(1,vals.length-1), Y=x=>PT+(1-x/mx)*(H-PT-PB), paso=Math.ceil(vals.length/6);
+      const d=ok.map((z,k)=>(k?'L':'M')+X(z[0]).toFixed(1)+' '+Y(z[1]).toFixed(1)).join(' ');
+      const area=d+` L${X(ok[ok.length-1][0]).toFixed(1)} ${H-PB} L${X(ok[0][0]).toFixed(1)} ${H-PB} Z`;
+      return `<svg viewBox="0 0 ${W} ${H}" class="gsv" role="img"><line x1="${PX}" x2="${W-PX}" y1="${H-PB}" y2="${H-PB}" stroke="#E4DED3"/><path d="${area}" fill="${col}" opacity=".10"/><path d="${d}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round"/>
+        ${ok.map(z=>{ const s=z[0]===sel, lab=s||z[0]===vals.length-1||z[0]%paso===0; return `<circle cx="${X(z[0]).toFixed(1)}" cy="${Y(z[1]).toFixed(1)}" r="${s?5:3}" fill="${s?'var(--vino)':col}"/>${lab?`<text x="${X(z[0]).toFixed(1)}" y="${(Y(z[1])-9).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${s?'#7A1F3A':col}" paint-order="stroke" stroke="#FDFBF8" stroke-width="4" stroke-linejoin="round">${fmt(z[1])}</text>`:''}`; }).join('')}
+        ${vals.map((x,i)=>(i%paso===0||i===vals.length-1||i===sel)?`<text x="${X(i).toFixed(1)}" y="${H-8}" text-anchor="middle" font-size="10" fill="${i===sel?'#7A1F3A':'#8C8896'}" font-weight="${i===sel?700:400}">${fdm(R[i].hasta)}</text>`:'').join('')}</svg>`; };
+    const tot=R.map(r=>Number(r.metricas.stm_wishlist)), cos=R.map(r=>r.metricas.stm_costo_wishlist!=null?Number(r.metricas.stm_costo_wishlist):null);
+    // por país: semanas con detalle
+    const CON=R.map((r,i)=>[i,r.metricas.stm_wl_paises||[]]).filter(z=>z[1].length), PS={};
+    CON.forEach(([i,L])=>L.forEach(x=>{ (PS[x.pais]=PS[x.pais]||{nombre:x.nombre||PN[x.pais]||x.pais,v:{}}).v[i]=x.wishlists; }));
+    const paises=Object.entries(PS).map(([k,o])=>({k,nombre:o.nombre,v:o.v,t:Object.values(o.v).reduce((a,b)=>a+b,0)})).sort((a,b)=>b.t-a.t);
+    const spark=o=>{ const xs=CON.map(z=>o.v[z[0]]||0), W=120,H=34, mx=Math.max(1,...xs); if(xs.length<2) return '';
+      const X=i=>4+i*(W-8)/(xs.length-1), Y=v=>H-4-(v/mx)*(H-10); return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="flex:none"><path d="${xs.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ')}" fill="none" stroke="#87863A" stroke-width="2" stroke-linejoin="round"/><circle cx="${X(xs.length-1).toFixed(1)}" cy="${Y(xs[xs.length-1]).toFixed(1)}" r="3" fill="#7A1F3A"/></svg>`; };
+    const filaP=o=>`<div class="row" style="align-items:center"><span class="tx"><b>${esc(o.nombre)}</b>${cp.includes(o.k)?'<span class="estado" style="margin-left:8px;padding:2px 8px;font-size:12px">Campaña</span>':''}<small>${CON.length>1?CON.map(z=>nf(o.v[z[0]]||0)).join(' · '):''}</small></span>${spark(o)}<span class="costo"><b>${nf(o.t)}</b><small>en ${CON.length} ${CON.length===1?'semana':'semanas'}</small></span></div>`;
+    const evo=`<details open><summary>Evolución ${I('chev')}</summary>
+        <p class="gt">Wishlists por semana · total</p>${linea(tot,'#1E2350',v=>nf(v),ix)}
+        <p class="gt" style="margin-top:14px">Costo por wishlist por semana</p>${linea(cos,'#87863A',v=>en?'USD '+nf(v,0):'$'+nf(v/1000,1)+'k',ix)}
+        <p class="gt" style="margin-top:14px">País por país</p>
+        ${paises.length?`<div class="pub" style="margin-top:0">${paises.map(filaP).join('')}</div><p class="gn">${CON.length>1?'Wishlists de cada semana con detalle por país, de la más vieja a la más nueva.':'Steam empezó a mandar el detalle por país la semana del '+fdm(R[CON[0][0]].desde)+'; cada semana nueva suma un punto a la línea de cada país.'}</p>`:'<p class="gn">Todavía no hay detalle por país.</p>'}</details>`;
+    const nav=`<span style="display:flex;align-items:center;gap:6px"><button class="bt" data-wl="-1" aria-label="Semana anterior" ${ix===0?'disabled style="opacity:.35;height:38px;width:38px;padding:0"':'style="height:38px;width:38px;padding:0"'}>${I('atras')}</button><span class="pill">${I('cal')}${fdm(m.stm_periodo_desde||U.desde)} – ${fdm(m.stm_periodo_hasta||U.hasta)}</span><button class="bt" data-wl="1" aria-label="Semana siguiente" ${ix===n-1?'disabled style="opacity:.35;height:38px;width:38px;padding:0"':'style="height:38px;width:38px;padding:0"'}>${I('chev')}</button></span>`;
+    return `<div class="tt" style="flex-wrap:wrap;gap:10px"><h2>Wishlists en Steam</h2>${nav}</div>
       <div class="box cmp4"><div class="dgrid c2" style="padding-top:16px">${tiles.map(([v,l,hi])=>`<div class="dt ${hi?'hi':''}"><b>${v}</b><small>${esc(l)}</small></div>`).join('')}</div>
-        ${P.length?`<div class="pub"><div class="sub2">Por país</div>${P.map(fila).join('')}</div>`:''}
+        ${P.length?`<div class="pub"><div class="sub2">Por país</div>${P.map(fila).join('')}</div>`:`<div class="pie4" style="margin-top:12px">Esa semana no hay detalle por país.</div>`}
         ${evo}
-        <div class="pie4">Wishlists según Steam${m.stm_wishlist_bajas?` (${nf(m.stm_wishlist_bajas)} ${m.stm_wishlist_bajas===1?'baja':'bajas'} en la semana)`:''}. El costo total es toda la inversión de la semana dividida todas las wishlists; el de cada país, lo invertido en ese país dividido sus wishlists. Campaña activa en ${cp.map(c=>({MX:'México',US:'EE. UU.',IN:'India'})[c]||c).join(', ')}.</div></div>`; }
+        <div class="pie4">Wishlists según Steam${m.stm_wishlist_bajas?` (${nf(m.stm_wishlist_bajas)} ${m.stm_wishlist_bajas===1?'baja':'bajas'} en la semana)`:''}. El costo total es toda la inversión de la semana dividida todas las wishlists; el de cada país, lo invertido en ese país dividido sus wishlists.${cp.length?' Campaña activa en '+cp.map(c=>PN[c]||c).join(', ')+'.':''}</div></div>`; }
   function bloqueCruce(){
     const L=((D&&D.campanas)||[]).filter(k=>(k.metricas||{}).tipo==='cruce'&&(k.metricas.campanas||[]).length); if(!L.length) return '';
     const fdm=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
@@ -765,6 +788,7 @@
       const x=await rpc('sub_tarea_cliente',{p_slug:slug,p_k:tok,p_id:b.dataset.hecha,p_estado:e}).catch(()=>null); setTimeout(x&&x.ok?recargar:pintar,450); });
     r.querySelectorAll('[data-tarea]').forEach(b=>b.onclick=()=>editarTarea(b.dataset.tarea));
     r.querySelectorAll('[data-agendar]').forEach(b=>b.onclick=()=>nuevaTarea(b.dataset.agendar));
+    r.querySelectorAll('[data-wl]').forEach(b=>b.onclick=()=>{ if(b.disabled) return; WL_I=(WL_I==null?0:WL_I)+Number(b.dataset.wl); pintar(); });
     r.querySelectorAll('[data-hnueva]').forEach(b=>b.onclick=nuevaMeta); r.querySelectorAll('[data-hito]').forEach(b=>b.onclick=()=>verMeta(b.dataset.hito));
     const on=(id,f)=>{ const e=r.querySelector('#'+id); if(e) e.onclick=f; };
     on('v4an',()=>ir('analisis')); on('v4tarea',()=>nuevaTarea('')); on('v4chat',chat); on('v4fecha',nuevaFecha); on('v4bell',avisos); on('v4cx',conexiones); on('v4mat',materiales); on('v4vtas',ventas);
