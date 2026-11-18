@@ -233,7 +233,7 @@
   #v4 .pm b{font-family:"Playfair Display",Georgia,serif;font-size:26px;line-height:30px;letter-spacing:-.5px;white-space:nowrap} #v4 .pm small{font-size:13.5px;color:var(--mute);line-height:18px}
   #v4 .bb{display:flex;align-items:flex-end;gap:5px;height:56px;margin-top:14px} #v4 .bb i{flex:1;border-radius:4px 4px 2px 2px;display:block}
   #v4 .todo4{margin-top:22px;background:var(--card);border:1px solid var(--linea);border-radius:20px;overflow:hidden} #v4 .todo4>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:16px;font-weight:700;font-size:16px;color:var(--vino)} #v4 .todo4>summary::-webkit-details-marker{display:none} #v4 .todo4>summary svg{transition:transform .2s} #v4 .todo4[open]>summary svg{transform:rotate(90deg)}
-  #v4 .todo4 #app{padding:0 14px 16px} #v4 .todo4 #app h1{font-size:24px;margin:4px 0} #v4 .todo4 #app h2{font-size:20px;margin:22px 0 4px}
+  #v4 .todo4 #app{padding:0 12px 16px;overflow:hidden} #v4 .todo4 #app svg.linea{max-width:100%} #v4 .todo4 #app details.hist{overflow-x:auto} #v4 .todo4 #app .ventaBox input,#v4 .todo4 #app .ventaBox select,#v4 .todo4 #app .ventaBox label,#v4 .todo4 #app .ventaBox .vmon{max-width:100%;box-sizing:border-box} #v4 .todo4 #app h1{font-size:24px;margin:4px 0} #v4 .todo4 #app h2{font-size:20px;margin:22px 0 4px}
   #v4 .v4clasico .ventaBox{background:var(--card);border:1px solid var(--linea);border-radius:18px;padding:16px;margin-bottom:12px;font-family:inherit}
   #v4 .costo{text-align:right;flex:none} #v4 .costo b{font-size:17px} #v4 .costo small{font-size:12.5px}
   #v4 .hall{display:flex;gap:14px;align-items:flex-start;padding:16px}
