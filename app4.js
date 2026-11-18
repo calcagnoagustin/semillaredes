@@ -209,6 +209,15 @@
   #v4 .cta4 .c2{padding:0 16px} #v4 .cta4 .dt{background:#F6F1EA} #v4 .cta4 .dt.hi{background:var(--navy);border-color:var(--navy)} #v4 .cta4 .dt.hi b{color:#fff} #v4 .cta4 .dt.hi small{color:#C9CCE6}
   #v4 .cta4 .dt small{margin-bottom:0}
   #v4 .cta4 .como{margin:12px 16px 10px;font-size:14px;line-height:21px;color:var(--mute)}
+  #v4 .cmp4 .c1{display:flex;align-items:center;gap:14px;padding:16px 16px 12px} #v4 .cmp4 .c1 .tx{flex:1;min-width:0} #v4 .cmp4 .c1 b{display:block;font-size:16.5px;line-height:22px} #v4 .cmp4 .c1 small{display:block;font-size:14px;color:var(--mute);line-height:20px;margin-top:2px}
+  #v4 .cmp4 .c2{padding:0 16px} #v4 .cmp4 .dt{background:#F6F1EA} #v4 .cmp4 .dt.hi{background:var(--navy);border-color:var(--navy)} #v4 .cmp4 .dt.hi b{color:#fff} #v4 .cmp4 .dt.hi small{color:#C9CCE6} #v4 .cmp4 .dt small{margin-bottom:0}
+  #v4 .cmp4 .pub{margin:14px 16px 0;border-top:1px solid var(--linea)} #v4 .cmp4 .pub .row{padding:13px 0;gap:12px;align-items:flex-start} #v4 .cmp4 .pub .tx b{font-size:15px;line-height:21px} #v4 .cmp4 .pub .tx small{display:block;font-size:13.5px;line-height:19px;color:var(--mute);margin-top:2px}
+  #v4 .cmp4 .pub .costo{text-align:right;flex:none} #v4 .cmp4 .pub .costo b{display:block;font-size:16px;line-height:21px} #v4 .cmp4 .pub .costo small{display:block;font-size:12.5px;line-height:18px;color:var(--mute)}
+  #v4 .cmp4 .sub2{margin:16px 0 0}
+  #v4 .cmp4 details{margin:14px 16px 0;border-top:1px solid var(--linea)} #v4 .cmp4 summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:14px 0 2px;font-weight:700;font-size:15px;color:var(--vino)} #v4 .cmp4 summary::-webkit-details-marker{display:none}
+  #v4 .cmp4 summary svg{transition:transform .2s} #v4 .cmp4 details[open] summary svg{transform:rotate(90deg)}
+  #v4 .cmp4 .gt{font-size:13.5px;font-weight:700;color:var(--tinta);margin:12px 0 2px} #v4 .cmp4 .gsv{display:block;width:100%;height:auto} #v4 .cmp4 .gn{font-size:12.5px;line-height:18px;color:var(--suave);margin:6px 0 0}
+  #v4 .cmp4 .pie4{font-size:12.5px;line-height:18px;color:var(--suave);padding:12px 16px 16px}
   #v4 .dest{background:linear-gradient(160deg,#252B5C,#1B2049);color:#fff;border-radius:22px;padding:18px 18px 16px;margin-top:4px}
   #v4 .dest .k,#v4 .mesp .k{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:#E2E8A8}
   #v4 .dest .k .i{width:17px;height:17px} #v4 .dest .k span{margin-left:auto;color:rgba(255,255,255,.7);letter-spacing:.5px}
@@ -336,6 +345,7 @@
     return `<div class="hola"><h1>Hola, ${esc(nom)}</h1><span class="pill">${I('cal')}${fecha}</span></div>
       ${hero}
       ${bloqueCuenta()}
+      ${bloqueCampanas()}
       <div class="tt"><h2>Próximas fechas</h2><button class="lk" data-ir="proyecto">Ver agenda ${I('chev')}</button></div>
       <div class="box">${prox.length?prox.map(filaAgenda).join(''):`<div class="vacio">No tenés fechas próximas. Sumá una desde Proyecto.</div>`}</div>
       <div class="tt"><h2>Seguí aprendiendo</h2></div>
@@ -457,6 +467,35 @@
         ${c.act?`<a class="lk" style="margin:2px 16px 16px" href="https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=${encodeURIComponent(c.act)}" target="_blank" rel="noopener">Abrir en Meta ${I('ext')}</a>`:''}</div>`; };
     const L=(CTA.cuentas||[]).length>1?CTA.cuentas:[CTA];
     return `<div class="tt"><h2>${L.length>1?'Tus cuentas publicitarias':'Cuenta publicitaria'}</h2></div>${L.map((c,i)=>una(c,L.length>1?(c.nombre||'Cuenta '+(i+1)):'Anuncios en Meta')).join('<div style="height:12px"></div>')}`; }
+  /* 18/11 (Agus): campañas corriendo en Inicio, con su detalle por público y gráficas. Salen de sub_campanas (tipo 'destacada'), que actualiza destacada.py en la VM. */
+  function bloqueCampanas(){
+    const OCULTAS={'spam-seguidores':1};
+    const L=((D&&D.campanas)||[]).filter(k=>{ const M=k.metricas||{}; return M.tipo==='destacada'&&M.estado==='activa'&&!OCULTAS[k.codigo]; });
+    if(!L.length) return '';
+    const fdm=x=>x?String(x).slice(8,10)+'/'+String(x).slice(5,7):'';
+    const graf=(P,vals,col,fmt)=>{ const W=320,H=150,PX=28,PT=22,PB=26, ok=vals.map((x,i)=>[i,x]).filter(z=>z[1]!=null); if(ok.length<2) return ''; const v=ok.map(z=>z[1]), mn=Math.min(...v), mx=Math.max(...v), rg=(mx-mn)||1;
+      const X=i=>PX+i*(W-PX*2)/(vals.length-1), Y=x=>PT+(1-(x-mn)/rg)*(H-PT-PB), paso=Math.ceil(ok.length/6);
+      return `<svg viewBox="0 0 ${W} ${H}" class="gsv" role="img"><path d="${ok.map((z,k)=>(k?'L':'M')+X(z[0]).toFixed(1)+' '+Y(z[1]).toFixed(1)).join(' ')}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round"/>${ok.map((z,k)=>`<circle cx="${X(z[0]).toFixed(1)}" cy="${Y(z[1]).toFixed(1)}" r="3" fill="${col}"/>${(k%paso===0||k===ok.length-1)?`<text x="${X(z[0]).toFixed(1)}" y="${(Y(z[1])-8).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${col}" paint-order="stroke" stroke="#FDFBF8" stroke-width="4" stroke-linejoin="round">${fmt(z[1])}</text><text x="${X(z[0]).toFixed(1)}" y="${H-8}" text-anchor="middle" font-size="10" fill="#8C8896">${fdm(P[z[0]][0])}</text>`:''}`).join('')}</svg>`; };
+    const una=k=>{ const M=k.metricas||{}, us=(M.moneda||SIM())==='USD', pl=(v,d)=>v==null?'—':us?'USD '+nf(v,d==null?2:d):'$ '+nf(v,0);
+      const RES=String(M.resultado||'resultados'), RES1=RES.replace(/s(\s|$)/,'$1').replace(/es al /,' al ');
+      const ventas=M.ventas!=null;
+      const tiles=ventas?[[nf(M.ventas),M.ventas===1?'Venta':'Ventas',1],[pl(M.costo_venta),'Costo por venta'],[pl(M.ingreso),'Facturado'],[M.roas!=null?nf(M.roas,2)+'x':'—','Retorno (ROAS)'],[pl(M.inversion,us?0:0),'Invertido'],[pl(M.diaria),'Inversión por día']]
+        :[[nf(M.visitas),cap(RES),1],[pl(M.costo_visita),'Costo por '+RES1],[pl(M.inversion,us?0:0),'Invertido'],[nf(M.alcance),'Personas alcanzadas'],[pl(M.diaria),'Inversión por día'],[M.frecuencia?nf(M.frecuencia,1):'—','Veces que lo vio cada persona']];
+      // gráfica: ventas = acumulado diario; resto = por día (≤31 días) o por semana
+      let G='';
+      if(ventas&&(M.serie||[]).length>1){ const S=M.serie; G=`<p class="gt">Ventas acumuladas</p>${graf(S,S.map(z=>z[1]),'#2F7A4F',x=>nf(x))}<p class="gt">Costo por venta acumulado</p>${graf(S,S.map(z=>z[1]?z[2]/z[1]:null),'#7A1F3A',x=>nf(x,2))}<p class="gn">Al cierre de cada día, desde el inicio de la campaña.</p>`; }
+      else if((M.serie_r||[]).length>1){ const SR=M.serie_r; let P, t1, t2, n;
+        if(SR.length<=31){ let a=0,b=0; P=SR.map(z=>{ a+=z[1]; b+=z[2]; return [z[0],a,b]; }); t1=cap(RES)+' acumuladas'; t2='Costo por '+RES1+' acumulado'; n='Al cierre de cada día.'; }
+        else { const WK={}; SR.forEach(z=>{ const d=new Date(z[0]+'T12:00:00'); d.setDate(d.getDate()+(7-d.getDay())%7); const kk=d.toISOString().slice(0,10), w=WK[kk]||(WK[kk]=[kk,0,0]); w[1]+=z[1]; w[2]+=z[2]; });
+          P=Object.values(WK).sort((a,b)=>a[0]<b[0]?-1:1).slice(-12); t1=cap(RES)+' por semana'; t2='Costo por '+RES1+' por semana'; n='Cada punto es una semana; abajo, el domingo en que cierra (la última puede estar en curso).'; }
+        G=`<p class="gt">${esc(t1)}</p>${graf(P,P.map(z=>z[1]),'#2F7A4F',x=>nf(x))}<p class="gt">${esc(t2)}</p>${graf(P,P.map(z=>z[1]?z[2]/z[1]:null),'#7A1F3A',x=>nf(x,2))}<p class="gn">${esc(n)} Costo = inversión ÷ ${esc(RES)}${us?', en dólares':''}.</p>`; }
+      const CJ=M.conjuntos||[];
+      return `<div class="box cmp4"><div class="c1"><span class="tile">${I(ventas?'bolsa':'megafono')}</span><span class="tx"><b>${esc(k.nombre)}</b><small>${M.etiqueta?esc(M.etiqueta)+' · ':''}Desde el ${fdm(M.desde)}${M.desde&&M.desde.slice(0,4)!==String(new Date().getFullYear())?'/'+M.desde.slice(2,4):''}</small></span><span class="estado"><i class="led"></i>Activa</span></div>
+        <div class="dgrid c2">${tiles.map(([v,l,hi])=>`<div class="dt ${hi?'hi':''}"><b>${v}</b><small>${esc(l)}</small></div>`).join('')}</div>
+        ${CJ.length?`<div class="pub"><div class="sub2">${CJ.length===1?'Público activo':'Públicos activos ('+CJ.length+')'}</div>${CJ.map(c=>`<div class="row"><span class="tx"><b>${esc(c.nombre)}</b><small>Últimos 7 días: ${nf(c.res7||0)} ${esc(RES)}${c.diaria!=null?' · '+pl(c.diaria)+' por día':''}</small><small>Desde el ${fdm(c.inicio)}: ${nf(c.resultados)} ${esc(RES)} con ${pl(c.inversion,0)}</small></span><span class="costo"><b>${c.costo7!=null?pl(c.costo7):'—'}</b><small>por ${esc(RES1)}<br>últimos 7 días</small></span></div>`).join('')}</div>`:''}
+        ${G?`<details><summary>Ver gráficas ${I('chev')}</summary>${G}</details>`:''}
+        <div class="pie4">Acumulado de toda la campaña según Meta${M.actualizado_txt?' · actualizado el '+esc(M.actualizado_txt)+' hs':''}</div></div>`; };
+    return `<div class="tt"><h2>${L.length>1?'Tus campañas':'Tu campaña'}</h2></div>${L.map(una).join('<div style="height:12px"></div>')}`; }
   /* 17/11: ticketera (Berco). La VM lee las entradas por función cada martes; María marca los invitados en una página aparte. */
   function tkUlt(){ return Object.values((D.cliente||{}).ventas||{}).filter(x=>x&&x.tipo==='ticketera'&&Array.isArray(x.funciones)).sort((a,b)=>String(a.captura||a.actualizado)<String(b.captura||b.actualizado)?-1:1).pop()||null; }
   function scShows(){ return `<button class="vol" data-ir="proyecto">${I('atras')}Volver a tu proyecto</button><h1>Shows y entradas</h1>${tkBloque()||'<div class="box"><div class="vacio">Todavía no hay entradas para mostrar.</div></div>'}`; }
