@@ -3,311 +3,264 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Miri Marchese · Pintora figurativa</title>
-<meta name="description" content="Pintora figurativa argentina. Tres líneas de obra: Pop, Comics y Figurativo. Obra en Lucid Art Gallery (Miami) y en el Banco Ciudad. Obra original, a pedido y para espacios.">
-<meta property="og:title" content="Miri Marchese · Pintora figurativa">
-<meta property="og:description" content="Pop, Comics y Figurativo. Obra original, a pedido y para espacios.">
+<title>Miri Marchese · Pop, cómic y figura</title>
+<meta name="description" content="Pintora figurativa argentina. Tres líneas de obra: Pop, Comics y Figurativo. Obra original, a pedido y para espacios. Buenos Aires · Miami.">
+<meta property="og:title" content="Miri Marchese · Pop, cómic y figura">
+<meta property="og:description" content="Tres líneas de obra, una misma mano hiperrealista.">
 <meta property="og:image" content="https://semillaredes.com/mirimarcheselanding/img/og.jpg">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/png" href="img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{--bone:#F4F1EC;--bone-2:#E9E5DE;--ink:#141414;--grey:#66625C;--line:#D9D4CB;--cobalt:#1F3FA8;--chrome:#B9BCC2}
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{font-family:'Inter',sans-serif;font-weight:300;background:var(--bone);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
-  img,video{display:block;max-width:100%;height:auto}
-  a{color:inherit}
-  .wrap{max-width:1180px;margin:0 auto;padding:0 22px}
-  .eb{font-size:11px;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:var(--cobalt)}
-  h1,h2,h3{font-family:'Bodoni Moda',serif;font-weight:400;line-height:1.04;letter-spacing:-.01em}
-  h2{font-size:clamp(34px,4.4vw,56px);margin:14px 0 18px}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--ink);color:var(--bone);text-decoration:none;font-size:15px;font-weight:500;letter-spacing:.04em;padding:17px 26px;border-radius:2px;transition:background .2s}
-  .btn:hover{background:var(--cobalt)}
-  .lnk{font-size:14px;font-weight:500;letter-spacing:.04em;text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:2px}
+:root{--ink:#111;--bone:#F3F0EA;--line:#D8D3CA;--grey:#5E5A53;--blue:#2443E0}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;font-weight:400;background:var(--bone);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.serif{font-family:'DM Serif Display',serif;font-weight:400;letter-spacing:-.01em;line-height:1.02}
+.it{font-style:italic}
+.blue{color:var(--blue)}
+.eb{font-size:11px;letter-spacing:.24em;text-transform:uppercase}
+.btn{display:inline-flex;align-items:center;justify-content:space-between;gap:22px;background:#fff;color:var(--ink);font-size:16px;padding:16px 22px;border:1px solid #fff;min-width:240px}
+.btn .ar{font-size:20px;line-height:1}
+.btn.ghost{background:transparent;color:#fff}
+.ul{border-bottom:1px solid currentColor;padding-bottom:2px;font-size:16px}
+.dark{background:var(--ink);color:#fff}
 
-  header.top{position:sticky;top:0;z-index:20;background:rgba(244,241,236,.93);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-  header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
-  .marca{font-family:'Bodoni Moda',serif;font-size:22px;text-decoration:none;letter-spacing:.01em}
-  .menu{display:none;gap:34px;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
-  .menu a{text-decoration:none;color:var(--grey)}
-  .menu a:hover{color:var(--ink)}
+/* header */
+header{position:sticky;top:0;z-index:30;background:var(--ink);color:#fff}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+header .marca{font-size:28px}
+nav.menu{display:none;gap:30px;font-size:14px}
+.burger{background:none;border:0;cursor:pointer;width:30px;height:22px;display:flex;flex-direction:column;justify-content:space-between}
+.burger span{height:2px;background:#fff;display:block}
+.drawer{display:none;background:var(--ink);border-top:1px solid #2a2a2a}
+.drawer.on{display:block}
+.drawer a{display:block;padding:16px 20px;border-bottom:1px solid #2a2a2a;font-size:17px}
 
-  .hero{padding:22px 0 56px}
-  .hero .wrap{display:grid;grid-template-columns:1fr;gap:28px}
-  .hero h1{font-size:clamp(50px,7vw,100px);margin:14px 0 18px}
-  .hero h1 em{font-style:italic;color:var(--cobalt)}
-  .hero p{font-size:17px;color:var(--grey);max-width:460px;margin-bottom:30px}
-  .hero-ctas{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
-  .hero-ctas .btn{flex:1 1 220px;max-width:320px}
+/* hero */
+.hero{position:relative;background:#000;color:#fff;overflow:hidden}
+.hero .foto{width:100%;aspect-ratio:1/1;object-fit:cover;object-position:50% 30%}
+.hero .txt{padding:24px 20px 44px}
+.hero h1{font-size:68px;margin:14px 0 18px}
+.hero .sub{font-family:'DM Serif Display',serif;font-style:italic;font-size:21px;line-height:1.35;color:#E8E5DF;margin-bottom:28px}
+.hero .ctas{display:flex;flex-direction:column;align-items:flex-start;gap:24px}
+.hero .ctas .btn{width:100%}
 
-  .slider{position:relative;order:-1}
-  .sl-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-  .sl-track::-webkit-scrollbar{display:none}
-  .sl{flex:0 0 100%;scroll-snap-align:start;margin:0;aspect-ratio:4/5;background:var(--ink);display:flex;align-items:center;justify-content:center}
-  .sl img{width:100%;height:100%;object-fit:contain}
-  .sl figcaption{display:none}
-  .sl-btn{position:absolute;top:calc((100% - 44px)/2);transform:translateY(-50%);width:44px;height:64px;border:0;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:.8}
-  .sl-btn svg{width:22px;height:44px;fill:none;stroke:#fff;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 3px rgba(0,0,0,.6))}
-  .sl-btn.prev{left:2px}.sl-btn.next{right:2px}
-  .sl-foot{display:flex;align-items:center;justify-content:space-between;height:44px;gap:16px}
-  .sl-cap{font-size:13px;letter-spacing:.04em;color:var(--grey)}
-  .sl-dots{display:flex;gap:8px}
-  .sl-dots button{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:var(--line);cursor:pointer}
-  .sl-dots button.on{background:var(--ink)}
+/* lines */
+.lineas ul{list-style:none}
+.lineas li a{display:grid;grid-template-columns:118px 1fr;gap:16px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
+.lineas img{width:118px;height:118px;object-fit:cover}
+.lineas .t{font-size:38px}
+.lineas .l{display:flex;align-items:center;gap:16px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-top:8px}
 
-  .sellos{background:var(--ink);color:var(--bone)}
-  .sellos ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:0}
-  .sellos li{padding:22px 0;border-top:1px solid #2b2b2b}
-  .sellos li:nth-child(-n+2){border-top:0}
-  .sellos b{display:block;font-family:'Bodoni Moda',serif;font-weight:400;font-size:21px;line-height:1.15}
-  .sellos span{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--chrome)}
+/* gallery */
+.sel{padding:56px 0 64px}
+.sel h2{font-size:50px;margin-bottom:22px}
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:28px}
+.tabs button{background:none;border:0;font:inherit;font-size:17px;padding:12px 14px;cursor:pointer;color:var(--ink);border-bottom:3px solid transparent;margin-bottom:-2px}
+.tabs button.on{border-color:var(--blue);font-weight:600}
+.panel{display:none}
+.panel.on{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.panel img{width:100%;height:100%;object-fit:cover;aspect-ratio:3/4;background:#ddd}
+.panel img.ancha{grid-column:1/-1;aspect-ratio:4/3}
 
-  .ofrece{border-bottom:1px solid var(--line);background:var(--bone-2)}
-  .ofrece ul{list-style:none;display:grid;grid-template-columns:1fr}
-  .ofrece li{padding:26px 0;border-top:1px solid var(--line)}
-  .ofrece li:first-child{border-top:0}
-  .ofrece h3{font-size:26px;margin-bottom:6px}
-  .ofrece p{font-size:15px;color:var(--grey)}
+/* espacios */
+.esp{padding:56px 0 0}
+.esp h2{font-size:50px;margin-bottom:18px}
+.esp p{font-family:'DM Serif Display',serif;font-style:italic;font-size:20px;color:#E8E5DF;margin-bottom:28px}
+.esp .img{background:#E4E3EA;padding:0}
+.esp .img img{width:100%}
+.esp .cta{padding:28px 0 52px}
 
-  .series{padding:64px 0 8px}
-  .serie{display:grid;grid-template-columns:1fr;gap:28px;align-items:center;margin-bottom:72px}
-  .s-img img{width:100%;height:auto}
-  .s-txt p{font-size:17px;color:var(--grey);max-width:460px;margin-bottom:12px}
-  .s-txt .meta{font-size:13px;letter-spacing:.06em;color:var(--cobalt);margin:18px 0 24px}
-  .duo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .duo img{width:100%;aspect-ratio:4/5;object-fit:cover}
+/* artista */
+.art{padding:16px 0 48px}
+.art .foto{width:100%;aspect-ratio:1/1;object-fit:cover;margin-bottom:22px}
+.art h2{font-size:58px;margin-bottom:18px}
+.art p{font-size:18px;color:#2a2824}
+.art .raya{width:44px;height:2px;background:var(--blue);margin:22px 0}
+.art .cita{font-family:'DM Serif Display',serif;font-style:italic;font-size:22px;line-height:1.3}
+.tray{border-top:1px solid var(--line);margin-top:36px;padding-top:30px}
+.tray h3{font-size:40px;margin-bottom:16px}
+.tray ul{list-style:none}
+.tray li{padding:16px 0;border-bottom:1px solid var(--line);font-size:17px}
 
-  .espacios{background:var(--ink);color:var(--bone);padding:64px 0}
-  .espacios .wrap{display:grid;grid-template-columns:1fr;gap:32px;align-items:center}
-  .espacios .eb{color:#8EA4F0}
-  .espacios p{font-size:17px;color:#CFCAC0;max-width:480px;margin-bottom:14px}
-  .espacios .btn{background:var(--bone);color:var(--ink);margin-top:18px}
-  .espacios .btn:hover{background:#fff}
-  .esp-imgs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .esp-imgs img{width:100%;aspect-ratio:4/5;object-fit:cover}
+/* contacto */
+.cont{padding:56px 0 64px}
+.cont h2{font-size:56px;margin-bottom:16px}
+.cont p{font-family:'DM Serif Display',serif;font-style:italic;font-size:21px;color:#E8E5DF;margin-bottom:30px}
+.cont .fila{display:flex;flex-direction:column;align-items:flex-start;gap:28px}
+.cont .fila .btn{width:100%}
+.ig{display:flex;align-items:center;gap:14px;font-size:17px}
+.ig svg{width:26px;height:26px}
+.ig span{border-bottom:1px solid #fff}
+footer{background:var(--ink);color:#8d8a84;font-size:13px;padding:0 0 30px}
 
-  .tray{padding:64px 0;border-bottom:1px solid var(--line)}
-  .tray ol{list-style:none;margin-top:10px}
-  .tray li{display:grid;grid-template-columns:86px 1fr;gap:16px;padding:18px 0;border-top:1px solid var(--line)}
-  .tray li:first-child{border-top:0}
-  .tray .anio{font-family:'Bodoni Moda',serif;font-size:24px;color:var(--cobalt)}
-  .tray .que{font-size:16px}
-  .tray .que small{display:block;color:var(--grey);font-size:14px}
-
-  .bio{padding:64px 0}
-  .bio .wrap{display:grid;grid-template-columns:1fr;gap:32px;align-items:start}
-  .bio img{width:100%;aspect-ratio:1/1;object-fit:cover}
-  .bio p{font-size:17px;color:var(--grey);margin-bottom:16px;max-width:560px}
-  .bio .cita{font-family:'Bodoni Moda',serif;font-style:italic;font-size:24px;color:var(--ink);line-height:1.35;margin:24px 0}
-
-  .cta{padding:76px 0;text-align:center;background:var(--bone-2)}
-  .cta h2{font-size:clamp(38px,5vw,64px)}
-  .cta p{font-size:17px;color:var(--grey);max-width:520px;margin:0 auto 30px}
-
-  footer{border-top:1px solid var(--line);padding:28px 0;font-size:13px;color:var(--grey)}
-  footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
-  footer a{text-decoration:none}
-
-  .fijo{position:fixed;left:12px;right:12px;bottom:12px;z-index:30;display:flex}
-  .fijo .btn{flex:1;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-
-  @media (min-width:900px){
-    .wrap{padding:0 32px}
-    .menu{display:flex}
-    .hero{padding:64px 0 88px}
-    .hero .wrap{grid-template-columns:.85fr 1.15fr;gap:64px;align-items:center}
-    .slider{order:0}
-    .sl{aspect-ratio:1/1}
-    .sellos ul{grid-template-columns:repeat(4,1fr)}
-    .sellos li{border-top:0;border-left:1px solid #2b2b2b;padding:28px 26px}
-    .sellos li:first-child{border-left:0;padding-left:0}
-    .ofrece ul{grid-template-columns:repeat(3,1fr)}
-    .ofrece li{border-top:0;border-left:1px solid var(--line);padding:34px 32px}
-    .ofrece li:first-child{border-left:0;padding-left:0}
-    .series{padding:96px 0 40px}
-    .serie{grid-template-columns:1fr 1fr;gap:72px;margin-bottom:96px}
-    .serie.inv .s-img{order:2}
-    .espacios,.bio,.tray{padding:96px 0}
-    .espacios .wrap,.bio .wrap{grid-template-columns:1fr 1fr;gap:72px}
-    .tray li{grid-template-columns:140px 1fr}
-    .cta{padding:110px 0}
-    .fijo{display:none}
-  }
+@media (min-width:900px){
+  .wrap{padding:0 40px}
+  header .wrap{height:72px}
+  header .marca{font-size:34px}
+  nav.menu{display:flex;align-items:center}
+  .burger,.drawer{display:none!important}
+  .hero{min-height:620px}
+  .hero .foto{position:absolute;right:0;top:0;width:62%;height:100%;aspect-ratio:auto;object-position:50% 40%;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 26%);mask-image:linear-gradient(90deg,transparent 0,#000 26%)}
+  .hero .txt{position:relative;max-width:1180px;margin:0 auto;padding:60px 40px 80px}
+  .hero h1{font-size:110px}
+  .hero .sub{font-size:22px}
+  .hero .ctas{flex-direction:row;align-items:center;gap:34px}
+  .hero .ctas .btn{width:auto}
+  .lineas ul{display:grid;grid-template-columns:repeat(3,1fr)}
+  .lineas li a{border-bottom:0;border-right:1px solid var(--line);padding:22px 24px}
+  .lineas li:first-child a{padding-left:0}
+  .lineas li:last-child a{border-right:0}
+  .lineas .t{font-size:34px}
+  .sel h2{font-size:58px}
+  .panel.on{grid-template-columns:repeat(4,1fr)}
+  .panel img.ancha{grid-column:span 2;aspect-ratio:auto}
+  .esp{padding:60px 0}
+  .esp .wrap{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+  .esp .img{order:-1}
+  .esp .cta{padding:0}
+  .esp h2{font-size:62px}
+  .art{padding:60px 0}
+  .art .top{display:grid;grid-template-columns:1fr 1.15fr;gap:56px;align-items:center}
+  .art .foto{order:2;margin:0;aspect-ratio:4/3}
+  .art h2{font-size:72px}
+  .tray ul{display:grid;grid-template-columns:repeat(3,auto);justify-content:start}
+  .tray li{border-bottom:0;border-right:1px solid var(--line);padding:6px 28px}
+  .tray li:first-child{padding-left:0}
+  .tray li:last-child{border-right:0}
+  .cont h2{font-size:76px}
+  .cont .fila{flex-direction:row;align-items:center;gap:44px}
+  .cont .fila .btn{width:auto}
+}
 </style>
 </head>
 <body>
 
-<header class="top" data-b="1">
+<header data-b="1">
   <div class="wrap">
-    <a href="#" class="marca" data-e="1">Miri Marchese</a>
-    <nav class="menu" data-b="2"><a href="#obra" data-e="2">Pop · Comics · Figurativo</a><a href="#espacios" data-e="3">Espacios</a><a href="#trayectoria" data-e="4">Trayectoria</a><a href="#contacto" data-e="5">Contacto</a></nav>
-    <a href="https://wa.me/5491168250081?text=Hola%20Miri%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20una%20obra." target="_blank" rel="noopener" class="lnk" data-e="6">Consultar</a>
+    <a href="#" class="marca serif" data-e="1">Miri Marchese</a>
+    <nav class="menu"><a href="#obra" data-e="2">Obra</a><a href="#espacios" data-e="3">Espacios</a><a href="#trayectoria" data-e="4">Trayectoria</a><a href="#contacto" data-e="5">Contacto →</a></nav>
+    <button class="burger" aria-label="Abrir menú" onclick="document.getElementById('drawer').classList.toggle('on')"><span></span><span></span><span></span></button>
+  </div>
+  <div class="drawer" id="drawer" onclick="this.classList.remove('on')">
+    <a href="#obra">Obra</a><a href="#espacios">Espacios</a><a href="#trayectoria">Trayectoria</a><a href="#contacto">Contacto</a>
   </div>
 </header>
 
-<section class="hero" data-b="3">
-  <div class="wrap">
-    <div>
-      <span class="eb" data-e="7">Pintora figurativa · Buenos Aires · Miami</span>
-      <h1 data-e="8">Pop, cómic <em>y figura.</em></h1>
-      <p data-e="9">Tres líneas de obra, una misma mano hiperrealista: retratos pop en blanco y negro, cuerpos que conviven con el cómic y escenas figurativas donde el vidrio y la piel parecen reales.</p>
-      <div class="hero-ctas">
-        <a href="https://wa.me/5491168250081?text=Hola%20Miri%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20una%20obra." target="_blank" rel="noopener" class="btn" data-e="10">Consultar por una obra →</a>
-        <a href="#obra" class="lnk" data-e="11">Ver la obra</a>
-      </div>
-    </div>
-    <div class="slider" id="slider" aria-roledescription="carrusel" aria-label="Obras de Miri Marchese">
-      <div class="sl-track">
-        <figure class="sl"><img src="img/sifones.webp" width="1130" height="796" alt="Sifones azules, óleo de Miri Marchese" data-e="12"><figcaption data-e="13">Figurativo · Sifones</figcaption></figure>
-        <figure class="sl"><img src="img/comics-vendetta2.webp" width="615" height="749" alt="Obra de la serie Comics" data-e="14"><figcaption data-e="15">Comics · Vendetta</figcaption></figure>
-        <figure class="sl"><img src="img/pop-kravitz.webp" width="508" height="789" alt="Retrato pop en blanco y negro" data-e="16"><figcaption data-e="17">Pop · Lenny Kravitz</figcaption></figure>
-        <figure class="sl"><img src="img/mirada.webp" width="1120" height="1400" alt="Retrato de mujer, óleo" data-e="18"><figcaption data-e="19">Figurativo · Mirada</figcaption></figure>
-        <figure class="sl"><img src="img/comics-chroma.webp" width="807" height="586" alt="Obra de la serie Comics presentada en CHROMA 2025" data-e="20"><figcaption data-e="21">Comics · CHROMA 2025, Miami</figcaption></figure>
-      </div>
-      <button class="sl-btn prev" type="button" aria-label="Obra anterior"><svg viewBox="0 0 22 44"><path d="M17 4L5 22l12 18"/></svg></button>
-      <button class="sl-btn next" type="button" aria-label="Obra siguiente"><svg viewBox="0 0 22 44"><path d="M5 4l12 18-12 18"/></svg></button>
-      <div class="sl-foot"><span class="sl-cap"></span><span class="sl-dots"></span></div>
+<section class="hero" data-b="2">
+  <img class="foto" src="img/mirada.webp" alt="Retrato de mujer, óleo de Miri Marchese" data-e="6">
+  <div class="txt">
+    <div class="eb" data-e="7">Pintora figurativa · Buenos Aires · Miami</div>
+    <h1 class="serif">Pop,<br><span class="it blue">cómic</span><br>y figura.</h1>
+    <p class="sub" data-e="8">Tres líneas de obra, una misma mano hiperrealista.</p>
+    <div class="ctas">
+      <a href="#obra" class="btn" data-e="9">Explorar la obra <span class="ar">→</span></a>
+      <a href="https://wa.me/5491168250081?text=Hola%20Miri%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20una%20obra." target="_blank" rel="noopener" class="ul" data-e="10">Consultar por una obra</a>
     </div>
   </div>
 </section>
 
-<section class="sellos" data-b="4">
+<section class="lineas" data-b="3">
   <div class="wrap">
-    <ul data-b="5">
-      <li><span data-e="22">Miami · hoy</span><b data-e="23">Lucid Art Gallery</b></li>
-      <li><span data-e="24">París · 2023</span><b data-e="25">Carrousel du Louvre</b></li>
-      <li><span data-e="26">Miami · 2017–2023</span><b data-e="27">Spectrum Miami</b></li>
-      <li><span data-e="28">Buenos Aires · hoy</span><b data-e="29">Banco Ciudad</b></li>
+    <ul>
+      <li><a href="#obra" data-tab="pop"><img src="img/pop-kravitz.webp" alt="Línea Pop"><div><div class="t serif it" data-e="11">Pop</div><div class="l"><span data-e="12">Obra original</span> →</div></div></a></li>
+      <li><a href="#obra" data-tab="comics"><img src="img/comics-vendetta2.webp" alt="Línea Comics"><div><div class="t serif it" data-e="13">Comics</div><div class="l"><span data-e="14">Para espacios</span> →</div></div></a></li>
+      <li><a href="#obra" data-tab="figurativo"><img src="img/sifones.webp" alt="Línea Figurativo" style="object-position:30% 50%"><div><div class="t serif it" data-e="15">Figurativo</div><div class="l"><span data-e="16">Obra a pedido</span> →</div></div></a></li>
     </ul>
   </div>
 </section>
 
-<section class="ofrece" data-b="6">
+<section class="sel" id="obra" data-b="4">
   <div class="wrap">
-    <ul data-b="7">
-      <li><h3 data-e="30">Obra original</h3><p data-e="31">Óleos sobre lienzo, piezas únicas firmadas.</p></li>
-      <li><h3 data-e="32">Obra a pedido</h3><p data-e="33">Una pintura pensada para vos: tu objeto, tu mascota, tu idea.</p></li>
-      <li><h3 data-e="34">Para espacios</h3><p data-e="35">Obra para casas, oficinas y proyectos de interiorismo. Envíos al exterior.</p></li>
-    </ul>
-  </div>
-</section>
-
-<section class="series" id="obra" data-b="8">
-  <div class="wrap">
-    <div class="serie">
-      <div class="s-img duo"><img src="img/pop-kravitz.webp" width="508" height="789" alt="Retrato pop de Lenny Kravitz, Miri Marchese" data-e="36"><img src="img/pop-cher.webp" width="508" height="897" alt="Retrato pop de Cher, Miri Marchese" data-e="37"></div>
-      <div class="s-txt">
-        <span class="eb" data-e="38">Línea 01</span>
-        <h2 data-e="39">Pop</h2>
-        <p data-e="40">Íconos de la música y la cultura en blanco y negro: Lenny Kravitz, Cher, Frida Kahlo, Amy Winehouse, Elton John. Contraste puro, planos de gris y una presencia que llena la pared.</p>
-        <div class="meta" data-e="41">Blanco y negro sobre lienzo</div>
-        <a href="https://wa.me/5491168250081?text=Hola%20Miri%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20una%20obra." target="_blank" rel="noopener" class="lnk" data-e="42">Consultar por esta línea →</a>
-      </div>
+    <h2 class="serif it" data-e="17">Obra seleccionada</h2>
+    <div class="tabs" role="tablist">
+      <button class="on" data-t="pop" role="tab">Pop</button>
+      <button data-t="comics" role="tab">Comics</button>
+      <button data-t="figurativo" role="tab">Figurativo</button>
     </div>
-    <div class="serie inv">
-      <div class="s-img"><img src="img/comics-stand.webp" width="1024" height="1024" alt="Miri Marchese junto a la serie Comics en Miami" data-e="43"></div>
-      <div class="s-txt">
-        <span class="eb" data-e="44">Línea 02</span>
-        <h2 data-e="45">Comics</h2>
-        <p data-e="46">El cuerpo hiperrealista se cruza con viñetas de cómic: Vendetta, Deadpool, Spider-Man y la serie de lencería que presentó en CHROMA 2025, Miami Art Week.</p>
-        <div class="meta" data-e="47">Óleo sobre lienzo · Serie “Comics &amp; More”</div>
-        <a href="https://wa.me/5491168250081?text=Hola%20Miri%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20una%20obra." target="_blank" rel="noopener" class="lnk" data-e="48">Consultar por esta línea →</a>
-      </div>
+    <div class="panel on" id="p-pop">
+      <img src="img/pop-elton.webp" alt="Elton John, serie Pop" loading="lazy">
+      <img src="img/pop-amy.webp" alt="Amy Winehouse, serie Pop" loading="lazy">
+      <img src="img/pop-cher2.webp" alt="Cher, serie Pop" loading="lazy">
+      <img src="img/pop-axl.webp" alt="Axl Rose, serie Pop" loading="lazy">
+      <img src="img/pop-kravitz.webp" alt="Lenny Kravitz, serie Pop" loading="lazy">
+      <img src="img/pop-frida2.webp" alt="Frida Kahlo, serie Pop" loading="lazy">
     </div>
-    <div class="serie">
-      <div class="s-img duo"><img src="img/sifones.webp" width="1130" height="796" alt="Sifones azules, Miri Marchese" data-e="49"><img src="img/espalda.webp" width="1190" height="905" alt="Figura de espaldas, Miri Marchese" data-e="50"></div>
-      <div class="s-txt">
-        <span class="eb" data-e="51">Línea 03</span>
-        <h2 data-e="52">Figurativo</h2>
-        <p data-e="53">La fuerza silenciosa del cuerpo femenino en escenas introspectivas, y objetos cotidianos —sifones, frascos, cajas de cereal— donde el vidrio y el metal parecen reales.</p>
-        <div class="meta" data-e="54">Óleo sobre lienzo</div>
-        <a href="https://wa.me/5491168250081?text=Hola%20Miri%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20una%20obra." target="_blank" rel="noopener" class="lnk" data-e="55">Consultar por esta línea →</a>
-      </div>
+    <div class="panel" id="p-comics">
+      <img src="img/comics-vendetta2.webp" alt="Vendetta, serie Comics" loading="lazy">
+      <img src="img/comics-vendetta.webp" alt="Serie Comics en Miami" loading="lazy">
+      <img class="ancha" src="img/comics-chroma.webp" alt="Serie Comics presentada en CHROMA 2025" loading="lazy">
+      <img class="ancha" src="img/comics-stand.webp" alt="Miri Marchese con la serie Comics en Miami" loading="lazy">
+    </div>
+    <div class="panel" id="p-figurativo">
+      <img class="ancha" src="img/sifones.webp" alt="Sifones azules" loading="lazy">
+      <img src="img/mirada.webp" alt="Retrato de mujer" loading="lazy">
+      <img src="img/gardenia.webp" alt="Gardenia" loading="lazy">
+      <img class="ancha" src="img/espalda.webp" alt="Figura de espaldas" loading="lazy">
+      <img src="img/frasco.webp" alt="Frasco de caramelos" loading="lazy">
+      <img src="img/galgos.webp" alt="Dos con sombrero" loading="lazy">
     </div>
   </div>
 </section>
 
-<section class="espacios" id="espacios" data-b="9">
+<section class="esp dark" id="espacios" data-b="5">
   <div class="wrap">
     <div>
-      <span class="eb" data-e="55">Arte para espacios</span>
-      <h2 data-e="56">Pensada para habitar un espacio.</h2>
-      <p data-e="57">Soy licenciada en Diseño de Interiores. Por eso cada obra piensa también en el lugar donde va a vivir: la luz, la pared, la escala.</p>
-      <p data-e="58">Trabajo con particulares, arquitectos e interioristas. Envíos a todo el país y al exterior.</p>
-      <a href="https://wa.me/5491168250081?text=Hola%20Miri%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20una%20obra." target="_blank" rel="noopener" class="btn" data-e="59">Quiero una obra para mi espacio →</a>
+      <h2 class="serif">Pensada para habitar un <span class="it blue">espacio.</span></h2>
+      <p data-e="18">Obra para casas, oficinas y proyectos de interiorismo.</p>
     </div>
-    <div class="esp-imgs">
-      <img src="img/miami-stand.webp" width="1024" height="1024" alt="Miri Marchese en su stand en Miami" data-e="60">
-      <img src="img/pop-pared.webp" width="1015" height="950" alt="Serie Pop colgada en una pared" data-e="61">
-    </div>
+    <div class="img"><img src="img/pop-pared.webp" alt="Serie Pop colgada en una pared" loading="lazy"></div>
+    <div class="cta"><a href="https://wa.me/5491168250081?text=Hola%20Miri%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20una%20obra." target="_blank" rel="noopener" class="btn" data-e="19">Consultar por mi espacio <span class="ar">→</span></a></div>
   </div>
 </section>
 
-<section class="tray" id="trayectoria" data-b="10">
+<section class="art" id="trayectoria" data-b="6">
   <div class="wrap">
-    <span class="eb" data-e="62">Trayectoria</span>
-    <h2 data-e="63">De Caracas y Buenos Aires a Miami y París.</h2>
-    <ol data-b="11">
-      <li><span class="anio" data-e="64">Hoy</span><span class="que" data-e="65">Lucid Art Gallery, Miami Design District<small>Obra en exhibición desde diciembre de 2025 (CHROMA 2025, Miami Art Week).</small></span></li>
-      <li><span class="anio" data-e="66">Hoy</span><span class="que" data-e="67">Banco Ciudad, Buenos Aires<small>Muestra permanente desde noviembre de 2023.</small></span></li>
-      <li><span class="anio" data-e="68">2024–25</span><span class="que" data-e="69">Palacio Barolo, Buenos Aires<small>Cielos del Barolo · Noche de los Museos · Modo Arte. Mínima, Paseo de las Artes.</small></span></li>
-      <li><span class="anio" data-e="70">2023</span><span class="que" data-e="71">Carrousel du Louvre, París<small>También: Centenario del Palacio Barolo, Noche de los Museos y CelebrArt.</small></span></li>
-      <li><span class="anio" data-e="72">2017–23</span><span class="que" data-e="73">Spectrum Miami · semana de Art Basel<small>Ediciones 2017, 2018, 2019, 2022 y 2023.</small></span></li>
-      <li><span class="anio" data-e="74">2018–21</span><span class="que" data-e="75">Art Expo New York · Art San Diego · BADA<small>Primer lugar en Artes en Redes Argentina (2020). Redwood Art Group. Asociación de Artistas de Tigre.</small></span></li>
-      <li><span class="anio" data-e="90">2013–17</span><span class="que" data-e="91">Museo Tessari Rizzo, Caracas · Estilo Pilar · Galería Laura Haber<small>Primeras exposiciones colectivas.</small></span></li>
-    </ol>
-  </div>
-</section>
-
-<section class="bio" id="sobre" data-b="12">
-  <div class="wrap">
-    <img src="img/miri-obra.webp" width="1400" height="1400" alt="Miri Marchese frente a una de sus obras" data-e="76">
-    <div>
-      <span class="eb" data-e="77">Sobre mí</span>
-      <h2 data-e="78">Miri Marchese</h2>
-      <p data-e="79">Soy pintora figurativa argentina y licenciada en Diseño de Interiores. Mi obra explora la fuerza silenciosa del cuerpo femenino a través de escenas introspectivas donde ciertos símbolos —líquidos, objetos o gestos— transforman la figura en un territorio emocional.</p>
-      <p data-e="80">Me formé en Caracas, donde viví varios años, con Patrizia Rizzo (dibujo, color y composición) y en fotografía con Roberto Mata. De vuelta en Buenos Aires hice el taller de hiperrealismo de piel y figura humana de Omar Ortiz, y estudié historia del arte, dibujo y pintura clásica con Ricardo Celma.</p>
-      <p class="cita" data-e="81">“Admiro profundamente a la mujer: por eso gran parte de mi obra está dedicada a ella.”</p>
+    <div class="top">
+      <img class="foto" src="img/miri-obra.webp" alt="Miri Marchese frente a una de sus obras" loading="lazy">
+      <div>
+        <h2 class="serif" data-e="20">Miri<br>Marchese</h2>
+        <p data-e="21">Pintora figurativa argentina y licenciada en Diseño de Interiores.</p>
+        <div class="raya"></div>
+        <p class="cita" data-e="22">“Admiro profundamente a la mujer.”</p>
+      </div>
+    </div>
+    <div class="tray">
+      <h3 class="serif it" data-e="23">De Buenos Aires a Miami y París.</h3>
+      <ul>
+        <li data-e="24">Lucid Art Gallery · Miami</li>
+        <li data-e="25">Carrousel du Louvre · París · 2023</li>
+        <li data-e="26">Spectrum Miami · 2017–2023</li>
+      </ul>
     </div>
   </div>
 </section>
 
-<section class="cta" id="contacto" data-b="13">
+<section class="cont dark" id="contacto" data-b="7">
   <div class="wrap">
-    <span class="eb" data-e="82">Contacto</span>
-    <h2 data-e="83">¿Te interesa una obra?</h2>
-    <p data-e="84">Escribime por WhatsApp y te paso disponibilidad, medidas y precio. También podés contarme tu idea para una obra a pedido.</p>
-    <a href="https://wa.me/5491168250081?text=Hola%20Miri%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20una%20obra." target="_blank" rel="noopener" class="btn" data-e="85">Escribirme por WhatsApp →</a>
-    <p style="margin:22px auto 0;font-size:15px" data-e="92">WhatsApp +54 9 11 6825-0081 · <a href="mailto:mirimarchese@gmail.com">mirimarchese@gmail.com</a> · <a href="https://ig.me/m/mirimarcheseart">Instagram</a></p>
+    <h2 class="serif" data-e="27">¿Te interesa una obra?</h2>
+    <p data-e="28">Obra original, obras a pedido y envíos al exterior.</p>
+    <div class="fila">
+      <a href="https://wa.me/5491168250081?text=Hola%20Miri%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20una%20obra." target="_blank" rel="noopener" class="btn" data-e="29">Escribirme por WhatsApp <span class="ar">→</span></a>
+      <a href="https://instagram.com/mirimarcheseart" target="_blank" rel="noopener" class="ig"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff"/></svg><span>@mirimarcheseart</span></a>
+    </div>
   </div>
 </section>
-
-<footer data-b="14">
-  <div class="wrap">
-    <span data-e="86">© Miri Marchese · Pop · Comics · Figurativo</span>
-    <a href="https://instagram.com/mirimarcheseart" target="_blank" rel="noopener" data-e="87">@mirimarcheseart</a>
-  </div>
-</footer>
-<div style="height:76px" class="espacio-fijo"></div>
-<div class="fijo"><a href="https://wa.me/5491168250081?text=Hola%20Miri%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20una%20obra." target="_blank" rel="noopener" class="btn" data-e="88">Consultar por una obra →</a></div>
+<footer><div class="wrap">© Miri Marchese · mirimarchese@gmail.com</div></footer>
 
 <script>
 (function(){
-  var sl=document.getElementById('slider'); if(!sl) return;
-  var tr=sl.querySelector('.sl-track'), items=[].slice.call(sl.querySelectorAll('.sl')), cap=sl.querySelector('.sl-cap'), dots=sl.querySelector('.sl-dots'), i=0, t;
-  items.forEach(function(_,k){var b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Obra '+(k+1));b.onclick=function(){go(k);reset();};dots.appendChild(b);});
-  function paint(){cap.textContent=items[i].querySelector('figcaption').textContent;[].forEach.call(dots.children,function(d,k){d.classList.toggle('on',k===i);});}
-  function go(k){i=(k+items.length)%items.length;tr.scrollTo({left:i*tr.clientWidth,behavior:'smooth'});paint();}
-  tr.addEventListener('scroll',function(){var k=Math.round(tr.scrollLeft/tr.clientWidth);if(k!==i){i=k;paint();}},{passive:true});
-  sl.querySelector('.prev').onclick=function(){go(i-1);reset();};
-  sl.querySelector('.next').onclick=function(){go(i+1);reset();};
-  function reset(){clearInterval(t);t=setInterval(function(){go(i+1);},5000);}
-  sl.addEventListener('mouseenter',function(){clearInterval(t);});sl.addEventListener('mouseleave',reset);
-  tr.addEventListener('touchstart',function(){clearInterval(t);},{passive:true});
-  paint();reset();
-  if(window.matchMedia('(min-width:900px)').matches){var e=document.querySelector('.espacio-fijo');if(e)e.style.display='none';}
+  function show(t){
+    document.querySelectorAll('.tabs button').forEach(function(b){b.classList.toggle('on',b.dataset.t===t)});
+    document.querySelectorAll('.panel').forEach(function(p){p.classList.toggle('on',p.id==='p-'+t)});
+  }
+  document.querySelectorAll('.tabs button').forEach(function(b){b.onclick=function(){show(b.dataset.t)}});
+  document.querySelectorAll('[data-tab]').forEach(function(a){a.addEventListener('click',function(){show(a.dataset.tab)})});
 })();
 </script>
 <script src="https://vm.semillaredes.com/web/editor.js" defer></script>
