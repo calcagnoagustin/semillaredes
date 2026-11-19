@@ -10,23 +10,25 @@ FN = "https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/plan-pago"
 PLANES = [
   dict(codigo="publicidad_viva", nombre="Publicidad Viva", precio="60.000", usd="45", mp="085082641e884adb85630ddd660471fd",
        para="Para que tu pauta nunca quede quieta.", color="olive", reuniones=0,
-       items=[("si", "<b>1 ajuste de tu pauta por semana</b>, hecho por el equipo de Semilla"),
+       items=[("si", "<b>Hasta 2 ajustes de tu pauta por mes</b>, hechos por el equipo de Semilla"),
               ("si", "Seguimiento de tus campañas en la app"),
               ("no", "Sin reuniones")]),
   dict(codigo="reunion_mensual", nombre="Reunión Mensual", precio="90.000", usd="65", mp="4a8278db20594bb6835b022f54113027",
        para="Pauta al día y una charla por mes para decidir.", color="rose", reuniones=1, destacado=True,
-       items=[("si", "<b>1 ajuste de tu pauta por semana</b>, hecho por el equipo de Semilla"),
+       items=[("si", "<b>Hasta 2 ajustes de tu pauta por mes</b>, hechos por el equipo de Semilla"),
               ("si", "<b>1 reunión 1:1 por mes</b> con Agus por Zoom"),
               ("si", "Seguimiento de tus campañas en la app")]),
   dict(codigo="mentoria", nombre="Mentoría", precio="200.000", usd="150", mp="868d73391ef84f9b9a25ec06857e663e",
        para="Acompañamiento cercano, semana a semana.", color="olive", reuniones=4,
        items=[("si", "<b>4 reuniones 1:1 por mes</b> con Agus por Zoom"),
+              ("si", "<b>Hasta 4 ajustes de tu pauta por mes</b>, hechos por el equipo"),
               ("si", "Foco, estrategia, comunicación y decisiones"),
               ("si", "Seguimiento de tu proyecto en la app")]),
   dict(codigo="setup_inicial", nombre="Setup", precio="350.000", usd="260", mp="66d66ef24caf441a84ae403cd8b77fec",
        para="Armamos todo con vos: estrategia y contenido.", color="rose", reuniones=4,
        items=[("si", "<b>4 reuniones 1:1 por mes</b> con Agus por Zoom"),
               ("si", "<b>Contenido para tus redes</b>, hecho por el equipo"),
+              ("si", "<b>Hasta 4 ajustes de tu pauta por mes</b>"),
               ("si", "Seguimiento de tu proyecto en la app")]),
 ]
 
@@ -385,7 +387,7 @@ body = f"""
   <section class="preg">
     <h2>Preguntas frecuentes</h2>
     <details><summary>¿Qué es el hosting de la página?</summary><p>Es el lugar donde vive tu web para que esté online. En todos los planes está incluido: no pagás nada aparte y nosotros nos ocupamos de que funcione.</p></details>
-    <details><summary>¿Qué es un ajuste de pauta?</summary><p>Una vez por semana el equipo revisa tus anuncios y hace un cambio para que rindan mejor: públicos, presupuesto, textos o piezas.</p></details>
+    <details><summary>¿Qué es un ajuste de pauta?</summary><p>El equipo revisa tus anuncios y hace cambios para que rindan mejor: públicos, presupuesto, textos o piezas. Hasta 2 por mes en Publicidad Viva y Reunión Mensual, y hasta 4 en Mentoría y Setup. Así la publicidad tiene tiempo de aprender entre un cambio y otro.</p></details>
     <details><summary>¿Cómo agendo las reuniones?</summary><p>Antes de pagar elegís el día y horario de tu primera reunión. Tenés 15 minutos para pagar; si no, el horario se libera. Las siguientes reuniones del mes las agendás desde tu página de bienvenida.</p></details>
     <details><summary>¿Puedo pagar desde fuera de Argentina?</summary><p>Sí. Desde el exterior pagás en dólares con PayPal y la suscripción se renueva sola cada mes.</p></details>
     <details><summary>¿Puedo cambiar de plan o darme de baja?</summary><p>Sí. Nos escribís por WhatsApp y lo cambiamos. La baja se hace desde Mercado Pago o con un mensaje.</p></details>
