@@ -165,7 +165,7 @@ def card(p):
     cinta = '<span class="cinta">El más elegido</span>' if p.get("destacado") else ""
     if p["reuniones"]:
         nota = f'Primero elegís el día y horario de tu {"reunión" if p["reuniones"]==1 else "primera reunión"} y después pagás.'
-        boton = "Elegir horario y suscribirme"
+        boton = "Elegir horario"
     else:
         nota = "Después de pagar te escribimos para arrancar."
         boton = "Suscribirme"
