@@ -187,7 +187,7 @@ APP = '''
     <p class="eyebrow">Incluida en todos los planes</p>
     <h2>La app completa de Semilla</h2>
     <div class="app-g">
-      <div class="app-b"><span class="app-n">1</span><div><h3>Tu web</h3><p>Creá tu landing en minutos, conectada a todas tus redes y lanzamientos. Te damos el hosting y la editás desde el celular.</p><p class="app-l">Dominio propio <span class="pronto">Muy pronto</span></p></div></div>
+      <div class="app-b"><span class="app-n">1</span><div><h3>Tu web</h3><p>Creá tu landing en minutos, conectada a todas tus redes y lanzamientos. Te damos el hosting y la editás desde el celular.</p></div></div>
       <div class="app-b"><span class="app-n">2</span><div><h3>Reporte semanal y métricas</h3><p>Todas las semanas, tu reporte en la app y por WhatsApp, con qué hacer esa semana. Instagram, Spotify, YouTube, campañas y ventas en un solo lugar.</p></div></div>
       <div class="app-b"><span class="app-n">3</span><div><h3>Tareas y recordatorios</h3><p>Tareas y recordatorios personalizados para que tu proyecto no pierda impulso. Metas, agenda y SemillaIA para consultarle lo que necesites.</p></div></div>
       <div class="app-b"><span class="app-n">4</span><div><h3 class="h-pronto">Herramientas para crear <span class="pronto">Muy pronto</span></h3>
