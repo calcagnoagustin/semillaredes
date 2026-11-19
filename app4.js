@@ -739,7 +739,8 @@
       <div class="box"><button class="row" data-prox="Tu plan"><span class="tile">${I('gorro')}</span><span class="tx"><b>Tu plan</b><small>Gestioná tu suscripción</small></span><span class="prox">Próximamente</span></button>
         <button class="row" data-prox="Historial de pagos"><span class="tile c">${I('billetera')}</span><span class="tx"><b>Historial de pagos</b><small>Mercado Pago</small></span><span class="go">${I('chev')}</span></button></div>
       <div class="tt"><h2>Conexiones y acceso</h2></div>
-      <div class="box"><button class="row" id="v4cx"><span class="tile r">${I('link')}</span><span class="tx"><b>Redes conectadas</b><small>Instagram, Spotify, YouTube y Meta Ads</small></span><span class="go">${I('chev')}</span></button>
+      <div class="box"><a class="row" href="/meta/?c=${encodeURIComponent(slug)}" target="_blank" rel="noopener"><span class="tile">${I('megafono')}</span><span class="tx"><b>Compartir tu publicidad de Meta</b><small>Para que tus anuncios entren solos al reporte</small></span><span class="go">${I('ext')}</span></a>
+        <button class="row" id="v4cx"><span class="tile r">${I('link')}</span><span class="tx"><b>Redes conectadas</b><small>Instagram, Spotify, YouTube y Meta Ads</small></span><span class="go">${I('chev')}</span></button>
         <button class="row" data-prox="Datos de acceso"><span class="tile c">${I('persona')}</span><span class="tx"><b>Datos de acceso</b><small>Editá tus datos</small></span><span class="go">${I('chev')}</span></button>
         <button class="row" data-prox="Notificaciones"><span class="tile">${I('campana')}</span><span class="tx"><b>Notificaciones</b><small>Elegí qué avisos recibir</small></span><span class="go">${I('chev')}</span></button></div>
       <a class="salir" href="https://semillaredes.com/">Salir de la app ${I('salir')}</a>
