@@ -235,6 +235,7 @@
   #v4 .todo4{margin-top:22px;background:var(--card);border:1px solid var(--linea);border-radius:20px;overflow:hidden} #v4 .todo4>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:16px;font-weight:700;font-size:16px;color:var(--vino)} #v4 .todo4>summary::-webkit-details-marker{display:none} #v4 .todo4>summary svg{transition:transform .2s} #v4 .todo4[open]>summary svg{transform:rotate(90deg)}
   #v4 .todo4 #app{padding:0 12px 16px;overflow:hidden} #v4 .todo4 #app svg.linea{max-width:100%} #v4 .todo4 #app details.hist{overflow-x:auto} #v4 .todo4 #app .ventaBox input,#v4 .todo4 #app .ventaBox select,#v4 .todo4 #app .ventaBox label,#v4 .todo4 #app .ventaBox .vmon{max-width:100%;box-sizing:border-box} #v4 .todo4 #app h1{font-size:24px;margin:4px 0} #v4 .todo4 #app h2{font-size:20px;margin:22px 0 4px}
   #v4 .v4clasico .ventaBox{background:var(--card);border:1px solid var(--linea);border-radius:18px;padding:16px;margin-bottom:12px;font-family:inherit}
+  #v4 .cv4{background:var(--card);border:1px solid var(--linea);border-radius:20px;padding:16px 14px 12px;margin-bottom:12px} #v4 .cv4 .ct{font-weight:700;font-size:16px;line-height:22px;padding:0 4px} #v4 .cv4 svg{width:100%;height:auto;display:block;margin-top:6px} #v4 .cv4 p{margin:6px 4px 0;font-size:13.5px;line-height:19px;color:var(--mute)}
   #v4 .costo{text-align:right;flex:none} #v4 .costo b{font-size:17px} #v4 .costo small{font-size:12.5px}
   #v4 .hall{display:flex;gap:14px;align-items:flex-start;padding:16px}
   #v4 .hall .tile{margin-top:0} #v4 .hall>span:last-child{padding-top:8px} #v4 .hall b{display:block;font-size:16.5px;line-height:22px} #v4 .hall p{margin:3px 0 0;font-size:15px;line-height:22px;color:#4B4958}
@@ -442,7 +443,7 @@
       const CJ=(CTA&&CTA.conjuntos)||[], P=CTA&&CTA.pago;
       const lista=(L,n)=>{ L=L.map(z=>({...z,nombre:PA[z.nombre]||z.nombre}));  const t=Number(U.ig_followers_total)||0, m=Math.max(...L.map(z=>Number(z.seguidores)||0))||1; return `<div class="box">${L.slice(0,10).map(z=>`<div class="row"><span class="tx"><b>${esc(z.nombre)}</b><span class="pb"><i style="width:${Math.max(3,Math.round((Number(z.seguidores)||0)*100/m))}%"></i></span></span><span class="costo"><b>${z.seguidores==null?'—':nf(z.seguidores)}</b>${t&&z.seguidores?`<small>${nf(z.seguidores*100/t,1)}%</small>`:''}</span></div>`).join('')}</div>`; };
       const paises=M.R.slice().reverse().map(r=>r.metricas.ig_paises).find(x=>x&&x.length), ciudades=M.R.slice().reverse().map(r=>r.metricas.ig_ciudades||r.metricas.ig_ciudades_camp).find(x=>x&&x.length);
-      rep=`${CARD}${resumenMes()}${panelPeriodo()}${bloqueCampanas('graf')}
+      rep=`${CARD}${resumenMes()}${curvasIG()}${panelPeriodo()}${bloqueCampanas('graf')}
         ${bloqueWeb()}
         <div class="tt"><h2>Todos los números</h2></div>
         ${grupos.map(([t,ic,c,f])=>{ const x=tiles(f); return x?`<div class="sub2">${t}</div><div class="dgrid">${x}</div>`:''; }).join('')}
@@ -638,6 +639,22 @@
     if(vF!=null&&vI) it.push([nf(vF/vI,1)+'x','retorno por dólar']); else { const iI=sum(m=>m.ig_inversion); if(sN&&iI) it.push([S+nf(iI/sN,iI/sN<100?2:0),'costo por seguidor']); }
     if(it.length<2) return '';
     return `<div class="mesp"><div class="k">Resumen de ${ML}</div><div class="g">${it.slice(0,6).map(([v,l])=>`<div><b>${v}</b><small>${l}</small></div>`).join('')}</div><p>La suma de todos los reportes de ${ML}. Si un período cruza de un mes a otro, se reparte por días.</p></div>`; }
+  // 19/11 (Agus): curvas de seguidores, costo por seguidor y tasa de conversión, en todas las apps, con el valor de cada período
+  function curvasIG(){ const M=metricas(), Rr=M.R.slice(-8); if(Rr.filter(r=>r.metricas.ig_followers_nuevos!=null).length<2) return '';
+    const S=k=>Rr.map(r=>{ const v=r.metricas[k]; return v==null||v===''?null:Number(v); });
+    const money=v=>(SIM()==='USD'?'USD ':'$ ')+nf(v,Math.abs(v)<100?2:0), mon2=v=>(SIM()==='USD'?'':'$')+nf(v,Math.abs(v)<100?2:0);
+    const graf=(vals,col,fmt)=>{ const V=vals.map((v,i)=>[i,v]).filter(x=>x[1]!=null); if(V.length<2) return '';
+      const W=340,H=150,n=Math.max(1,vals.length-1),mn=Math.min(...V.map(x=>x[1])),mx=Math.max(...V.map(x=>x[1])),rg=(mx-mn)||1,X=i=>22+i*(W-44)/n,Y=v=>H-30-(v-mn)/rg*(H-62);
+      return `<svg viewBox="0 0 ${W} ${H}" role="img"><line x1="10" x2="${W-10}" y1="${H-22}" y2="${H-22}" stroke="#E6DED1"/>
+        <path d="${V.map((p,j)=>(j?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ')}" fill="none" stroke="${col}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+        ${V.map((p,j)=>`<circle cx="${X(p[0]).toFixed(1)}" cy="${Y(p[1]).toFixed(1)}" r="${j===V.length-1?4.6:3.6}" fill="${j===V.length-1?'#1E2350':col}"/><text x="${X(p[0]).toFixed(1)}" y="${(Y(p[1])-9).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="700" font-family="DM Sans,sans-serif" fill="#3A3848">${fmt(p[1])}</text>`).join('')}
+        ${Rr.map((r,i)=>`<text x="${X(i).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="10" font-family="DM Sans,sans-serif" fill="#8C8896">${fC(r.hasta)}</text>`).join('')}</svg>`; };
+    const U=M.U, C=[
+      ['Seguidores nuevos por período',S('ig_followers_nuevos'),VINO,v=>nf(v),U.ig_followers_total!=null?`Hoy: ${nf(U.ig_followers_total)} seguidores en total`:''],
+      ['Costo por seguidor',S('ig_costo_follower'),ROSA,mon2,U.ig_costo_follower!=null?`Este período: ${money(Number(U.ig_costo_follower))}`:''],
+      ['Tasa de conversión',S('ig_conv'),OLI,v=>nf(v,v<10?1:0)+'%','De cada 100 personas que visitaron tu perfil, cuántas te siguieron']];
+    const cards=C.map(([t,v,col,fmt,pie])=>{ const g=graf(v,col,fmt); return g?`<div class="cv4"><div class="ct">${t}</div>${g}${pie?`<p>${esc(pie)}</p>`:''}</div>`:''; }).filter(Boolean);
+    return cards.length?`<div class="tt"><h2>Tus curvas de Instagram</h2></div>${cards.join('')}`:''; }
   function panelPeriodo(){ const M=metricas(), Rr=M.R, U=M.U; if(!Rr.length) return '';
     const tiene=k=>Rr.slice(-4).some(r=>r.metricas[k]!=null);
     const spk=['sp_oyentes_perfil','sp_monthly','sp_oyentes','sp_listeners'].find(tiene)||'sp_oyentes';
