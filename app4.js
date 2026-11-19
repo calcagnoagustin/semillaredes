@@ -419,7 +419,7 @@
           <div style="text-align:right">${h0.delta?`<span class="chip ${h0.bien===false?'mal':''}">${I(String(h0.delta).startsWith('-')?'baja':'sube')}${esc(h0.delta)}</span>`:''}
           ${p0!=null?`<div class="cmp"><span>Este período</span><i style="width:${Math.max(18,Math.min(76,Math.round(76*Math.min(1,(100+p0)/Math.max(100,100+p0)))))}px"></i><span>Promedio</span><i class="p" style="width:${Math.max(18,Math.min(76,Math.round(76*Math.min(1,100/Math.max(100,100+p0)))))}px"></i></div>`:''}</div></div>
           <div class="sub">${sub(h1)}${sub(m0)}</div><div class="vs">Cambios vs. el promedio ${tj.cadencia&&tj.cadencia>8?'de los 4 reportes anteriores':'de las últimas 4 semanas'}</div></div>`:`<div class="box"><div class="vacio">Tu primer reporte se arma con la próxima medición.</div></div>`}`;
-      if(SUBM==='reporte') rep=`${CARD}
+      if(SUBM==='reporte') rep=`${CARD}${curvasIG()}
         ${ht?`<div class="tt"><h2>Qué explica el cambio</h2></div><div class="box exp"><span class="tile" style="margin-top:0">${I('foco')}</span><p>${escB(ht)}</p></div>`:''}
         ${acc?`<div class="hacer" style="margin-top:16px"><div class="kk">${I('lista')}Qué hacer ${tj.cadencia&&tj.cadencia>8?'ahora':'esta semana'}</div><h3>${esc(acc.titulo)}</h3><button class="bt n" data-agendar="${esc(acc.titulo)}">${I('cal')}Agendar esta prueba</button></div>`:''}
         <button class="bt n" data-subm="datos" style="width:100%;margin-top:16px">${I('barras')}Métricas completas</button>
