@@ -5,24 +5,25 @@ aqui = pathlib.Path(__file__).parent
 MP = "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id="
 CAL = "https://calendly.com/calcagnoagustin/1-hora-de-consultoria-con-agus"
 WA = "https://wa.me/5492665242011?text="
+FN = "https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/plan-pago"
 
 PLANES = [
-  dict(codigo="publicidad_viva", nombre="Publicidad Viva", precio="60.000", mp="085082641e884adb85630ddd660471fd",
+  dict(codigo="publicidad_viva", nombre="Publicidad Viva", precio="60.000", usd="45", mp="085082641e884adb85630ddd660471fd",
        para="Para que tu pauta nunca quede quieta.", color="olive", reuniones=0,
        items=[("si", "<b>1 ajuste de tu pauta por semana</b>, hecho por el equipo de Semilla"),
               ("si", "Seguimiento de tus campañas en la app"),
               ("no", "Sin reuniones")]),
-  dict(codigo="reunion_mensual", nombre="Reunión Mensual", precio="90.000", mp="4a8278db20594bb6835b022f54113027",
+  dict(codigo="reunion_mensual", nombre="Reunión Mensual", precio="90.000", usd="65", mp="4a8278db20594bb6835b022f54113027",
        para="Pauta al día y una charla por mes para decidir.", color="rose", reuniones=1, destacado=True,
        items=[("si", "<b>1 ajuste de tu pauta por semana</b>, hecho por el equipo de Semilla"),
               ("si", "<b>1 reunión 1:1 por mes</b> con Agus por Zoom"),
               ("si", "Seguimiento de tus campañas en la app")]),
-  dict(codigo="mentoria", nombre="Mentoría", precio="200.000", mp="868d73391ef84f9b9a25ec06857e663e",
+  dict(codigo="mentoria", nombre="Mentoría", precio="200.000", usd="150", mp="868d73391ef84f9b9a25ec06857e663e",
        para="Acompañamiento cercano, semana a semana.", color="olive", reuniones=4,
        items=[("si", "<b>4 reuniones 1:1 por mes</b> con Agus por Zoom"),
               ("si", "Foco, estrategia, comunicación y decisiones"),
               ("si", "Seguimiento de tu proyecto en la app")]),
-  dict(codigo="setup_inicial", nombre="Setup", precio="350.000", mp="66d66ef24caf441a84ae403cd8b77fec",
+  dict(codigo="setup_inicial", nombre="Setup", precio="350.000", usd="260", mp="66d66ef24caf441a84ae403cd8b77fec",
        para="Armamos todo con vos: estrategia y contenido.", color="rose", reuniones=4,
        items=[("si", "<b>4 reuniones 1:1 por mes</b> con Agus por Zoom"),
               ("si", "<b>Contenido para tus redes</b>, hecho por el equipo"),
@@ -161,43 +162,222 @@ def card(p):
     lis = "".join(f'<li class="{k}"><span class="ck">{ICO_SI if k=="si" else ICO_NO}</span><span>{t}</span></li>' for k, t in p["items"])
     cinta = '<span class="cinta">El más elegido</span>' if p.get("destacado") else ""
     if p["reuniones"]:
-        nota = f'Después de pagar agendás tu {"reunión" if p["reuniones"]==1 else "primera reunión"} en el calendario.'
+        nota = f'Primero elegís el día y horario de tu {"reunión" if p["reuniones"]==1 else "primera reunión"} y después pagás.'
+        boton = "Elegir horario y suscribirme"
     else:
         nota = "Después de pagar te escribimos para arrancar."
+        boton = "Suscribirme"
     return f"""
   <article class="plan c-{p['color']}{' dest' if p.get('destacado') else ''}" id="{p['codigo'].replace('_','-')}">
     {cinta}<span class="tag">{"Sin reuniones" if not p['reuniones'] else (str(p['reuniones'])+(" reunión" if p['reuniones']==1 else " reuniones")+" por mes")}</span>
     <h2>{p['nombre']}</h2>
     <p class="para">{p['para']}</p>
-    <div class="precio">${p['precio']} <small>ARS / mes</small></div>
+    <div class="precio"><span class="ars">${p['precio']} <small>ARS / mes</small></span><span class="usd">USD {p['usd']} <small>/ mes</small></span></div>
     <ul class="lista">{lis}</ul>
     <div class="web">{ICO_WEB}<div>Incluye el hosting de tu página<span>Tu web online y al día, sin pagar aparte.</span></div></div>
     <div class="acciones">
-      <a class="btn btn-red" href="{MP}{p['mp']}" data-plan="{p['codigo']}" data-monto="{p['precio'].replace('.','')}">{ICO_PAGO}Suscribirme</a>
+      <a class="btn btn-red" href="{MP}{p['mp']}" data-plan="{p['codigo']}" data-nombre="{p['nombre']}" data-reu="{p['reuniones']}" data-monto="{p['precio'].replace('.','')}" data-usd="{p['usd']}">{ICO_PAGO if not p['reuniones'] else ICO_CAL}{boton}</a>
       <p class="nota">{nota}</p>
     </div>
   </article>"""
 
 cards = "".join(card(p) for p in PLANES)
+APP = '''
+  <section class="app" id="app">
+    <p class="eyebrow">Incluida en todos los planes</p>
+    <h2>La app completa de Semilla</h2>
+    <div class="app-g">
+      <div class="app-b"><span class="app-n">1</span><div><h3>Tu web</h3><p>Creá tu landing en minutos, conectada a todas tus redes y lanzamientos. Te damos el hosting y la editás desde el celular.</p><p class="app-l">Dominio propio <span class="pronto">Muy pronto</span></p></div></div>
+      <div class="app-b"><span class="app-n">2</span><div><h3>Reporte semanal y métricas</h3><p>Todas las semanas, tu reporte en la app y por WhatsApp, con qué hacer esa semana. Instagram, Spotify, YouTube, campañas y ventas en un solo lugar.</p></div></div>
+      <div class="app-b"><span class="app-n">3</span><div><h3>Tareas y recordatorios</h3><p>Tareas y recordatorios personalizados para que tu proyecto no pierda impulso. Metas, agenda y SemillaIA para consultarle lo que necesites.</p></div></div>
+      <div class="app-b"><span class="app-n">4</span><div><h3 class="h-pronto">Herramientas para crear <span class="pronto">Muy pronto</span></h3>
+        <p>Creador de flyers, clips de tus videos para Reels y páginas para cada lanzamiento.</p></div></div>
+      <div class="app-b"><span class="app-n">5</span><div><h3>Formación continua</h3><p>Newsletter semanal y acceso preferencial a los cursos y formaciones de Semilla.</p></div></div>
+    </div>
+  </section>
+'''
+MODAL = '''
+<div class="modal" id="pagar" role="dialog" aria-modal="true" aria-labelledby="pg-t">
+  <div class="caja">
+    <button type="button" class="x" aria-label="Cerrar" data-cerrar>&times;</button>
+    <p class="pg-plan" id="pg-plan"></p>
+    <div class="pasitos"><span id="ps1" class="on">1 · Horario</span><span id="ps2">2 · Tus datos</span><span id="ps3">3 · Pago</span></div>
+    <div id="pg-1">
+      <h2 id="pg-t">Elegí día y horario</h2>
+      <p class="p"><span id="pg-tzt">Horarios de Argentina.</span> Reunión de 1 hora por Zoom con Agus.</p>
+      <div class="dias" id="pg-dias"><div class="cargando">Cargando horarios…</div></div>
+      <div id="pg-horas-w" class="oculto"><p class="elegido" id="pg-dia-t"></p><div class="horas" id="pg-horas"></div></div>
+      <p class="err" id="pg-err1"></p>
+    </div>
+    <form id="pg-2" class="oculto" novalidate>
+      <button type="button" class="volver" id="pg-volver">← Cambiar horario</button>
+      <h2>Tus datos</h2>
+      <p class="p" id="pg-turno"></p>
+      <div class="regla"><b>La reunión se confirma cuando pagás.</b> Tenés <b>15 minutos</b> para pagar; si no, el horario se libera para otra persona.</div>
+      <label for="pg-nombre">Nombre y apellido</label><input id="pg-nombre" autocomplete="name" required/>
+      <label for="pg-email">Email</label><input id="pg-email" type="email" autocomplete="email" required/>
+      <label for="pg-tel" id="pg-tel-l">WhatsApp (con código de área)</label><input id="pg-tel" type="tel" autocomplete="tel" required/>
+      <button class="btn btn-red" id="pg-seguir" type="submit">Continuar al pago</button>
+      <p class="err" id="pg-err2"></p>
+    </form>
+    <div id="pg-3" class="oculto paso3">
+      <h2>Último paso</h2>
+      <p class="p" id="pg-turno3"></p>
+      <div class="reloj" id="pg-reloj">15:00</div>
+      <a class="btn btn-red" id="pg-ir" href="#"></a>
+      <p class="p chico" id="pg-ir-t"></p>
+    </div>
+  </div>
+</div>
+'''
+JS = r'''
+<script>
+(function(){
+  var FN='%FN%',TZ='America/Argentina/Buenos_Aires';
+  var TZU='';try{TZU=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(_){}
+  var esAR=!TZU||/^America\/(Argentina\/|Buenos_Aires$|Cordoba$|Catamarca$|Jujuy$|Mendoza$|Rosario$)/.test(TZU);
+  var forz='';try{forz=new URLSearchParams(location.search).get('pais')||localStorage.getItem('planes_pais')||''}catch(_){}
+  var ext=forz==='ext'?true:forz==='ar'?false:!esAR;
+  var $=function(i){return document.getElementById(i)};
+  function pintarPais(){
+    document.body.classList.toggle('ext-on',ext);
+    $('ext-t').textContent=ext?'¿Estás en Argentina?':'¿Estás fuera de Argentina?';
+    $('ext-a').textContent=ext?'Pagá en pesos con Mercado Pago':'Pagá en dólares con PayPal';
+  }
+  $('ext-a').addEventListener('click',function(e){e.preventDefault();ext=!ext;try{localStorage.setItem('planes_pais',ext?'ext':'ar')}catch(_){}pintarPais()});
+  pintarPais();
+
+  var M=$('pagar'),plan=null,inicio=null,horarios=null,reloj=null;
+  var VTZ=function(){return ext?(TZU||TZ):TZ};
+  function fmt(iso,o){return new Date(iso).toLocaleString('es-AR',Object.assign({timeZone:VTZ(),hourCycle:'h23'},o))}
+  function paso(n){[1,2,3].forEach(function(i){$('pg-'+i).classList.toggle('oculto',i!==n);var s=$('ps'+i);s.className=i<n?'ok':i===n?'on':''})}
+  function abrir(a){
+    plan={codigo:a.dataset.plan,nombre:a.dataset.nombre,reu:+a.dataset.reu,ars:a.dataset.monto,usd:a.dataset.usd};
+    $('pg-plan').textContent=plan.nombre+' · '+(ext?'USD '+plan.usd:'$'+(+plan.ars).toLocaleString('es-AR'))+' por mes';
+    $('pg-tel-l').textContent=ext?'WhatsApp (con + y código de país)':'WhatsApp (con código de área)';
+    M.classList.toggle('sinhorario',!plan.reu);
+    $('pg-volver').classList.toggle('oculto',!plan.reu);
+    inicio=null;$('pg-err1').textContent='';$('pg-err2').textContent='';
+    M.classList.add('on');document.body.style.overflow='hidden';
+    if(plan.reu){paso(1);cargar()}else{paso(2);$('pg-turno').textContent=ext?'Pagás con PayPal y la suscripción se renueva sola cada mes.':'';$('pg-2').querySelector('.regla').classList.add('oculto')}
+    try{fbq('track','InitiateCheckout',{content_name:plan.codigo,value:ext?+plan.usd:+plan.ars,currency:ext?'USD':'ARS'})}catch(_){}
+  }
+  function cerrar(){M.classList.remove('on');document.body.style.overflow='';clearInterval(reloj)}
+  M.addEventListener('click',function(e){if(e.target===M||e.target.hasAttribute('data-cerrar'))cerrar()});
+  document.querySelectorAll('[data-plan]').forEach(function(a){a.addEventListener('click',function(e){
+    if(+a.dataset.reu||ext){e.preventDefault();abrir(a)}
+    else{try{fbq('track','InitiateCheckout',{content_name:a.dataset.plan,value:+a.dataset.monto,currency:'ARS'})}catch(_){}}
+  })});
+  function post(b){return fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}).then(function(r){return r.json().then(function(j){j._s=r.status;return j})})}
+  function cargar(){
+    $('pg-tzt').textContent=ext?'Horarios en tu hora local.':'Horarios de Argentina.';
+    $('pg-dias').innerHTML='<div class="cargando">Cargando horarios…</div>';$('pg-horas-w').classList.add('oculto');
+    post({accion:'horarios'}).then(function(j){
+      horarios=j.horarios||[];
+      if(!horarios.length){$('pg-dias').innerHTML='';$('pg-err1').innerHTML='No hay horarios libres en las próximas semanas. <a href="https://wa.me/5492665242011" target="_blank" rel="noopener"><u>Escribinos por WhatsApp</u></a>.';return}
+      var dias={};horarios.forEach(function(h){var k=fmt(h,{year:'numeric',month:'2-digit',day:'2-digit'});(dias[k]=dias[k]||[]).push(h)});
+      $('pg-dias').innerHTML='';
+      Object.keys(dias).forEach(function(k,i){var h=dias[k][0],b=document.createElement('button');b.type='button';b.className='dia';
+        b.innerHTML='<small>'+fmt(h,{weekday:'short'})+'</small><b>'+fmt(h,{day:'numeric'})+'</b><small>'+fmt(h,{month:'short'})+'</small>';
+        b.onclick=function(){document.querySelectorAll('.dia').forEach(function(x){x.classList.remove('on')});b.classList.add('on');verDia(dias[k])};
+        $('pg-dias').appendChild(b);if(i===0)b.click()});
+    }).catch(function(){$('pg-dias').innerHTML='';$('pg-err1').textContent='No pudimos cargar los horarios. Probá de nuevo en un rato.'});
+  }
+  function verDia(lista){
+    $('pg-horas-w').classList.remove('oculto');$('pg-dia-t').textContent=fmt(lista[0],{weekday:'long',day:'numeric',month:'long'});
+    $('pg-horas').innerHTML='';
+    lista.forEach(function(h){var b=document.createElement('button');b.type='button';b.className='hora';b.textContent=fmt(h,{hour:'2-digit',minute:'2-digit'})+' hs';
+      b.onclick=function(){inicio=h;$('pg-turno').textContent='Tu reunión: '+fmt(h,{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})+' hs.';$('pg-2').querySelector('.regla').classList.remove('oculto');paso(2);$('pg-nombre').focus()};
+      $('pg-horas').appendChild(b)});
+  }
+  $('pg-volver').onclick=function(){paso(1)};
+  function cookie(n){var m=document.cookie.match('(?:^|; )'+n+'=([^;]*)');return m?decodeURIComponent(m[1]):''}
+  $('pg-2').addEventListener('submit',function(e){
+    e.preventDefault();var b=$('pg-seguir');b.disabled=true;b.textContent='Un momento…';$('pg-err2').textContent='';
+    post({accion:'crear',plan:plan.codigo,exterior:ext,inicio:inicio,nombre:$('pg-nombre').value,email:$('pg-email').value,telefono:$('pg-tel').value,pais:ext?TZU:'',fbp:cookie('_fbp'),fbc:cookie('_fbc'),origen:location.href})
+    .then(function(j){
+      b.disabled=false;b.textContent='Continuar al pago';
+      if(!j.ok){$('pg-err2').textContent=j.error||'No pudimos seguir. Probá de nuevo.';if(j.ocupado){paso(1);cargar()}return}
+      try{localStorage.setItem('plan_ref_'+plan.codigo,j.ref)}catch(_){}
+      $('pg-turno3').textContent=inicio?'Tu reunión del '+fmt(inicio,{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})+' hs queda guardada por':'Completá el pago para activar tu plan.';
+      $('pg-reloj').classList.toggle('oculto',!inicio);
+      $('pg-ir').href=j.url;$('pg-ir').textContent=ext?'Suscribirme con PayPal':'Suscribirme con Mercado Pago';
+      $('pg-ir-t').textContent=ext?'Pagás en dólares (USD '+plan.usd+' por mes). Se renueva sola cada mes.':'Tarjeta de crédito, débito o dinero en cuenta. Se renueva sola cada mes.';
+      paso(3);
+      if(inicio){var fin=Date.parse(j.vence);clearInterval(reloj);reloj=setInterval(function(){var r=Math.max(0,fin-Date.now()),m=Math.floor(r/60000),s=Math.floor(r%60000/1000);$('pg-reloj').textContent=m+':'+(s<10?'0':'')+s;if(!r){clearInterval(reloj);$('pg-reloj').textContent='Se venció el tiempo';$('pg-reloj').classList.add('fin')}},500)}
+    }).catch(function(){b.disabled=false;b.textContent='Continuar al pago';$('pg-err2').textContent='No pudimos seguir. Probá de nuevo.'});
+  });
+})();
+</script>
+'''.replace('%FN%', FN)
+CSS_PLANES += '''
+.precio .usd{display:none}.ext-on .precio .ars{display:none}.ext-on .precio .usd{display:inline}
+.app{background:#fff;border-radius:18px;padding:22px 18px 18px;margin:18px 0 6px;box-shadow:0 10px 30px rgba(22,33,90,.06)}
+.app h2{font-size:28px;font-weight:900;margin:8px 0 16px}
+.app-g{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.app-b{display:flex;gap:12px;align-items:flex-start;background:var(--paper);border-radius:14px;padding:14px}
+.app-n{width:30px;height:30px;border-radius:50%;background:var(--rose-soft);color:var(--navy);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;flex:none}
+.app-b:nth-child(even) .app-n{background:var(--olive-soft)}
+.app-b h3{font-family:'Inter',sans-serif;font-size:16px;font-weight:800;line-height:22px;margin-top:4px;margin-bottom:4px}
+.app-b p{font-size:14px;color:var(--muted);line-height:1.4}
+.app-b p+p{margin-top:6px}
+.h-pronto{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.app-l{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--navy)!important;font-weight:600}
+.pronto{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--olive-soft);color:var(--olive);padding:3px 8px;border-radius:999px}
+.modal{position:fixed;inset:0;z-index:-1;background:rgba(22,33,90,.5);display:flex;align-items:flex-start;justify-content:center;padding:14px;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity .15s}
+.modal.on{opacity:1;z-index:100;pointer-events:auto}
+.caja{background:#fff;border-radius:18px;max-width:440px;width:100%;padding:22px 20px 20px;box-shadow:0 20px 60px rgba(0,0,0,.2);position:relative;margin:auto 0}
+.caja h2{font-size:25px;font-weight:900;margin-bottom:4px}
+.caja .p{font-size:14px;color:var(--muted);margin-bottom:12px}
+.caja .chico{font-size:12.5px;margin:10px 0 0}
+.pg-plan{font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--olive);margin-bottom:10px;padding-right:30px}
+.caja label{display:block;font-size:12px;font-weight:700;color:var(--navy);margin:10px 0 5px}
+.caja input{width:100%;font:inherit;font-size:16px;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--paper)}
+.caja input:focus{outline:none;border-color:var(--navy)}
+.caja .btn{margin-top:16px}.caja .btn[disabled]{opacity:.6;cursor:wait}
+.err{color:var(--red-dark);font-size:13px;margin-top:10px;min-height:1em}
+.x{position:absolute;right:12px;top:8px;background:none;border:0;font-size:28px;line-height:1;color:var(--muted);cursor:pointer}
+.pasitos{display:flex;gap:6px;margin:0 0 14px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.pasitos span{flex:1;text-align:center;padding:7px 4px;border-radius:999px;background:var(--paper);color:#9A96A2}
+.pasitos span.on{background:var(--navy);color:#fff}.pasitos span.ok{background:var(--olive-soft);color:var(--navy)}
+.sinhorario .pasitos #ps1{display:none}
+.dias{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;position:relative;min-height:70px}
+.dia{flex:none;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;text-align:center;cursor:pointer;font:inherit;color:var(--navy);min-width:70px}
+.dia small{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.dia b{display:block;font-size:20px;line-height:1.1}
+.dia.on{background:var(--navy);border-color:var(--navy);color:#fff}.dia.on small{color:#D9DBEA}
+.horas{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;margin-top:6px}
+.hora{border:1.5px solid var(--red);color:var(--red);background:#fff;border-radius:10px;padding:11px 6px;font:inherit;font-weight:700;cursor:pointer}
+.hora:hover{background:var(--red);color:#fff}
+.elegido{font-weight:800;color:var(--navy);font-size:16px;margin:2px 0 8px;text-transform:capitalize}
+.volver{background:none;border:0;color:var(--muted);font:inherit;font-size:13px;cursor:pointer;padding:0;margin-bottom:6px}
+.regla{background:#FFF4D6;border:2px solid #E9B949;color:#4A3A0A;border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.4;margin:6px 0 4px}
+.paso3{text-align:center}
+.reloj{font-variant-numeric:tabular-nums;font-size:44px;font-weight:800;color:var(--red);margin:2px 0 6px}
+.cargando{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--muted)}
+.oculto{display:none!important}
+@media (max-width:640px){.app-g{grid-template-columns:1fr}}
+'''
 wa_gen = WA + "Hola%20Agus%2C%20quiero%20consultar%20por%20los%20planes%20de%20Semilla"
 body = f"""
 <header class="hero"><div class="wrap">
   <p class="eyebrow">Planes mensuales</p>
   <h1>Elegí tu <span>plan</span></h1>
-  <p>Acompañamiento mensual para tu proyecto artístico. Te suscribís con Mercado Pago y podés darte de baja cuando quieras.</p>
+  <p>Acompañamiento mensual para tu proyecto artístico, con la app completa de Semilla. Podés darte de baja cuando quieras.</p>
   <div class="hosting"><span class="i">{ICO_WEB}</span><div><b>Todos los planes incluyen el hosting de tu página</b><span>Tu web queda online y la mantenemos nosotros. No pagás hosting aparte.</span></div></div>
 </div></header>
 
 <main class="wrap">
   <section class="grilla">{cards}
   </section>
-  <p class="ext">¿Estás fuera de Argentina? <a href="{WA}Hola%20Agus%2C%20estoy%20fuera%20de%20Argentina%20y%20quiero%20un%20plan%20de%20Semilla" target="_blank" rel="noopener">Escribinos y lo pagás en dólares</a></p>
+  <p class="ext"><span id="ext-t">¿Estás fuera de Argentina?</span> <a href="#" id="ext-a">Pagá en dólares con PayPal</a></p>
+{APP}
 
   <section class="como">
     <h2>Cómo funciona</h2>
     <div class="pasos">
-      <div class="paso"><span class="n">1</span><div><b>Elegís tu plan</b><span>Te suscribís con Mercado Pago: tarjeta de crédito, débito o dinero en cuenta.</span></div></div>
-      <div class="paso"><span class="n">2</span><div><b>Agendás tu reunión</b><span>Si tu plan tiene reuniones, al pagar se abre el calendario para elegir día y horario.</span></div></div>
+      <div class="paso"><span class="n">1</span><div><b>Elegís tu plan</b><span>Si tiene reuniones, primero elegís el día y horario de tu reunión.</span></div></div>
+      <div class="paso"><span class="n">2</span><div><b>Te suscribís</b><span>Con Mercado Pago en Argentina o con PayPal desde el exterior. La reunión queda confirmada con el pago.</span></div></div>
       <div class="paso"><span class="n">3</span><div><b>Arrancamos</b><span>Tu web sigue online con nosotros y ves todo el avance en la app de Semilla.</span></div></div>
     </div>
   </section>
@@ -206,16 +386,12 @@ body = f"""
     <h2>Preguntas frecuentes</h2>
     <details><summary>¿Qué es el hosting de la página?</summary><p>Es el lugar donde vive tu web para que esté online. En todos los planes está incluido: no pagás nada aparte y nosotros nos ocupamos de que funcione.</p></details>
     <details><summary>¿Qué es un ajuste de pauta?</summary><p>Una vez por semana el equipo revisa tus anuncios y hace un cambio para que rindan mejor: públicos, presupuesto, textos o piezas.</p></details>
-    <details><summary>¿Cómo agendo las reuniones?</summary><p>Al pagar se abre el calendario de Agus para elegir día y horario. Las siguientes reuniones del mes las agendás desde el mismo calendario.</p></details>
+    <details><summary>¿Cómo agendo las reuniones?</summary><p>Antes de pagar elegís el día y horario de tu primera reunión. Tenés 15 minutos para pagar; si no, el horario se libera. Las siguientes reuniones del mes las agendás desde tu página de bienvenida.</p></details>
+    <details><summary>¿Puedo pagar desde fuera de Argentina?</summary><p>Sí. Desde el exterior pagás en dólares con PayPal y la suscripción se renueva sola cada mes.</p></details>
     <details><summary>¿Puedo cambiar de plan o darme de baja?</summary><p>Sí. Nos escribís por WhatsApp y lo cambiamos. La baja se hace desde Mercado Pago o con un mensaje.</p></details>
   </section>
 </main>
-<script>
-document.querySelectorAll('[data-plan]').forEach(function(a){{a.addEventListener('click',function(){{
-  try{{fbq('track','InitiateCheckout',{{content_name:a.dataset.plan,value:+a.dataset.monto,currency:'ARS'}})}}catch(_){{}}
-  try{{gtag('event','begin_checkout',{{items:[{{item_id:a.dataset.plan}}],value:+a.dataset.monto,currency:'ARS'}})}}catch(_){{}}
-}})}});
-</script>
+{MODAL}{JS}
 """
 (aqui / "index.html").write_text(
     HEAD.format(titulo="Planes de Semilla", desc="Planes mensuales de Semilla Redes. Todos incluyen el hosting de tu página.",
@@ -239,33 +415,73 @@ CSS_G = """
 .sig{max-width:520px;margin:10px auto 0;display:grid;gap:10px}
 @media (max-width:640px){.cal{height:620px}.agenda{padding:16px 6px 8px}}
 """
+CSS_G += """
+.estado{background:#fff;border-radius:18px;padding:20px 18px;margin:18px auto 10px;max-width:520px;box-shadow:0 10px 30px rgba(22,33,90,.07);text-align:center}
+.estado h2{font-size:22px;font-weight:900;margin-bottom:6px}
+.estado p{font-size:15px;color:var(--navy);line-height:1.45}
+.estado .fecha{font-weight:800;font-size:18px;margin:6px 0;text-transform:capitalize}
+.estado .chico{font-size:13px;color:var(--muted);margin-top:8px}
+.estado .btn{margin-top:14px}
+.oculto{display:none!important}
+"""
+JS_G = r"""
+<script>
+(function(){
+  var FN='%FN%',PLAN='%PLAN%',REU=%REU%,TZ='America/Argentina/Buenos_Aires';
+  var q=new URLSearchParams(location.search),ref=q.get('ref')||'';
+  try{ref=ref||localStorage.getItem('plan_ref_'+PLAN)||''}catch(_){}
+  var pre=q.get('preapproval_id')||'',$=function(i){return document.getElementById(i)};
+  var TZU='';try{TZU=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(_){}
+  function fmt(iso){return new Date(iso).toLocaleString('es-AR',{timeZone:q.get('pp')?(TZU||TZ):TZ,weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit',hourCycle:'h23'})+' hs'}
+  function calendario(){if(!REU)return;$('agenda').classList.remove('oculto');var s=document.createElement('script');s.src='https://assets.calendly.com/assets/external/widget.js';s.async=true;document.body.appendChild(s)}
+  if(!ref){if(REU){calendario();$('est').classList.add('oculto')}else{$('est-t').textContent='Tu plan quedó activo';$('est-p').textContent='Te escribimos por WhatsApp para arrancar con tu pauta.'}return}
+  var n=0;
+  function ver(){
+    fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accion:'estado',ref:ref,preapproval_id:pre})}).then(function(r){return r.json()}).then(function(j){
+      if(j.activa){
+        try{localStorage.removeItem('plan_ref_'+PLAN)}catch(_){}
+        if(j.turno&&j.turno_confirmado){$('est-t').textContent='Tu reunión quedó agendada';$('est-f').textContent=fmt(j.turno);$('est-f').classList.remove('oculto');$('est-p').textContent='Te llega la invitación con el link de Zoom a tu email.'}
+        else if(j.problema_turno){$('est-t').textContent='Tu plan quedó activo';$('est-p').textContent='No pudimos reservar el horario que elegiste. Elegí otro acá abajo, por favor.';calendario()}
+        else if(j.turno){$('est-t').textContent='Tu plan quedó activo';$('est-p').textContent='Estamos confirmando tu reunión…';if(n++<8)setTimeout(ver,3000)}
+        else{$('est-t').textContent='Tu plan quedó activo';$('est-p').textContent='Te escribimos por WhatsApp para arrancar.'}
+        if(REU>1&&j.turno_confirmado)$('sig-cal').classList.remove('oculto');
+      }else if(n++<8){$('est-t').textContent='Confirmando tu pago…';$('est-p').textContent='Esto tarda unos segundos.';setTimeout(ver,3000)}
+      else{$('est-t').textContent='Todavía no vemos el pago';$('est-p').textContent='Si ya pagaste, puede tardar unos minutos: te confirmamos por WhatsApp. Si no, podés volver a intentarlo.';if(j.pagar){$('est-b').href=j.pagar;$('est-b').classList.remove('oculto')}}
+    }).catch(function(){if(n++<8)setTimeout(ver,3000)});
+  }
+  ver();
+})();
+</script>
+"""
 for p in PLANES:
     r = p["reuniones"]
     wa = WA + urllib.parse.quote(f"Hola Agus, me suscribí al plan {p['nombre']}")
+    agenda = ""
     if r:
         agenda = f"""
-  <section class="agenda">
-    <h2>{"Agendá tu reunión" if r == 1 else "Agendá tu primera reunión"}</h2>
-    <p class="s">{"Tenés 1 reunión por mes con Agus por Zoom." if r == 1 else "Tenés 4 reuniones por mes con Agus por Zoom. Las siguientes las agendás desde este mismo calendario."}</p>
+  <section class="agenda oculto" id="agenda">
+    <h2>{"Agendá tu reunión" if r == 1 else "Agendá tu reunión"}</h2>
+    <p class="s">Reunión de 1 hora por Zoom con Agus.</p>
     <div class="cal"><div class="cargando">Cargando calendario…</div>
       <div class="calendly-inline-widget" data-url="{CAL}?hide_gdpr_banner=1&primary_color=d8434f"></div></div>
-  </section>
-  <script src="https://assets.calendly.com/assets/external/widget.js" async></script>"""
-        sub = "Tu suscripción quedó activa. Ahora elegí día y horario para tu reunión."
-    else:
-        agenda = ""
-        sub = "Tu suscripción quedó activa. Te escribimos por WhatsApp para arrancar con tu pauta."
+  </section>"""
+    sig = f'<a class="btn btn-red oculto" id="sig-cal" href="{CAL}" target="_blank" rel="noopener">{ICO_CAL}Agendar las siguientes reuniones</a>' if r > 1 else ""
     body = f"""
 <main class="wrap">
   <section class="ok">
     <div class="tilde">{ICO_SI}</div>
     <h1>¡Bienvenido a <span>{p['nombre']}</span>!</h1>
-    <p>{sub}</p>
     <div class="hosting">{ICO_WEB}<span>Tu plan incluye el hosting de tu página.</span></div>
+  </section>
+  <section class="estado" id="est">
+    <h2 id="est-t">Confirmando tu pago…</h2>
+    <p class="fecha oculto" id="est-f"></p>
+    <p id="est-p">Esto tarda unos segundos.</p>
+    <a class="btn btn-red oculto" id="est-b" href="#">Volver a pagar</a>
   </section>{agenda}
-  <div class="sig"><a class="btn btn-line" href="{wa}" target="_blank" rel="noopener">Avisale a Agus por WhatsApp</a></div>
+  <div class="sig">{sig}<a class="btn btn-line" href="{wa}" target="_blank" rel="noopener">Avisale a Agus por WhatsApp</a></div>
 </main>
-"""
+""" + JS_G.replace("%FN%", FN).replace("%PLAN%", p["codigo"]).replace("%REU%", str(r))
     pix = f"fbq('track','Subscribe',{{content_name:'{p['codigo']}',value:{p['precio'].replace('.','')},currency:'ARS'}});"
     (aqui / f"gracias-{p['codigo'].replace('_','-')}.html").write_text(
         HEAD.format(titulo=f"{p['nombre']} — Semilla", desc="Tu suscripción a Semilla quedó activa.", pixel=pix,
