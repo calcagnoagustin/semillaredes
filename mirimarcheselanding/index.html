@@ -144,33 +144,22 @@ footer{background:var(--ink);color:#8d8a84;font-size:13px;padding:0 0 30px}
 <header data-b="1">
   <div class="wrap">
     <a href="#" class="marca serif" data-e="1">Miri Marchese</a>
-    <nav class="menu"><a href="#obra" data-e="2">Obra</a><a href="#espacios" data-e="3">Espacios</a><a href="#trayectoria" data-e="4">Trayectoria</a><a href="#contacto" data-e="5">Contacto →</a></nav>
+    <nav class="menu" data-b="8"><a href="#obra" data-e="2">Obra</a><a href="#espacios" data-e="3">Espacios</a><a href="#trayectoria" data-e="4">Trayectoria</a><a href="#contacto" data-e="5">Contacto →</a></nav>
     <button class="burger" aria-label="Abrir menú" onclick="document.getElementById('drawer').classList.toggle('on')"><span></span><span></span><span></span></button>
   </div>
   <div class="drawer" id="drawer" onclick="this.classList.remove('on')">
-    <a href="#obra">Obra</a><a href="#espacios">Espacios</a><a href="#trayectoria">Trayectoria</a><a href="#contacto">Contacto</a>
+    <a href="#obra" data-e="30">Obra</a><a href="#espacios" data-e="31">Espacios</a><a href="#trayectoria" data-e="32">Trayectoria</a><a href="#contacto" data-e="33">Contacto</a>
   </div>
 </header>
 
-<section class="hero" data-b="2">
-  <img class="foto" src="img/mirada.webp" alt="Retrato de mujer, óleo de Miri Marchese" data-e="6">
-  <div class="txt">
-    <div class="eb" data-e="7">Pintora figurativa · Buenos Aires · Miami</div>
-    <h1 class="serif">Pop,<br><span class="it blue">cómic</span><br>y figura.</h1>
-    <p class="sub" data-e="8">Tres líneas de obra, una misma mano hiperrealista.</p>
-    <div class="ctas">
-      <a href="#obra" class="btn" data-e="9">Explorar la obra <span class="ar">→</span></a>
-      <a href="https://wa.me/5491168250081?text=Hola%20Miri%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20una%20obra." target="_blank" rel="noopener" class="ul" data-e="10">Consultar por una obra</a>
-    </div>
-  </div>
-</section>
+<section class="hero" data-b="2"><img class="foto" src="img/mirada.webp" alt="Retrato de mujer, óleo de Miri Marchese" data-e="6"><div class="txt"><div class="eb" data-e="7">Pintora figurativa · Buenos Aires · Miami</div><h1 class="serif">Pop,<br><span class="it blue">cómic</span><br>y figurativo.</h1><p class="sub" data-e="8">Tres líneas de obra, una misma mano hiperrealista</p><div class="ctas"><a href="#obra" class="btn" data-e="9">Explorar la obra <span class="ar">→</span></a><a href="https://wa.me/5491168250081?text=Hola%20Miri%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20una%20obra." target="_blank" rel="noopener" class="ul" data-e="10">Consultar por una obra</a></div></div></section>
 
 <section class="lineas" data-b="3">
   <div class="wrap">
-    <ul>
-      <li><a href="#obra" data-tab="pop"><img src="img/pop-kravitz.webp" alt="Línea Pop"><div><div class="t serif it" data-e="11">Pop</div><div class="l"><span data-e="12">Obra original</span> →</div></div></a></li>
-      <li><a href="#obra" data-tab="comics"><img src="img/comics-vendetta2.webp" alt="Línea Comics"><div><div class="t serif it" data-e="13">Comics</div><div class="l"><span data-e="14">Para espacios</span> →</div></div></a></li>
-      <li><a href="#obra" data-tab="figurativo"><img src="img/sifones.webp" alt="Línea Figurativo" style="object-position:30% 50%"><div><div class="t serif it" data-e="15">Figurativo</div><div class="l"><span data-e="16">Obra a pedido</span> →</div></div></a></li>
+    <ul data-b="9">
+      <li><a href="#obra" data-tab="pop"><img src="img/pop-kravitz.webp" alt="Línea Pop" data-e="35"><div><div class="t serif it" data-e="11">Pop</div><div class="l"><span data-e="12">Obra original</span> →</div></div></a></li>
+      <li><a href="#obra" data-tab="comics"><img src="img/comics-vendetta2.webp" alt="Línea Comics" data-e="36"><div><div class="t serif it" data-e="13">Comics</div><div class="l"><span data-e="14">Para espacios</span> →</div></div></a></li>
+      <li><a href="#obra" data-tab="figurativo"><img src="img/sifones.webp" alt="Línea Figurativo" style="object-position:30% 50%" data-e="37"><div><div class="t serif it" data-e="15">Figurativo</div><div class="l"><span data-e="16">Obra a pedido</span> →</div></div></a></li>
     </ul>
   </div>
 </section>
@@ -179,28 +168,28 @@ footer{background:var(--ink);color:#8d8a84;font-size:13px;padding:0 0 30px}
   <div class="wrap">
     <h2 class="serif it" data-e="17">Obra seleccionada</h2>
     <div class="tabs" role="tablist">
-      <button class="on" data-t="pop" role="tab">Pop</button>
-      <button data-t="comics" role="tab">Comics</button>
-      <button data-t="figurativo" role="tab">Figurativo</button>
+      <button class="on" data-t="pop" role="tab" data-e="38">Pop</button>
+      <button data-t="comics" role="tab" data-e="39">Comics</button>
+      <button data-t="figurativo" role="tab" data-e="40">Figurativo</button>
     </div>
     <div class="panel on" id="p-pop">
-      <img src="img/pop-elton.webp" alt="Elton John, serie Pop" loading="lazy">
-      <img src="img/pop-amy.webp" alt="Amy Winehouse, serie Pop" loading="lazy">
-      <img src="img/pop-cher2.webp" alt="Cher, serie Pop" loading="lazy">
-      <img src="img/pop-axl.webp" alt="Axl Rose, serie Pop" loading="lazy">
+      <img src="img/pop-elton.webp" alt="Elton John, serie Pop" loading="lazy" data-e="41">
+      <img src="img/pop-amy.webp" alt="Amy Winehouse, serie Pop" loading="lazy" data-e="42">
+      <img src="img/pop-cher2.webp" alt="Cher, serie Pop" loading="lazy" data-e="43">
+      <img src="img/pop-axl.webp" alt="Axl Rose, serie Pop" loading="lazy" data-e="44">
     </div>
     <div class="panel" id="p-comics">
-      <img src="img/comics-vendetta2.webp" alt="Vendetta, serie Comics" loading="lazy">
-      <img src="img/comics-vendetta.webp" alt="Serie Comics en Miami" loading="lazy">
-      <img class="ancha" src="img/comics-chroma.webp" alt="Serie Comics presentada en CHROMA 2025" loading="lazy">
+      <img src="img/comics-vendetta2.webp" alt="Vendetta, serie Comics" loading="lazy" data-e="45">
+      <img src="img/comics-vendetta.webp" alt="Serie Comics en Miami" loading="lazy" data-e="46">
+      <img class="ancha" src="img/comics-chroma.webp" alt="Serie Comics presentada en CHROMA 2025" loading="lazy" data-e="47">
     </div>
     <div class="panel" id="p-figurativo">
-      <img class="ancha" src="img/sifones.webp" alt="Sifones azules" loading="lazy">
-      <img src="img/mirada.webp" alt="Retrato de mujer" loading="lazy">
-      <img src="img/gardenia.webp" alt="Gardenia" loading="lazy">
-      <img class="ancha" src="img/espalda.webp" alt="Figura de espaldas" loading="lazy">
-      <img src="img/frasco.webp" alt="Frasco de caramelos" loading="lazy">
-      <img src="img/galgos.webp" alt="Dos con sombrero" loading="lazy">
+      <img class="ancha" src="img/sifones.webp" alt="Sifones azules" loading="lazy" data-e="48">
+      <img src="img/mirada.webp" alt="Retrato de mujer" loading="lazy" data-e="49">
+      <img src="img/gardenia.webp" alt="Gardenia" loading="lazy" data-e="50">
+      <img class="ancha" src="img/espalda.webp" alt="Figura de espaldas" loading="lazy" data-e="51">
+      <img src="img/frasco.webp" alt="Frasco de caramelos" loading="lazy" data-e="52">
+      <img src="img/galgos.webp" alt="Dos con sombrero" loading="lazy" data-e="53">
     </div>
   </div>
 </section>
@@ -208,10 +197,10 @@ footer{background:var(--ink);color:#8d8a84;font-size:13px;padding:0 0 30px}
 <section class="esp dark" id="espacios" data-b="5">
   <div class="wrap">
     <div>
-      <h2 class="serif">Pensada para habitar un <span class="it blue">espacio.</span></h2>
+      <h2 class="serif" data-e="54">Pensada para habitar un <span class="it blue">espacio.</span></h2>
       <p data-e="18">Obra para casas, oficinas y proyectos de interiorismo.</p>
     </div>
-    <div class="img"><img src="img/pop-pared.webp" alt="Serie Pop colgada en una pared" loading="lazy"></div>
+    <div class="img"><img src="img/pop-pared.webp" alt="Serie Pop colgada en una pared" loading="lazy" data-e="55"></div>
     <div class="cta"><a href="https://wa.me/5491168250081?text=Hola%20Miri%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20una%20obra." target="_blank" rel="noopener" class="btn" data-e="19">Consultar por mi espacio <span class="ar">→</span></a></div>
   </div>
 </section>
@@ -219,7 +208,7 @@ footer{background:var(--ink);color:#8d8a84;font-size:13px;padding:0 0 30px}
 <section class="art" id="trayectoria" data-b="6">
   <div class="wrap">
     <div class="top">
-      <img class="foto" src="img/miri-obra.webp" alt="Miri Marchese frente a una de sus obras" loading="lazy">
+      <img class="foto" src="img/miri-obra.webp" alt="Miri Marchese frente a una de sus obras" loading="lazy" data-e="56">
       <div>
         <h2 class="serif" data-e="20">Miri<br>Marchese</h2>
         <p data-e="21">Pintora figurativa argentina y licenciada en Diseño de Interiores.</p>
@@ -229,7 +218,7 @@ footer{background:var(--ink);color:#8d8a84;font-size:13px;padding:0 0 30px}
     </div>
     <div class="tray">
       <h3 class="serif it" data-e="23">De Buenos Aires a Miami y París.</h3>
-      <ul>
+      <ul data-b="10">
         <li data-e="24">Lucid Art Gallery · Miami</li>
         <li data-e="25">Carrousel du Louvre · París · 2023</li>
         <li data-e="26">Spectrum Miami · 2017–2023</li>
@@ -244,11 +233,11 @@ footer{background:var(--ink);color:#8d8a84;font-size:13px;padding:0 0 30px}
     <p data-e="28">Obra original, obras a pedido y envíos al exterior.</p>
     <div class="fila">
       <a href="https://wa.me/5491168250081?text=Hola%20Miri%2C%20vi%20tu%20web%20y%20quiero%20consultar%20por%20una%20obra." target="_blank" rel="noopener" class="btn" data-e="29">Escribirme por WhatsApp <span class="ar">→</span></a>
-      <a href="https://instagram.com/mirimarcheseart" target="_blank" rel="noopener" class="ig"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff"/></svg><span>@mirimarcheseart</span></a>
+      <a href="https://instagram.com/mirimarcheseart" target="_blank" rel="noopener" class="ig"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff"/></svg><span data-e="57">@mirimarcheseart</span></a>
     </div>
   </div>
 </section>
-<footer><div class="wrap">© Miri Marchese · mirimarchese@gmail.com</div></footer>
+<footer data-b="11"><div class="wrap">© Miri Marchese · mirimarchese@gmail.com</div></footer>
 
 <script>
 (function(){
