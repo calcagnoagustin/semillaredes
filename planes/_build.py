@@ -8,6 +8,11 @@ WA = "https://wa.me/5492665242011?text="
 FN = "https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/plan-pago"
 
 PLANES = [
+  dict(codigo="pro", nombre="Autogestión", precio="30.000", usd="22", mp="038c9cc0c3fb470db327538a5be236c4",
+       para="Tu web y la app completa, a tu ritmo.", color="rose", reuniones=0, tag="App + tu web",
+       items=[("si", "<b>La app completa de Semilla</b>: reporte semanal, métricas y tareas"),
+              ("si", "<b>Tu web con dominio propio</b>, la editás desde el celular"),
+              ("no", "Sin publicidad ni reuniones")]),
   dict(codigo="publicidad_viva", nombre="Publicidad Viva", precio="60.000", usd="45", mp="085082641e884adb85630ddd660471fd",
        para="Para que tu pauta nunca quede quieta.", color="olive", reuniones=0,
        items=[("si", "<b>Hasta 2 ajustes de tu pauta por mes</b>, hechos por el equipo de Semilla"),
@@ -149,7 +154,8 @@ CSS_PLANES = """
 .preg details p{font-size:14px;color:var(--muted);margin-top:8px;line-height:1.45}
 .ext{text-align:center;font-size:14px;color:var(--navy);margin:14px 0 4px}
 .ext a{text-decoration:underline;font-weight:700}
-@media (min-width:981px){.plan h2{font-size:25px}.precio small{display:block;margin-top:6px}}
+@media (min-width:981px){.plan h2{font-size:25px}.precio small{display:block;margin-top:6px}.grilla{grid-template-columns:repeat(3,1fr)}.plan .nota{min-height:4.05em}}
+@media (min-width:1180px){.grilla{grid-template-columns:repeat(5,1fr);gap:12px}.plan{padding:22px 14px 16px}.plan h2{font-size:20px;white-space:nowrap}.precio{font-size:29px}.plan .nota{min-height:4.05em}.lista li,.web{font-size:14px;line-height:20px}.lista li .ck,.web svg{margin-top:0}}
 .precio small{white-space:nowrap}
 @media (max-width:980px){.grilla{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:640px){
@@ -171,7 +177,7 @@ def card(p):
         boton = "Suscribirme"
     return f"""
   <article class="plan c-{p['color']}{' dest' if p.get('destacado') else ''}" id="{p['codigo'].replace('_','-')}">
-    {cinta}<span class="tag">{"Sin reuniones" if not p['reuniones'] else (str(p['reuniones'])+(" reunión" if p['reuniones']==1 else " reuniones")+" por mes")}</span>
+    {cinta}<span class="tag">{p['tag'] if p.get('tag') else "Sin reuniones" if not p['reuniones'] else (str(p['reuniones'])+(" reunión" if p['reuniones']==1 else " reuniones")+" por mes")}</span>
     <h2>{p['nombre']}</h2>
     <p class="para">{p['para']}</p>
     <div class="precio"><span class="ars">${p['precio']} <small>ARS / mes</small></span><span class="usd">USD {p['usd']} <small>/ mes</small></span></div>
