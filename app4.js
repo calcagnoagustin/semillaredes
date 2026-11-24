@@ -362,9 +362,9 @@
   function bloqueEntradas(){
     const LR=(D.reportes||[]).filter(r=>r.metricas&&r.metricas.tk_tickets!=null).sort((x,y)=>x.hasta<y.hasta?-1:1).pop(); if(!LR) return '';
     const m=LR.metricas, us=SIM()==='USD', din=v=>v==null?'—':(us?'USD ':'$ ')+nf(Number(v),us||Number(v)<100?2:0), f=x=>{ const d=new Date(String(x).slice(0,10)+'T12:00:00'); return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'); };
-    return `<div class="tt"><h2>Entradas${m.tk_nombre?' · '+esc(m.tk_nombre):''}</h2><span class="pill">${I('cal')}${f(LR.desde)} al ${f(LR.hasta)}</span></div>
+    return `<div class="tt"><h2>Entradas</h2><span class="pill">${I('cal')}${f(LR.desde)} al ${f(LR.hasta)}</span></div>
       <div class="dgrid"><div class="dt"><b>${nf(m.tk_tickets)}</b><small>Vendidas por la pauta</small></div><div class="dt"><b>${din(m.tk_costo_ticket)}</b><small>Costo por entrada</small></div></div>
-      <div class="sub2">Invertido en el período: ${din(m.tk_inversion)}</div>`; }
+      <p style="margin:10px 4px 0;font-size:13px;line-height:1.4;opacity:.7">${m.tk_nombre?esc(m.tk_nombre)+' · ':''}Invertido en el período: ${din(m.tk_inversion)}</p>`; }
   const hoyISO=()=>{ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
   function agenda(){   // fechas del proyecto + tareas con alarma, ordenadas
     const A=[]; (FECHAS||[]).forEach(f=>A.push({f:String(f.fecha).slice(0,10),t:f.titulo,s:f.lugar||'Fecha',url:f.url}));
