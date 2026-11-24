@@ -11,7 +11,7 @@ PLANES = [
   dict(codigo="pro", nombre="Autogestión", precio="30.000", usd="22", mp="038c9cc0c3fb470db327538a5be236c4",
        para="Tu web y la app completa, a tu ritmo.", color="rose", reuniones=0, tag="App + tu web",
        items=[("si", "<b>La app completa de Semilla</b>: reporte semanal, métricas y tareas"),
-              ("si", "<b>Tu web con dominio propio</b>, la editás desde el celular"),
+              ("si", "<b>Tu web</b>, que editás desde el celular"),
               ("no", "Sin publicidad ni reuniones")]),
   dict(codigo="publicidad_viva", nombre="Publicidad Viva", precio="60.000", usd="45", mp="085082641e884adb85630ddd660471fd",
        para="Para que tu pauta nunca quede quieta.", color="olive", reuniones=0,
@@ -182,7 +182,7 @@ def card(p):
     <p class="para">{p['para']}</p>
     <div class="precio"><span class="ars">${p['precio']} <small>ARS / mes</small></span><span class="usd">USD {p['usd']} <small>/ mes</small></span></div>
     <ul class="lista">{lis}</ul>
-    <div class="web">{ICO_WEB}<div>Incluye el hosting de tu página<span>Tu web online y al día, sin pagar aparte.</span></div></div>
+    <div class="web">{ICO_WEB}<div>Incluye hosting y dominio propio<span>Tu web online en tu propio .com, sin pagar aparte.</span></div></div>
     <div class="acciones">
       <a class="btn btn-red" href="{MP}{p['mp']}" data-plan="{p['codigo']}" data-nombre="{p['nombre']}" data-reu="{p['reuniones']}" data-monto="{p['precio'].replace('.','')}" data-usd="{p['usd']}">{ICO_PAGO if not p['reuniones'] else ICO_CAL}{boton}</a>
       <p class="nota">{nota}</p>
@@ -195,7 +195,7 @@ APP = '''
     <p class="eyebrow">Incluida en todos los planes</p>
     <h2>La app completa de Semilla</h2>
     <div class="app-g">
-      <div class="app-b"><span class="app-n">1</span><div><h3>Tu web</h3><p>Creá tu landing en minutos, conectada a todas tus redes y lanzamientos. Te damos el hosting y la editás desde el celular.</p></div></div>
+      <div class="app-b"><span class="app-n">1</span><div><h3>Tu web</h3><p>Creá tu landing en minutos, conectada a todas tus redes y lanzamientos. Te damos el hosting y tu dominio propio, y la editás desde el celular.</p></div></div>
       <div class="app-b"><span class="app-n">2</span><div><h3>Reporte semanal y métricas</h3><p>Todas las semanas, tu reporte en la app y por WhatsApp, con qué hacer esa semana. Instagram, Spotify, YouTube, campañas y ventas en un solo lugar.</p></div></div>
       <div class="app-b"><span class="app-n">3</span><div><h3>Tareas y recordatorios</h3><p>Tareas y recordatorios personalizados para que tu proyecto no pierda impulso. Metas, agenda y SemillaIA para consultarle lo que necesites.</p></div></div>
       <div class="app-b"><span class="app-n">4</span><div><h3 class="h-pronto">Herramientas para crear <span class="pronto">Muy pronto</span></h3>
@@ -372,7 +372,7 @@ body = f"""
   <p class="eyebrow">Planes mensuales</p>
   <h1>Elegí tu <span>plan</span></h1>
   <p>Acompañamiento mensual para tu proyecto artístico, con la app completa de Semilla. Podés darte de baja cuando quieras.</p>
-  <div class="hosting"><span class="i">{ICO_WEB}</span><div><b>Todos los planes incluyen el hosting de tu página</b><span>Tu web queda online y la mantenemos nosotros. No pagás hosting aparte.</span></div></div>
+  <div class="hosting"><span class="i">{ICO_WEB}</span><div><b>Todos los planes incluyen hosting y dominio propio</b><span>Tu web queda online en tu propio .com y la mantenemos nosotros. No pagás nada aparte.</span></div></div>
 </div></header>
 
 <main class="wrap">
@@ -393,6 +393,7 @@ body = f"""
   <section class="preg">
     <h2>Preguntas frecuentes</h2>
     <details><summary>¿Qué es el hosting de la página?</summary><p>Es el lugar donde vive tu web para que esté online. En todos los planes está incluido: no pagás nada aparte y nosotros nos ocupamos de que funcione.</p></details>
+    <details><summary>¿Qué dominio me dan?</summary><p>Un dominio propio para tu proyecto, por ejemplo tunombre.com o tunombre.art. Lo registramos nosotros, lo conectamos a tu web y lo renovamos mientras tengas el plan.</p></details>
     <details><summary>¿Qué es un ajuste de pauta?</summary><p>El equipo revisa tus anuncios y hace cambios para que rindan mejor: públicos, presupuesto, textos o piezas. Hasta 2 por mes en Publicidad Viva y Reunión Mensual, y hasta 4 en Mentoría y Setup. Así la publicidad tiene tiempo de aprender entre un cambio y otro.</p></details>
     <details><summary>¿Cómo agendo las reuniones?</summary><p>Antes de pagar elegís el día y horario de tu primera reunión. Tenés 15 minutos para pagar; si no, el horario se libera. Las siguientes reuniones del mes las agendás desde tu página de bienvenida.</p></details>
     <details><summary>¿Puedo pagar desde fuera de Argentina?</summary><p>Sí. Desde el exterior pagás en dólares con PayPal y la suscripción se renueva sola cada mes.</p></details>
@@ -402,7 +403,7 @@ body = f"""
 {MODAL}{JS}
 """
 (aqui / "index.html").write_text(
-    HEAD.format(titulo="Planes de Semilla", desc="Planes mensuales de Semilla Redes. Todos incluyen el hosting de tu página.",
+    HEAD.format(titulo="Planes de Semilla", desc="Planes mensuales de Semilla Redes. Todos incluyen hosting y dominio propio para tu página.",
                 pixel="", css=CSS_PLANES, logo=LOGO, wa=wa_gen) + body + FOOT, encoding="utf-8")
 
 CSS_G = """
@@ -479,7 +480,7 @@ for p in PLANES:
   <section class="ok">
     <div class="tilde">{ICO_SI}</div>
     <h1>¡Bienvenido a <span>{p['nombre']}</span>!</h1>
-    <div class="hosting">{ICO_WEB}<span>Tu plan incluye el hosting de tu página.</span></div>
+    <div class="hosting">{ICO_WEB}<span>Tu plan incluye hosting y dominio propio para tu página.</span></div>
   </section>
   <section class="estado" id="est">
     <h2 id="est-t">Confirmando tu pago…</h2>
