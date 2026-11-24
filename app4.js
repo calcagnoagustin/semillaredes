@@ -300,7 +300,7 @@
   `;
 
   // ---------- estado ----------
-  let D=null, TAB=LS('tab')||'inicio', SUBM=LS('subm')||'reporte', SUBF=LS('subf2')||'drops', DROPS=[], TJ=null, CTA=null, FECHAS=[], WEBS=[], NOT=[], DIA_SEL=null, WL_I=null, CHAT=[], USOW=null;
+  let D=null, TAB=LS('tab')||'inicio', SUBM=LS('subm')||'reporte', SUBF=LS('subf2')||'drops', DROPS=[], TJ=null, CTA=null, FECHAS=[], WEBS=[], NOT=[], DIA_SEL=null, WL_I=null, CHAT=[], USOW=null, STK=null;
   const CLASES=[['Modelo de negocio','maletin',[['HE8pjQ0pbV8','Presentación de la Formación'],['1IWynYu2gRI','Tu arte como negocio digital'],['sgggTfqdWjk','Pensá un producto como artista'],['t711FU0w5yk','Ordená tus objetivos y próximos pasos']]],
     ['Comunicación','burbuja',[['84f7zYFQp3E','Excel de negocio: ingresos y gastos'],['8iI_anZtXpQ','Comunicá tu identidad'],['oo9d7a-02xw','Mostrá tu producto para que conecte'],['SN7WmmLunLY','Contenidos sostenibles']]],
     ['Publicidad','megafono',[['ozn7ch2Ui3k','Campaña de lanzamiento: Spotify, Meta y YouTube'],['tv8hQXAMwKc','Configurá Ads Manager y Business Manager'],['Ec_YHoGOq34','Conseguí más seguidores'],['8ANApErBj2M','Campañas de productos'],['OsvHvTZlTk0','Métricas y proyectiva']]]];
@@ -349,6 +349,7 @@
       ${bloqueCruce()?`<div class="tt"><h2>Seguimiento de campañas</h2></div>${bloqueCruce()}`:''}
       ${bloqueCampanas()}
       ${(document.querySelector('#app .ventaBox')||(D.cliente||{}).ventas_log_on||(D.ventas_log||[]).length)?`<div class="box" style="margin-top:12px"><button class="row" id="v4vtas"><span class="tile">${I('bolsa')}</span><span class="tx"><b>Cargar ventas</b><small>Lo que vendiste en el período</small></span><span class="go">${I('chev')}</span></button></div>`:''}
+      ${(STK&&(STK.items||[]).length)?`<div class="box" style="margin-top:12px"><button class="row" data-ir="stock"><span class="tile">${I('bolsa')}</span><span class="tx"><b>Stock</b><small>${stkResumen()}</small></span><span class="go">${I('chev')}</span></button></div>`:''}
       <div class="tt"><h2>Próximas fechas</h2><button class="lk" data-ir="proyecto">Ver agenda ${I('chev')}</button></div>
       <div class="box">${prox.length?prox.map(filaAgenda).join(''):`<div class="vacio">No tenés fechas próximas. Sumá una desde Proyecto.</div>`}</div>
       <div class="tt"><h2>Seguí aprendiendo</h2></div>
@@ -357,6 +358,31 @@
         <div class="tx"><div class="kk">Drop del viernes</div><h3>${esc(dr.titulo)}</h3><span class="lk">${dr.audio?"Leé o escuchá":"Leer el drop"} ${I("ext")}</span></div>
         <img src="/drops/img/drop-foto-${(dr.n%3)+1}.jpg" alt=""></a>`:''}
       <div class="dos"><button class="bt" id="v4tarea">${I('mas')}Agregar tarea</button><button class="bt" id="v4chat">${I('chat')}SemillaIA</button></div>`;
+  }
+  // 24/11 (Agus): Stock. El cliente carga cuántos ejemplares firmados tiene de cada título.
+  function stkResumen(){ const it=(STK&&STK.items)||[]; const car=it.filter(x=>x.c!=null).length;
+    if(!car) return 'Cargá cuántos ejemplares tenés'; const tot=it.reduce((a,x)=>a+(x.c||0),0);
+    return car<it.length?('Faltan '+(it.length-car)+' de '+it.length+' títulos'):(nf(tot)+' ejemplares en total'); }
+  function scStock(){
+    const it=(STK&&STK.items)||[];
+    return `<button class="vol" data-ir="inicio">${I('atras')}Volver a Inicio</button><h1>Stock</h1>
+      <p style="margin:0 4px 16px;font-size:15px;line-height:1.45;opacity:.75">Poné cuántos ejemplares firmados tenés de cada título. Si de alguno no tenés, dejalo en 0. Lo podés cambiar cuando quieras.</p>
+      <div class="box">${it.map((x,i)=>`<div class="row"><span class="tx"><b>${esc(x.t)}</b></span>
+        <input class="stkIn" data-i="${i}" type="number" min="0" step="1" inputmode="numeric" value="${x.c==null?'':x.c}" placeholder="—"
+         aria-label="Ejemplares de ${esc(x.t)}" style="width:92px;height:46px;text-align:center;font-size:17px;border:1px solid rgba(0,0,0,.14);border-radius:12px;padding:0 8px;background:#fff"></div>`).join('')}</div>
+      <button class="bt n" id="v4stkg" style="width:100%;margin-top:18px;height:50px">${I('check')}Guardar</button>
+      <div id="v4stkm" style="margin-top:12px;font-size:13px;opacity:.7;text-align:center">${STK&&STK.act?'Última actualización: '+esc(STK.act):''}</div>`;
+  }
+  async function guardarStock(){
+    const r=$('#v4'), m=r.querySelector('#v4stkm');
+    const items=((STK&&STK.items)||[]).map((x,i)=>{ const e=r.querySelector('.stkIn[data-i="'+i+'"]'); const v=e?String(e.value).trim():'';
+      return {t:x.t, c: v===''?null:Math.max(0,parseInt(v,10)||0)}; });
+    if(m) m.textContent='Guardando…';
+    try{
+      const j=await fetch(W+'/stock',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,k:tok,items:items})}).then(x=>x.json());
+      if(j&&j.ok){ STK={items:items,act:j.act}; if(m) m.textContent='Guardado · '+j.act; }
+      else if(m) m.textContent='No se pudo guardar. Probá de nuevo.';
+    }catch(e){ if(m) m.textContent='No se pudo guardar. Probá de nuevo.'; }
   }
   // 24/11 (Agus): en Inicio, entradas vendidas por la pauta y costo por entrada (último reporte)
   function bloqueEntradas(){   // 24/11 (Agus): costo por entrada "posta" = invertido / entradas vendidas en la ticketera (sin invitados)
@@ -790,7 +816,7 @@
   // ---------- armado ----------
   function pintar(){
     let r=$('#v4'); if(!r){ r=document.createElement('div'); r.id='v4'; document.body.appendChild(r); }
-    const sc=TAB.startsWith('clase:')?scClase(TAB.slice(6)):TAB==='analisis'?scAnalisis():TAB==='cuenta'?scCuenta():TAB==='proyecto'?scProyecto():TAB==='metricas'?scMetricas():TAB==='formacion'?scFormacion():TAB==='shows'?scShows():scInicio();
+    const sc=TAB.startsWith('clase:')?scClase(TAB.slice(6)):TAB==='analisis'?scAnalisis():TAB==='cuenta'?scCuenta():TAB==='proyecto'?scProyecto():TAB==='metricas'?scMetricas():TAB==='formacion'?scFormacion():TAB==='shows'?scShows():TAB==='stock'?scStock():scInicio();
     const nb=TAB.startsWith('clase:')?'formacion':TAB==='analisis'?'metricas':TAB;
     const N=[['inicio','casa','Inicio'],['proyecto','carpeta','Proyecto'],['metricas','barras','Métricas'],['formacion','gorro','Formación']];
     const spl=document.getElementById('v4splash'); if(spl) spl.remove();
@@ -822,7 +848,7 @@
     r.querySelectorAll('[data-wl]').forEach(b=>b.onclick=()=>{ if(b.disabled) return; WL_I=(WL_I==null?0:WL_I)+Number(b.dataset.wl); pintar(); });
     r.querySelectorAll('[data-hnueva]').forEach(b=>b.onclick=nuevaMeta); r.querySelectorAll('[data-hito]').forEach(b=>b.onclick=()=>verMeta(b.dataset.hito));
     const on=(id,f)=>{ const e=r.querySelector('#'+id); if(e) e.onclick=f; };
-    on('v4an',()=>ir('analisis')); on('v4tarea',()=>nuevaTarea('')); on('v4chat',chat); on('v4fecha',nuevaFecha); on('v4bell',avisos); on('v4cx',conexiones); on('v4mat',materiales); on('v4vtas',ventas);
+    on('v4an',()=>ir('analisis')); on('v4tarea',()=>nuevaTarea('')); on('v4chat',chat); on('v4fecha',nuevaFecha); on('v4bell',avisos); on('v4cx',conexiones); on('v4mat',materiales); on('v4vtas',ventas); on('v4stkg',guardarStock);
     on('v4nt',()=>nuevaTarea('')); on('v4vh',()=>{ LS('verhechas',LS('verhechas')==='1'?'0':'1'); pintar(); });
     on('v4vt',()=>{ LS('vertodas',LS('vertodas')==='1'?'0':'1'); pintar(); });
     on('v4play',()=>{ const v=r.querySelector('#v4vid'); const id=TAB.slice(6); v.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`; });
@@ -918,6 +944,7 @@
       fetch(W+'/cuenta?c='+c+'&k='+k).then(r=>r.ok?r.json():null).then(j=>{ CTA=j; }).catch(()=>{}),
       fetch(W+'/estado?c='+c+'&k='+k).then(r=>r.ok?r.json():null).then(j=>{ WEBS=((j&&j.webs)||[]).filter(w=>!w.externa); }).catch(()=>{}),
       rpc('sub_notifs_get',{p_slug:slug,p_k:tok}).then(j=>{ NOT=(j&&j.notifs)||[]; }).catch(()=>{}),
+      fetch(W+'/stock?c='+c+'&k='+k).then(r=>r.ok?r.json():null).then(j=>{ STK=j; }).catch(()=>{}),
       fetch(W+'/uso?c='+c+'&k='+k).then(r=>r.ok?r.json():null).then(j=>{ USOW=j&&j.web; }).catch(()=>{}),
       cargarFechas()
     ]).then(pintar);
@@ -928,7 +955,7 @@
     if(!document.getElementById('v4css')){ const st=document.createElement('style'); st.id='v4css'; st.textContent=CSS; document.head.appendChild(st);
       const f=document.createElement('link'); f.rel='stylesheet'; f.href='https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Playfair+Display:wght@700&display=swap'; document.head.appendChild(f); }
     document.body.classList.add('v4');
-    if(['inicio','proyecto','metricas','formacion','cuenta','analisis'].indexOf(TAB)<0) TAB='inicio';
+    if(['inicio','proyecto','metricas','formacion','cuenta','analisis','stock'].indexOf(TAB)<0) TAB='inicio';
     pintar(); cargarResto(); burbuja();
     if(location.hash==='#ventas'&&!window.__v4v){ window.__v4v=1; setTimeout(()=>{ TAB='proyecto'; pintar(); ventas(); },1200); }
   };
