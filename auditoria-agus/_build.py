@@ -8,7 +8,6 @@ TU = "https://aguscalcagno.com/s/auditoria-inicial-con-agus"
 
 s = src
 s = s.replace('https://semillaredes.com/auditoria-con-agus/', 'https://semillaredes.com/auditoria-agus/')
-s = s.replace('<meta name="theme-color" content="#F8F0E2"/>', '<meta name="theme-color" content="#F8F0E2"/>\n<meta name="robots" content="noindex"/>')
 s = s.replace("fbq('track','ViewContent',{content_name:'Auditoría con Agus',content_type:'product',value:45,currency:'USD'});",
               "fbq('track','ViewContent',{content_name:'Auditoría con Agus',content_type:'product',value:60000,currency:'ARS'});")
 s = s.replace('<div class="alt">USD 45</div>', '<div class="alt" id="pg-alt">Elegís tu horario y pagás con Mercado Pago</div>')
@@ -128,15 +127,15 @@ js = r"""
     ext=quiereExt&&extOK;VTZ=ext&&TZU?TZU:TZ;
     var c=document.getElementById('pg-cambiar');
     txt('pg-monto',ext?'USD 45 <small>dólares</small>':'$60.000 <small>ARS</small>',1);
-    txt('pg-alt',ext?'Elegís tu horario y pagás con tarjeta':'Elegís tu horario y pagás con Mercado Pago');
+    txt('pg-alt',ext?'Elegís tu horario y pagás con PayPal o tarjeta':'Elegís tu horario y pagás con Mercado Pago');
     txt('pg-bt',ext?'Pagar USD 45 y confirmar mi turno':'Pagar $60.000 y confirmar mi turno');
-    txt('pg-seg',ext?'Pago seguro con tarjeta de crédito o débito (procesado por dLocal).':'Pago seguro con Mercado Pago: tarjeta de crédito, débito o dinero en cuenta.');
+    txt('pg-seg',ext?'Pago seguro con PayPal: con tu cuenta o con tarjeta de crédito o débito, sin crear cuenta.':'Pago seguro con Mercado Pago: tarjeta de crédito, débito o dinero en cuenta.');
     var w=document.getElementById('pg-w');if(w)w.placeholder=ext?'Con + y código de país. Ej: +34 612 345 678':'Ej: 11 2345 6789 · desde otro país, con +código';
     txt('pg-tzt',ext?'Horarios en tu hora local.':'Horarios de Argentina.');
-    txt('pg-faq',extOK?'Desde Argentina, en pesos con Mercado Pago: tarjeta de crédito, débito o dinero en cuenta. Desde el exterior, USD 45 con tarjeta de crédito o débito.':'En pesos con Mercado Pago: tarjeta de crédito, débito o dinero en cuenta. Desde el exterior, USD 45 con PayPal.');
+    txt('pg-faq',extOK?'Desde Argentina, en pesos con Mercado Pago: tarjeta de crédito, débito o dinero en cuenta. Desde el exterior, USD 45 con PayPal o con tarjeta, sin necesidad de cuenta.':'En pesos con Mercado Pago: tarjeta de crédito, débito o dinero en cuenta. Desde el exterior, USD 45 con PayPal.');
     if(c){
       if(!extOK){c.href=TU;c.textContent='¿Estás fuera de Argentina? Pagá USD 45 con PayPal'}
-      else{c.href='#';c.textContent=ext?'¿Estás en Argentina? Pagá $60.000 con Mercado Pago':'¿Estás fuera de Argentina? Pagá USD 45 con tarjeta';c.classList.toggle('oculto',!!reserva)}
+      else{c.href='#';c.textContent=ext?'¿Estás en Argentina? Pagá $60.000 con Mercado Pago':'¿Estás fuera de Argentina? Pagá USD 45 con PayPal';c.classList.toggle('oculto',!!reserva)}
     }
     if(horarios)pintar();
   }
