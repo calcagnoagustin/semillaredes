@@ -396,7 +396,7 @@
         <div class="box"><button class="row" data-prox="Flyers"><span class="tile r">${I('imagen')}</span><span class="tx"><b>Flyers</b></span><span class="go">${I('chev')}</span></button></div></div>
       <div class="tt"><h2>Herramientas</h2></div>
       <div class="skills">${SK.map(([t,ic,s])=>{ const vt=t==='Shows y entradas'?tkUlt():null;
-        return vt?`<button class="sk" data-ir="shows"><span class="tile">${I(ic)}</span><b>${t}</b><small>${s}</small><span class="pie2"><span class="prox vivo">${vt.nuevas_semana!=null?nf(vt.nuevas_pauta)+' por la publicidad':nf(vt.total_locs||vt.ventas)+' entradas vendidas'}</span></span></button>`
+        return vt?`<button class="sk" data-ir="shows"><span class="tile">${I(ic)}</span><b>${t}</b><small>${s}</small><span class="pie2"><span class="prox vivo">${vt.nuevas_semana!=null?nf(vt.nuevas_pauta)+' vendidas esta semana':nf(vt.total_locs||vt.ventas)+' entradas vendidas'}</span></span></button>`
           :`<button class="sk" data-prox="${esc(t)}"><span class="tile">${I(ic)}</span><b>${t}</b><small>${s}</small><span class="pie2"><span class="prox">Próximamente</span></span></button>`; }).join('')}</div>`;
   }
 
@@ -586,9 +586,10 @@
     const ars=n=>'$ '+nf(Math.round(Number(n)||0)), hoy=new Date().toISOString().slice(0,10);
     const F=VT.funciones.filter(f=>f.fecha>=hoy), P=VT.funciones.filter(f=>f.fecha<hoy);
     const fila=f=>`<div class="row"><span class="tile">${I('ticket')}</span><span class="tx"><b>${dd(f.fecha)}${f.hora?' · '+esc(String(f.hora).replace(/:00$/,''))+' hs':''}</b><small>${ars(f.importe_ars)} vendidos</small></span><span class="costo"><b>${nf(f.locs)}</b><small>${Number(f.locs)===1?'entrada':'entradas'}</small></span></div>`;
+    const LR=(D.reportes||[]).filter(r=>r.metricas&&r.metricas.tk_tickets!=null).sort((x,y)=>x.hasta<y.hasta?-1:1).pop(), MT=LR&&VT.semana_hasta&&LR.hasta>=String(VT.semana_desde)?LR.metricas.tk_tickets:null;
     const inv=VT.invitadas!=null?VT.invitadas:(VT.nuevas_semana!=null?VT.nuevas_semana-VT.nuevas_pauta:null);
     return `<div class="tt"><h2>Ticketera</h2><span class="pill">${I('cal')}${dd(String(VT.captura).slice(0,10))}</span></div>
-      ${VT.nuevas_semana!=null?`<div class="sub2" style="margin-top:0">${VT.obra?esc(VT.obra)+' · ':''}${VT.semana_desde?'del '+dd(VT.semana_desde).slice(4)+' al '+dd(VT.semana_hasta).slice(4):'esta semana'}</div><div class="dgrid"><div class="dt"><b>${nf(VT.nuevas_pauta)}</b><small>Por la publicidad</small></div><div class="dt"><b>${nf(inv)}</b><small>${inv===1?'Invitada':'Invitadas'}</small></div></div>`:''}
+      ${VT.nuevas_semana!=null?`<div class="sub2" style="margin-top:0">${VT.obra?esc(VT.obra)+' · ':''}${VT.semana_desde?'del '+dd(VT.semana_desde).slice(4)+' al '+dd(VT.semana_hasta).slice(4):'esta semana'}</div><div class="dgrid"><div class="dt"><b>${nf(VT.nuevas_pauta)}</b><small>Vendidas</small></div><div class="dt"><b>${nf(inv)}</b><small>${inv===1?'Invitada':'Invitadas'}</small></div></div>${MT!=null?`<div class="sub2">De esas ventas, Meta registró <b>${nf(MT)}</b> ${Number(MT)===1?'compra':'compras'} que llegaron por la publicidad${VT.pedidos_pagos?' (de '+nf(VT.pedidos_pagos)+' compras en total)':''}.</div>`:''}`:''}
       ${slug==='berco-estudio'?`<a class="bt n" style="margin-top:12px;width:100%;justify-content:center" href="https://vm.semillaredes.com/web/invitados?c=${encodeURIComponent(slug)}&k=${encodeURIComponent(tok)}" target="_blank" rel="noopener">${I('lista')}Marcar invitados de la semana</a>`:''}
       ${F.length?`<div class="sub2">Próximas funciones</div><div class="box">${F.map(fila).join('')}</div>`:''}
       ${P.length?`<div class="sub2">Funciones que ya pasaron</div><div class="box">${P.map(fila).join('')}</div>`:''}`; }
