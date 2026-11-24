@@ -344,6 +344,7 @@
     return `<div class="hola"><h1>Hola, ${esc(nom)}</h1><span class="pill">${I('cal')}${fecha}</span></div>
       ${hero}
       ${bloqueCuenta()}
+      ${bloqueEntradas()}
       ${bloqueWishlist()}
       ${bloqueCruce()?`<div class="tt"><h2>Seguimiento de campañas</h2></div>${bloqueCruce()}`:''}
       ${bloqueCampanas()}
@@ -357,6 +358,13 @@
         <img src="/drops/img/drop-foto-${(dr.n%3)+1}.jpg" alt=""></a>`:''}
       <div class="dos"><button class="bt" id="v4tarea">${I('mas')}Agregar tarea</button><button class="bt" id="v4chat">${I('chat')}SemillaIA</button></div>`;
   }
+  // 24/11 (Agus): en Inicio, entradas vendidas por la pauta y costo por entrada (último reporte)
+  function bloqueEntradas(){
+    const LR=(D.reportes||[]).filter(r=>r.metricas&&r.metricas.tk_tickets!=null).sort((x,y)=>x.hasta<y.hasta?-1:1).pop(); if(!LR) return '';
+    const m=LR.metricas, us=SIM()==='USD', din=v=>v==null?'—':(us?'USD ':'$ ')+nf(Number(v),us||Number(v)<100?2:0), f=x=>{ const d=new Date(String(x).slice(0,10)+'T12:00:00'); return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'); };
+    return `<div class="tt"><h2>Entradas${m.tk_nombre?' · '+esc(m.tk_nombre):''}</h2><span class="pill">${I('cal')}${f(LR.desde)} al ${f(LR.hasta)}</span></div>
+      <div class="dgrid"><div class="dt"><b>${nf(m.tk_tickets)}</b><small>Vendidas por la pauta</small></div><div class="dt"><b>${din(m.tk_costo_ticket)}</b><small>Costo por entrada</small></div></div>
+      <div class="sub2">Invertido en el período: ${din(m.tk_inversion)}</div>`; }
   const hoyISO=()=>{ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
   function agenda(){   // fechas del proyecto + tareas con alarma, ordenadas
     const A=[]; (FECHAS||[]).forEach(f=>A.push({f:String(f.fecha).slice(0,10),t:f.titulo,s:f.lugar||'Fecha',url:f.url}));
