@@ -13,7 +13,7 @@
 .plat svg,.redes svg{width:20px;height:20px;flex:none}
 
 :root{--crema:#EFE7D6;--crema2:#E3D8C1;--tinta:#2A2320;--rosa:#D9677A;--verde:#5E7D5B;--vid:#111}
-body{background-color:#F4EEE2;background-image:radial-gradient(circle at 20px 22px,#E5A0AA 0 4px,transparent 5px),radial-gradient(circle at 26px 18px,#E5A0AA 0 3.5px,transparent 4.5px),radial-gradient(circle at 23px 30px,#9DB497 0 2px,transparent 3px),radial-gradient(circle at 70px 72px,#E9D9C4 0 2px,transparent 3px);
+body{background-color:#F4EEE2;background-image:radial-gradient(circle at 20px 22px,#F0CCD1 0 4px,transparent 5px),radial-gradient(circle at 26px 18px,#F0CCD1 0 3.5px,transparent 4.5px),radial-gradient(circle at 23px 30px,#CCD9C8 0 2px,transparent 3px),radial-gradient(circle at 70px 72px,#E9D9C4 0 2px,transparent 3px);
 background-size:96px 96px;color:var(--tinta);font-family:Montserrat,system-ui,sans-serif;font-weight:400;font-size:16px;line-height:1.7}
 .w{max-width:760px;margin:0 auto;padding:28px 16px 60px}
 .tv{background:linear-gradient(#F3ECDD,#E6DCC6);border-radius:26px;padding:18px;box-shadow:0 30px 60px rgba(60,40,20,.25),inset 0 2px 0 #fff;display:grid;grid-template-columns:1fr 64px;gap:16px;position:relative}
@@ -22,9 +22,9 @@ background-size:96px 96px;color:var(--tinta);font-family:Montserrat,system-ui,sa
 .pant>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;filter:saturate(.8) contrast(1.1)}
 .pant:before{content:"";position:absolute;inset:0;z-index:2;background:repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 3px);pointer-events:none}
 .pant:after{content:"";position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.75));pointer-events:none}
-.pin{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;color:#fff}
-.pin .logo{width:min(320px,70%);filter:drop-shadow(0 0 14px rgba(255,255,255,.35))}
-.glitch{font-family:VT323,monospace;font-size:clamp(20px,4.2vw,30px);letter-spacing:.06em;margin-top:10px;text-shadow:-2px 0 #ff4fd8,2px 0 #ffe14f;animation:gl 3.5s infinite steps(1)}
+.pin{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:44px 18px 18px;color:#fff}
+.pin .logo{width:min(320px,58%);filter:drop-shadow(0 0 14px rgba(255,255,255,.35))}
+.glitch{font-family:VT323,monospace;font-size:clamp(17px,4.2vw,30px);line-height:1.15;letter-spacing:.06em;margin-top:8px;text-shadow:-2px 0 #ff4fd8,2px 0 #ffe14f;animation:gl 3.5s infinite steps(1)}
 @keyframes gl{0%,92%{transform:none}93%{transform:translateX(-3px)}95%{transform:translateX(3px)}97%{transform:none}}
 .rec{position:absolute;z-index:3;top:16px;left:22px;font-family:VT323,monospace;font-size:18px;color:#ffe14f}
 .rec2{position:absolute;z-index:3;top:16px;right:24px;font-family:VT323,monospace;font-size:18px;color:#fff}
@@ -35,7 +35,7 @@ background-size:96px 96px;color:var(--tinta);font-family:Montserrat,system-ui,sa
 .btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0 0}
 .b{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 22px;border-radius:999px;text-decoration:none;font-weight:500;font-size:14px;letter-spacing:.04em}
 .b.pri{background:var(--tinta);color:#F4EEE2}.b.sec{border:1.5px solid var(--tinta)}.b svg{width:20px;height:20px}
-.canal{margin-top:56px}.canal .n{font-family:VT323,monospace;font-size:22px;color:var(--rosa);letter-spacing:.08em}
+.canal{margin-top:56px}.canal .n{display:inline-block;font-family:VT323,monospace;font-size:22px;color:var(--rosa);letter-spacing:.08em;background:#F4EEE2;padding:0 6px;margin-left:-6px}
 .canal h2{font-family:'Pinyon Script',cursive;font-weight:400;font-size:clamp(46px,9vw,66px);line-height:1;margin:2px 0 18px}
 .papel{background:rgba(255,253,248,.92);border-radius:18px;padding:22px;box-shadow:0 10px 30px rgba(60,40,20,.08)}
 .disco{display:grid;grid-template-columns:1fr;gap:18px}
@@ -43,7 +43,7 @@ background-size:96px 96px;color:var(--tinta);font-family:Montserrat,system-ui,sa
 .lead{font-size:clamp(18px,2.4vw,21px);line-height:1.6;margin:0}
 .cred{font-size:12.5px;letter-spacing:.06em;color:#7a6f63;margin:14px 0 0}
 .vids{display:grid;grid-template-columns:1fr;gap:26px}.vids .vid .yt{border-radius:14px}.vids .vid iframe{border-radius:14px}
-.vid figcaption b{font-weight:600;font-size:16px}
+.vids .vid figcaption{background:rgba(255,253,248,.92);border-radius:10px;padding:8px 12px}.vid figcaption b{font-weight:600;font-size:16px}
 .pl{background:rgba(244,238,226,.92);color:var(--tinta)}
 .plats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .plat{display:flex;align-items:center;gap:12px;height:56px;padding:0 18px;border-radius:14px;background:rgba(255,253,248,.95);text-decoration:none;font-weight:500;box-shadow:0 6px 18px rgba(60,40,20,.08)}
@@ -71,7 +71,7 @@ background-size:96px 96px;color:var(--tinta);font-family:Montserrat,system-ui,sa
 <section class="canal"><div class="n">CANAL 3 · ESCUCHAR</div><h2>Sintonizá</h2><div class="plats"><a class="plat" href="https://open.spotify.com/artist/7pwqvT1MD9zOUbJEtEy1IA" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5a10.5 10.5 0 1 0 0 21 10.5 10.5 0 0 0 0-21Zm4.8 15.2a.65.65 0 0 1-.9.2c-2.5-1.5-5.6-1.9-9.3-1a.65.65 0 1 1-.3-1.3c4-.9 7.5-.5 10.3 1.2.3.2.4.6.2.9Zm1.3-2.9a.8.8 0 0 1-1.1.3c-2.8-1.7-7.2-2.2-10.5-1.2a.8.8 0 1 1-.5-1.6c3.8-1.1 8.6-.6 11.8 1.4.4.2.5.7.3 1.1Zm.1-3c-3.4-2-9-2.2-12.2-1.2a1 1 0 1 1-.6-1.9c3.8-1.1 9.9-.9 13.8 1.4a1 1 0 1 1-1 1.7Z"/></svg><span>Spotify</span></a><a class="plat" href="https://music.apple.com/ar/artist/lu-glass/1101732118" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M16.4 1.5c.1 1.1-.3 2.2-1 3-.7.8-1.8 1.4-2.9 1.3-.1-1.1.4-2.2 1-2.9.7-.8 1.9-1.4 2.9-1.4Zm3.7 16.3c-.5 1.2-.8 1.7-1.5 2.8-1 1.4-2.3 3.2-4 3.2-1.5 0-1.9-1-3.9-1s-2.5 1-4 1c-1.7 0-2.9-1.6-3.9-3.1C.1 16.5-.2 11.7 1.4 9.2c1.1-1.8 2.9-2.8 4.6-2.8s2.8 1 4.2 1c1.4 0 2.2-1 4.2-1 1.5 0 3.1.8 4.2 2.2-3.7 2-3.1 7.3 1.5 9.2Z"/></svg><span>Apple Music</span></a><a class="plat" href="https://www.youtube.com/@LucilaGlass" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8ZM9.7 15V9l5.8 3-5.8 3Z"/></svg><span>YouTube</span></a><a class="plat" href="https://www.deezer.com/artist/10160318" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M18.5 5.5h4.5V8h-4.5zM18.5 9.3h4.5v2.5h-4.5zM18.5 13.1h4.5v2.5h-4.5zM1 16.9h4.5v2.5H1zM6.8 16.9h4.5v2.5H6.8zM12.7 16.9h4.5v2.5h-4.5zM18.5 16.9h4.5v2.5h-4.5zM12.7 13.1h4.5v2.5h-4.5zM6.8 13.1h4.5v2.5H6.8zM12.7 9.3h4.5v2.5h-4.5z"/></svg><span>Deezer</span></a><a class="plat" href="https://tidal.com/search?q=Lu%20Glass" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path fill="currentColor" d="m12 4 4 4-4 4-4-4 4-4Zm-4 4-4 4-4-4 4-4 4 4Zm12 0-4 4-4-4 4-4 4 4Zm-8 4 4 4-4 4-4-4 4-4Z"/></svg><span>Tidal</span></a><a class="plat" href="https://www.instagram.com/luglassdreams/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9-.1-1.3-.1-1.6-.1-4.8s0-3.6.1-4.8C2.4 4 3.9 2.4 7.2 2.3c1.2-.1 1.6-.1 4.8-.1ZM12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7 1.2.1 1.6.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0Zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm6.4-11.8a1.4 1.4 0 1 0 0 2.9 1.4 1.4 0 0 0 0-2.9Z"/></svg><span>Instagram</span></a></div></section>
 
 <section class="canal"><div class="n">CANAL 4 · LU GLASS</div><h2>Quién transmite</h2>
-<div class="papel bio"><img src="../img/bio.jpg" alt="Lu Glass"><div><p class="q">Lu Glass hace canciones con máquinas viejas y palabras exactas.</p><p style="margin-top:12px">Desde <i>El Rayo</i> (2016) viene armando paisajes de sintetizador para historias de amor que no terminan bien. Abrió para The Radio Dept., cantó en la primera edición de Primavera Sound Buenos Aires y hoy suma a Paula Díaz Mendilharzu y su arsenal de Roland, MPC y Minilogue.</p></div></div></section>
+<div class="papel bio"><img src="../img/bio.jpg" alt="Lu Glass"><div><p class="q">Lu Glass hace canciones con máquinas viejas y palabras exactas.</p><p style="margin-top:12px">Desde <i>El Rayo</i> (2016) viene armando paisajes de sintetizador para historias de amor que no terminan bien. Abrió para The Radio Dept., tocó en Primavera Sound Buenos Aires y hoy suma a Paula Díaz Mendilharzu y su arsenal de Roland, MPC y Minilogue.</p></div></div></section>
 
 <section class="canal cont"><div class="n">CANAL 5 · CONTACTO</div><h2>Escribile</h2><p>Shows, festivales, ciclos y prensa.</p>
 <a class="b pri" href="mailto:lucilaglass@gmail.com"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M3 5.5h18v13H3zM3 6l9 7 9-7"/></svg>lucilaglass@gmail.com</a></section>
