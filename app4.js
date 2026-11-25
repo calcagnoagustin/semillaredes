@@ -310,7 +310,7 @@
   // ---------- datos ----------
   function metricas(){
     const R=(D.reportes||[]).filter(r=>r.metricas).slice().sort((a,b)=>a.hasta<b.hasta?-1:1);
-    R.forEach(r=>{ const m=r.metricas; if(m.ig_conv==null&&Number(m.ig_visitas)>0&&m.ig_followers_nuevos!=null&&Number(m.ig_followers_nuevos)<=Number(m.ig_visitas)) m.ig_conv=Math.round(Number(m.ig_followers_nuevos)*1000/Number(m.ig_visitas))/10; });   // 18/11 (Agus): tasa de conversión = seguidores nuevos ÷ visitas al perfil
+    R.forEach(r=>{ const m=r.metricas; if(m.ig_conv==null&&Number(m.ig_visitas)>0&&m.ig_followers_nuevos!=null) m.ig_conv=Math.round(Number(m.ig_followers_nuevos)*1000/Number(m.ig_visitas))/10; });   // 18/11 (Agus): tasa de conversión = seguidores nuevos ÷ visitas al perfil
     const U=(R[R.length-1]||{}).metricas||{}, prev=R.slice(-5,-1).map(r=>r.metricas||{});
     const prom=k=>{ const v=prev.map(m=>Number(m[k])).filter(x=>!isNaN(x)&&x!==0); return v.length?v.reduce((a,b)=>a+b,0)/v.length:null; };
     const ult=k=>{ for(let i=R.length-1;i>=0;i--){ const v=(R[i].metricas||{})[k]; if(v!=null) return Number(v); } return null; };
@@ -691,7 +691,7 @@
     const U=M.U, C=[
       ['Seguidores nuevos por período',S('ig_followers_nuevos'),VINO,v=>nf(v),U.ig_followers_total!=null?`Hoy: ${nf(U.ig_followers_total)} seguidores en total`:''],
       ['Costo por seguidor',S('ig_costo_follower'),ROSA,mon2,U.ig_costo_follower!=null?`Este período: ${money(Number(U.ig_costo_follower))}`:''],
-      ['Tasa de conversión',S('ig_conv'),OLI,v=>nf(v,v<10?1:0)+'%','De cada 100 personas que visitaron tu perfil, cuántas te siguieron']];
+      ['Tasa de conversión',S('ig_conv'),OLI,v=>nf(v,v<10?1:0)+'%',S('ig_conv').some(x=>Number(x&&x.v!=null?x.v:x)>100)?'Seguidores nuevos por cada 100 visitas al perfil. Más de 100% quiere decir que mucha gente te sigue directo desde un reel o un anuncio, sin entrar al perfil':'De cada 100 personas que visitaron tu perfil, cuántas te siguieron']];   // 25/11 (Agus): mostrar también cuando hay más seguidores que visitas
     const cards=C.map(([t,v,col,fmt,pie])=>{ const g=graf(v,col,fmt); return g?`<div class="cv4"><div class="ct">${t}</div>${g}${pie?`<p>${esc(pie)}</p>`:''}</div>`:''; }).filter(Boolean);
     return cards.length?`<div class="tt"><h2>Tus curvas de Instagram</h2></div>${cards.join('')}`:''; }
   function panelPeriodo(){ const M=metricas(), Rr=M.R, U=M.U; if(!Rr.length) return '';
