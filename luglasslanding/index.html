@@ -33,9 +33,9 @@ section{padding:120px 0;position:relative}
 
 /* hero */
 .hero{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden}
-.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 45%}
-.hero:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 28% 50%,rgba(10,8,9,0) 0%,rgba(10,8,9,.35) 60%),linear-gradient(90deg,rgba(10,8,9,.25) 0%,rgba(10,8,9,.55) 55%,rgba(10,8,9,.88) 100%),linear-gradient(0deg,var(--noche) 0%,rgba(10,8,9,0) 25%)}
-.hero .wrap{position:relative;z-index:2;width:100%;display:flex;justify-content:flex-end}
+.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:75% 30%}
+.hero:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 70% 40%,rgba(10,8,9,0) 0%,rgba(10,8,9,.3) 60%),linear-gradient(270deg,rgba(10,8,9,.1) 0%,rgba(10,8,9,.5) 50%,rgba(10,8,9,.88) 100%),linear-gradient(0deg,var(--noche) 0%,rgba(10,8,9,0) 25%)}
+.hero .wrap{position:relative;z-index:2;width:100%;display:flex;justify-content:flex-start}
 .hero .caja{width:min(520px,100%);text-align:center}
 .nav{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:24px 28px;font-size:12px;letter-spacing:.34em;text-transform:uppercase;font-weight:500}
 .nav a{text-decoration:none;border-bottom:1px solid rgba(230,227,234,.5);padding-bottom:3px}
@@ -109,6 +109,7 @@ h1.gen{font-size:13px;letter-spacing:.6em;text-transform:uppercase;font-weight:4
 @media(max-width:900px){
   section{padding:88px 0}
   .hero{align-items:flex-end;padding-bottom:9vh}
+  .hero>img{object-position:62% 25%}
   .hero:after{background:linear-gradient(0deg,var(--noche) 0%,rgba(10,8,9,.75) 40%,rgba(10,8,9,.15) 75%)}
   .hero .wrap{justify-content:center}
   .dos,.nuevo{grid-template-columns:1fr;gap:52px}
@@ -133,7 +134,7 @@ h1.gen{font-size:13px;letter-spacing:.6em;text-transform:uppercase;font-weight:4
 <body>
 
 <header class="hero" data-b="1">
-  <img src="img/hero.jpg" alt="Lu Glass con vestido de lentejuelas" fetchpriority="high" data-e="1">
+  <img src="img/hero.webp" alt="Lu Glass con vestido de lentejuelas" fetchpriority="high" data-e="1">
   <nav class="nav" data-b="2"><b data-e="2">Lu Glass</b><a href="#contacto" data-e="3">Contacto</a></nav>
   <div class="wrap">
     <div class="caja">
