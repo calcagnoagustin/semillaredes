@@ -668,7 +668,10 @@
     const NOM={sp_monthly:'oyentes mensuales en Spotify',sp_oyentes:'oyentes mensuales en Spotify'};
     const VT=Object.values((D.cliente||{}).ventas||{}).filter(x=>x&&x.tipo==='ticketera').sort((a,b)=>String(a.captura||a.actualizado)<String(b.captura||b.actualizado)?-1:1).pop();
     const L=H.map(h=>{ let v=M.ult(h.metrica); if(/^sp_(monthly|oyentes|listeners|oyentes_perfil)$/.test(h.metrica)&&M.ult('sp_oyentes_perfil')!=null) v=M.ult('sp_oyentes_perfil');   /* 18/11: oyentes mensuales = los del perfil */
-      if(h.metrica==='tk_tickets'&&/vendidas/i.test(h.titulo||'')&&VT) v=Number(VT.ventas); const o=Number(h.objetivo), pc=v==null?0:Math.min(100,Math.round(v*100/o));
+      if(h.metrica==='tk_tickets'&&/vendidas/i.test(h.titulo||'')&&VT) v=Number(VT.ventas);
+      if(v==null){ const CV=Object.values((D.cliente||{}).ventas||{}).filter(x=>x&&typeof x==='object'&&x.tipo!=='ticketera').sort((a,b)=>String(a.hasta||a.actualizado)<String(b.hasta||b.actualizado)?-1:1);   /* 25/11: metas de ROAS y ventas desde las campañas con ventas cargadas */
+        if(/_roas$/.test(h.metrica)){ const c=CV.filter(x=>x.roas!=null).pop(); if(c) v=Number(c.roas); }
+        else if(/^(vta_ventas|msj_conversiones)$/.test(h.metrica)){ const c=CV.filter(x=>Number(x.ventas)>0).pop(); if(c) v=Number(c.ventas); } } const o=Number(h.objetivo), pc=v==null?0:Math.min(100,Math.round(v*100/o));
       const t=h.titulo&&!/^[a-z]+_[a-z_]+$/.test(h.titulo)?h.titulo:`${nf(o)} ${(HMET[h.metrica]||[])[1]||NOM[h.metrica]||h.metrica}`;
       return `<button class="row" data-hito="${esc(h.id||'')}" style="cursor:pointer"><span class="tx"><b>${esc(t)}</b><span class="pb"><i style="width:${Math.max(3,pc)}%"></i></span><small>${v==null?'Sin datos todavía':`${nf(v)} de ${nf(o)}${pc>=100?' · lograda':''}`}</small></span><span class="costo"><b>${v==null?'—':pc+'%'}</b></span></button>`; });
     return `<div class="tt"><h2>Tus metas</h2><button class="bt" data-hnueva="1" style="height:46px;background:var(--salvia);border-color:transparent">${I('mas')}Agregar</button></div>
