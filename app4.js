@@ -345,6 +345,7 @@
       ${hero}
       ${bloqueCuenta()}
       ${bloqueEntradas()}
+      ${bloqueReservas()}
       ${bloqueWishlist()}
       ${bloqueCruce()?`<div class="tt"><h2>Seguimiento de campañas</h2></div>${bloqueCruce()}`:''}
       ${bloqueCampanas()}
@@ -385,6 +386,33 @@
     }catch(e){ if(m) m.textContent='No se pudo guardar. Probá de nuevo.'; }
   }
   // 24/11 (Agus): en Inicio, entradas vendidas por la pauta y costo por entrada (último reporte)
+  // 25/11 (Agus): reservas que carga el cliente (Bodegón Pará); se activa con sub_clientes.reservas_on
+  let RSV=null;
+  function bloqueReservas(){
+    if(RSV===null){ RSV={cargando:1}; rpc('sub_reservas_get',{p_slug:slug,p_k:tok}).then(d=>{ RSV=d&&!d.error?d:{on:false}; if(RSV.on&&TAB==='inicio') pintar(); }).catch(()=>{ RSV={on:false}; }); return ''; }
+    if(!RSV.on) return '';
+    const L=RSV.reservas||[], h=hoyISO(), d=new Date(h+'T12:00:00'), lun=new Date(d); lun.setDate(d.getDate()-((d.getDay()+6)%7));
+    const iso=x=>x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0'), l0=iso(lun), dom=new Date(lun); dom.setDate(lun.getDate()+6); const d0=iso(dom);
+    const S=L.filter(x=>x.fecha>=l0&&x.fecha<=d0), pers=S.reduce((t,x)=>t+Number(x.personas||0),0), prox=L.filter(x=>x.fecha>=h).length;
+    return `<div class="tt"><h2>Reservas</h2></div>
+      <div class="dgrid"><div class="dt"><b>${nf(S.length)}</b><small>Reservas esta semana</small></div><div class="dt"><b>${nf(pers)}</b><small>Personas esta semana</small></div></div>
+      <div class="box" style="margin-top:12px"><button class="row" id="v4resv"><span class="tile">${I('cal')}</span><span class="tx"><b>Cargar reservas</b><small>${prox?nf(prox)+(prox===1?' reserva próxima':' reservas próximas'):'Anotá cada reserva que te llegue'}</small></span><span class="go">${I('chev')}</span></button></div>`; }
+  function reservas(){
+    const fd=x=>{ const z=new Date(String(x).slice(0,10)+'T12:00:00'); return ['dom','lun','mar','mié','jue','vie','sáb'][z.getDay()]+' '+String(z.getDate()).padStart(2,'0')+'/'+String(z.getMonth()+1).padStart(2,'0'); };
+    const lista=()=>{ const L=(RSV&&RSV.reservas)||[], h=hoyISO(), P=L.filter(x=>x.fecha>=h).slice().reverse(), A=L.filter(x=>x.fecha<h).slice(0,15);
+      const fila=x=>`<div class="row"><span class="tile">${I('cal')}</span><span class="tx"><b>${fd(x.fecha)}${x.personas?' · '+nf(x.personas)+(Number(x.personas)===1?' persona':' personas'):''}</b><small>${esc([x.nombre,x.nota].filter(Boolean).join(' · ')||'Reserva')}</small></span><button class="lk" data-br="${x.id}" style="flex:none">Borrar</button></div>`;
+      return (P.length?`<div class="sub2">Próximas</div><div class="box">${P.map(fila).join('')}</div>`:'')+(A.length?`<div class="sub2">Anteriores</div><div class="box">${A.map(fila).join('')}</div>`:'')+(!P.length&&!A.length?`<div class="box"><div class="vacio">Todavía no hay reservas anotadas. Sumá la primera acá abajo.</div></div>`:''); };
+    const h=hoja('Reservas',`<div class="sub2" style="margin-top:0">Agregar reserva</div><input id="v4rf" type="date" value="${hoyISO()}"><input id="v4rp" inputmode="numeric" placeholder="Cantidad de personas"><input id="v4rn" placeholder="A nombre de (opcional)"><input id="v4rt" placeholder="Nota: horario, festejo, mesa... (opcional)"><button class="bt n" id="v4rok" style="width:100%">${I('mas')}Agregar reserva</button><p class="pie3" id="v4rer"></p><div id="v4rl">${lista()}</div>`);
+    const q=x=>h.querySelector(x);
+    const recargar=async()=>{ const d=await rpc('sub_reservas_get',{p_slug:slug,p_k:tok}).catch(()=>null); if(d&&!d.error) RSV=d; q('#v4rl').innerHTML=lista(); enl(); };
+    const enl=()=>h.querySelectorAll('[data-br]').forEach(b=>b.onclick=async()=>{ if(!b.dataset.seg){ b.dataset.seg='1'; b.textContent='¿Seguro?'; return; } b.disabled=true;
+      const r=await rpc('sub_reserva_borrar',{p_slug:slug,p_k:tok,p_id:Number(b.dataset.br)}).catch(()=>null); if(r&&r.ok) recargar(); });
+    enl();
+    q('#v4rok').onclick=async()=>{ const f=q('#v4rf').value, p=q('#v4rp').value.replace(/\D/g,''); if(!f){ q('#v4rer').textContent='Elegí la fecha de la reserva.'; return; }
+      q('#v4rok').disabled=true; const r=await rpc('sub_reserva_alta',{p_slug:slug,p_k:tok,p_fecha:f,p_personas:p?Number(p):null,p_nombre:q('#v4rn').value,p_nota:q('#v4rt').value}).catch(()=>null); q('#v4rok').disabled=false;
+      if(!r||!r.ok){ q('#v4rer').textContent='No se pudo guardar. Probá de nuevo.'; return; }
+      q('#v4rp').value=''; q('#v4rn').value=''; q('#v4rt').value=''; q('#v4rer').textContent='Reserva agregada ✓'; await recargar(); };
+    const ob=new MutationObserver(()=>{ if(!document.body.contains(h)){ ob.disconnect(); if(TAB==='inicio') pintar(); } }); ob.observe(h.parentNode,{childList:true}); }
   function bloqueEntradas(){   // 24/11 (Agus): costo por entrada "posta" = invertido / entradas vendidas en la ticketera (sin invitados)
     const LR=(D.reportes||[]).filter(r=>r.metricas&&r.metricas.tk_tickets!=null).sort((x,y)=>x.hasta<y.hasta?-1:1).pop(); if(!LR) return '';
     const m=LR.metricas, us=SIM()==='USD', din=v=>v==null?'—':(us?'USD ':'$ ')+nf(Number(v),us||Number(v)<100?2:0), f=x=>{ const d=new Date(String(x).slice(0,10)+'T12:00:00'); return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'); };
@@ -848,7 +876,7 @@
     r.querySelectorAll('[data-wl]').forEach(b=>b.onclick=()=>{ if(b.disabled) return; WL_I=(WL_I==null?0:WL_I)+Number(b.dataset.wl); pintar(); });
     r.querySelectorAll('[data-hnueva]').forEach(b=>b.onclick=nuevaMeta); r.querySelectorAll('[data-hito]').forEach(b=>b.onclick=()=>verMeta(b.dataset.hito));
     const on=(id,f)=>{ const e=r.querySelector('#'+id); if(e) e.onclick=f; };
-    on('v4an',()=>ir('analisis')); on('v4tarea',()=>nuevaTarea('')); on('v4chat',chat); on('v4fecha',nuevaFecha); on('v4bell',avisos); on('v4cx',conexiones); on('v4mat',materiales); on('v4vtas',ventas); on('v4stkg',guardarStock);
+    on('v4an',()=>ir('analisis')); on('v4tarea',()=>nuevaTarea('')); on('v4chat',chat); on('v4fecha',nuevaFecha); on('v4bell',avisos); on('v4cx',conexiones); on('v4mat',materiales); on('v4vtas',ventas); on('v4resv',reservas); on('v4stkg',guardarStock);
     on('v4nt',()=>nuevaTarea('')); on('v4vh',()=>{ LS('verhechas',LS('verhechas')==='1'?'0':'1'); pintar(); });
     on('v4vt',()=>{ LS('vertodas',LS('vertodas')==='1'?'0':'1'); pintar(); });
     on('v4play',()=>{ const v=r.querySelector('#v4vid'); const id=TAB.slice(6); v.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`; });
