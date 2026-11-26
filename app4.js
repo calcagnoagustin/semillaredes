@@ -18,6 +18,10 @@
   const nf=(n,d=0)=>Number(n||0).toLocaleString('es-AR',{minimumFractionDigits:d,maximumFractionDigits:d});
   const MES=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'], DIA=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
   const fCorta=s=>{ const d=new Date(s+'T12:00:00'); return d.getDate()+' '+MES[d.getMonth()]; };
+  const REPITE={'':'No se repite',diaria:'Todos los días',habiles:'De lunes a viernes',semanal:'Cada semana',mensual:'Cada mes'};
+  const hAR=iso=>{ const d=new Date(iso); const p=new Intl.DateTimeFormat('es-AR',{timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(d), g=k=>(p.find(x=>x.type===k)||{}).value; return {f:g('year')+'-'+g('month')+'-'+g('day'),h:g('hour')+':'+g('minute')}; };
+  function fAlarma(t){ const a=hAR(t.alarma), d=new Date(a.f+'T12:00:00'), r=t.alarma_repite, DL=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+    return (r==='semanal'?'Cada '+DL[d.getDay()]:r==='mensual'?'Cada mes, el '+d.getDate():r==='habiles'?'De lunes a viernes':r==='diaria'?'Todos los días':DIA[d.getDay()]+' '+fCorta(a.f))+', '+a.h+' hs'; }
   const rango=(a,b)=>{ if(!a||!b) return ''; const x=new Date(a+'T12:00:00'), y=new Date(b+'T12:00:00'); return x.getMonth()===y.getMonth()?`${x.getDate()}–${y.getDate()} ${MES[y.getMonth()]}`:`${fCorta(a)} – ${fCorta(b)}`; };
   const LS=(k,v)=>{ try{ if(v===undefined) return localStorage.getItem('v4_'+slug+'_'+k); localStorage.setItem('v4_'+slug+'_'+k,v); }catch(e){ return null; } };
 
@@ -139,6 +143,16 @@
   #v4 .circ{width:26px;height:26px;border-radius:50%;border:2px solid #B7B1A6;flex:none;background:none;padding:0;display:grid;place-items:center}
   #v4 .circ.ok{background:var(--oliva);border-color:var(--oliva);color:#fff}
   #v4 .circ .i{width:16px;height:16px}
+  #v4 .row.tarea{padding:12px 16px;gap:12px}
+  #v4 .row.tarea b{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #v4 .row.tarea small{display:flex;align-items:center;gap:5px;font-size:13.5px;margin-top:1px}
+  #v4 .row.tarea small .i{width:14px;height:14px;flex:none}
+  #v4 .alm{background:var(--card);border:1px solid var(--linea);border-radius:14px;padding:12px 12px 2px;margin:2px 0 12px}
+  #v4 .alm .lb{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:#4B4958;margin:0 0 10px}
+  #v4 .alm .lb .i{width:17px;height:17px}
+  #v4 .alm .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  #v4 .hoja .alm input,#v4 .hoja .alm select{width:100%;border:1px solid var(--linea);border-radius:12px;padding:12px;font:inherit;font-size:16px;background:#fff;color:var(--tinta);margin-bottom:10px;min-width:0}
+  #v4 .alm .sac{background:none;border:0;color:var(--vino);font:inherit;font-size:14px;font-weight:600;padding:0 0 10px}
   #v4 .rec2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
   #v4 .rec2 .box .row{padding:14px;gap:12px} #v4 .rec2 .go{display:none}
   #v4 .skills{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -426,13 +440,13 @@
   const hoyISO=()=>{ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
   function agenda(){   // fechas del proyecto + tareas con alarma, ordenadas
     const A=[]; (FECHAS||[]).forEach(f=>A.push({f:String(f.fecha).slice(0,10),t:f.titulo,s:f.lugar||'Fecha',url:f.url}));
-    (D.tareas||[]).filter(t=>t.alarma&&t.estado!=='hecha').forEach(t=>A.push({f:String(t.alarma).slice(0,10),t:t.titulo,s:'Tarea'}));
+    (D.tareas||[]).filter(t=>t.alarma&&t.estado!=='hecha').forEach(t=>A.push({f:hAR(t.alarma).f,t:t.titulo,s:'Tarea'}));
     return A.sort((a,b)=>a.f<b.f?-1:1);
   }
   function filaAgenda(x){ const d=new Date(x.f+'T12:00:00'); const hoy=x.f===hoyISO();
     return `<div class="row"><span class="dia"><span>${DIA[d.getDay()]}</span><b>${d.getDate()}</b></span><span class="tx"><b>${esc(corta(x.t,48))}</b><small>${esc(x.s)}${hoy?' · Hoy':''}</small></span><span class="go">${I('chev')}</span></div>`; }
   function filaTarea(t){ const ok=t.estado==='hecha';
-    return `<div class="row tarea"><button class="circ ${ok?'ok':''}" data-hecha="${t.id}" data-est="${ok?'pendiente':'hecha'}" aria-label="${ok?'Marcar como pendiente':'Marcar como hecha'}">${ok?I('check'):''}</button><button class="tx" data-tarea="${t.id}" style="background:none;border:0;padding:0;text-align:left"><b style="${ok?'text-decoration:line-through;color:var(--suave)':''}">${esc(corta(t.titulo,90))}</b><small>${t.creada_por==='semilla'?'Del reporte de Semilla':'Tuya'}${t.alarma?' · Aviso '+fCorta(String(t.alarma).slice(0,10)):''}</small></button><button class="go" data-tarea="${t.id}" aria-label="Editar" style="background:none;border:0;padding:4px">${I('chev')}</button></div>`; }
+    return `<div class="row tarea"><button class="circ ${ok?'ok':''}" data-hecha="${t.id}" data-est="${ok?'pendiente':'hecha'}" aria-label="${ok?'Marcar como pendiente':'Marcar como hecha'}">${ok?I('check'):''}</button><button class="tx" data-tarea="${t.id}" style="background:none;border:0;padding:0;text-align:left"><b style="${ok?'text-decoration:line-through;color:var(--suave)':''}">${esc(t.titulo)}</b>${t.alarma&&!ok&&(!t.alarma_enviada||t.alarma_repite)?`<small>${I('campana')}${fAlarma(t)}</small>`:''}</button><button class="go" data-tarea="${t.id}" aria-label="Editar" style="background:none;border:0;padding:4px">${I('chev')}</button></div>`; }
   const corta=(s,n)=>{ s=String(s||''); return s.length>n?s.slice(0,n).replace(/\s+\S*$/,'')+'…':s; };
 
   function scProyecto(){
@@ -886,18 +900,26 @@
     on('v4hecha',()=>{ const id=r.querySelector('#v4hecha').dataset.id, H=hechas(); const i=H.indexOf(id); if(i<0) H.push(id); else H.splice(i,1); LS('hechas',JSON.stringify(H)); pintar(); });
     const q=r.querySelector('#v4q'); if(q){ q.oninput=()=>{ LS('q',q.value); clearTimeout(q._t); q._t=setTimeout(()=>{ pintar(); const n=$('#v4q'); n.focus(); n.setSelectionRange(n.value.length,n.value.length); },350); }; }
   }
-  function nuevaTarea(t){ hoja('Nueva tarea',`<input id="v4tt" placeholder="¿Qué tenés que hacer?" value="${esc(t)}"><button class="bt n" id="v4ok" style="width:100%">${I('mas')}Agregar a mis tareas</button>`,(h,c)=>{
+  // 26/11: recordatorio por WhatsApp (fecha, hora y repetición). Lo manda alarmas.py en la VM (WhatsApp + notificación).
+  function bloqueAlarma(t){ const a=t&&t.alarma?hAR(t.alarma):null, r=(t&&t.alarma_repite)||'';
+    return `<div class="alm"><p class="lb">${I('campana')}Recordatorio por WhatsApp</p><div class="g2"><input id="v4ad" type="date" aria-label="Día" value="${a?a.f:''}"><input id="v4ah" type="time" aria-label="Hora" value="${a?a.h:'10:00'}"></div>
+      <select id="v4ar" aria-label="Repetir">${Object.keys(REPITE).map(k=>`<option value="${k}"${k===r?' selected':''}>${REPITE[k]}</option>`).join('')}</select>${a?'<button type="button" class="sac" id="v4as">Sacar recordatorio</button>':''}</div>`; }
+  function leerAlarma(h){ const f=h.querySelector('#v4ad').value, hh=h.querySelector('#v4ah').value||'10:00'; return {al:f?f+'T'+hh+':00-03:00':null, rep:f?(h.querySelector('#v4ar').value||null):null}; }
+  async function guardarAlarma(id,h,t){ const n=leerAlarma(h), prev=t&&t.alarma?new Date(t.alarma).getTime():null, now=n.al?new Date(n.al).getTime():null;
+    if(prev===now&&((t&&t.alarma_repite)||null)===n.rep) return; await rpc('sub_tarea_alarma',{p_slug:slug,p_k:tok,p_id:id,p_alarma:n.al,p_repite:n.rep}).catch(()=>null); }
+  function sacarAlarma(h){ const b=h.querySelector('#v4as'); if(b) b.onclick=()=>{ h.querySelector('#v4ad').value=''; b.remove(); }; }
+  function nuevaTarea(t){ hoja('Nueva tarea',`<input id="v4tt" placeholder="¿Qué tenés que hacer?" value="${esc(t)}">${bloqueAlarma(null)}<button class="bt n" id="v4ok" style="width:100%">${I('mas')}Agregar a mis tareas</button>`,(h,c)=>{
       const i=h.querySelector('#v4tt'); setTimeout(()=>i.focus(),60);
-      h.querySelector('#v4ok').onclick=async()=>{ const v=i.value.trim(); if(!v) return; h.querySelector('#v4ok').disabled=true; const x=await rpc('sub_tarea_cliente_alta',{p_slug:slug,p_k:tok,p_titulo:v}).catch(()=>null); c(); if(x&&x.ok){ recargar(); } }; }); }
+      h.querySelector('#v4ok').onclick=async()=>{ const v=i.value.trim(); if(!v) return; h.querySelector('#v4ok').disabled=true; const x=await rpc('sub_tarea_cliente_alta',{p_slug:slug,p_k:tok,p_titulo:v}).catch(()=>null); if(x&&x.ok&&x.id) await guardarAlarma(x.id,h,null); c(); if(x&&x.ok){ recargar(); } }; }); }
   function editarTarea(id){ const t=(D.tareas||[]).find(x=>x.id===id); if(!t) return; const ok=t.estado==='hecha';
-    hoja('Tarea',`<textarea id="v4et" rows="4">${esc(t.titulo)}</textarea>
-      <label style="display:block;font-size:14px;font-weight:700;color:#4B4958;margin:4px 0 6px">Aviso (opcional)</label><input id="v4ea" type="date" value="${t.alarma?String(t.alarma).slice(0,10):''}">
+    hoja('Tarea',`<textarea id="v4et" rows="3">${esc(t.titulo)}</textarea>
+      ${bloqueAlarma(t)}
       <button class="bt n" id="v4eg" style="width:100%">${I('check')}Guardar cambios</button>
       <div class="dos" style="margin-top:10px"><button class="bt" id="v4ee">${ok?'Marcar pendiente':'Marcar hecha'}</button><button class="bt" id="v4eb" style="color:var(--vino)">Borrar</button></div>`,(h,c)=>{
-      const q=s=>h.querySelector(s); const fin=async()=>{ c(); await recargar(); };
-      q('#v4eg').onclick=async()=>{ const v=q('#v4et').value.trim(), a=q('#v4ea').value; if(!v) return; q('#v4eg').disabled=true;
+      const q=s=>h.querySelector(s); const fin=async()=>{ c(); await recargar(); }; sacarAlarma(h);
+      q('#v4eg').onclick=async()=>{ const v=q('#v4et').value.trim(); if(!v) return; q('#v4eg').disabled=true;
         if(v!==t.titulo) await rpc('sub_tarea_editar',{p_slug:slug,p_k:tok,p_id:id,p_titulo:v}).catch(()=>null);
-        const prev=t.alarma?String(t.alarma).slice(0,10):''; if(a!==prev) await rpc('sub_tarea_alarma',{p_slug:slug,p_k:tok,p_id:id,p_alarma:a?a+'T12:00:00-03:00':null}).catch(()=>null);
+        await guardarAlarma(id,h,t);
         fin(); };
       q('#v4ee').onclick=async()=>{ q('#v4ee').disabled=true; await rpc('sub_tarea_cliente',{p_slug:slug,p_k:tok,p_id:id,p_estado:ok?'pendiente':'hecha'}).catch(()=>null); fin(); };
       q('#v4eb').onclick=async()=>{ const b=q('#v4eb'); if(!b.dataset.seg){ b.dataset.seg='1'; b.textContent='¿Seguro? Tocá para borrar'; return; } b.disabled=true; await rpc('sub_tarea_borrar',{p_slug:slug,p_k:tok,p_id:id}).catch(()=>null); fin(); }; }); }
