@@ -145,6 +145,15 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 .paso3{text-align:center}
 .reloj{font-variant-numeric:tabular-nums;font-size:44px;font-weight:800;color:var(--red);margin:2px 0 6px}
 .cargando{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--muted)}
+.hora.on{background:var(--red);color:#fff}
+.dia{position:relative}.dia .pt{position:absolute;top:5px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--red)}
+.cuenta{font-size:13px;font-weight:700;color:var(--navy);margin:14px 0 8px}
+.sel{display:flex;flex-direction:column;gap:6px}
+.chip{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:8px 6px 8px 12px;font-size:14px;color:var(--navy)}
+.chip button{background:none;border:0;font-size:20px;line-height:1;color:var(--muted);cursor:pointer;padding:0 6px}
+.chip.vacio{color:#9A96A2;border-style:dashed;background:#fff;text-transform:none}
+#pg-listo{width:100%;margin-top:12px}#pg-listo:disabled{opacity:.45;cursor:default;box-shadow:none}
+.turnos3{list-style:none;margin:4px 0 8px;font-weight:700;color:var(--navy);font-size:14px;line-height:1.6}
 .oculto{display:none!important}
 @media (max-width:640px){.app-g{grid-template-columns:1fr}}
 
@@ -256,7 +265,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
     <details><summary>¿Qué es el hosting de la página?</summary><p>Es el lugar donde vive tu web para que esté online. En todos los planes está incluido: no pagás nada aparte y nosotros nos ocupamos de que funcione.</p></details>
     <details><summary>¿Qué dominio me dan?</summary><p>Un dominio propio para tu proyecto, por ejemplo tunombre.com o tunombre.art. Lo registramos nosotros, lo conectamos a tu web y lo renovamos mientras tengas el plan.</p></details>
     <details><summary>¿Qué es un ajuste de pauta?</summary><p>El equipo revisa tus anuncios y hace cambios para que rindan mejor: públicos, presupuesto, textos o piezas. Hasta 2 por mes en Publicidad Viva y Reunión Mensual, y hasta 4 en Mentoría y Setup. Así la publicidad tiene tiempo de aprender entre un cambio y otro.</p></details>
-    <details><summary>¿Cómo agendo las reuniones?</summary><p>Antes de pagar elegís el día y horario de tu primera reunión. Tenés 15 minutos para pagar; si no, el horario se libera. Las siguientes reuniones del mes las agendás desde tu página de bienvenida.</p></details>
+    <details><summary>¿Cómo agendo las reuniones?</summary><p>Antes de pagar elegís el día y horario de tus reuniones: 1 en Reunión Mensual y las 4 del mes en Mentoría y Setup, cada una en un día distinto. Tenés 15 minutos para pagar; si no, los horarios se liberan.</p></details>
     <details><summary>¿Puedo pagar desde fuera de Argentina?</summary><p>Sí. Desde el exterior pagás en dólares con PayPal y la suscripción se renueva sola cada mes.</p></details>
     <details><summary>¿Puedo cambiar de plan o darme de baja?</summary><p>Sí. Nos escribís por WhatsApp y lo cambiamos. La baja se hace desde Mercado Pago o con un mensaje.</p></details>
   </section>
@@ -272,13 +281,14 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
       <p class="p"><span id="pg-tzt">Horarios de Argentina.</span> Reunión de 1 hora por Zoom con Agus.</p>
       <div class="dias" id="pg-dias"><div class="cargando">Cargando horarios…</div></div>
       <div id="pg-horas-w" class="oculto"><p class="elegido" id="pg-dia-t"></p><div class="horas" id="pg-horas"></div></div>
+      <div id="pg-multi" class="oculto"><p class="cuenta" id="pg-cuenta"></p><div class="sel" id="pg-sel"></div><button type="button" class="btn btn-red" id="pg-listo" disabled>Continuar</button></div>
       <p class="err" id="pg-err1"></p>
     </div>
     <form id="pg-2" class="oculto" novalidate>
       <button type="button" class="volver" id="pg-volver">← Cambiar horario</button>
       <h2>Tus datos</h2>
       <p class="p" id="pg-turno"></p>
-      <div class="regla"><b>La reunión se confirma cuando pagás.</b> Tenés <b>15 minutos</b> para pagar; si no, el horario se libera para otra persona.</div>
+      <div class="regla" id="pg-regla"><b>La reunión se confirma cuando pagás.</b> Tenés <b>15 minutos</b> para pagar; si no, el horario se libera para otra persona.</div>
       <label for="pg-nombre">Nombre y apellido</label><input id="pg-nombre" autocomplete="name" required/>
       <label for="pg-email">Email</label><input id="pg-email" type="email" autocomplete="email" required/>
       <label for="pg-tel" id="pg-tel-l">WhatsApp (con código de área)</label><input id="pg-tel" type="tel" autocomplete="tel" required/>
@@ -289,6 +299,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
       <h2>Último paso</h2>
       <p class="p" id="pg-turno3"></p>
       <div class="reloj" id="pg-reloj">15:00</div>
+      <ul class="turnos3 oculto" id="pg-lista3"></ul>
       <a class="btn btn-red" id="pg-ir" href="#"></a>
       <p class="p chico" id="pg-ir-t"></p>
     </div>
@@ -311,7 +322,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
   $('ext-a').addEventListener('click',function(e){e.preventDefault();ext=!ext;try{localStorage.setItem('planes_pais',ext?'ext':'ar')}catch(_){}pintarPais()});
   pintarPais();
 
-  var M=$('pagar'),plan=null,inicio=null,horarios=null,reloj=null;
+  var M=$('pagar'),plan=null,inicio=null,horarios=null,reloj=null,sel=[],diaVisto=null;
   var VTZ=function(){return ext?(TZU||TZ):TZ};
   function fmt(iso,o){return new Date(iso).toLocaleString('es-AR',Object.assign({timeZone:VTZ(),hourCycle:'h23'},o))}
   function paso(n){[1,2,3].forEach(function(i){$('pg-'+i).classList.toggle('oculto',i!==n);var s=$('ps'+i);s.className=i<n?'ok':i===n?'on':''})}
@@ -321,7 +332,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
     $('pg-tel-l').textContent=ext?'WhatsApp (con + y código de país)':'WhatsApp (con código de área)';
     M.classList.toggle('sinhorario',!plan.reu);
     $('pg-volver').classList.toggle('oculto',!plan.reu);
-    inicio=null;$('pg-err1').textContent='';$('pg-err2').textContent='';
+    inicio=null;sel=[];$('pg-err1').textContent='';$('pg-t').textContent=plan.reu>1?'Elegí tus '+plan.reu+' reuniones':'Elegí día y horario';$('pg-multi').classList.toggle('oculto',!(plan.reu>1));$('pg-err2').textContent='';
     M.classList.add('on');document.body.style.overflow='hidden';
     if(plan.reu){paso(1);cargar()}else{paso(2);$('pg-turno').textContent=ext?'Pagás con PayPal y la suscripción se renueva sola cada mes.':'';$('pg-2').querySelector('.regla').classList.add('oculto')}
     try{fbq('track','InitiateCheckout',{content_name:plan.codigo,value:ext?+plan.usd:+plan.ars,currency:ext?'USD':'ARS'})}catch(_){}
@@ -341,29 +352,56 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
       if(!horarios.length){$('pg-dias').innerHTML='';$('pg-err1').innerHTML='No hay horarios libres en las próximas semanas. <a href="https://wa.me/5492665242011" target="_blank" rel="noopener"><u>Escribinos por WhatsApp</u></a>.';return}
       var dias={};horarios.forEach(function(h){var k=fmt(h,{year:'numeric',month:'2-digit',day:'2-digit'});(dias[k]=dias[k]||[]).push(h)});
       $('pg-dias').innerHTML='';
-      Object.keys(dias).forEach(function(k,i){var h=dias[k][0],b=document.createElement('button');b.type='button';b.className='dia';
+      sel=sel.filter(function(t){return horarios.indexOf(t)>=0});Object.keys(dias).forEach(function(k,i){var h=dias[k][0],b=document.createElement('button');b.type='button';b.className='dia';
         b.innerHTML='<small>'+fmt(h,{weekday:'short'})+'</small><b>'+fmt(h,{day:'numeric'})+'</b><small>'+fmt(h,{month:'short'})+'</small>';
-        b.onclick=function(){document.querySelectorAll('.dia').forEach(function(x){x.classList.remove('on')});b.classList.add('on');verDia(dias[k])};
-        $('pg-dias').appendChild(b);if(i===0)b.click()});
+        b.dataset.k=k;b.onclick=function(){document.querySelectorAll('.dia').forEach(function(x){x.classList.remove('on')});b.classList.add('on');verDia(dias[k])};
+        $('pg-dias').appendChild(b);if(i===0)b.click()});pintarSel();
     }).catch(function(){$('pg-dias').innerHTML='';$('pg-err1').textContent='No pudimos cargar los horarios. Probá de nuevo en un rato.'});
   }
+  var diaK=function(h){return fmt(h,{year:'numeric',month:'2-digit',day:'2-digit'})};
+  var largo=function(h){var t=fmt(h,{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})+' hs';return t.charAt(0).toUpperCase()+t.slice(1)};
+  function pintarSel(){
+    if(!(plan&&plan.reu>1))return;
+    sel.sort();var faltan=plan.reu-sel.length;
+    $('pg-cuenta').textContent=faltan?'Elegiste '+sel.length+' de '+plan.reu+'. Una reunión por día.':'Listo: tus '+plan.reu+' reuniones.';
+    var c=$('pg-sel');c.innerHTML='';
+    sel.forEach(function(h){var d=document.createElement('div');d.className='chip';var t=document.createElement('span');t.textContent=largo(h);var x=document.createElement('button');x.type='button';x.setAttribute('aria-label','Sacar');x.innerHTML='&times;';x.onclick=function(){sel.splice(sel.indexOf(h),1);pintarSel()};d.appendChild(t);d.appendChild(x);c.appendChild(d)});
+    for(var i=0;i<faltan;i++){var v=document.createElement('div');v.className='chip vacio';v.textContent='Reunión '+(sel.length+i+1)+': elegí día y hora';c.appendChild(v)}
+    $('pg-listo').disabled=!!faltan;
+    var dk=sel.map(diaK);
+    document.querySelectorAll('.dia').forEach(function(b){var p=b.querySelector('.pt');if(dk.indexOf(b.dataset.k)>=0){if(!p){p=document.createElement('span');p.className='pt';b.appendChild(p)}}else if(p)p.remove()});
+    document.querySelectorAll('.hora').forEach(function(b){b.classList.toggle('on',sel.indexOf(b.dataset.h)>=0)});
+  }
+  function elegirMulti(h){
+    $('pg-err1').textContent='';
+    var i=sel.indexOf(h);if(i>=0){sel.splice(i,1);pintarSel();return}
+    var k=diaK(h),j=-1;sel.forEach(function(x,n){if(diaK(x)===k)j=n});
+    if(j>=0)sel.splice(j,1);
+    else if(sel.length>=plan.reu){$('pg-err1').textContent='Ya elegiste las '+plan.reu+'. Sacá una para cambiarla.';return}
+    sel.push(h);pintarSel();
+  }
+  $('pg-listo').onclick=function(){if(sel.length!==plan.reu)return;$('pg-turno').innerHTML='';var u=document.createElement('ul');u.className='turnos3';sel.forEach(function(h){var l=document.createElement('li');l.textContent=largo(h);u.appendChild(l)});$('pg-turno').appendChild(document.createTextNode('Tus '+plan.reu+' reuniones:'));$('pg-turno').appendChild(u);$('pg-regla').innerHTML='<b>Las reuniones se confirman cuando pagás.</b> Tenés <b>15 minutos</b> para pagar; si no, los horarios se liberan para otra persona.';$('pg-regla').classList.remove('oculto');paso(2);$('pg-nombre').focus()};
   function verDia(lista){
     $('pg-horas-w').classList.remove('oculto');$('pg-dia-t').textContent=fmt(lista[0],{weekday:'long',day:'numeric',month:'long'});
     $('pg-horas').innerHTML='';
     lista.forEach(function(h){var b=document.createElement('button');b.type='button';b.className='hora';b.textContent=fmt(h,{hour:'2-digit',minute:'2-digit'})+' hs';
-      b.onclick=function(){inicio=h;$('pg-turno').textContent='Tu reunión: '+fmt(h,{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})+' hs.';$('pg-2').querySelector('.regla').classList.remove('oculto');paso(2);$('pg-nombre').focus()};
+      b.dataset.h=h;
+      b.onclick=function(){if(plan.reu>1){elegirMulti(h);return}inicio=h;$('pg-turno').textContent='Tu reunión: '+fmt(h,{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})+' hs.';$('pg-regla').innerHTML='<b>La reunión se confirma cuando pagás.</b> Tenés <b>15 minutos</b> para pagar; si no, el horario se libera para otra persona.';$('pg-regla').classList.remove('oculto');paso(2);$('pg-nombre').focus()};
       $('pg-horas').appendChild(b)});
+    pintarSel();
   }
   $('pg-volver').onclick=function(){paso(1)};
   function cookie(n){var m=document.cookie.match('(?:^|; )'+n+'=([^;]*)');return m?decodeURIComponent(m[1]):''}
   $('pg-2').addEventListener('submit',function(e){
     e.preventDefault();var b=$('pg-seguir');b.disabled=true;b.textContent='Un momento…';$('pg-err2').textContent='';
-    post({accion:'crear',plan:plan.codigo,exterior:ext,inicio:inicio,nombre:$('pg-nombre').value,email:$('pg-email').value,telefono:$('pg-tel').value,pais:ext?TZU:'',fbp:cookie('_fbp'),fbc:cookie('_fbc'),origen:location.href})
+    var multi=plan.reu>1;if(multi)inicio=sel[0]||null;
+    post({accion:'crear',plan:plan.codigo,exterior:ext,inicio:inicio,inicios:multi?sel.slice():undefined,nombre:$('pg-nombre').value,email:$('pg-email').value,telefono:$('pg-tel').value,pais:ext?TZU:'',fbp:cookie('_fbp'),fbc:cookie('_fbc'),origen:location.href})
     .then(function(j){
       b.disabled=false;b.textContent='Continuar al pago';
-      if(!j.ok){$('pg-err2').textContent=j.error||'No pudimos seguir. Probá de nuevo.';if(j.ocupado){paso(1);cargar()}return}
+      if(!j.ok){$('pg-err2').textContent=j.error||'No pudimos seguir. Probá de nuevo.';if(j.ocupado){(j.ocupados||[]).forEach(function(o){var i=sel.indexOf(o);if(i>=0)sel.splice(i,1)});paso(1);cargar();$('pg-err1').textContent=j.error}return}
       try{localStorage.setItem('plan_ref_'+plan.codigo,j.ref)}catch(_){}
-      $('pg-turno3').textContent=inicio?'Tu reunión del '+fmt(inicio,{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})+' hs queda guardada por':'Completá el pago para activar tu plan.';
+      $('pg-turno3').textContent=multi?'Tus '+plan.reu+' reuniones quedan guardadas por':inicio?'Tu reunión del '+fmt(inicio,{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})+' hs queda guardada por':'Completá el pago para activar tu plan.';
+      var l3=$('pg-lista3');l3.innerHTML='';l3.classList.toggle('oculto',!multi);if(multi)sel.forEach(function(h){var l=document.createElement('li');l.textContent=largo(h);l3.appendChild(l)});
       $('pg-reloj').classList.toggle('oculto',!inicio);
       $('pg-ir').href=j.url;$('pg-ir').textContent=ext?'Suscribirme con PayPal':'Suscribirme con Mercado Pago';
       $('pg-ir-t').textContent=ext?'Pagás en dólares (USD '+plan.usd+' por mes). Se renueva sola cada mes.':'Tarjeta de crédito, débito o dinero en cuenta. Se renueva sola cada mes.';

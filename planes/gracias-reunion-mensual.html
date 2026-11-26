@@ -62,7 +62,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 .estado{background:#fff;border-radius:18px;padding:20px 18px;margin:18px auto 10px;max-width:520px;box-shadow:0 10px 30px rgba(22,33,90,.07);text-align:center}
 .estado h2{font-size:22px;font-weight:900;margin-bottom:6px}
 .estado p{font-size:15px;color:var(--navy);line-height:1.45}
-.estado .fecha{font-weight:800;font-size:18px;margin:6px 0;text-transform:capitalize}
+.estado .fecha{font-weight:800;font-size:18px;margin:6px 0}
 .estado .chico{font-size:13px;color:var(--muted);margin-top:8px}
 .estado .btn{margin-top:14px}
 .oculto{display:none!important}
@@ -103,7 +103,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
   try{ref=ref||localStorage.getItem('plan_ref_'+PLAN)||''}catch(_){}
   var pre=q.get('preapproval_id')||'',$=function(i){return document.getElementById(i)};
   var TZU='';try{TZU=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(_){}
-  function fmt(iso){return new Date(iso).toLocaleString('es-AR',{timeZone:q.get('pp')?(TZU||TZ):TZ,weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit',hourCycle:'h23'})+' hs'}
+  function fmt(iso){var t=new Date(iso).toLocaleString('es-AR',{timeZone:q.get('pp')?(TZU||TZ):TZ,weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit',hourCycle:'h23'})+' hs';return t.charAt(0).toUpperCase()+t.slice(1)}
   function calendario(){if(!REU)return;$('agenda').classList.remove('oculto');var s=document.createElement('script');s.src='https://assets.calendly.com/assets/external/widget.js';s.async=true;document.body.appendChild(s)}
   if(!ref){if(REU){calendario();$('est').classList.add('oculto')}else{$('est-t').textContent='Tu plan quedó activo';$('est-p').textContent='Te escribimos por WhatsApp para arrancar con tu pauta.'}return}
   var n=0;
