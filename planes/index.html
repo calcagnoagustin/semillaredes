@@ -326,6 +326,10 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 
   var M=$('pagar'),plan=null,inicio=null,horarios=null,reloj=null,sel=[],diaVisto=null;
   var VTZ=function(){return ext?(TZU||TZ):TZ};
+  /* 27/11: ?prueba=1 -> modo prueba: los horarios son los reales, pero no se guarda ninguna reserva, no se bloquean horarios y no va a pagar */
+  var PRUEBA=/[?&]prueba=1/.test(location.search);
+  function prueba(b){try{console.log('PRUEBA (no se envia)',b)}catch(_){}return Promise.resolve({ok:true,ref:'prueba',url:"javascript:alert('Modo prueba: aca iria al pago. No se guardo nada.')",vence:new Date(Date.now()+15*60000).toISOString(),monto:0,moneda:b.exterior?'USD':'ARS'})}
+  if(PRUEBA){var bp=document.createElement('div');bp.textContent='MODO PRUEBA · no se guarda ninguna reserva ni se cobra nada';bp.style.cssText='position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#C2463D;color:#fff;font:600 13px/1.3 sans-serif;text-align:center;padding:7px';(document.body||document.documentElement).appendChild(bp)}
   /* 27/11: fuera de Argentina, si el WhatsApp viene sin codigo de pais se lo agregamos segun la zona horaria (ej. Espana +34) */
   var PREF={'Europe/Madrid':'34','Atlantic/Canary':'34','Africa/Ceuta':'34','America/Montevideo':'598','America/Santiago':'56','America/Asuncion':'595','America/La_Paz':'591','America/Lima':'51','America/Bogota':'57','America/Caracas':'58','America/Guayaquil':'593','America/Mexico_City':'52','America/Sao_Paulo':'55','America/Panama':'507','America/Costa_Rica':'506','Europe/Rome':'39','Europe/Paris':'33','Europe/Berlin':'49','Europe/London':'44','Europe/Lisbon':'351','Europe/Amsterdam':'31','Europe/Brussels':'32','Europe/Zurich':'41','Europe/Vienna':'43','Europe/Dublin':'353','America/New_York':'1','America/Chicago':'1','America/Denver':'1','America/Los_Angeles':'1','America/Toronto':'1','America/Miami':'1'};
   function telIntl(v){v=String(v||'').trim();if(esAR||!v||/^(\+|00)/.test(v))return v;var c=PREF[TZU];return c?'+'+c+' '+v.replace(/^0+/,''):v}
@@ -400,11 +404,11 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
   $('pg-2').addEventListener('submit',function(e){
     e.preventDefault();var b=$('pg-seguir');b.disabled=true;b.textContent='Un momento…';$('pg-err2').textContent='';
     var multi=plan.reu>1;if(multi)inicio=sel[0]||null;
-    post({accion:'crear',plan:plan.codigo,exterior:ext,inicio:inicio,inicios:multi?sel.slice():undefined,nombre:$('pg-nombre').value,email:$('pg-email').value,telefono:telIntl($('pg-tel').value),pais:ext?TZU:'',fbp:cookie('_fbp'),fbc:cookie('_fbc'),origen:location.href})
+    (PRUEBA?prueba:post)({accion:'crear',plan:plan.codigo,exterior:ext,inicio:inicio,inicios:multi?sel.slice():undefined,nombre:$('pg-nombre').value,email:$('pg-email').value,telefono:telIntl($('pg-tel').value),pais:ext?TZU:'',fbp:cookie('_fbp'),fbc:cookie('_fbc'),origen:location.href})
     .then(function(j){
       b.disabled=false;b.textContent='Continuar al pago';
       if(!j.ok){$('pg-err2').textContent=(j.error||'No pudimos seguir. Probá de nuevo.')+(!esAR&&/WhatsApp/.test(j.error||'')?' Si estás fuera de Argentina, poné + y el código de tu país (por ejemplo +34 para España).':'');if(j.ocupado){(j.ocupados||[]).forEach(function(o){var i=sel.indexOf(o);if(i>=0)sel.splice(i,1)});paso(1);cargar();$('pg-err1').textContent=j.error}return}
-      try{localStorage.setItem('plan_ref_'+plan.codigo,j.ref)}catch(_){}
+      if(!PRUEBA)try{localStorage.setItem('plan_ref_'+plan.codigo,j.ref)}catch(_){}
       $('pg-turno3').textContent=multi?'Tus '+plan.reu+' reuniones quedan guardadas por':inicio?'Tu reunión del '+fmt(inicio,{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})+' hs queda guardada por':'Completá el pago para activar tu plan.';
       var l3=$('pg-lista3');l3.innerHTML='';l3.classList.toggle('oculto',!multi);if(multi)sel.forEach(function(h){var l=document.createElement('li');l.textContent=largo(h);l3.appendChild(l)});
       $('pg-reloj').classList.toggle('oculto',!inicio);
