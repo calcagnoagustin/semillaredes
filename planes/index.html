@@ -310,6 +310,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 (function(){
   var FN='https://fdrxsjphlvvwwknnrjtx.supabase.co/functions/v1/plan-pago',TZ='America/Argentina/Buenos_Aires';
   var TZU='';try{TZU=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(_){}
+  try{var tzq=new URLSearchParams(location.search).get('tz');if(tzq){new Intl.DateTimeFormat('es',{timeZone:tzq});TZU=tzq}}catch(_){} /* 27/11: ?tz=Europe/Madrid para probar la pagina como si estuvieras en otro pais */
   var esAR=!TZU||/^America\/(Argentina\/|Buenos_Aires$|Cordoba$|Catamarca$|Jujuy$|Mendoza$|Rosario$)/.test(TZU);
   var forz='';try{forz=new URLSearchParams(location.search).get('pais')||sessionStorage.getItem('planes_pais')||''}catch(_){}
   try{localStorage.removeItem('planes_pais')}catch(_){} /* 27/11: la eleccion pesos/dolares ya no queda guardada entre visitas (caso Xoan, Espana) */
